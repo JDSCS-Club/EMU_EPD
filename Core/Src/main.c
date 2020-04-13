@@ -114,7 +114,25 @@ int main(void)
   MX_USART2_UART_Init();
   /* USER CODE BEGIN 2 */
   HAL_TIM_Base_Start_IT(&htim2);
+
+  /*
   RetargetInit(&huart1); // for printf
+
+  /*/
+
+  //	UART Queue 초기화.
+  SerialInitQueue();
+  //	UART Interrupt 설정.
+  SerialInit( &huart1, &huart2, &huart3 );
+
+  setbuf ( stdout, NULL );		            //	1024 byte buffer clear
+//  setvbuf ( stdout, NULL, _IOLBF, NULL );	//	Line Buffer
+  setvbuf ( stdout, NULL, _IONBF, NULL );	//	No Buffer
+
+  printf( "[%d] Start\n", HAL_GetTick() );    // xTaskGetTickCount() );
+
+  //	*/
+
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -462,13 +480,13 @@ static void MX_GPIO_Init(void)
   __HAL_RCC_GPIOD_CLK_ENABLE();
 
   /*Configure GPIO pin Output Level */
+  HAL_GPIO_WritePin(GPIOC, MASTER_IN_OUT_Pin|LED_100_GREEN_Pin, GPIO_PIN_SET);
+
+  /*Configure GPIO pin Output Level */
   HAL_GPIO_WritePin(GPIOC, RE_Pin|SD_Pin|MUTE_Pin|LED_CTL_Pin, GPIO_PIN_RESET);
 
   /*Configure GPIO pin Output Level */
   HAL_GPIO_WritePin(OVERRIDE_GPIO_Port, OVERRIDE_Pin, GPIO_PIN_RESET);
-
-  /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(LED_100_GREEN_GPIO_Port, LED_100_GREEN_Pin, GPIO_PIN_SET);
 
   /*Configure GPIO pin Output Level */
   HAL_GPIO_WritePin(LED_100_RED_GPIO_Port, LED_100_RED_Pin, GPIO_PIN_SET);
@@ -476,19 +494,19 @@ static void MX_GPIO_Init(void)
   /*Configure GPIO pin Output Level */
   HAL_GPIO_WritePin(GPIOB, LED_75_Pin|RF_LED_Pin, GPIO_PIN_SET);
 
-  /*Configure GPIO pins : MASTER_IN_Pin CHARGER_DET_Pin VCC_IN_Pin */
-  GPIO_InitStruct.Pin = MASTER_IN_Pin|CHARGER_DET_Pin|VCC_IN_Pin;
-  GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
-  GPIO_InitStruct.Pull = GPIO_NOPULL;
-  HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
-
-  /*Configure GPIO pins : RE_Pin SD_Pin MUTE_Pin LED_CTL_Pin 
-                           LED_100_GREEN_Pin */
-  GPIO_InitStruct.Pin = RE_Pin|SD_Pin|MUTE_Pin|LED_CTL_Pin 
-                          |LED_100_GREEN_Pin;
+  /*Configure GPIO pins : MASTER_IN_OUT_Pin RE_Pin SD_Pin MUTE_Pin 
+                           LED_CTL_Pin LED_100_GREEN_Pin */
+  GPIO_InitStruct.Pin = MASTER_IN_OUT_Pin|RE_Pin|SD_Pin|MUTE_Pin 
+                          |LED_CTL_Pin|LED_100_GREEN_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+  HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
+
+  /*Configure GPIO pins : CHARGER_DET_Pin VCC_IN_Pin */
+  GPIO_InitStruct.Pin = CHARGER_DET_Pin|VCC_IN_Pin;
+  GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
   HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
 
   /*Configure GPIO pins : LIGHT_ON_Pin ST_BY_Pin */

@@ -113,7 +113,13 @@ bool getLightOn(void){ return HAL_GPIO_ReadPin(LIGHT_ON_GPIO_Port, LIGHT_ON_Pin)
 /**
   * @brief  get Master input
   */
+#if defined( MASTER_IN_OUT_GPIO_Port )
+
+//	MASTER_IN 신호 Output으로 수정.
+bool getMasterIn(void){ return 1; }
+#else
 bool getMasterIn(void){ return HAL_GPIO_ReadPin(MASTER_IN_GPIO_Port, MASTER_IN_Pin); }
+#endif
 //--------------------------------------------------------------------------------------------//
 //
 //--------------------------------------------------------------------------------------------//
