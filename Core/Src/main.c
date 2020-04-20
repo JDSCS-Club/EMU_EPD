@@ -486,10 +486,7 @@ static void MX_GPIO_Init(void)
   HAL_GPIO_WritePin(GPIOC, RE_Pin|SD_Pin|MUTE_Pin|LED_CTL_Pin, GPIO_PIN_RESET);
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(GPIOA, RE1_Pin|OVERRIDE_Pin, GPIO_PIN_RESET);
-
-  /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(DI_CTL_GPIO_Port, DI_CTL_Pin, GPIO_PIN_SET);
+  HAL_GPIO_WritePin(GPIOA, RE1_Pin|DI_CTL_Pin|OVERRIDE_Pin, GPIO_PIN_RESET);
 
   /*Configure GPIO pin Output Level */
   HAL_GPIO_WritePin(GPIOB, LED_75_Pin|RF_LED_Pin, GPIO_PIN_SET);
