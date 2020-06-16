@@ -75,9 +75,9 @@ void Error_Handler(void);
 #define BAT_VCC_GPIO_Port GPIOC
 #define RE_Pin GPIO_PIN_3
 #define RE_GPIO_Port GPIOC
-#define RE1_Pin GPIO_PIN_2
+#define RE1_Pin GPIO_PIN_0
 #define RE1_GPIO_Port GPIOA
-#define DI_CTL_Pin GPIO_PIN_3
+#define DI_CTL_Pin GPIO_PIN_1
 #define DI_CTL_GPIO_Port GPIOA
 #define LIGHT_ON_Pin GPIO_PIN_4
 #define LIGHT_ON_GPIO_Port GPIOC
