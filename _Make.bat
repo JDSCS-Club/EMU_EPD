@@ -38,8 +38,10 @@ set mm=%DATE_TODAY:~5,2%
 set dd=%DATE_TODAY:~8,2%
 set TODAY=%yy%%mm%%dd%
 
-set BIN_FILE_NAME=%MODULE%_%TODAY%_v1.%VER%.bin
-set HEX_FILE_NAME=%MODULE%_%TODAY%_v1.%VER%.hex
+REM set BIN_FILE_NAME=%MODULE%_%TODAY%_v1.%VER%.bin
+REM set HEX_FILE_NAME=%MODULE%_%TODAY%_v1.%VER%.hex
+set BIN_FILE_NAME=RFMBase_%TODAY%_v1.%VER%.bin
+set HEX_FILE_NAME=RFMBase_%TODAY%_v1.%VER%.hex
 REM set BOOT_FILE_NAME=smrt7tni_bootloader_%TODAY%_v%VER%.hex
 
 echo copy "Release\%MODULE%.bin" "bin\%BIN_FILE_NAME%"
