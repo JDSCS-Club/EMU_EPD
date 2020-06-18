@@ -111,10 +111,10 @@ void Error_Handler(void);
 #define LED_75_GPIO_Port GPIOB
 #define RF_LED_Pin GPIO_PIN_5
 #define RF_LED_GPIO_Port GPIOB
-#define LED_100_GREEN_Pin GPIO_PIN_6
-#define LED_100_GREEN_GPIO_Port GPIOB
-#define LED_100_RED_Pin GPIO_PIN_7
+#define LED_100_RED_Pin GPIO_PIN_6
 #define LED_100_RED_GPIO_Port GPIOB
+#define LED_100_GREEN_Pin GPIO_PIN_7
+#define LED_100_GREEN_GPIO_Port GPIOB
 /* USER CODE BEGIN Private defines */
 
 /* USER CODE END Private defines */
