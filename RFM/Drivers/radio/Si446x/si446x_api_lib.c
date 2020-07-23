@@ -9,8 +9,12 @@
  * Copyright 2011 Silicon Laboratories, Inc.
  */
 
-#include "..\..\..\bsp.h"
+
 #include <stdarg.h>
+
+#include "radio_comm.h"
+#include "si446x_api_lib.h"			//	SI446X_STAT
+
 
 SEGMENT_VARIABLE( Si446xCmd, union si446x_cmd_reply_union, SEG_XDATA );
 SEGMENT_VARIABLE( Pro2Cmd[16], U8, SEG_XDATA );
@@ -33,9 +37,11 @@ void si446x_reset(void)
     /* Put radio in shutdown, wait then release */
     radio_hal_AssertShutdown();
     //! @todo this needs to be a better delay function.
-    for (loopCount = 255; loopCount != 0; loopCount--);
+//    for (loopCount = 255; loopCount != 0; loopCount--);
+    HAL_Delay(1);
     radio_hal_DeassertShutdown();
-    for (loopCount = 255; loopCount != 0; loopCount--);
+//    for (loopCount = 255; loopCount != 0; loopCount--);
+    HAL_Delay(1);
     radio_comm_ClearCTS();
 }
 
@@ -266,7 +272,13 @@ void si446x_set_property( U8 GROUP, U8 NUM_PROPS, U8 START_PROP, ... )
     cmdIndex = 4;
     while(NUM_PROPS--)
     {
+#ifdef __C51__  //  Keil Compiler
         Pro2Cmd[cmdIndex] = va_arg (argList, U8);
+#else
+        //‘char’ is promoted to ‘int’ when passed through ‘...’
+        //  gcc : 가변인자는 char -> int로 확장됨.
+        Pro2Cmd[cmdIndex] = va_arg ( argList, int );
+#endif
         cmdIndex++;
     }
     va_end(argList);

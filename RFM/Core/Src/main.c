@@ -24,6 +24,8 @@
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 
+#include "typedef.h"	//	TRUE, FALSE, ...
+
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -87,6 +89,26 @@ static void MX_USB_OTG_FS_PCD_Init(void);
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
 
+#include "radio_hal.h"		//	RF_NIRQ
+
+//si4463 Interrupt
+void HAL_GPIO_EXTI_Callback ( uint16_t GPIO_Pin )
+{
+    uint8_t st;
+
+    printf( " HAL_GPIO_EXTI_Callback\r\n" );
+
+    st = HAL_GPIO_ReadPin ( RF_INT_GPIO_Port, RF_INT_Pin );
+    if ( st )	//rising edge
+    {
+        RF_NIRQ = TRUE;
+    }
+    else	//falling edge
+    {
+        RF_NIRQ = FALSE;
+    }
+}
+
 /* USER CODE END 0 */
 
 /**
@@ -141,11 +163,11 @@ int main(void)
   {
     /* USER CODE END WHILE */
 
+    /* USER CODE BEGIN 3 */
 	HAL_Delay( 1000 );
 
     HAL_GPIO_TogglePin( LED_ST_GPIO_Port, LED_ST_Pin );
 
-    /* USER CODE BEGIN 3 */
   }
   /* USER CODE END 3 */
 }
@@ -664,8 +686,8 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   HAL_GPIO_Init(GPIOE, &GPIO_InitStruct);
 
-  /*Configure GPIO pins : USB_ID_Pin BAT_CHRG_Pin PC4 */
-  GPIO_InitStruct.Pin = USB_ID_Pin|BAT_CHRG_Pin|GPIO_PIN_4;
+  /*Configure GPIO pins : USB_ID_Pin BAT_CHRG_Pin */
+  GPIO_InitStruct.Pin = USB_ID_Pin|BAT_CHRG_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
@@ -676,6 +698,12 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_HIGH;
   HAL_GPIO_Init(SPI1_NSS_GPIO_Port, &GPIO_InitStruct);
+
+  /*Configure GPIO pin : RF_INT_Pin */
+  GPIO_InitStruct.Pin = RF_INT_Pin;
+  GPIO_InitStruct.Mode = GPIO_MODE_IT_RISING_FALLING;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  HAL_GPIO_Init(RF_INT_GPIO_Port, &GPIO_InitStruct);
 
   /*Configure GPIO pin : PC5 */
   GPIO_InitStruct.Pin = GPIO_PIN_5;
@@ -701,11 +729,9 @@ static void MX_GPIO_Init(void)
   HAL_GPIO_Init(SPI2_NSS_GPIO_Port, &GPIO_InitStruct);
 
   /*Configure GPIO pins : ON_OFF_KEY_Pin DOME1_Pin DOME2_Pin DOME3_Pin 
-                           DOME4_Pin DOME5_Pin DOME6_Pin SOS_KEY_Pin 
-                           PTT_KEY_Pin */
+                           DOME4_Pin DOME6_Pin SOS_KEY_Pin PTT_KEY_Pin */
   GPIO_InitStruct.Pin = ON_OFF_KEY_Pin|DOME1_Pin|DOME2_Pin|DOME3_Pin 
-                          |DOME4_Pin|DOME5_Pin|DOME6_Pin|SOS_KEY_Pin 
-                          |PTT_KEY_Pin;
+                          |DOME4_Pin|DOME6_Pin|SOS_KEY_Pin|PTT_KEY_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_IT_RISING_FALLING;
   GPIO_InitStruct.Pull = GPIO_PULLUP;
   HAL_GPIO_Init(GPIOD, &GPIO_InitStruct);

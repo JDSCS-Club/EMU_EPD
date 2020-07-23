@@ -13,8 +13,12 @@
                  *              I N C L U D E              *
                  * ======================================= */
 
-#include "..\..\bsp.h"
 
+#include "radio_hal.h"
+
+#include "stm32f4xx_hal.h"		//	GPIO_PinState
+
+#include "radio_spi.h"			//	spi_readWrite()
 
                 /* ======================================= *
                  *          D E F I N I T I O N S          *
@@ -23,6 +27,10 @@
                 /* ======================================= *
                  *     G L O B A L   V A R I A B L E S     *
                  * ======================================= */
+
+
+/// FIXME :Interrupter Rutine
+uint8_t RF_NIRQ;
 
                 /* ======================================= *
                  *      L O C A L   F U N C T I O N S      *
@@ -34,71 +42,54 @@
 
 void radio_hal_AssertShutdown(void)
 {
-#if (defined SILABS_PLATFORM_RFSTICK) || (defined SILABS_PLATFORM_LCDBB) || (defined SILABS_PLATFORM_WMB)
-  RF_PWRDN = 1;
-#else
-  PWRDN = 1;
-#endif
+//  PWRDN = 1;
+//DEL  HAL_GPIO_WritePin(GPIOC, GPIO_PIN_3|GPIO_PIN_5, GPIO_PIN_SET);
+  HAL_GPIO_WritePin(GPIOC, GPIO_PIN_5, GPIO_PIN_SET);
 }
 
 void radio_hal_DeassertShutdown(void)
 {
-#if (defined SILABS_PLATFORM_RFSTICK) || (defined SILABS_PLATFORM_LCDBB) || (defined SILABS_PLATFORM_WMB)
-  RF_PWRDN = 0;
-#else
-  PWRDN = 0;
-#endif
+//  PWRDN = 0;
+//DEL  HAL_GPIO_WritePin(GPIOC, GPIO_PIN_3|GPIO_PIN_5, GPIO_PIN_RESET);
+  HAL_GPIO_WritePin(GPIOC, GPIO_PIN_5, GPIO_PIN_RESET);
 }
 
 void radio_hal_ClearNsel(void)
 {
-    RF_NSEL = 0;
+//    RF_NSEL = 0;
+    HAL_GPIO_WritePin(GPIOA, GPIO_PIN_4, GPIO_PIN_RESET);
 }
 
 void radio_hal_SetNsel(void)
 {
-    RF_NSEL = 1;
+//    RF_NSEL = 1;
+    HAL_GPIO_WritePin(GPIOA, GPIO_PIN_4, GPIO_PIN_SET);
 }
 
-BIT radio_hal_NirqLevel(void)
+GPIO_PinState radio_hal_NirqLevel(void)
 {
-    return RF_NIRQ;
+	return (GPIO_PinState) RF_NIRQ;
 }
 
 void radio_hal_SpiWriteByte(U8 byteToWrite)
 {
-#if (defined SILABS_PLATFORM_RFSTICK) || (defined SILABS_PLATFORM_LCDBB) || (defined SILABS_PLATFORM_WMB)
-  bSpi_ReadWriteSpi1(byteToWrite);
-#else
-  SpiReadWrite(byteToWrite);
-#endif
+	spi_readWrite(byteToWrite);
 }
 
 U8 radio_hal_SpiReadByte(void)
 {
-#if (defined SILABS_PLATFORM_RFSTICK) || (defined SILABS_PLATFORM_LCDBB) || (defined SILABS_PLATFORM_WMB)
-  return bSpi_ReadWriteSpi1(0xFF);
-#else
-  return SpiReadWrite(0xFF);
-#endif
+//	return spi_readWrite(0x00);
+    return spi_readWrite( 0xFF );
 }
 
 void radio_hal_SpiWriteData(U8 byteCount, U8* pData)
 {
-#if (defined SILABS_PLATFORM_RFSTICK) || (defined SILABS_PLATFORM_LCDBB) || (defined SILABS_PLATFORM_WMB)
-  vSpi_WriteDataSpi1(byteCount, pData);
-#else
-  SpiWriteData(byteCount, pData);
-#endif
+  spi_writeData(byteCount, pData);
 }
 
 void radio_hal_SpiReadData(U8 byteCount, U8* pData)
 {
-#if (defined SILABS_PLATFORM_RFSTICK) || (defined SILABS_PLATFORM_LCDBB) || (defined SILABS_PLATFORM_WMB)
-  vSpi_ReadDataSpi1(byteCount, pData);
-#else
-  SpiReadData(byteCount, pData);
-#endif
+  spi_readData(byteCount , pData);
 }
 
 #ifdef RADIO_DRIVER_EXTENDED_SUPPORT

@@ -74,6 +74,9 @@ void Error_Handler(void);
 #define BAT_ADC_GPIO_Port GPIOC
 #define SPI1_NSS_Pin GPIO_PIN_4
 #define SPI1_NSS_GPIO_Port GPIOA
+#define RF_INT_Pin GPIO_PIN_4
+#define RF_INT_GPIO_Port GPIOC
+#define RF_INT_EXTI_IRQn EXTI4_IRQn
 #define RX_EN_Pin GPIO_PIN_0
 #define RX_EN_GPIO_Port GPIOB
 #define RF_TX_Pin GPIO_PIN_1
@@ -113,9 +116,6 @@ void Error_Handler(void);
 #define DOME4_Pin GPIO_PIN_3
 #define DOME4_GPIO_Port GPIOD
 #define DOME4_EXTI_IRQn EXTI3_IRQn
-#define DOME5_Pin GPIO_PIN_4
-#define DOME5_GPIO_Port GPIOD
-#define DOME5_EXTI_IRQn EXTI4_IRQn
 #define DOME6_Pin GPIO_PIN_5
 #define DOME6_GPIO_Port GPIOD
 #define DOME6_EXTI_IRQn EXTI9_5_IRQn

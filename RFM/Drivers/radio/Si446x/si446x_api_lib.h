@@ -12,20 +12,29 @@
 #ifndef _SI446X_API_LIB_H_
 #define _SI446X_API_LIB_H_
 
+
+#ifndef RADIO_DRIVER_EXTENDED_SUPPORT
+#define RADIO_DRIVER_EXTENDED_SUPPORT
+#endif
+
+#ifndef RADIO_DRIVER_FULL_SUPPORT
+#define RADIO_DRIVER_FULL_SUPPORT
+#endif
+
 extern SEGMENT_VARIABLE( Si446xCmd, union si446x_cmd_reply_union, SEG_XDATA );
 extern SEGMENT_VARIABLE( Pro2Cmd[16], U8, SEG_XDATA );
 
 
 #define SI466X_FIFO_SIZE 64
 
-enum
+typedef enum _SI446X_STAT
 {
     SI446X_SUCCESS,
     SI446X_NO_PATCH,
     SI446X_CTS_TIMEOUT,
     SI446X_PATCH_FAIL,
     SI446X_COMMAND_ERROR
-};
+} SI446X_STAT;
 
 /* Minimal driver support functions */
 void si446x_reset(void);

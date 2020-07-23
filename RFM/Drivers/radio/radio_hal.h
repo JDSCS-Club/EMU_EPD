@@ -16,6 +16,9 @@
                  *              I N C L U D E              *
                  * ======================================= */
 
+#include "typedef.h"			//	U8
+
+#include "stm32f4xx_hal.h"		//	GPIO_PinState
                 /* ======================================= *
                  *          D E F I N I T I O N S          *
                  * ======================================= */
@@ -27,6 +30,9 @@
                 /* ======================================= *
                  *  F U N C T I O N   P R O T O T Y P E S  *
                  * ======================================= */
+
+
+extern uint8_t RF_NIRQ;
 
 void radio_hal_AssertShutdown(void);
 void radio_hal_DeassertShutdown(void);

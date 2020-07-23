@@ -13,7 +13,8 @@
                  *              I N C L U D E              *
                  * ======================================= */
 
-#include "..\..\bsp.h"
+#include "radio_hal.h"		//	radio_hal_ClearNsel()
+#include "radio_comm.h"
 
                 /* ======================================= *
                  *          D E F I N I T I O N S          *

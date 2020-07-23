@@ -7,7 +7,12 @@
  * @n http://www.silabs.com
  */
 
-#include "..\bsp.h"
+#include "si446x_defs.h"        //  U8, U16, ...
+#include "si446x_api_lib.h"     //  SI446X_SUCCESS
+
+#include "radio.h"				//	tRadioConfiguration
+#include "radio_config.h"		//	RadioConfiguration
+#include "radio_hal.h"			//	RF_NIRQ
 
 /*****************************************************************************
  *  Local Macros & Definitions
@@ -41,13 +46,14 @@ void vRadio_PowerUp(void);
  */
 void vRadio_PowerUp(void)
 {
-  SEGMENT_VARIABLE(wDelay,  U16, SEG_XDATA) = 0u;
+//  SEGMENT_VARIABLE(wDelay,  U16, SEG_XDATA) = 0u;
 
   /* Hardware reset the chip */
   si446x_reset();
 
   /* Wait until reset timeout or Reset IT signal */
-  for (; wDelay < pRadioConfiguration->Radio_Delay_Cnt_After_Reset; wDelay++);
+//  for (; wDelay < pRadioConfiguration->Radio_Delay_Cnt_After_Reset; wDelay++);
+  HAL_Delay(10);
 }
 
 /*!
@@ -60,7 +66,8 @@ void vRadio_PowerUp(void)
  */
 void vRadio_Init(void)
 {
-  U16 wDelay;
+//  U16 wDelay;
+    printf( "%s(%d)\n", __func__, __LINE__ );
 
   /* Power Up the radio chip */
   vRadio_PowerUp();
@@ -69,12 +76,9 @@ void vRadio_Init(void)
   while (SI446X_SUCCESS != si446x_configuration_init(pRadioConfiguration->Radio_ConfigurationArray))
   {
     /* Error hook */
-#if !(defined SILABS_PLATFORM_WMB912)
-    LED4 = !LED4;
-#else
-    vCio_ToggleLed(eHmi_Led4_c);
-#endif
-    for (wDelay = 0x7FFF; wDelay--; ) ;
+//    for (wDelay = 0x7FFF; wDelay--; ) ;
+    HAL_Delay(500);
+
     /* Power Up the radio chip */
     vRadio_PowerUp();
   }
