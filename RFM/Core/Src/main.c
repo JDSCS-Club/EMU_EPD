@@ -100,14 +100,14 @@ void HAL_GPIO_EXTI_Callback ( uint16_t GPIO_Pin )
 {
     uint8_t st;
 
-    printf( " HAL_GPIO_EXTI_Callback\r\n" );
+//    printf( " HAL_GPIO_EXTI_Callback\n" );
 
     st = HAL_GPIO_ReadPin ( RF_INT_GPIO_Port, RF_INT_Pin );
-    if ( st )	//rising edge
+    if ( st )	//	rising edge
     {
         RF_NIRQ = TRUE;
     }
-    else	//falling edge
+    else		//	falling edge
     {
         RF_NIRQ = FALSE;
     }
@@ -159,6 +159,8 @@ int main(void)
 
   //========================================================================
   //    Initial
+
+  //	Serial
   SerialInit( &huart1, &huart2 );   //  Init Serial Handle
   setbuf ( stdout, NULL );		            //	1024 byte buffer clear
 //  setvbuf ( stdout, NULL, _IOLBF, NULL );	//	Line Buffer
@@ -166,20 +168,36 @@ int main(void)
 
   printf( "%s(%d) - Start\n", __func__, __LINE__ );
 
+
+  //========================================================================
+  //	Radio Spi
+  radio_spi_init( &hspi1 );
+
+
+  vRadio_Init();		//	Init Radio
+
   /* USER CODE END 2 */
  
  
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
+
+  int nTick;
+
   while (1)
   {
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
+
+	  nTick = HAL_GetTick();
+
 	HAL_Delay( 1000 );
 
     HAL_GPIO_TogglePin( LED_ST_GPIO_Port, LED_ST_Pin );
+
+    printf( "%s(%d) - Loop(%d)\n", __func__, __LINE__, nTick );
 
   }
   /* USER CODE END 3 */

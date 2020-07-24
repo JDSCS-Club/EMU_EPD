@@ -1,10 +1,4 @@
-/*
- * radio.c
- *
- *  Created on: Jan 18, 2020
- *      Author: prome
- */
- 
+
 #include <string.h>		//	memcpy()
 
 #include "main.h"

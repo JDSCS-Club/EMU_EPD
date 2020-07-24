@@ -17,8 +17,8 @@
                  * ======================================= */
 
 #include "typedef.h"			//	U8
+#include "si446x_defs.h"		//	DRIVERS_EXTENDED_SUPPORT
 
-#include "stm32f4xx_hal.h"		//	GPIO_PinState
                 /* ======================================= *
                  *          D E F I N I T I O N S          *
                  * ======================================= */
