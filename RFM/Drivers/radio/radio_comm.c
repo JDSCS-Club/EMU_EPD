@@ -13,8 +13,12 @@
                  *              I N C L U D E              *
                  * ======================================= */
 
-#include "radio_hal.h"		//	radio_hal_ClearNsel()
+//#include "..\..\bsp.h"
+#include "main.h"
+#include "stm32f4xx_hal.h"
 #include "radio_comm.h"
+#include "radio_hal.h"
+#include <stdio.h>
 
                 /* ======================================= *
                  *          D E F I N I T I O N S          *
@@ -49,14 +53,17 @@ BIT ctsWentHigh = 0;
  */
 U8 radio_comm_GetResp(U8 byteCount, U8* pData)
 {
-  SEGMENT_VARIABLE(ctsVal = 0u, U8, SEG_DATA);
-  SEGMENT_VARIABLE(errCnt = RADIO_CTS_TIMEOUT, U16, SEG_DATA);
+  //SEGMENT_VARIABLE(ctsVal = 0u, U8, SEG_DATA);
+  //SEGMENT_VARIABLE(errCnt = RADIO_CTS_TIMEOUT, U16, SEG_DATA);
+  U8 ctsVal=0;
+  U16 errCnt = 100000;//RADIO_CTS_TIMEOUT;
 
   while (errCnt != 0)      //wait until radio IC is ready with the data
   {
     radio_hal_ClearNsel();
     radio_hal_SpiWriteByte(0x44);    //read CMD buffer
     ctsVal = radio_hal_SpiReadByte();
+    //if(ctsVal == 0xff) dmsg("ctsval %d cnt %d\n", ctsVal, errCnt);
     if (ctsVal == 0xFF)
     {
       if (byteCount)
@@ -67,17 +74,20 @@ U8 radio_comm_GetResp(U8 byteCount, U8* pData)
       break;
     }
     radio_hal_SetNsel();
+    //HAL_Delay(1);
     errCnt--;
   }
 
   if (errCnt == 0)
   {
-    while(1)
+    //while(1)
     {
       /* ERROR!!!!  CTS should never take this long. */
       #ifdef RADIO_COMM_ERROR_CALLBACK
         RADIO_COMM_ERROR_CALLBACK();
       #endif
+    //HAL_GPIO_TogglePin(GREEN_LED_GPIO_Port,GREEN_LED_Pin);
+	//HAL_Delay(100);
     }
   }
 
@@ -167,7 +177,9 @@ U8 radio_comm_PollCTS(void)
     while(!radio_hal_Gpio1Level())
     {
         /* Wait...*/
+        HAL_Delay(1);
     }
+    dmsg("radio_comm_PollCTS OK \n");
     ctsWentHigh = 1;
     return 0xFF;
 #else

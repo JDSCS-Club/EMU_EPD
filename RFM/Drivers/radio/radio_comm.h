@@ -12,8 +12,6 @@
 #define _RADIO_COMM_H_
 
 
-#include "si446x_defs.h"        //  U8, U16, ...
-
                 /* ======================================= *
                  *              I N C L U D E              *
                  * ======================================= */
@@ -30,8 +28,8 @@
                  *     G L O B A L   V A R I A B L E S     *
                  * ======================================= */
 
-extern SEGMENT_VARIABLE(radioCmd[16u], U8, SEG_XDATA);
-
+//extern SEGMENT_VARIABLE(radioCmd[16u], U8, SEG_XDATA);
+extern U8 radioCmd[16u];
 
                 /* ======================================= *
                  *  F U N C T I O N   P R O T O T Y P E S  *

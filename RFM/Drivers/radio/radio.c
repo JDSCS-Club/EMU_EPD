@@ -7,12 +7,28 @@
  * @n http://www.silabs.com
  */
 
-#include "si446x_defs.h"        //  U8, U16, ...
-#include "si446x_api_lib.h"     //  SI446X_SUCCESS
+//#include "..\bsp.h"
+#include "stm32f4xx_hal.h"
+#include "main.h"
+#if defined(SI4463_USE_FIFO_MODE)
+#include "radio_config_dr500k.h"
+//#include "radio_config.h"
+#elif defined(SI4463_USE_DIRECT_MODE)
+#include "radio_config_directRX.h"
+#else
+#include "radio_config.h"
+#endif
+#include "radio.h"
+#include "si446x_api_lib.h"
+#include "si446x_cmd.h"
+#include "radio_hal.h"
+#include <stdio.h>
 
-#include "radio.h"				//	tRadioConfiguration
-#include "radio_config.h"		//	RadioConfiguration
-#include "radio_hal.h"			//	RF_NIRQ
+//#include "user_ctrl.h"
+
+//extern rf_rx_audio_pkg_cb rx_audio_pkg_callback;
+
+
 
 /*****************************************************************************
  *  Local Macros & Definitions
@@ -21,6 +37,14 @@
 /*****************************************************************************
  *  Global Variables
  *****************************************************************************/
+#ifdef STM_USE_SI4663_RF_TRANCEVER
+const U8 Radio_Configuration_Data_Array[] = RADIO_CONFIGURATION_DATA_ARRAY;
+const tRadioConfiguration RadioConfiguration = RADIO_CONFIGURATION_DATA;
+const tRadioConfiguration *pRadioConfiguration = &RadioConfiguration;
+
+U8 customRadioPacket[RADIO_MAX_PACKET_LENGTH];
+U8 radio_init_status = SI446X_COMMAND_ERROR;
+#else
 const SEGMENT_VARIABLE(Radio_Configuration_Data_Array[], U8, SEG_CODE) = \
               RADIO_CONFIGURATION_DATA_ARRAY;
 
@@ -30,9 +54,8 @@ const SEGMENT_VARIABLE(RadioConfiguration, tRadioConfiguration, SEG_CODE) = \
 const SEGMENT_VARIABLE_SEGMENT_POINTER(pRadioConfiguration, tRadioConfiguration, SEG_CODE, SEG_CODE) = \
                         &RadioConfiguration;
 
-
 SEGMENT_VARIABLE(customRadioPacket[RADIO_MAX_PACKET_LENGTH], U8, SEG_XDATA);
-
+#endif
 /*****************************************************************************
  *  Local Function Declarations
  *****************************************************************************/
@@ -46,14 +69,15 @@ void vRadio_PowerUp(void);
  */
 void vRadio_PowerUp(void)
 {
-//  SEGMENT_VARIABLE(wDelay,  U16, SEG_XDATA) = 0u;
+  //SEGMENT_VARIABLE(wDelay,  U16, SEG_XDATA) = 0u;
 
   /* Hardware reset the chip */
   si446x_reset();
 
   /* Wait until reset timeout or Reset IT signal */
-//  for (; wDelay < pRadioConfiguration->Radio_Delay_Cnt_After_Reset; wDelay++);
-  HAL_Delay(10);
+  //HAL_Delay(100);
+  si446x_get_int_status(0u, 0u, 0u);
+ // for (; wDelay < pRadioConfiguration->Radio_Delay_Cnt_After_Reset; wDelay++);
 }
 
 /*!
@@ -64,83 +88,99 @@ void vRadio_PowerUp(void)
  *  @note
  *
  */
-void vRadio_Init(void)
+U8 vRadio_Init(void)
 {
-//  U16 wDelay;
-    printf( "%s(%d)\n", __func__, __LINE__ );
+    //U16 wDelay;
+    //U8 ST_Rtn;
+  U8 ret=10;
+  U8 radio_init_status;
 
   /* Power Up the radio chip */
   vRadio_PowerUp();
-
   /* Load radio configuration */
-  while (SI446X_SUCCESS != si446x_configuration_init(pRadioConfiguration->Radio_ConfigurationArray))
+  while (ret != 0)
   {
+    radio_init_status = si446x_configuration_init(pRadioConfiguration->Radio_ConfigurationArray);
+    if (radio_init_status == SI446X_SUCCESS)
+	{
+      break;
+    }
     /* Error hook */
-//    for (wDelay = 0x7FFF; wDelay--; ) ;
-    HAL_Delay(500);
+    //HAL_GPIO_TogglePin(GREEN_LED_GPIO_Port,GREEN_LED_Pin);
+    //HAL_Delay(100);
 
     /* Power Up the radio chip */
     vRadio_PowerUp();
+    ret--;
   }
-
   // Read ITs, clear pending ones
   si446x_get_int_status(0u, 0u, 0u);
+
+  return radio_init_status;
 }
 
 /*!
- *  Check if Packet sent IT flag or Packet Received IT is pending.
+ *  Check if Packet received IT flag is pending.
  *
- *  @return   SI4455_CMD_GET_INT_STATUS_REP_PACKET_SENT_PEND_BIT / SI4455_CMD_GET_INT_STATUS_REP_PACKET_RX_PEND_BIT
+ *  @return   TRUE - Packet successfully received / FALSE - No packet pending.
  *
  *  @note
  *
  */
+#if defined(SI4463_USE_FIFO_MODE)
 U8 bRadio_Check_Tx_RX(void)
 {
-  if (RF_NIRQ == FALSE)
+  if (radio_hal_NirqLevel() == GPIO_PIN_RESET)
   {
-    /* Read ITs, clear pending ones */
-    si446x_get_int_status_fast_clear_read();
-
-	  if (Si446xCmd.GET_INT_STATUS.CHIP_PEND & SI446X_CMD_GET_CHIP_STATUS_REP_CHIP_PEND_CMD_ERROR_PEND_BIT)
+      /* Read ITs, clear pending ones */
+    si446x_get_int_status(0u, 0u, 0u);
+    if(radio_init_status == SI446X_SUCCESS)
     {
-    	/* State change to */
-     	si446x_change_state(SI446X_CMD_CHANGE_STATE_ARG_NEXT_STATE1_NEW_STATE_ENUM_SLEEP);
-	
-	  	/* Reset FIFO */
-     	si446x_fifo_info(SI446X_CMD_FIFO_INFO_ARG_FIFO_RX_BIT);
+      //printf("\nDetect interrupt !! %0x\n",Si446xCmd.GET_INT_STATUS.PH_PEND);
+    }
+    
+    if (Si446xCmd.GET_INT_STATUS.CHIP_PEND & SI446X_CMD_GET_CHIP_STATUS_REP_CHIP_PEND_CMD_ERROR_PEND_BIT)
+    {
+      /* State change to */
+      si446x_change_state(SI446X_CMD_CHANGE_STATE_ARG_NEXT_STATE1_NEW_STATE_ENUM_SLEEP);
       
-	  	/* State change to */
-        si446x_change_state(SI446X_CMD_CHANGE_STATE_ARG_NEXT_STATE1_NEW_STATE_ENUM_RX);
+      /* Reset FIFO */
+      si446x_fifo_info(SI446X_CMD_FIFO_INFO_ARG_FIFO_RX_BIT);
+      
+      /* State change to */
+      si446x_change_state(SI446X_CMD_CHANGE_STATE_ARG_NEXT_STATE1_NEW_STATE_ENUM_RX);
     }
 
     if(Si446xCmd.GET_INT_STATUS.PH_PEND & SI446X_CMD_GET_INT_STATUS_REP_PH_PEND_PACKET_SENT_PEND_BIT)
     {
       return SI446X_CMD_GET_INT_STATUS_REP_PH_PEND_PACKET_SENT_PEND_BIT;
     }
-
+    
     if(Si446xCmd.GET_INT_STATUS.PH_PEND & SI446X_CMD_GET_INT_STATUS_REP_PH_PEND_PACKET_RX_PEND_BIT)
     {
       /* Packet RX */
-
+      
       /* Get payload length */
-			// TX FIFO may need to be written for ACK. Do it now to save time for the TX-RX turnaround
-      si446x_fifo_info(0x00 | SI446X_CMD_FIFO_INFO_ARG_FIFO_TX_BIT);
-
+      si446x_fifo_info(0x00);
+      
       si446x_read_rx_fifo(Si446xCmd.FIFO_INFO.RX_FIFO_COUNT, &customRadioPacket[0]);
-
+      
+      rx_audio_pkg_callback(&customRadioPacket[0],Si446xCmd.FIFO_INFO.RX_FIFO_COUNT);
+      
       return SI446X_CMD_GET_INT_STATUS_REP_PH_PEND_PACKET_RX_PEND_BIT;
     }
       
-	  if (Si446xCmd.GET_INT_STATUS.PH_PEND & SI446X_CMD_GET_INT_STATUS_REP_PH_STATUS_CRC_ERROR_BIT)
+    if (Si446xCmd.GET_INT_STATUS.PH_PEND & SI446X_CMD_GET_INT_STATUS_REP_PH_STATUS_CRC_ERROR_BIT)
     {
-    	/* Reset FIFO */
-    	si446x_fifo_info(SI446X_CMD_FIFO_INFO_ARG_FIFO_RX_BIT);
+      /* Reset FIFO */
+      si446x_fifo_info(SI446X_CMD_FIFO_INFO_ARG_FIFO_RX_BIT);
     }
-	  
   }
-
-  return 0;
+  else
+  {
+    //printf("IRQ HIGH... \n");
+  }
+  return FALSE;
 }
 
 /*!
@@ -190,87 +230,55 @@ void vRadio_StartTx_Variable_Packet(U8 channel, U8 *pioRadioPacket, U8 length)
 
   /* Start sending packet, channel 0, START immediately */
    si446x_start_tx(channel, 0x80, length);
-
 }
+#elif defined(SI4463_USE_DIRECT_MODE)
 
-/*!
- *  Set Radio to TX mode, variable packet length. 
- *  Use it when multiple fields are in use (START_TX is called with 0 length).
+/* !
+ *  Set Radio to RX mode, fixed packet length.
  *
- *  @param channel Freq. Channel, Packet to be sent length of of the packet sent to TXFIFO
+ *  @param channel Freq. Channel
  *
  *  @note
  *
  */
-void vRadio_StartTx_Variable_Packet_MultiField(U8 channel, U8 *pioRadioPacket, U8 length)
+void vRadio_StartRX(U8 channel)
 {
-  /* Read ITs, clear pending ones */
-	si446x_get_int_status_fast_clear();
+  // Read ITs, clear pending ones
+  si446x_get_int_status(0u, 0u, 0u);
 
-  /* Reset the Tx Fifo */
-  si446x_fifo_info_fast_reset(SI446X_CMD_FIFO_INFO_ARG_FIFO_TX_BIT);
-
-  /* Fill the TX fifo with datas */
-  si446x_write_tx_fifo(length, pioRadioPacket);
-
-  /* Start sending packet, channel 0, START immediately */
-	 si446x_start_tx(channel, 0x80, 0);
+  /* Start Receiving packet, channel 0, START immediately, Packet off  */
+  si446x_start_rx(channel, 0u, 0u,
+                  SI446X_CMD_START_RX_ARG_NEXT_STATE1_RXTIMEOUT_STATE_ENUM_NOCHANGE,
+                  SI446X_CMD_START_RX_ARG_NEXT_STATE2_RXVALID_STATE_ENUM_RX,
+                  SI446X_CMD_START_RX_ARG_NEXT_STATE3_RXINVALID_STATE_ENUM_RX );
 }
 
-
-/**
- *  Find a property value in the dynamic Radio Configuration Array
- *  (I.e. get property value that is in radio_config.h, but unknown where it is within the array)
+/*!
+ *  Set Radio to TX mode, fixed packet length.
  *
- *  @note This code is capable of finding a property's configuration value in a standard configuration byte array.
- *  Byte array pattern is: Length, [Command, GroupId, NumOfProps, StartPropId, Val1, ..., ValN], 0x00   
- *  Used when some property value is needed out of a generated configuration header or hex file.
- *  If more then one write is available the last one will be returned. 
-*/
-U8 bRadio_FindProperty(U8* pbArray, U8 bGroup, U8 bAddress, U8* pbValue)
-{   
-  U16 wInd = 0;
-  U8 bPropertyValue = 0x00;
-  BIT gPropertyFound = FALSE;
+ *  @param channel Freq. Channel, Packet to be sent
+ *
+ *  @note
+ *
+ */
 
-  // Input validation            
-  if (pbArray == NULL)
-  {
-    return FALSE;
-  }
+void vRadio_StartTx(U8 channel, U8 *pioFixRadioPacket)
+{
+  // Read ITs, clear pending ones
+  si446x_get_int_status(0u, 0u, 0u);
 
-  // Search until reaching the terminating 0
-  while (pbArray[wInd] != 0)
-  {
-    // Looking for SET_PROPERTY = 0x11 command
-    if (pbArray[wInd+1] != 0x11)
-    {
-      wInd += pbArray[wInd] + 1; 
-      continue;
-    }
-
-    // It is a SET_PROPERTY command, check if the corresponding row makes sense (i.e. the array is not broken)
-    if ( pbArray[wInd] < 0x05 || pbArray[wInd] > 0x10 || pbArray[wInd] != (pbArray[wInd + 3] + 4) ) // Command length in line with API length
-    {                                                                      
-      return FALSE;
-    }
-
-    // Look for property value
-    if (pbArray[wInd + 2] == bGroup)
-    {
-      if ( (pbArray[wInd + 4] <= bAddress ) && ( bAddress < pbArray[wInd + 3] + pbArray[wInd + 4] ) )
-      {
-        bPropertyValue = pbArray[wInd + 5 + (bAddress - pbArray[wInd + 4])];
-        gPropertyFound = TRUE;
-        // Don't break the loop here, check the rest of the array
-      }
-    }
-    wInd += pbArray[wInd] + 1;
-  }
-
-  if (gPropertyFound)
-  {
-    *pbValue = bPropertyValue;
-  }
-  return gPropertyFound;
+  /* Start sending packet on channel, START immediately, Packet according to PH */
+  si446x_start_tx(channel, 0u, 0u);
 }
+
+void vRadio_Change_GPIO_Cfg(U8 mode)
+{
+  U8 rx_tx;
+  //0x00, 0x10, 0x14, 0x13, 0x27, 0x0B, 0x00 /* directTX GPIO1:TX_CLK, GPIO2:RX_DATA, GPIO3:TX_DATA,NIRQ,SDO :Pullup*/
+  //0x00, 0x11, 0x14, 0x13, 0x27, 0x0B, 0x00 /* directRX GPIO1:RX_CLK, GPIO2:RX_DATA, GPIO3:TX_DATA,NIRQ,SDO :Pullup*/
+  rx_tx = (0x10 | mode);
+  
+  si446x_gpio_pin_cfg(0x00, rx_tx, 0x14, 0x13, 0x27, 0x0B, 0x00);
+}
+
+#endif

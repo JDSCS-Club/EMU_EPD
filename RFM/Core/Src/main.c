@@ -93,9 +93,13 @@ static void MX_USB_OTG_FS_PCD_Init(void);
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
 
-#include "radio_hal.h"		//	RF_NIRQ
+#include "radio_hal.h"			//	RF_NIRQ
+#include "si446x_api_lib.h"		//	si446x_part_info()
 
 //si4463 Interrupt
+
+uint8_t RF_NIRQ;
+
 void HAL_GPIO_EXTI_Callback ( uint16_t GPIO_Pin )
 {
     uint8_t st;
@@ -175,6 +179,18 @@ int main(void)
 
 
   vRadio_Init();		//	Init Radio
+
+	si446x_part_info ();
+
+	printf ( "=========================\n" );
+	printf ( "%08x\n", Si446xCmd.PART_INFO.CHIPREV );
+	printf ( "%08x\n", Si446xCmd.PART_INFO.PART );
+	printf ( "%08x\n", Si446xCmd.PART_INFO.PBUILD );
+	printf ( "%08x\n", Si446xCmd.PART_INFO.ID );
+	printf ( "%08x\n", Si446xCmd.PART_INFO.CUSTOMER );
+	printf ( "%08x\n", Si446xCmd.PART_INFO.ROMID );
+	printf ( "-------------------------\n" );
+
 
   /* USER CODE END 2 */
  
@@ -682,17 +698,17 @@ static void MX_GPIO_Init(void)
                           |GPIO_PIN_11|GPIO_PIN_12|GPIO_PIN_13|GPIO_PIN_14, GPIO_PIN_RESET);
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(SPI1_NSS_GPIO_Port, SPI1_NSS_Pin, GPIO_PIN_SET);
+  HAL_GPIO_WritePin(SPI_CSN_GPIO_Port, SPI_CSN_Pin, GPIO_PIN_SET);
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(GPIOC, GPIO_PIN_5, GPIO_PIN_RESET);
+  HAL_GPIO_WritePin(TRN_RST_GPIO_Port, TRN_RST_Pin, GPIO_PIN_RESET);
 
   /*Configure GPIO pin Output Level */
   HAL_GPIO_WritePin(GPIOB, RX_EN_Pin|RF_TX_Pin|RF_RX_Pin|LED_ON_A_Pin 
                           |LED_ON_B_Pin|FLASH_ON_Pin, GPIO_PIN_RESET);
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(SPI2_NSS_GPIO_Port, SPI2_NSS_Pin, GPIO_PIN_SET);
+  HAL_GPIO_WritePin(SS_GPIO_Port, SS_Pin, GPIO_PIN_SET);
 
   /*Configure GPIO pin Output Level */
   HAL_GPIO_WritePin(ON_OFF_EN_GPIO_Port, ON_OFF_EN_Pin, GPIO_PIN_SET);
@@ -723,12 +739,12 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
 
-  /*Configure GPIO pin : SPI1_NSS_Pin */
-  GPIO_InitStruct.Pin = SPI1_NSS_Pin;
+  /*Configure GPIO pin : SPI_CSN_Pin */
+  GPIO_InitStruct.Pin = SPI_CSN_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_HIGH;
-  HAL_GPIO_Init(SPI1_NSS_GPIO_Port, &GPIO_InitStruct);
+  HAL_GPIO_Init(SPI_CSN_GPIO_Port, &GPIO_InitStruct);
 
   /*Configure GPIO pin : RF_INT_Pin */
   GPIO_InitStruct.Pin = RF_INT_Pin;
@@ -736,12 +752,12 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   HAL_GPIO_Init(RF_INT_GPIO_Port, &GPIO_InitStruct);
 
-  /*Configure GPIO pin : PC5 */
-  GPIO_InitStruct.Pin = GPIO_PIN_5;
+  /*Configure GPIO pin : TRN_RST_Pin */
+  GPIO_InitStruct.Pin = TRN_RST_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
-  HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
+  HAL_GPIO_Init(TRN_RST_GPIO_Port, &GPIO_InitStruct);
 
   /*Configure GPIO pins : RX_EN_Pin RF_TX_Pin RF_RX_Pin LED_ON_A_Pin 
                            LED_ON_B_Pin FLASH_ON_Pin */
@@ -752,12 +768,12 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
 
-  /*Configure GPIO pin : SPI2_NSS_Pin */
-  GPIO_InitStruct.Pin = SPI2_NSS_Pin;
+  /*Configure GPIO pin : SS_Pin */
+  GPIO_InitStruct.Pin = SS_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_PULLUP;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_HIGH;
-  HAL_GPIO_Init(SPI2_NSS_GPIO_Port, &GPIO_InitStruct);
+  HAL_GPIO_Init(SS_GPIO_Port, &GPIO_InitStruct);
 
   /*Configure GPIO pins : ON_OFF_KEY_Pin DOME1_Pin DOME2_Pin DOME3_Pin 
                            DOME4_Pin DOME6_Pin SOS_KEY_Pin PTT_KEY_Pin */

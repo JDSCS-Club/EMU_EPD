@@ -8,33 +8,26 @@
  * Silicon Laboratories Confidential
  * Copyright 2011 Silicon Laboratories, Inc.
  */
-
+#include "main.h"
 #ifndef _SI446X_API_LIB_H_
 #define _SI446X_API_LIB_H_
 
-
-#ifndef RADIO_DRIVER_EXTENDED_SUPPORT
-#define RADIO_DRIVER_EXTENDED_SUPPORT
-#endif
-
-#ifndef RADIO_DRIVER_FULL_SUPPORT
-#define RADIO_DRIVER_FULL_SUPPORT
-#endif
-
-extern SEGMENT_VARIABLE( Si446xCmd, union si446x_cmd_reply_union, SEG_XDATA );
-extern SEGMENT_VARIABLE( Pro2Cmd[16], U8, SEG_XDATA );
+//extern SEGMENT_VARIABLE( Si446xCmd, union si446x_cmd_reply_union, SEG_XDATA );
+//extern SEGMENT_VARIABLE( Pro2Cmd[16], U8, SEG_XDATA );
+extern union si446x_cmd_reply_union Si446xCmd;	// si4463_api_lib.c
+extern U8 Pro2Cmd[16];											// si4463_api_lib.c
 
 
 #define SI466X_FIFO_SIZE 64
 
-typedef enum _SI446X_STAT
+enum
 {
     SI446X_SUCCESS,
     SI446X_NO_PATCH,
     SI446X_CTS_TIMEOUT,
     SI446X_PATCH_FAIL,
     SI446X_COMMAND_ERROR
-} SI446X_STAT;
+};
 
 /* Minimal driver support functions */
 void si446x_reset(void);

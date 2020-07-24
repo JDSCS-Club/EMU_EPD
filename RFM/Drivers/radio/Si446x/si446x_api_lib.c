@@ -9,20 +9,32 @@
  * Copyright 2011 Silicon Laboratories, Inc.
  */
 
-
+//#include "..\..\..\bsp.h"
+#include "main.h"
+#include "stm32f4xx_hal.h"
+#include "radio_hal.h"
+#include "radio_comm.h"
+#include "si446x_cmd.h"
+#include "si446x_api_lib.h"
+#include <stdio.h>
 #include <stdarg.h>
 
-#include "radio_comm.h"
-#include "si446x_api_lib.h"			//	SI446X_STAT
+#ifdef STM_USE_SI4663_RF_TRANCEVER
+union si446x_cmd_reply_union Si446xCmd;
+U8 Pro2Cmd[16];
 
+#ifdef SI446X_PATCH_CMDS
+U8 Si446xPatchCommands[][8] = { SI446X_PATCH_CMDS };
+#endif
 
+#else
 SEGMENT_VARIABLE( Si446xCmd, union si446x_cmd_reply_union, SEG_XDATA );
 SEGMENT_VARIABLE( Pro2Cmd[16], U8, SEG_XDATA );
 
 #ifdef SI446X_PATCH_CMDS
 SEGMENT_VARIABLE( Si446xPatchCommands[][8] = { SI446X_PATCH_CMDS }, U8, SEG_CODE);
 #endif
-
+#endif /* STM_USE_SI4663_RF_TRANCEVER */
 
 /*!
  * This functions is used to reset the si446x radio by applying shutdown and
@@ -32,16 +44,16 @@ SEGMENT_VARIABLE( Si446xPatchCommands[][8] = { SI446X_PATCH_CMDS }, U8, SEG_CODE
  */
 void si446x_reset(void)
 {
-    U8 loopCount;
+    //U8 loopCount;
 
     /* Put radio in shutdown, wait then release */
     radio_hal_AssertShutdown();
     //! @todo this needs to be a better delay function.
-//    for (loopCount = 255; loopCount != 0; loopCount--);
-    HAL_Delay(1);
+    //for (loopCount = 255; loopCount != 0; loopCount--);
+    HAL_Delay(20);
     radio_hal_DeassertShutdown();
-//    for (loopCount = 255; loopCount != 0; loopCount--);
-    HAL_Delay(1);
+    //for (loopCount = 255; loopCount != 0; loopCount--);
+    HAL_Delay(5);
     radio_comm_ClearCTS();
 }
 
@@ -68,8 +80,8 @@ void si446x_power_up(U8 BOOT_OPTIONS, U8 XTAL_OPTIONS, U32 XO_FREQ)
  */
 U8 si446x_configuration_init(const U8* pSetPropCmd)
 {
-  SEGMENT_VARIABLE(col, U8, SEG_DATA);
-  SEGMENT_VARIABLE(numOfBytes, U8, SEG_DATA);
+  U8 col;
+  U8 numOfBytes;
 
   /* While cycle as far as the pointer points to a command */
   while (*pSetPropCmd != 0x00)
@@ -78,7 +90,6 @@ U8 si446x_configuration_init(const U8* pSetPropCmd)
      * --------------------------------
      * LEN | <LEN length of data>
      */
-//	  printf("%s(%d) - %p\n", __func__, __LINE__, pSetPropCmd);
 
     numOfBytes = *pSetPropCmd++;
 
@@ -101,7 +112,7 @@ U8 si446x_configuration_init(const U8* pSetPropCmd)
     }
 
     if (radio_hal_NirqLevel() == 0)
-    {
+    {//printf("IRQ go to 0 ..\n");
       /* Get and clear all interrupts.  An error has occured... */
       si446x_get_int_status(0, 0, 0);
       if (Si446xCmd.GET_INT_STATUS.CHIP_PEND & SI446X_CMD_GET_CHIP_STATUS_REP_CHIP_PEND_CMD_ERROR_PEND_MASK)
@@ -110,8 +121,6 @@ U8 si446x_configuration_init(const U8* pSetPropCmd)
       }
     }
   }
-
-//  printf("%s(%d)\n", __func__, __LINE__);
 
   return SI446X_SUCCESS;
 }
@@ -275,13 +284,7 @@ void si446x_set_property( U8 GROUP, U8 NUM_PROPS, U8 START_PROP, ... )
     cmdIndex = 4;
     while(NUM_PROPS--)
     {
-#ifdef __C51__  //  Keil Compiler
-        Pro2Cmd[cmdIndex] = va_arg (argList, U8);
-#else
-        //‘char’ is promoted to ‘int’ when passed through ‘...’
-        //  gcc : 가변인자는 char -> int로 확장됨.
-        Pro2Cmd[cmdIndex] = va_arg ( argList, int );
-#endif
+        Pro2Cmd[cmdIndex] = (U8)va_arg (argList, int);
         cmdIndex++;
     }
     va_end(argList);
