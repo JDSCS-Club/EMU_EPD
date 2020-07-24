@@ -16,6 +16,10 @@
   *
   ******************************************************************************
   */
+
+#include <stdio.h>
+#include <stdint.h>         //  uint16_t
+
 /* USER CODE END Header */
 
 /* Includes ------------------------------------------------------------------*/
@@ -152,6 +156,15 @@ int main(void)
   MX_I2C3_Init();
   MX_USB_OTG_FS_PCD_Init();
   /* USER CODE BEGIN 2 */
+
+  //========================================================================
+  //    Initial
+  SerialInit( &huart1, &huart2 );   //  Init Serial Handle
+  setbuf ( stdout, NULL );		            //	1024 byte buffer clear
+//  setvbuf ( stdout, NULL, _IOLBF, NULL );	//	Line Buffer
+  setvbuf ( stdout, NULL, _IONBF, NULL );	//	No Buffer
+
+  printf( "%s(%d) - Start\n", __func__, __LINE__ );
 
   /* USER CODE END 2 */
  
