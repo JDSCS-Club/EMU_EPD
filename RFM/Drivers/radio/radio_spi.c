@@ -38,9 +38,9 @@ uint8_t read_cts(uint8_t *pData)
 	cmd[0] = 0x44;
 	cmd[1] = 0x00;
 
-	HAL_GPIO_WritePin( SPI1_NSS_GPIO_Port, SPI1_NSS_Pin, GPIO_PIN_RESET);
+	HAL_GPIO_WritePin( SPI_CSN_GPIO_Port, SPI_CSN_Pin, GPIO_PIN_RESET);
 	HAL_SPI_TransmitReceive(_pSpi, cmd, state, 2,HAL_MAX_DELAY);
-	HAL_GPIO_WritePin( SPI1_NSS_GPIO_Port, SPI1_NSS_Pin, GPIO_PIN_SET);
+	HAL_GPIO_WritePin( SPI_CSN_GPIO_Port, SPI_CSN_Pin, GPIO_PIN_SET);
 
 	return state[1];
 }
@@ -50,9 +50,9 @@ void read_fifo(uint8_t *pData)
 	uint8_t cmd[65];
 //	uint8_t rdata[65];
 
-	HAL_GPIO_WritePin( SPI1_NSS_GPIO_Port, SPI1_NSS_Pin, GPIO_PIN_RESET);
+	HAL_GPIO_WritePin( SPI_CSN_GPIO_Port, SPI_CSN_Pin, GPIO_PIN_RESET);
 	HAL_SPI_TransmitReceive(_pSpi, cmd, pData, sizeof(cmd),HAL_MAX_DELAY);
-	HAL_GPIO_WritePin( SPI1_NSS_GPIO_Port, SPI1_NSS_Pin, GPIO_PIN_SET);
+	HAL_GPIO_WritePin( SPI_CSN_GPIO_Port, SPI_CSN_Pin, GPIO_PIN_SET);
 }
 
 void write_fifo(uint8_t *pData)
@@ -61,9 +61,9 @@ void write_fifo(uint8_t *pData)
 //	uint8_t rdata[65];
 	memcpy((cmd+1), pData, 65);
 
-	HAL_GPIO_WritePin( SPI1_NSS_GPIO_Port, SPI1_NSS_Pin, GPIO_PIN_RESET);
+	HAL_GPIO_WritePin( SPI_CSN_GPIO_Port, SPI_CSN_Pin, GPIO_PIN_RESET);
 	HAL_SPI_Transmit(_pSpi, cmd , 65, HAL_MAX_DELAY);
-	HAL_GPIO_WritePin( SPI1_NSS_GPIO_Port, SPI1_NSS_Pin, GPIO_PIN_SET);
+	HAL_GPIO_WritePin( SPI_CSN_GPIO_Port, SPI_CSN_Pin, GPIO_PIN_SET);
 }
 
 

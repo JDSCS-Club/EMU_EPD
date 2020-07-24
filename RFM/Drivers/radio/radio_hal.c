@@ -46,7 +46,10 @@ void radio_hal_AssertShutdown(void)
 	/*
 	HAL_GPIO_WritePin(GPIOC, GPIO_PIN_3|GPIO_PIN_5, GPIO_PIN_SET);
 	/*/
-	HAL_GPIO_WritePin(GPIOC, GPIO_PIN_5, GPIO_PIN_SET);
+//	HAL_GPIO_WritePin(GPIOC, GPIO_PIN_5, GPIO_PIN_SET);
+  HAL_GPIO_WritePin(PWR_RF_GPIO_Port, PWR_RF_Pin, GPIO_PIN_SET);
+  HAL_Delay(1);
+  HAL_GPIO_WritePin(TRN_RST_GPIO_Port,TRN_RST_Pin,GPIO_PIN_SET);
 	//	*/
 }
 
@@ -56,7 +59,8 @@ void radio_hal_DeassertShutdown(void)
 	/*
 	HAL_GPIO_WritePin(GPIOC, GPIO_PIN_3|GPIO_PIN_5, GPIO_PIN_RESET);
 	/*/
-	HAL_GPIO_WritePin(GPIOC, GPIO_PIN_5, GPIO_PIN_RESET);
+//	HAL_GPIO_WritePin(GPIOC, GPIO_PIN_5, GPIO_PIN_RESET);
+  HAL_GPIO_WritePin(TRN_RST_GPIO_Port,TRN_RST_Pin,GPIO_PIN_RESET);
 	//	*/
 }
 
@@ -64,19 +68,22 @@ void radio_hal_ClearNsel(void)
 {
 //    RF_NSEL = 0;
 //    HAL_GPIO_WritePin(GPIOA, GPIO_PIN_4, GPIO_PIN_RESET);
-    HAL_GPIO_WritePin(SPI1_NSS_GPIO_Port, SPI1_NSS_Pin, GPIO_PIN_RESET);
+//    HAL_GPIO_WritePin(SPI1_NSS_GPIO_Port, SPI1_NSS_Pin, GPIO_PIN_RESET);
+    HAL_GPIO_WritePin(SPI_CSN_GPIO_Port,SPI_CSN_Pin,GPIO_PIN_RESET);
 }
 
 void radio_hal_SetNsel(void)
 {
 //    RF_NSEL = 1;
-    HAL_GPIO_WritePin(GPIOA, GPIO_PIN_4, GPIO_PIN_SET);
-    HAL_GPIO_WritePin(SPI1_NSS_GPIO_Port, SPI1_NSS_Pin, GPIO_PIN_SET);
+//    HAL_GPIO_WritePin(GPIOA, GPIO_PIN_4, GPIO_PIN_SET);
+//    HAL_GPIO_WritePin(SPI1_NSS_GPIO_Port, SPI1_NSS_Pin, GPIO_PIN_SET);
+     HAL_GPIO_WritePin(SPI_CSN_GPIO_Port,SPI_CSN_Pin,GPIO_PIN_SET);
 }
 
 GPIO_PinState radio_hal_NirqLevel(void)
 {
-	return (GPIO_PinState) RF_NIRQ;
+//	return (GPIO_PinState) RF_NIRQ;
+    return HAL_GPIO_ReadPin(RF_INT_GPIO_Port,RF_INT_Pin);
 }
 
 void radio_hal_SpiWriteByte(U8 byteToWrite)

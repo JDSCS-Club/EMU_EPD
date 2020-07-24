@@ -38,10 +38,10 @@ void si446x_reset(void)
     radio_hal_AssertShutdown();
     //! @todo this needs to be a better delay function.
 //    for (loopCount = 255; loopCount != 0; loopCount--);
-    HAL_Delay(1);
+    HAL_Delay(20);
     radio_hal_DeassertShutdown();
 //    for (loopCount = 255; loopCount != 0; loopCount--);
-    HAL_Delay(1);
+    HAL_Delay(5);
     radio_comm_ClearCTS();
 }
 
