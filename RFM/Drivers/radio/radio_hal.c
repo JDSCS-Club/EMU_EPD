@@ -35,7 +35,6 @@
                  *     P U B L I C   F U N C T I O N S     *
                  * ======================================= */
 
-
 void radio_hal_AssertShutdown(void)
 {
 //  PWRDN = 1;
@@ -63,16 +62,12 @@ void radio_hal_DeassertShutdown(void)
 void radio_hal_ClearNsel(void)
 {
 //    RF_NSEL = 0;
-//    HAL_GPIO_WritePin(GPIOA, GPIO_PIN_4, GPIO_PIN_RESET);
-//    HAL_GPIO_WritePin(SPI1_NSS_GPIO_Port, SPI1_NSS_Pin, GPIO_PIN_RESET);
     HAL_GPIO_WritePin(SPI_CSN_GPIO_Port,SPI_CSN_Pin,GPIO_PIN_RESET);
 }
 
 void radio_hal_SetNsel(void)
 {
 //    RF_NSEL = 1;
-//    HAL_GPIO_WritePin(GPIOA, GPIO_PIN_4, GPIO_PIN_SET);
-//    HAL_GPIO_WritePin(SPI1_NSS_GPIO_Port, SPI1_NSS_Pin, GPIO_PIN_SET);
      HAL_GPIO_WritePin(SPI_CSN_GPIO_Port,SPI_CSN_Pin,GPIO_PIN_SET);
 }
 
@@ -81,6 +76,7 @@ BIT radio_hal_NirqLevel(void)
 //	return (GPIO_PinState) RF_NIRQ;
     return HAL_GPIO_ReadPin(RF_INT_GPIO_Port,RF_INT_Pin);
 }
+
 
 U8 spi_wbyte[64];
 U8 spi_rbyte[64];
@@ -99,126 +95,199 @@ void radio_SPI_ReadWrite(U8 byteCount, U8* wdata, U8* rdata)
   
 }
 
-void radio_hal_SpiWriteByte(U8 byteToWrite)
+
+U8 SpiReadWrite( U8 byteToWrite )
 {
-#if 1
-  spi_wbyte[0] = byteToWrite;
-  spi_rbyte[0] = 0;
-  
-  (void)radio_SPI_ReadWrite(1, spi_wbyte, spi_rbyte);
-#else
-    //U8 rx_dat;
-  if (HAL_SPI_Transmit(&hspi1,&byteToWrite,1, 10) != HAL_OK)
-  //if (HAL_SPI_TransmitReceive(&hspi1,&byteToWrite,&rx_dat,1,10) != HAL_OK)
-  {
-    printf("Spiwritebyte error !!\n");
-    //Error_Handler();
-  }
-#endif
+	U8 wdata[64];
+	U8 rdata[64];
+
+	uint16_t byteCount;
+
+	wdata[0] = byteToWrite;	//	0xFF;
+	rdata[0] = 0;
+
+	byteCount = 1;
+
+	HAL_StatusTypeDef status;
+
+	status = HAL_SPI_TransmitReceive_DMA(&hspi1, wdata, rdata, byteCount);
+	if(status != HAL_OK)
+	{
+		printf("radio SPI_ReadWrite error (%d)!!\n", status);
+	}
+
+	while (HAL_SPI_GetState(&hspi1) != HAL_SPI_STATE_READY){}
+
+	return rdata[0];
 }
 
 
+U8 *SpiWriteData( U16 byteCount, U8 *byteToWrite )
+{
+	U8 rdata[64];
+	U8 *wdata = byteToWrite;
+
+	rdata[0] = 0;
+
+	memset( rdata, 0, sizeof(rdata) );
+
+	HAL_StatusTypeDef status;
+
+	status = HAL_SPI_TransmitReceive_DMA(&hspi1, wdata, rdata, byteCount);
+	if(status != HAL_OK)
+	{
+		printf("radio SPI_ReadWrite error (%d)!!\n", status);
+	}
+
+	while (HAL_SPI_GetState(&hspi1) != HAL_SPI_STATE_READY){}
+
+	return byteToWrite;
+}
+
+
+U8 *SpiReadData( U16 byteCount, U8 *byteToWrite )
+{
+
+	U8 wdata[64];
+	U8 *rdata = byteToWrite;
+
+	memset(wdata, 0xFF, byteCount);
+
+	HAL_StatusTypeDef status;
+
+	status = HAL_SPI_TransmitReceive_DMA(&hspi1, wdata, rdata, byteCount);
+	if(status != HAL_OK)
+	{
+		printf("radio SPI_ReadWrite error (%d)!!\n", status);
+	}
+
+	while (HAL_SPI_GetState(&hspi1) != HAL_SPI_STATE_READY){}
+
+	return byteToWrite;
+}
+
+void radio_hal_SpiWriteByte(U8 byteToWrite)
+{
+#if (defined SILABS_PLATFORM_RFSTICK) || (defined SILABS_PLATFORM_LCDBB) || (defined SILABS_PLATFORM_WMB)
+  bSpi_ReadWriteSpi1(byteToWrite);
+#else
+  SpiReadWrite(byteToWrite);
+#endif
+}
+
 U8 radio_hal_SpiReadByte(void)
 {
-#if 1
-  spi_wbyte[0] = 0xFF;
-  spi_rbyte[0] = 0;
-  (void)radio_SPI_ReadWrite(1, spi_wbyte, spi_rbyte);
-  return spi_rbyte[0];
+#if (defined SILABS_PLATFORM_RFSTICK) || (defined SILABS_PLATFORM_LCDBB) || (defined SILABS_PLATFORM_WMB)
+  return bSpi_ReadWriteSpi1(0xFF);
 #else
-  U8 rx_dat;
-  //U8 tx_dat=0;
-  if (HAL_SPI_Receive(&hspi1,&rx_dat,1,10) != HAL_OK)
-  //if (HAL_SPI_TransmitReceive(&hspi1,&tx_dat,&rx_dat,1,10) != HAL_OK)
-  {
-    printf("Spireadbyte error !!\n");
-    //Error_Handler();
-  }
-  return rx_dat;
+  return SpiReadWrite(0xFF);
 #endif
 }
 
 void radio_hal_SpiWriteData(U8 byteCount, U8* pData)
 {
-#if 1
-    int i;
-    for(i=0;i<byteCount;i++)
-    {
-      spi_wbyte[i] = *(pData+i);
-      spi_rbyte[i] = 0;
-    }
-    radio_SPI_ReadWrite(byteCount, spi_wbyte, spi_rbyte);
+#if (defined SILABS_PLATFORM_RFSTICK) || (defined SILABS_PLATFORM_LCDBB) || (defined SILABS_PLATFORM_WMB)
+  vSpi_WriteDataSpi1(byteCount, pData);
 #else
-  //U8 rx_dat[16];
-  if (HAL_SPI_Transmit(&hspi1,pData,byteCount, 10) != HAL_OK)
-  //if (HAL_SPI_TransmitReceive(&hspi1,pData,rx_dat,byteCount,10) != HAL_OK)
-  {
-    printf("SpiWriteData error !!\n");
-    //Error_Handler();
-  }
+  SpiWriteData(byteCount, pData);
 #endif
 }
 
 void radio_hal_SpiReadData(U8 byteCount, U8* pData)
 {
-#if 1
-  int i;
-  for(i=0; i<byteCount; i++)
-  {
-    spi_wbyte[i] = 0xFF;
-    spi_rbyte[i] = 0;
-  }
-  radio_SPI_ReadWrite(byteCount, spi_wbyte, spi_rbyte);
-
-  for(i=0;i<byteCount;i++)
-  {
-    *(pData+i) = spi_rbyte[i];
-  }
+#if (defined SILABS_PLATFORM_RFSTICK) || (defined SILABS_PLATFORM_LCDBB) || (defined SILABS_PLATFORM_WMB)
+  vSpi_ReadDataSpi1(byteCount, pData);
 #else
-  U8 tx_dat[16];
-  //memset(tx_dat,0xFF,16);
-  memset(tx_dat,0,8);
-  if (HAL_SPI_Receive(&hspi1,pData,byteCount,10) != HAL_OK)
-  //if (HAL_SPI_TransmitReceive(&hspi1,tx_dat,pData,byteCount,10) != HAL_OK)
-  {
-    printf("SpiReadData error !!\n");
-    Error_Handler();
-  }
+  SpiReadData(byteCount, pData);
 #endif
 }
 
-
 #ifdef RADIO_DRIVER_EXTENDED_SUPPORT
-GPIO_PinState radio_hal_Gpio0Level(void)
+BIT radio_hal_Gpio0Level(void)
 {
-  GPIO_PinState retVal = GPIO_PIN_RESET;
+  BIT retVal = FALSE;
+
+#ifdef SILABS_PLATFORM_DKMB
+  retVal = FALSE;
+#endif
+#ifdef SILABS_PLATFORM_UDP
+  retVal = EZRP_RX_DOUT;
+#endif
+#if (defined SILABS_PLATFORM_RFSTICK) || (defined SILABS_PLATFORM_LCDBB)
+  retVal = RF_GPIO0;
+#endif
+#if (defined SILABS_PLATFORM_WMB930)
+  retVal = FALSE;
+#endif
+#if defined (SILABS_PLATFORM_WMB912)
+  #ifdef SILABS_IO_WITH_EXTENDER
+    //TODO
+    retVal = FALSE;
+  #endif
+#endif
 
   return retVal;
 }
 
-GPIO_PinState radio_hal_Gpio1Level(void)
+BIT radio_hal_Gpio1Level(void)
 {
-  GPIO_PinState retVal = GPIO_PIN_RESET;
+  BIT retVal = FALSE;
 
-	retVal = HAL_GPIO_ReadPin(GPIO1_GPIO_Port,GPIO1_Pin);
+#ifdef SILABS_PLATFORM_DKMB
+  retVal = FSK_CLK_OUT;
+#endif
+#ifdef SILABS_PLATFORM_UDP
+  retVal = FALSE; //No Pop
+#endif
+#if (defined SILABS_PLATFORM_RFSTICK) || (defined SILABS_PLATFORM_LCDBB) || (defined SILABS_PLATFORM_WMB930)
+  retVal = RF_GPIO1;
+#endif
+#if defined (SILABS_PLATFORM_WMB912)
+  #ifdef SILABS_IO_WITH_EXTENDER
+    //TODO
+    retVal = FALSE;
+  #endif
+#endif
+
   return retVal;
 }
 
-
-
-GPIO_PinState radio_hal_Gpio2Level(void)
+BIT radio_hal_Gpio2Level(void)
 {
-  GPIO_PinState retVal = GPIO_PIN_RESET;
+  BIT retVal = FALSE;
 
-	retVal = HAL_GPIO_ReadPin(RF_RX_GPIO_Port,RF_RX_Pin);
+#ifdef SILABS_PLATFORM_DKMB
+  retVal = DATA_NFFS;
+#endif
+#ifdef SILABS_PLATFORM_UDP
+  retVal = FALSE; //No Pop
+#endif
+#if (defined SILABS_PLATFORM_RFSTICK) || (defined SILABS_PLATFORM_LCDBB) || (defined SILABS_PLATFORM_WMB930)
+  retVal = RF_GPIO2;
+#endif
+#if defined (SILABS_PLATFORM_WMB912)
+  #ifdef SILABS_IO_WITH_EXTENDER
+    //TODO
+    retVal = FALSE;
+  #endif
+#endif
+
   return retVal;
 }
 
-GPIO_PinState radio_hal_Gpio3Level(void)
+BIT radio_hal_Gpio3Level(void)
 {
-  GPIO_PinState retVal = GPIO_PIN_RESET;
+  BIT retVal = FALSE;
 
-	retVal = HAL_GPIO_ReadPin(RF_TX_GPIO_Port,RF_TX_Pin);
+#if (defined SILABS_PLATFORM_RFSTICK) || (defined SILABS_PLATFORM_LCDBB) || (defined SILABS_PLATFORM_WMB930)
+  retVal = RF_GPIO3;
+#elif defined (SILABS_PLATFORM_WMB912)
+  #ifdef SILABS_IO_WITH_EXTENDER
+    //TODO
+    retVal = FALSE;
+  #endif
+#endif
+
   return retVal;
 }
 
