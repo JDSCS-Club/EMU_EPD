@@ -71,6 +71,8 @@ void vRadio_Init(void)
   /* Power Up the radio chip */
   vRadio_PowerUp();
 
+  HAL_Delay(200);
+
   /* Load radio configuration */
   while (SI446X_SUCCESS != si446x_configuration_init(pRadioConfiguration->Radio_ConfigurationArray))
   {
@@ -82,8 +84,11 @@ void vRadio_Init(void)
     vRadio_PowerUp();
   }
 
+  HAL_Delay(100);
+
   // Read ITs, clear pending ones
   si446x_get_int_status(0u, 0u, 0u);
+
 }
 
 /*!
