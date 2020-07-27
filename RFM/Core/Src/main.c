@@ -149,6 +149,8 @@ void RF_RxTx_Mode()
 }
 
 
+#include "radio_si4463.h"	//	si4463 driver
+
 /* USER CODE END 0 */
 
 /**
@@ -208,20 +210,35 @@ int main(void)
   //	Radio Spi
   RF_RxTx_Mode();
 
-  vRadio_Init();		//	Init Radio
+  if( 0 )
+  {
+	  //	Driver #1	-	WDS
 
-	si446x_part_info ();
+	  vRadio_Init();		//	Init Radio
 
-	printf ( "=========================\n" );
-	printf ( "%08x\n", Si446xCmd.PART_INFO.CHIPREV );
-	printf ( "%08x\n", Si446xCmd.PART_INFO.PART );
-	printf ( "%08x\n", Si446xCmd.PART_INFO.PBUILD );
-	printf ( "%08x\n", Si446xCmd.PART_INFO.ID );
-	printf ( "%08x\n", Si446xCmd.PART_INFO.CUSTOMER );
-	printf ( "%08x\n", Si446xCmd.PART_INFO.ROMID );
-	printf ( "-------------------------\n" );
+		si446x_part_info ();
 
-	rfm_main();		//	RFM Main
+		printf ( "=========================\n" );
+		printf ( "%08x\n", Si446xCmd.PART_INFO.CHIPREV );
+		printf ( "%08x\n", Si446xCmd.PART_INFO.PART );
+		printf ( "%08x\n", Si446xCmd.PART_INFO.PBUILD );
+		printf ( "%08x\n", Si446xCmd.PART_INFO.ID );
+		printf ( "%08x\n", Si446xCmd.PART_INFO.CUSTOMER );
+		printf ( "%08x\n", Si446xCmd.PART_INFO.ROMID );
+		printf ( "-------------------------\n" );
+
+		rfm_main();		//	RFM Main
+  }
+  else
+  {
+	  //	Driver #2
+
+	  RF_Init();
+
+	  RF_PartInfo();
+
+	  RF_FuncInfo();
+  }
 
   /* USER CODE END 2 */
  
