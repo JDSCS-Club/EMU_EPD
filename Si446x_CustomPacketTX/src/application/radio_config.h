@@ -39,7 +39,7 @@
 #define RADIO_CONFIGURATION_DATA_RADIO_DELAY_CNT_AFTER_RESET       0xF000
 #define RADIO_CONFIGURATION_DATA_CUSTOM_PAYLOAD					   {0xC5, 0xC5, 0xC5, 0xC5, 0xC5, 0xC5, 0xC5}
 
-#include "si446x_patch.h"
+#include "..\drivers\radio\Si446x\si446x_patch.h"
 
 
 // CONFIGURATION COMMANDS
