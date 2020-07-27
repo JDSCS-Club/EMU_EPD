@@ -98,6 +98,7 @@ U8 bRadio_Check_Tx_RX(void)
 {
   if (RF_NIRQ == FALSE)
   {
+	  printf("!\n");
     /* Read ITs, clear pending ones */
     si446x_get_int_status_fast_clear_read();
 

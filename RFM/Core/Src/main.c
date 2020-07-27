@@ -190,6 +190,7 @@ int main(void)
 	printf ( "%08x\n", Si446xCmd.PART_INFO.ROMID );
 	printf ( "-------------------------\n" );
 
+	rfm_main();		//	RFM Main
 
   /* USER CODE END 2 */
  
