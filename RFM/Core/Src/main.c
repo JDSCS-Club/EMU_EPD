@@ -98,7 +98,7 @@ static void MX_USB_OTG_FS_PCD_Init(void);
 
 //si4463 Interrupt
 
-//uint8_t RF_NIRQ;
+uint8_t RF_NIRQ;
 
 void HAL_GPIO_EXTI_Callback ( uint16_t GPIO_Pin )
 {

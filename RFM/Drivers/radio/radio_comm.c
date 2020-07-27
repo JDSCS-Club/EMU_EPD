@@ -13,6 +13,8 @@
                  *              I N C L U D E              *
                  * ======================================= */
 
+#include "main.h"			//	define SILABS_RADIO_SI446X / RADIO_DRIVER_FULL_SUPPORT
+
 #include "radio_hal.h"		//	radio_hal_ClearNsel()
 #include "radio_comm.h"
 

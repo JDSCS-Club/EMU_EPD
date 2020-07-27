@@ -12,9 +12,10 @@
 
 #include <stdarg.h>
 
-#include "radio_comm.h"
-#include "si446x_api_lib.h"			//	SI446X_STAT
+#include "main.h"					//	define SILABS_RADIO_SI446X / RADIO_DRIVER_FULL_SUPPORT
 
+#include "radio_comm.h"				//	radio_comm_ClearCTS()
+#include "si446x_api_lib.h"			//	SI446X_STAT
 
 SEGMENT_VARIABLE( Si446xCmd, union si446x_cmd_reply_union, SEG_XDATA );
 SEGMENT_VARIABLE( Pro2Cmd[16], U8, SEG_XDATA );
@@ -78,7 +79,6 @@ U8 si446x_configuration_init(const U8* pSetPropCmd)
      * --------------------------------
      * LEN | <LEN length of data>
      */
-//	  printf("%s(%d) - %p\n", __func__, __LINE__, pSetPropCmd);
 
     numOfBytes = *pSetPropCmd++;
 
@@ -110,8 +110,6 @@ U8 si446x_configuration_init(const U8* pSetPropCmd)
       }
     }
   }
-
-//  printf("%s(%d)\n", __func__, __LINE__);
 
   return SI446X_SUCCESS;
 }

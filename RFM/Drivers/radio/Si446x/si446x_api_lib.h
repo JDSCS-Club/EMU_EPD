@@ -27,14 +27,14 @@ extern SEGMENT_VARIABLE( Pro2Cmd[16], U8, SEG_XDATA );
 
 #define SI466X_FIFO_SIZE 64
 
-typedef enum _SI446X_STAT
+enum
 {
     SI446X_SUCCESS,
     SI446X_NO_PATCH,
     SI446X_CTS_TIMEOUT,
     SI446X_PATCH_FAIL,
     SI446X_COMMAND_ERROR
-} SI446X_STAT;
+};
 
 /* Minimal driver support functions */
 void si446x_reset(void);

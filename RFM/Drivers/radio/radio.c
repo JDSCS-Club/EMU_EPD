@@ -46,7 +46,7 @@ void vRadio_PowerUp(void);
  */
 void vRadio_PowerUp(void)
 {
-//  SEGMENT_VARIABLE(wDelay,  U16, SEG_XDATA) = 0u;
+  SEGMENT_VARIABLE(wDelay,  U16, SEG_XDATA) = 0u;
 
   /* Hardware reset the chip */
   si446x_reset();
@@ -66,8 +66,7 @@ void vRadio_PowerUp(void)
  */
 void vRadio_Init(void)
 {
-//  U16 wDelay;
-    printf( "%s(%d)\n", __func__, __LINE__ );
+  U16 wDelay;
 
   /* Power Up the radio chip */
   vRadio_PowerUp();

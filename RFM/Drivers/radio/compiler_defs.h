@@ -123,9 +123,6 @@
 
 #if defined SDCC
 
-#error Raisonance SDCC detected.
-
-
 # define SEG_GENERIC
 # define SEG_FAR   __xdata
 # define SEG_DATA  __data
@@ -252,7 +249,7 @@ typedef union UU32
 
 #elif defined __RC51__
 
-#error Raisonance C51 detected.
+//#error Raisonance C51 detected.
 
 # define SEG_GENERIC generic     //SEG_GENERIC only applies to pointers in Raisonance, not variables.
 # define SEG_FAR   xdata
@@ -358,7 +355,7 @@ typedef union UU32
 
 #elif (defined __C51__) || (defined __CX51__)
 
-#error Keil C51 detected.
+//#error Keil C51 detected.
 
 # define SEG_GENERIC
 # define SEG_FAR   xdata
@@ -461,9 +458,6 @@ extern void _nop_ (void);
 
 #elif defined HI_TECH_C
 
-#error HI_TECH_C detected.
-
-
 # define SEG_GENERIC
 # define SEG_FAR   far
 # define SEG_DATA  data
@@ -545,8 +539,6 @@ typedef union UU32
 
 
 #elif defined _CC51
-
-#error _CC51 detected.
 
 # define SEG_GENERIC
 # define SEG_FAR   _xdat
@@ -634,8 +626,6 @@ extern void _nop (void);
 // http://www.iar.com
 
 #elif defined __ICC8051__
-
-#error __ICC8051__ detected.
 
 #include <stdbool.h>
 #include <intrinsics.h>
@@ -734,7 +724,7 @@ typedef union UU32
 
 //-----------------------------------------------------------------------------
 
-// Wickenh?ser
+// Wickenhäuser
 // http://www.wickenhaeuser.de
 
 #elif defined __UC__
@@ -752,8 +742,6 @@ typedef union UU32
 
 #else
 # warning unrecognized compiler
-
-//#error unrecognized detected.
 
 #define SEG_FAR
 #define SEG_DATA
