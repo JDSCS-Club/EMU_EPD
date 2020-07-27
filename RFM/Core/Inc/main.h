@@ -87,6 +87,8 @@ void Error_Handler(void);
 #define PWR_AUDIO_GPIO_Port GPIOE
 #define SPK_ON_Pin GPIO_PIN_5
 #define SPK_ON_GPIO_Port GPIOE
+#define GPIO1_Pin GPIO_PIN_6
+#define GPIO1_GPIO_Port GPIOE
 #define USB_ID_Pin GPIO_PIN_15
 #define USB_ID_GPIO_Port GPIOC
 #define BAT_CHRG_Pin GPIO_PIN_0
