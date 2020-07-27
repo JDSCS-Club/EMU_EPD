@@ -48,7 +48,7 @@
 // Command:                  RF_POWER_UP
 // Description:              Command to power-up the device and select the operational mode and functionality.
 */
-#define RF_POWER_UP 0x02, 0x81, 0x00, 0x01, 0xC9, 0xC3, 0x80
+#define RF_POWER_UP 0x02, 0x81, 0x01, 0x01, 0xC9, 0xC3, 0x80
 
 /*
 // Command:                  RF_GPIO_PIN_CFG
@@ -66,7 +66,7 @@
 //   GLOBAL_XO_TUNE - Configure the internal capacitor frequency tuning bank for the crystal oscillator.
 //   GLOBAL_CLK_CFG - Clock configuration options.
 */
-#define RF_GLOBAL_XO_TUNE_2 0x11, 0x00, 0x02, 0x00, 0x52, 0x00
+#define RF_GLOBAL_XO_TUNE_2 0x11, 0x00, 0x02, 0x00, 0x00, 0x00
 
 /*
 // Set properties:           RF_GLOBAL_CONFIG_1
