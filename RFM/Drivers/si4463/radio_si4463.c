@@ -108,8 +108,8 @@ void	RF_Init	( void )
 	si4463.ClearShutdown	=	SI4463_ClearShutdown;
 //DEL	si4463.DelayMs = osDelay;
 //DEL	si4463.DelayMs = vTaskDelay;	//	tick
-	si4463.DelayMs			=	HAL_Delay;		//	Ok - ���������� DMA�� ����.
-//DEL	si4463.DelayMs = nonDelay;		//	Non-Delay - ���۾���. / DMA�� ������ ��ġ�� ����.
+	si4463.DelayMs			=	HAL_Delay;		//	Ok - 동작하지만 DMA에 영향.
+//DEL	si4463.DelayMs = nonDelay;		//	Non-Delay - 동작안함. / DMA에 영향을 끼치지 않음.
 
 	/* Disable interrupt pin for init Si4463 */
 	HAL_NVIC_DisableIRQ( EXTI0_IRQn );
@@ -214,7 +214,7 @@ void RF_Info( void )
 
 	//	if ( input_check() != 0 )
 	//	{
-	//		//	Ű�Է� �޴� ��� break;
+	//		//	키입력 받는 경우 break;
 	//		break;
 	//	}
 	//}
@@ -434,7 +434,7 @@ void	SI4463_Test		( void )
 
 		if ( input_check() != 0 )
 		{
-			//	Ű�Է� �޴� ��� break;
+			//	키입력 받는 경우 break;
 			printf( "TxBuf: " );
 			for ( idx = 0; idx < APP_PACKET_LEN; idx++ )
 			{
@@ -496,12 +496,12 @@ void	SI4463_WriteRead( const uint8_t * pTxData, uint8_t * pRxData, const uint16_
 
 	s_bSI4464_DMA_Cplt = 1;
 
-	//	DMA���.
+	//	DMA사용.
 	HAL_SPI_TransmitReceive_DMA( &hspi1, pTxData, pRxData, sizeTxData );
 
 	while ( s_bSI4464_DMA_Cplt )
 	{
-		//	DMA�Ϸ�ñ��� Blocking
+		//	DMA완료시까지 Blocking
 #if defined(USE_FREERTOS)
 		osDelay( 0 );
 #else
@@ -571,7 +571,7 @@ void	SI4463_Deselect( void )
 
 #if defined(USE_SI4464_DMA_SPI)
 
-	//	DMA��忡���� Complate Interrupt���� ó��.
+	//	DMA모드에서는 Complate Interrupt에서 처리.
 
 #else
 
@@ -584,7 +584,7 @@ void	SI4463_Deselect( void )
 
 #if defined(USE_SI4464_INT_FLAG)
 
-static int	s_bIntFlag = 0;				//	Interrupt Flag �߻�����.
+static int	s_bIntFlag = 0;				//	Interrupt Flag 발생상태.
 
 //========================================================================
 int		SI4463_GetIntFlag()
@@ -604,7 +604,7 @@ void	SI4463_SetIntFlag( int bIntFlag )
 
 
 
-#if 0		//	main.c �� �̵�.
+#if 0		//	main.c 로 이동.
 //========================================================================
 void HAL_GPIO_EXTI_Callback( uint16_t GPIO_Pin )
 //========================================================================
@@ -622,11 +622,11 @@ void SI4463_INT_Callback( uint16_t GPIO_Pin )
 #else
 
 	//========================================================================
-	//	Interrupt Delay���.
+	//	Interrupt Delay사용.
 	//	HAL_Delay()
-	//		Interrupt���� HAL_Delay()���� DMA�� ������ �޾� DMA�� Block��.
+	//		Interrupt에서 HAL_Delay()사용시 DMA에 영향을 받아 DMA가 Block됨.
 	//	osDelay()
-	//		Interrupt���� osDelay()���� ���α׷� ����.
+	//		Interrupt에서 osDelay()사용시 프로그램 멈춤.
 	//========================================================================
 
 	//	Interrupt
