@@ -231,6 +231,8 @@ BIT radio_hal_Gpio0Level(void)
 
 BIT radio_hal_Gpio1Level(void)
 {
+	return HAL_GPIO_ReadPin(GPIO1_GPIO_Port,GPIO1_Pin);
+
   BIT retVal = FALSE;
 
 #ifdef SILABS_PLATFORM_DKMB
