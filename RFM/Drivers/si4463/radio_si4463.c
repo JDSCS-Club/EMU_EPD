@@ -63,10 +63,11 @@ uint8_t outgoingBuffer[APP_PACKET_LEN];
 
 static uint8_t	s_nDbgLevel = 0;
 
+//*
 #define			DBG( arg ... )
-//#define			DBG		printf
-
-//#define		DEBUG	1
+/*/
+#define			DBG		printf
+//	*/
 
 //========================================================================
 // Function
@@ -246,6 +247,19 @@ void RF_Rx( void )
 	s_bIsTxMode = 0;
 }
 
+
+//========================================================================
+void RF_TxRx( void )
+//========================================================================
+{
+	RF_RX_GPIO_Port->ODR |= RF_RX_Pin;	//	Rx High
+	RF_TX_GPIO_Port->ODR &= ~RF_TX_Pin;	//	Tx Low
+
+	RX_EN_GPIO_Port->ODR |= RX_EN_Pin;	//	Rx Enable
+
+	s_bIsTxMode = 0;
+}
+
 //========================================================================
 void RF_Loopback( void )
 //========================================================================
@@ -281,7 +295,7 @@ void		RF_RecvData				( char *sBuf, int nSize )
 //	SI4463_Transmit( &si4463, sBuf, nSize );
 
 	//	Audio Buffer Copy
-	QPutAudioStream( sBuf, nSize );
+//	QPutAudioStream( sBuf, nSize );
 }
 
 //========================================================================
@@ -314,8 +328,19 @@ void	SI4463_Test		( void )
 
 	while ( 1 )
 	{
+		LoopRFInt();			//	Loop Interrupt
+
 		/* Send test packet */
 		currTime = HAL_GetTick();	// xTaskGetTickCount();
+
+		if( currTime - oldTime < 1000 )
+		{
+			continue;
+		}
+		else
+		{
+			oldTime = currTime;
+		}
 
 		printf( "\n" );
 		printf( "[%d][%03d] ", nCnt++, currTime );
@@ -371,7 +396,7 @@ void	SI4463_Test		( void )
 
 			//	E0 B3 53 AA 7E F9 21
 
-			for ( i = 0; i < 100; i++ )
+//			for ( i = 0; i < 100; i++ )
 			{
 //				HAL_Delay( 10 );
 				SI4463_Transmit( &si4463, outgoingBuffer, APP_PACKET_LEN );
@@ -475,6 +500,57 @@ uint8_t	SI4463_IsCTS	( void )
 }
 
 //========================================================================
+void LoopRFInt( void )
+//========================================================================
+{
+
+#if defined(USE_FREERTOS)
+        osDelay( 0 );
+#else
+        HAL_Delay( 0 );
+#endif
+
+#if defined(USE_SI4464_INT_FLAG)
+
+        //    RF Interrupt Proc.
+        while ( SI4463_GetIntFlag() )
+        {
+            //  Interrupt Proc Routin.
+            //      Interrupt Delay
+            //      Interrupt Callback -> Set Flag -> Task Proc.
+            SI4463_SetIntFlag( 0 );
+
+            SI4463_Interrupt();
+
+        }
+#endif
+
+}
+
+
+#if defined(USE_SI4464_DMA_SPI)
+
+int s_bSI4464_DMA_Cplt;
+
+//========================================================================
+void HAL_SPI_TxRxCpltCallback( SPI_HandleTypeDef *hspi )
+//========================================================================
+{
+	/* Deselect when Tx Complete */
+	if (hspi->Instance == SPI1)
+	{
+		//      Select Pin 제어.
+		//              SPI_Deselect();
+		HAL_GPIO_WritePin( nSEL_GPIO_Port, nSEL_Pin, GPIO_PIN_SET);
+
+		s_bSI4464_DMA_Cplt = 0;
+	}
+}
+
+#endif
+
+
+//========================================================================
 void	SI4463_WriteRead( const uint8_t * pTxData, uint8_t * pRxData, const uint16_t sizeTxData )
 //========================================================================
 {
@@ -539,6 +615,11 @@ void	SI4463_SetShutdown( void )
 {
 	printf( "[%d] Pin_SDN(1)\n", HAL_GetTick() );	// xTaskGetTickCount() );
 
+	//	Power On
+	HAL_GPIO_WritePin( PWR_RF_GPIO_Port, PWR_RF_Pin, GPIO_PIN_SET );
+
+  HAL_Delay(10);
+
 	HAL_GPIO_WritePin( SHUTDOWN_GPIO_Port, SHUTDOWN_Pin, GPIO_PIN_SET );
 
 //	printf( "%s(%d)\n", __func__, __LINE__ );
@@ -551,6 +632,7 @@ void	SI4463_ClearShutdown( void )
 	printf( "[%d] Pin_SDN(0)\n", HAL_GetTick() );	// xTaskGetTickCount() );
 
 	HAL_GPIO_WritePin( SHUTDOWN_GPIO_Port, SHUTDOWN_Pin, GPIO_PIN_RESET );
+
 
 //	printf( "%s(%d)\n", __func__, __LINE__ );
 }
@@ -652,7 +734,7 @@ void	SI4463_Interrupt( void )
 		/* Following instruction only for add breakpoints. May be deleted */
 		si4463.interrupts.filterMatch = false;
 
-		DBG( "<%d>\n", __LINE__ );
+		DBG( "<%d>filterMatch\n", __LINE__ );
 	}
 	if ( si4463.interrupts.filterMiss )
 	{
@@ -660,7 +742,7 @@ void	SI4463_Interrupt( void )
 		/* Following instruction only for add breakpoints. May be deleted */
 		si4463.interrupts.filterMiss = false;
 
-		DBG( "<%d>\n", __LINE__ );
+		DBG( "<%d>filterMiss\n", __LINE__ );
 	}
 	if ( si4463.interrupts.packetSent )
 	{
@@ -732,6 +814,8 @@ void	SI4463_Interrupt( void )
 
 		s_cntRFRx++;			//	RF Rx Count
 
+		DBG( "[Recv]\n" );
+
 		//========================================================================
 	}
 	if ( si4463.interrupts.crcError )
@@ -740,7 +824,7 @@ void	SI4463_Interrupt( void )
 
 		/* Following instruction only for add breakpoints. May be deleted */
 		si4463.interrupts.crcError = false;
-		DBG( "<%d>\n", __LINE__ );
+		DBG( "<%d>crcError\n", __LINE__ );
 	}
 	if ( si4463.interrupts.txFifoAlmostEmpty )
 	{
@@ -748,7 +832,7 @@ void	SI4463_Interrupt( void )
 
 		/* Following instruction only for add breakpoints. May be deleted */
 		si4463.interrupts.txFifoAlmostEmpty = false;
-		DBG( "<%d>\n", __LINE__ );
+		DBG( "<%d>txFifoAlmostEmpty\n", __LINE__ );
 	}
 	if ( si4463.interrupts.rxFifoAlmostFull )
 	{
@@ -756,7 +840,7 @@ void	SI4463_Interrupt( void )
 
 		/* Following instruction only for add breakpoints. May be deleted */
 		si4463.interrupts.rxFifoAlmostFull = false;
-		DBG( "<%d>\n", __LINE__ );
+		DBG( "<%d>rxFifoAlmostFull\n", __LINE__ );
 	}
 
 	/* Handling Modem interrupts */
@@ -766,49 +850,49 @@ void	SI4463_Interrupt( void )
 
 		/* Following instruction only for add breakpoints. May be deleted */
 		si4463.interrupts.postambleDetect = false;
-		DBG( "<%d>\n", __LINE__ );
+		DBG( "<%d>postambleDetect\n", __LINE__ );
 	}
 	if ( si4463.interrupts.invalidSync )
 	{
 		/* Handling this interrupt here */
 		/* Following instruction only for add breakpoints. May be deleted */
 		si4463.interrupts.invalidSync = false;
-		DBG( "<%d>\n", __LINE__ );
+		DBG( "<%d>invalidSync\n", __LINE__ );
 	}
 	if ( si4463.interrupts.rssiJump )
 	{
 		/* Handling this interrupt here */
 		/* Following instruction only for add breakpoints. May be deleted */
 		si4463.interrupts.rssiJump = false;
-		DBG( "<%d>\n", __LINE__ );
+		DBG( "<%d>rssiJump\n", __LINE__ );
 	}
 	if ( si4463.interrupts.rssi )
 	{
 		/* Handling this interrupt here */
 		/* Following instruction only for add breakpoints. May be deleted */
 		si4463.interrupts.rssi = false;
-		DBG( "<%d>\n", __LINE__ );
+		DBG( "<%d>rssi\n", __LINE__ );
 	}
 	if ( si4463.interrupts.invalidPreamble )
 	{
 		/* Handling this interrupt here */
 		/* Following instruction only for add breakpoints. May be deleted */
 		si4463.interrupts.invalidPreamble = false;
-		DBG( "<%d>\n", __LINE__ );
+		DBG( "<%d>invalidPreamble\n", __LINE__ );
 	}
 	if ( si4463.interrupts.preambleDetect )
 	{
 		/* Handling this interrupt here */
 		/* Following instruction only for add breakpoints. May be deleted */
 		si4463.interrupts.preambleDetect = false;
-		DBG( "<%d>\n", __LINE__ );
+		DBG( "<%d>preambleDetect\n", __LINE__ );
 	}
 	if ( si4463.interrupts.syncDetect )
 	{
 		/* Handling this interrupt here */
 		/* Following instruction only for add breakpoints. May be deleted */
 		si4463.interrupts.syncDetect = false;
-		DBG( "<%d>\n", __LINE__ );
+		DBG( "<%d>syncDetect\n", __LINE__ );
 	}
 
 	/* Handling Chip interrupts */
@@ -829,7 +913,7 @@ void	SI4463_Interrupt( void )
 		SI4463_GetChipStatus( &si4463 );
 		/* Following instruction only for add breakpoints. May be deleted */
 		si4463.interrupts.fifoUnderflowOverflowError = false;
-		DBG( "<%d>\n", __LINE__ );
+		DBG( "<%d>fifoUnderOverErr\n", __LINE__ );
 	}
 	if ( si4463.interrupts.stateChange )
 	{
@@ -837,7 +921,7 @@ void	SI4463_Interrupt( void )
 		SI4463_GetChipStatus( &si4463 );
 		/* Following instruction only for add breakpoints. May be deleted */
 		si4463.interrupts.stateChange = false;
-		DBG( "<%d>\n", __LINE__ );
+		DBG( "<%d>stateChange\n", __LINE__ );
 	}
 	if ( si4463.interrupts.cmdError )
 	{
@@ -845,7 +929,7 @@ void	SI4463_Interrupt( void )
 		SI4463_GetChipStatus( &si4463 );
 		/* Following instruction only for add breakpoints. May be deleted */
 		si4463.interrupts.cmdError = false;
-		DBG( "<%d>\n", __LINE__ );
+		DBG( "<%d>cmdError\n", __LINE__ );
 	}
 	if ( si4463.interrupts.chipReady )
 	{
@@ -853,7 +937,7 @@ void	SI4463_Interrupt( void )
 		SI4463_GetChipStatus( &si4463 );
 		/* Following instruction only for add breakpoints. May be deleted */
 		si4463.interrupts.chipReady = false;
-		DBG( "<%d>\n", __LINE__ );
+		DBG( "<%d>chipReady\n", __LINE__ );
 	}
 	if ( si4463.interrupts.lowBatt )
 	{
@@ -861,7 +945,7 @@ void	SI4463_Interrupt( void )
 		SI4463_GetChipStatus( &si4463 );
 		/* Following instruction only for add breakpoints. May be deleted */
 		si4463.interrupts.lowBatt = false;
-		DBG( "<%d>\n", __LINE__ );
+		DBG( "<%d>lowBatt\n", __LINE__ );
 	}
 	if ( si4463.interrupts.wut )
 	{
@@ -869,7 +953,7 @@ void	SI4463_Interrupt( void )
 		SI4463_GetChipStatus( &si4463 );
 		/* Following instruction only for add breakpoints. May be deleted */
 		si4463.interrupts.wut = false;
-		DBG( "<%d>\n", __LINE__ );
+		DBG( "<%d>wut\n", __LINE__ );
 	}
 
 	/* Clear All interrupts before exit */

@@ -9,6 +9,11 @@
 #include <stdint.h>
 #include "si4463.h"
 
+//#include "radio_config_Si4463.h"
+//#include "radio_config.h"
+#include "radio_config_Si4463_c2a.h"
+
+
 uint8_t SI4463_WaitCTS(const si4463_t * si4463, uint8_t times, const uint8_t delayPerTime)
 {
 	uint8_t result = 1;

@@ -100,9 +100,16 @@ static void MX_USB_OTG_FS_PCD_Init(void);
 
 uint8_t RF_NIRQ;
 
+//========================================================================
 void HAL_GPIO_EXTI_Callback ( uint16_t GPIO_Pin )
+//========================================================================
 {
     uint8_t st;
+
+    //========================================================================
+    //	Si4463 driver Interrupt
+    SI4463_INT_Callback( GPIO_Pin );	//	inline func
+    //========================================================================
 
 //    printf( " HAL_GPIO_EXTI_Callback\n" );
 
@@ -232,13 +239,15 @@ int main(void)
   else
   {
 	  //	Driver #2
-	  /*
+	  //*
 	   RF_Tx();	//	Tx Mode
 	   /*/
 	   RF_Rx();	//	Rx Mode
 	   //	*/
 
 	  RF_Init();
+
+	  SI4463_Debug(1);
 
 	  RF_PartInfo();
 

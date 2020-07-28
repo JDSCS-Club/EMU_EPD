@@ -40,8 +40,13 @@
 #define B1_EXTI_IRQn			EXTI15_10_IRQn
 #define CTS_Pin					GPIO_PIN_6		//	GPIO_PIN_2
 #define CTS_GPIO_Port			GPIOE			//	GPIOA
-#define SHUTDOWN_Pin			GPIO_PIN_5		//	GPIO_PIN_3
-#define SHUTDOWN_GPIO_Port		GPIOC			//	GPIOA
+
+#define SHUTDOWN_Pin			GPIO_PIN_5		//	TRN_RST
+#define SHUTDOWN_GPIO_Port		GPIOC			//
+
+#define PWR_RF_Pin 				GPIO_PIN_2		//	RF Power
+#define PWR_RF_GPIO_Port 		GPIOE           //
+
 
 //	STANDBY ( PE7 )
 #define LED_ONBOARD_Pin			GPIO_PIN_7		//	GPIO_PIN_5
@@ -69,6 +74,9 @@ extern uint8_t outgoingBuffer[APP_PACKET_LEN];
 
 #define		USE_SI4464_INT_FLAG		1		//	Interrupt Flag방식 사용.
 
+//#define		USE_SI4464_DMA_SPI		1		//	SPI 통신 DMA 방식 사용.
+
+//========================================================================
 
 
 //========================================================================
@@ -83,6 +91,10 @@ void		RF_Info					( void );
 void		RF_Tx					( void );
 void		RF_Rx					( void );
 void		RF_Loopback				( void );
+
+
+void 		LoopRFInt				( void );
+
 
 void		RF_SendData				( char *sBuf, int nSize );
 
@@ -99,6 +111,8 @@ void		SI4463_SetShutdown		( void );
 void		SI4463_ClearShutdown	( void );
 void		SI4463_Select			( void );
 void		SI4463_Deselect			( void );
+
+inline void 	SI4463_INT_Callback		( uint16_t GPIO_Pin );
 
 void		SI4463_Interrupt		( void );		//	Interrupt Handler
 

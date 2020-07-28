@@ -12,9 +12,6 @@
 #include <stdbool.h>
 #include <string.h>
 
-//#include "radio_config_Si4463.h"
-#include "radio_config.h"
-//#include "radio_config_Si4463_c2a.h"
 
 /* Define section */
 
