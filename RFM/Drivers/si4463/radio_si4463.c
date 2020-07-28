@@ -432,24 +432,24 @@ void	SI4463_Test		( void )
 		}
 
 
-		if ( input_check() != 0 )
-		{
-			//	키입력 받는 경우 break;
-			printf( "TxBuf: " );
-			for ( idx = 0; idx < APP_PACKET_LEN; idx++ )
-			{
-				printf( "%02X ", outgoingBuffer[idx] );
-			}
-			printf( "\n" );
-			printf( "RxBuf: " );
-			for ( idx = 0; idx < APP_PACKET_LEN; idx++ )
-			{
-				printf( "%02X ", incomingBuffer[idx] );
-			}
-			printf( "\n" );
-
-			break;
-		}
+//		if ( input_check() != 0 )
+//		{
+//			//	키입력 받는 경우 break;
+//			printf( "TxBuf: " );
+//			for ( idx = 0; idx < APP_PACKET_LEN; idx++ )
+//			{
+//				printf( "%02X ", outgoingBuffer[idx] );
+//			}
+//			printf( "\n" );
+//			printf( "RxBuf: " );
+//			for ( idx = 0; idx < APP_PACKET_LEN; idx++ )
+//			{
+//				printf( "%02X ", incomingBuffer[idx] );
+//			}
+//			printf( "\n" );
+//
+//			break;
+//		}
 
 		/* End of send of test packet */
 	}

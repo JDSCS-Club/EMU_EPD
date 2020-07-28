@@ -232,12 +232,19 @@ int main(void)
   else
   {
 	  //	Driver #2
+	  /*
+	   RF_Tx();	//	Tx Mode
+	   /*/
+	   RF_Rx();	//	Rx Mode
+	   //	*/
 
 	  RF_Init();
 
 	  RF_PartInfo();
 
 	  RF_FuncInfo();
+
+	  SI4463_Test();
   }
 
   /* USER CODE END 2 */
