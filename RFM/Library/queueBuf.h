@@ -21,7 +21,7 @@
 
 typedef struct _Queue_t
 {
-#define QMAX 128
+#define QMAX 256
 
 	unsigned char queue[QMAX];
 

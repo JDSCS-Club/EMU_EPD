@@ -63,7 +63,8 @@
 #define DEMOFEST 				(0x01)
 
 //#define APP_PACKET_LEN			((uint16_t) 10)
-#define APP_PACKET_LEN			((uint16_t) 64)
+//#define APP_PACKET_LEN			((uint16_t) 64)
+#define APP_PACKET_LEN			((uint16_t) 62)
 
 extern si4463_t si4463;
 extern uint8_t incomingBuffer[APP_PACKET_LEN];

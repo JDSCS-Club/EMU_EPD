@@ -208,7 +208,8 @@ int main(void)
   //    Initial
 
   //	Serial
-  SerialInit( &huart1, &huart2 );   //  Init Serial Handle
+//  SerialInit( &huart1, &huart2 );   //  Init Serial Handle
+  SerialInit( NULL, &huart2 );   //  Init Serial Handle
   setbuf ( stdout, NULL );		            //	1024 byte buffer clear
 //  setvbuf ( stdout, NULL, _IOLBF, NULL );	//	Line Buffer
   setvbuf ( stdout, NULL, _IONBF, NULL );	//	No Buffer
@@ -219,7 +220,7 @@ int main(void)
   //	Radio Spi
   RF_RxTx_Mode();
 
-  if( 0 )
+  if( 1 )
   {
 	  //	Driver #1	-	WDS
 

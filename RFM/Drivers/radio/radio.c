@@ -11,7 +11,12 @@
 #include "si446x_api_lib.h"     //  SI446X_SUCCESS
 
 #include "radio.h"				//	tRadioConfiguration
+/*
 #include "radio_config.h"		//	RadioConfiguration
+/*/
+//#include "radio_config_Si4463_c2a.h"		//	RadioConfiguration
+#include "radio_config_802_15_4g.h"
+//	*/
 #include "radio_hal.h"			//	RF_NIRQ
 
 /*****************************************************************************
@@ -121,6 +126,7 @@ U8 bRadio_Check_Tx_RX(void)
 
     if(Si446xCmd.GET_INT_STATUS.PH_PEND & SI446X_CMD_GET_INT_STATUS_REP_PH_PEND_PACKET_SENT_PEND_BIT)
     {
+        printf("tx\n");
       return SI446X_CMD_GET_INT_STATUS_REP_PH_PEND_PACKET_SENT_PEND_BIT;
     }
 
@@ -134,6 +140,7 @@ U8 bRadio_Check_Tx_RX(void)
 
       si446x_read_rx_fifo(Si446xCmd.FIFO_INFO.RX_FIFO_COUNT, &customRadioPacket[0]);
 
+      printf("rx\n");
       return SI446X_CMD_GET_INT_STATUS_REP_PH_PEND_PACKET_RX_PEND_BIT;
     }
       
