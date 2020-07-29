@@ -20,17 +20,15 @@
 
 
 /* Includes ------------------------------------------------------------------*/
-#include "main.h"
+#include "codec.h"
 #include "voice.h"
-#include "drv_hd44780.h"  // Driver for LCD on IAR STM32-SK board
+//#include "drv_hd44780.h"  // Driver for LCD on IAR STM32-SK board
 
 #ifdef HAVE_CONFIG_H
 #include "config.h"
 #endif
 #include <speex/speex.h>
 #include"arch.h"
-
-
 
 /** @addtogroup SpeexVocoder_STM32_SK
   * @{
@@ -82,7 +80,7 @@ __IO uint32_t dly;
 void Demo_Init(void);
 void Speex_Init(void);
 void InterruptConfig(void);
-u8   GetButton(void); 
+//u8   GetButton(void);
 void InitButtons(void);
 
 /* Private functions ---------------------------------------------------------*/
@@ -101,12 +99,12 @@ int codec_main(void)
   Speex_Init();
     
   /* LCD init */
-  HD44780_PowerUpInit();  
-  LCD_LIGHT_ON();
-  
-  /* Display welcome message */
-  HD44780_StrShow(1, 1,  "    STM32F10x   ");      
-  HD44780_StrShow(1, 2,  "    Speex Demo  ");
+//  HD44780_PowerUpInit();
+//  LCD_LIGHT_ON();
+//
+//  /* Display welcome message */
+//  HD44780_StrShow(1, 1,  "    STM32F10x   ");
+//  HD44780_StrShow(1, 2,  "    Speex Demo  ");
 
   /* Delay */
   for(dly=0; dly<LCD_DELAY; dly++);
@@ -119,8 +117,8 @@ MENU_LABEL:
   
   
   /* Draw menu */
-  HD44780_StrShow(1, 1,  "1. MSG 2. RC-PLY");    
-  HD44780_StrShow(1, 2,  "3. Rec 4. Play  ");
+//  HD44780_StrShow(1, 1,  "1. MSG 2. RC-PLY");
+//  HD44780_StrShow(1, 2,  "3. Rec 4. Play  ");
 
   while(1) 
   {
@@ -137,8 +135,8 @@ MENU_LABEL:
   {
     int i;
     
-    HD44780_StrShow(1, 1,  "Play stored     ");
-    HD44780_StrShow(1, 2,  "encoded voice.  ");
+//    HD44780_StrShow(1, 1,  "Play stored     ");
+//    HD44780_StrShow(1, 2,  "encoded voice.  ");
 
     Start_Playing = MALE_VOICE;
     Vocoder_Init();
@@ -346,8 +344,8 @@ MENU_LABEL:
     Playing = 1;  
     Vocoder_Init();
     
-    HD44780_StrShow(1, 1,  "Playing...     ");
-    HD44780_StrShow(1, 2,  "WakeUp to Stop "); 
+//    HD44780_StrShow(1, 1,  "Playing...     ");
+//    HD44780_StrShow(1, 2,  "WakeUp to Stop ");
   
     Voice_Playing_Start();
     Start_Decoding = 1;
@@ -418,60 +416,60 @@ MENU_LABEL:
   */
 void Demo_Init(void)
 {
-  ErrorStatus HSEStartUpStatus;
-  
-  /* RCC system reset(for debug purpose) */
-  RCC_DeInit();
-
-  /* Enable HSE */
-  RCC_HSEConfig(RCC_HSE_ON);
-
-  /* Wait till HSE is ready */
-  HSEStartUpStatus = RCC_WaitForHSEStartUp();
-
-  if (HSEStartUpStatus == SUCCESS)
-  {
-    /* Enable Prefetch Buffer */
-    FLASH_PrefetchBufferCmd(FLASH_PrefetchBuffer_Enable);
-
-    /* Flash 2 wait state */
-    FLASH_SetLatency(FLASH_Latency_2);
-
-    /* HCLK = SYSCLK */
-    RCC_HCLKConfig(RCC_SYSCLK_Div1);
-
-    /* PCLK2 = HCLK */
-    RCC_PCLK2Config(RCC_HCLK_Div1);
-
-    /* PCLK1 = HCLK/2 */
-    RCC_PCLK1Config(RCC_HCLK_Div2);
-
-    /* PLLCLK = 8MHz * 9 = 72 MHz */
-    RCC_PLLConfig(RCC_PLLSource_HSE_Div1, RCC_PLLMul_9);
-
-    /* Enable PLL */
-    RCC_PLLCmd(ENABLE);
-
-    /* Wait till PLL is ready */
-    while (RCC_GetFlagStatus(RCC_FLAG_PLLRDY) == RESET)
-    {}
-
-    /* Select PLL as system clock source */
-    RCC_SYSCLKConfig(RCC_SYSCLKSource_PLLCLK);
-
-    /* Wait till PLL is used as system clock source */
-    while (RCC_GetSYSCLKSource() != 0x08)
-    {}
-  }
- 
-  /* TIM2 and TIM3 clocks enable */
-  RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM2 | RCC_APB1Periph_TIM3 , ENABLE);
-
-   /* Enable GPIOA, GPIOC, ADC1 , AFIO and TIM1 clock */
-  RCC_APB2PeriphClockCmd(RCC_APB2Periph_ADC1 | RCC_APB2Periph_GPIOA| RCC_APB2Periph_GPIOC | RCC_APB2Periph_TIM1 | RCC_APB2Periph_AFIO, ENABLE);
-
-  /* Interrupt Configuration */
-  InterruptConfig();
+//  ErrorStatus HSEStartUpStatus;
+//
+//  /* RCC system reset(for debug purpose) */
+//  RCC_DeInit();
+//
+//  /* Enable HSE */
+//  RCC_HSEConfig(RCC_HSE_ON);
+//
+//  /* Wait till HSE is ready */
+//  HSEStartUpStatus = RCC_WaitForHSEStartUp();
+//
+//  if (HSEStartUpStatus == SUCCESS)
+//  {
+//    /* Enable Prefetch Buffer */
+//    FLASH_PrefetchBufferCmd(FLASH_PrefetchBuffer_Enable);
+//
+//    /* Flash 2 wait state */
+//    FLASH_SetLatency(FLASH_Latency_2);
+//
+//    /* HCLK = SYSCLK */
+//    RCC_HCLKConfig(RCC_SYSCLK_Div1);
+//
+//    /* PCLK2 = HCLK */
+//    RCC_PCLK2Config(RCC_HCLK_Div1);
+//
+//    /* PCLK1 = HCLK/2 */
+//    RCC_PCLK1Config(RCC_HCLK_Div2);
+//
+//    /* PLLCLK = 8MHz * 9 = 72 MHz */
+//    RCC_PLLConfig(RCC_PLLSource_HSE_Div1, RCC_PLLMul_9);
+//
+//    /* Enable PLL */
+//    RCC_PLLCmd(ENABLE);
+//
+//    /* Wait till PLL is ready */
+//    while (RCC_GetFlagStatus(RCC_FLAG_PLLRDY) == RESET)
+//    {}
+//
+//    /* Select PLL as system clock source */
+//    RCC_SYSCLKConfig(RCC_SYSCLKSource_PLLCLK);
+//
+//    /* Wait till PLL is used as system clock source */
+//    while (RCC_GetSYSCLKSource() != 0x08)
+//    {}
+//  }
+//
+//  /* TIM2 and TIM3 clocks enable */
+//  RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM2 | RCC_APB1Periph_TIM3 , ENABLE);
+//
+//   /* Enable GPIOA, GPIOC, ADC1 , AFIO and TIM1 clock */
+//  RCC_APB2PeriphClockCmd(RCC_APB2Periph_ADC1 | RCC_APB2Periph_GPIOA| RCC_APB2Periph_GPIOC | RCC_APB2Periph_TIM1 | RCC_APB2Periph_AFIO, ENABLE);
+//
+//  /* Interrupt Configuration */
+//  InterruptConfig();
 
 }
 
@@ -526,27 +524,27 @@ void Speex_Init(void)
 *************************************************************************/
 void InitButtons(void) 
 {
-  GPIO_InitTypeDef GPIO_InitStructure;
-  
-  Button = 0;/* Set variables asociates */
-  
-  /* WakeUp as input */
-  GPIO_InitStructure.GPIO_Pin   =  GPIO_Pin_0;
-  GPIO_InitStructure.GPIO_Mode  = GPIO_Mode_IN_FLOATING;
-  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
-  GPIO_Init(GPIOA, &GPIO_InitStructure);
-  
-  /* B2 as input */
-  GPIO_InitStructure.GPIO_Pin   =  GPIO_Pin_5;
-  //  GPIO_InitStructure.GPIO_Mode  = GPIO_Mode_IN_FLOATING;
-  //  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
-  GPIO_Init(GPIOB, &GPIO_InitStructure);
-  
-  /* B1 and B3 as input */
-  GPIO_InitStructure.GPIO_Pin   =  GPIO_Pin_13 | GPIO_Pin_4;
-  //  GPIO_InitStructure.GPIO_Mode  = GPIO_Mode_IN_FLOATING;
-  //  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
-  GPIO_Init(GPIOC, &GPIO_InitStructure);
+//  GPIO_InitTypeDef GPIO_InitStructure;
+//
+//  Button = 0;/* Set variables asociates */
+//
+//  /* WakeUp as input */
+//  GPIO_InitStructure.GPIO_Pin   =  GPIO_Pin_0;
+//  GPIO_InitStructure.GPIO_Mode  = GPIO_Mode_IN_FLOATING;
+//  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+//  GPIO_Init(GPIOA, &GPIO_InitStructure);
+//
+//  /* B2 as input */
+//  GPIO_InitStructure.GPIO_Pin   =  GPIO_Pin_5;
+//  //  GPIO_InitStructure.GPIO_Mode  = GPIO_Mode_IN_FLOATING;
+//  //  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+//  GPIO_Init(GPIOB, &GPIO_InitStructure);
+//
+//  /* B1 and B3 as input */
+//  GPIO_InitStructure.GPIO_Pin   =  GPIO_Pin_13 | GPIO_Pin_4;
+//  //  GPIO_InitStructure.GPIO_Mode  = GPIO_Mode_IN_FLOATING;
+//  //  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+//  GPIO_Init(GPIOC, &GPIO_InitStructure);
 }
 
 /*************************************************************************
@@ -556,15 +554,15 @@ void InitButtons(void)
 * Output         : None
 * Return         : Push Button Value
 *************************************************************************/
-u8 GetButton(void) 
-{
-  if((GPIO_ReadInputDataBit(GPIOC, GPIO_Pin_13)) == Bit_SET) return BUTTON_B1;     /* B1     */
-  if((GPIO_ReadInputDataBit(GPIOC, GPIO_Pin_4))  == Bit_SET) return BUTTON_B3;     /* B3     */
-  if((GPIO_ReadInputDataBit(GPIOB, GPIO_Pin_5))  == Bit_SET) return BUTTON_B2;     /* B2     */
-  if((GPIO_ReadInputDataBit(GPIOA, GPIO_Pin_0))  == Bit_SET) return BUTTON_WAKEUP; /* Wakeup */
-  
-  return KEY_NONE;
-}
+//u8 GetButton(void)
+//{
+//  if((GPIO_ReadInputDataBit(GPIOC, GPIO_Pin_13)) == Bit_SET) return BUTTON_B1;     /* B1     */
+//  if((GPIO_ReadInputDataBit(GPIOC, GPIO_Pin_4))  == Bit_SET) return BUTTON_B3;     /* B3     */
+//  if((GPIO_ReadInputDataBit(GPIOB, GPIO_Pin_5))  == Bit_SET) return BUTTON_B2;     /* B2     */
+//  if((GPIO_ReadInputDataBit(GPIOA, GPIO_Pin_0))  == Bit_SET) return BUTTON_WAKEUP; /* Wakeup */
+//
+//  return KEY_NONE;
+//}
 
 
 

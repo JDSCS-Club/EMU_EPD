@@ -96,6 +96,8 @@ static void MX_USB_OTG_FS_PCD_Init(void);
 #include "radio_hal.h"			//	RF_NIRQ
 #include "si446x_api_lib.h"		//	si446x_part_info()
 
+#include "codec.h"				//	speex Codec
+
 //si4463 Interrupt
 
 uint8_t RF_NIRQ;

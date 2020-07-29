@@ -724,7 +724,7 @@ typedef union UU32
 
 //-----------------------------------------------------------------------------
 
-// Wickenhäuser
+// Wickenhï¿½user
 // http://www.wickenhaeuser.de
 
 #elif defined __UC__
@@ -780,10 +780,10 @@ typedef union UU32
 #define MSB 1
 
 // used with UU32 (b0 is least-significant byte)
-#define b0 0
-#define b1 1
-#define b2 2
-#define b3 3
+//#define b0 0
+//#define b1 1
+//#define b2 2
+//#define b3 3
 
 typedef unsigned char U8;
 typedef unsigned int U16;

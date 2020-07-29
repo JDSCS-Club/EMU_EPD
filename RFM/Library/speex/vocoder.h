@@ -25,7 +25,13 @@
 #define __VOCODER_H
 
 /* Includes ------------------------------------------------------------------*/
+#if defined(STM32F407xx)
+#include "stm32f4xx.h"
+#elif defined(STM32F207xx)
+#include "stm32f2xx.h"
+#else
 #include "stm32f10x.h"
+#endif
 
 
 /* Exported types ------------------------------------------------------------*/
