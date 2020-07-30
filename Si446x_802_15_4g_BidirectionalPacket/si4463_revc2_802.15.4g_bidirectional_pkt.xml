@@ -78,16 +78,16 @@
         </DataItem>
         <pnlRssiControl Type="System.Windows.Forms.Panel">
           <DataItem Type="System.Windows.Forms.ComboBox" Name="cbbRssiLatch">
-            <SelectedIndex>0</SelectedIndex>
+            <SelectedIndex>1</SelectedIndex>
           </DataItem>
           <DataItem Type="System.Windows.Forms.ComboBox" Name="cbbRssiAverage">
             <SelectedIndex>0</SelectedIndex>
           </DataItem>
           <DataItem Type="System.Windows.Forms.CheckBox" Name="chbCheckThresholdAtLatch">
-            <Checked>False</Checked>
+            <Checked>True</Checked>
           </DataItem>
           <DataItem Type="System.Windows.Forms.NumericUpDown" Name="nudRssiThreshold">
-            <Value>255</Value>
+            <Value>160</Value>
           </DataItem>
         </pnlRssiControl>
         <grbHighPerformance Type="System.Windows.Forms.GroupBox">
@@ -123,10 +123,10 @@
         <tabGeneralConfig Type="System.Windows.Forms.TabControl">
           <tbpGeneralPacketConfig Type="System.Windows.Forms.TabPage">
             <DataItem Type="System.Windows.Forms.NumericUpDown" Name="nudPacketRxThreshold">
-              <Value>48</Value>
+              <Value>64</Value>
             </DataItem>
             <DataItem Type="System.Windows.Forms.NumericUpDown" Name="nudPacketTxThreshold">
-              <Value>48</Value>
+              <Value>64</Value>
             </DataItem>
             <DataItem Type="System.Windows.Forms.CheckBox" Name="chbResetDataWhiteningAtBeginingOfThePackets">
               <Checked>True</Checked>
@@ -314,7 +314,7 @@
                 <Checked>True</Checked>
               </DataItem>
               <DataItem Type="System.Windows.Forms.NumericUpDown" Name="nudField2Length">
-                <Value>3</Value>
+                <Value>62</Value>
               </DataItem>
               <haiField2Content Type="NewWDS.Applications.App_Common.PacketConfigControl.HexAsciiInputControl">
                 <DataItem Type="System.Windows.Forms.RadioButton" Name="rdbASCII">
@@ -325,7 +325,7 @@
                 </DataItem>
                 <pnlInput Type="System.Windows.Forms.Panel">
                   <DataItem Type="System.Windows.Forms.MaskedTextBox" Name="mtbInput">
-                    <Text>02 00 6A</Text>
+                    <Text>02 00 6A C5 C5 C5 C5 C5 C5 C5 C5 C5 C5 C5 C5 C5 C5 C5 C5 C5 C5 C5 C5 C5 C5 C5 C5 C5 C5 C5 C5 C5 C5 C5 C5 C5 C5 C5 C5 C5 C5 C5 C5 C5 C5 C5 C5 C5 C5 C5 C5 C5 C5 C5 C5 C5 C5 C5 C5 C5 C5 C5</Text>
                   </DataItem>
                 </pnlInput>
               </haiField2Content>
@@ -333,7 +333,7 @@
                 <Checked>False</Checked>
               </DataItem>
               <DataItem Type="System.Windows.Forms.CheckBox" Name="chbField2DataWhitening">
-                <Checked>False</Checked>
+                <Checked>True</Checked>
               </DataItem>
             </grbField2>
           </tbpField2>
