@@ -30,6 +30,10 @@
 
 #include "typedef.h"	//	TRUE, FALSE, ...
 
+
+#include "Adafruit_SSD1306.h"   //  I2C LCD
+
+
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -215,6 +219,27 @@ int main(void)
   setvbuf ( stdout, NULL, _IONBF, NULL );	//	No Buffer
 
   printf( "%s(%d) - Start\n", __func__, __LINE__ );
+
+
+  //========================================================================
+  //	OLED
+  if ( HAL_OK == HAL_I2C_IsDeviceReady( &hi2c3, (uint16_t)( SSD1306_I2C_ADDRESS ), 2, 2 ) )
+  {
+      //========================================================================
+      //    OLED가 연결되어있음.
+//      SetDevID( DevRF900T );        //  송신기.
+
+      //    LCD Init
+      LCDInit();
+
+      LCDMenu();
+  }
+  else
+  {
+      //========================================================================
+      //    OLED가 없으면 -> 수신기
+//      SetDevID( DevRF900M );        //  수신기.
+  }
 
   //========================================================================
   //	Radio Spi
