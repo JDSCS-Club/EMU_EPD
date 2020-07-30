@@ -108,7 +108,7 @@ U8 bRadio_Check_Tx_RX(void)
 {
   if (RF_NIRQ == FALSE)
   {
-	  printf("!\n");
+//	  printf("!\n");
     /* Read ITs, clear pending ones */
     si446x_get_int_status_fast_clear_read();
 
@@ -126,7 +126,8 @@ U8 bRadio_Check_Tx_RX(void)
 
     if(Si446xCmd.GET_INT_STATUS.PH_PEND & SI446X_CMD_GET_INT_STATUS_REP_PH_PEND_PACKET_SENT_PEND_BIT)
     {
-        printf("tx\n");
+//        printf("tx\n");
+        printf("\n[tx]");
       return SI446X_CMD_GET_INT_STATUS_REP_PH_PEND_PACKET_SENT_PEND_BIT;
     }
 
@@ -140,7 +141,7 @@ U8 bRadio_Check_Tx_RX(void)
 
       si446x_read_rx_fifo(Si446xCmd.FIFO_INFO.RX_FIFO_COUNT, &customRadioPacket[0]);
 
-      printf("rx\n");
+      printf("rx");
       return SI446X_CMD_GET_INT_STATUS_REP_PH_PEND_PACKET_RX_PEND_BIT;
     }
       
@@ -215,10 +216,11 @@ U8 get_CCA(void)
 //	*(int8_t *)value = (Si446xCmd.GET_MODEM_STATUS.CURR_RSSI/2)-0x40-70;
 
 //	printf("CCA(%d)\n", value);
-	printf("CCA(%d,%d)\n",
-			Si446xCmd.GET_MODEM_STATUS.CURR_RSSI,
-			Si446xCmd.GET_MODEM_STATUS.LATCH_RSSI
-			);
+
+//	printf("CCA(%d,%d)",
+//			Si446xCmd.GET_MODEM_STATUS.CURR_RSSI,
+//			Si446xCmd.GET_MODEM_STATUS.LATCH_RSSI
+//			);
 
 //	return 0;
 //	if(tmp[3] > 0xa0)

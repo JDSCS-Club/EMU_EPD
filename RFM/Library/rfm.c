@@ -33,7 +33,9 @@ SEGMENT_VARIABLE(lPer_MsCnt, U16, SEG_DATA);
 /*------------------------------------------------------------------------*/
 /*                              Defines                                   */
 /*------------------------------------------------------------------------*/
-#define PACKET_SEND_INTERVAL 2000u
+//#define PACKET_SEND_INTERVAL 2000u
+//#define PACKET_SEND_INTERVAL 500u
+#define PACKET_SEND_INTERVAL 50u
 
 #define PHR_CRC16_DW_DIS			0x10
 #define PHR_CRC16_DW_EN				0x18
@@ -563,7 +565,7 @@ U8 bBitOrderReverse(U8 bByteToReverse)
  */
 BIT gSampleCode_SendVariablePacket(void)
 {
-	printf("%s(%d)\n", __func__, __LINE__);
+//	printf("%s(%d)\n", __func__, __LINE__);
 
   SEGMENT_VARIABLE(boPbPushTrack,  U8, SEG_DATA);
   SEGMENT_VARIABLE(lTemp,         U16, SEG_DATA);
