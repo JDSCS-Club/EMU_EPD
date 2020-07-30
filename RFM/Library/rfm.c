@@ -141,9 +141,13 @@ void rfm_main(void)
   vRadio_StartRX(pRadioConfiguration->Radio_ChannelNumber,0u);
 
   static uint32_t s_nTick;
+
+  static uint32_t s_oldTick;
   uint32_t currTick;
 
   s_nTick = HAL_GetTick();
+
+  s_oldTick = s_nTick;
 
   while (TRUE)
   {
@@ -167,7 +171,7 @@ void rfm_main(void)
 //	  HAL_GetTick() = s_nTick;
 //    HAL_Delay( 1 );		//	1 msec
 
-	if( (s_nTick - currTick) >= 1 )
+	if( (currTick - s_nTick) >= 1 )
 	{
 		//	1 msec Tick
 		//	Proc( s_nTick - currTick )
@@ -177,6 +181,15 @@ void rfm_main(void)
 		{
 		  lPer_MsCnt++;
 		}
+	}
+
+	if( ( currTick - s_oldTick ) >= 1000 )
+	{
+		//	1 sec
+
+		printf("%s : Tx(%d) / Rx(%d)\n",__func__, nTxPkt, nRxPkt);
+
+		s_oldTick = currTick;
 	}
 
     // Demo Application Poll-Handler function

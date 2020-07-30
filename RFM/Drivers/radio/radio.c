@@ -23,6 +23,9 @@
  *  Local Macros & Definitions
  *****************************************************************************/
 
+int nTxPkt = 0;
+int nRxPkt = 0;
+
 /*****************************************************************************
  *  Global Variables
  *****************************************************************************/
@@ -127,7 +130,8 @@ U8 bRadio_Check_Tx_RX(void)
     if(Si446xCmd.GET_INT_STATUS.PH_PEND & SI446X_CMD_GET_INT_STATUS_REP_PH_PEND_PACKET_SENT_PEND_BIT)
     {
 //        printf("tx\n");
-        printf("\n[tx]");
+//        printf("\n[tx]");
+        nTxPkt++;
       return SI446X_CMD_GET_INT_STATUS_REP_PH_PEND_PACKET_SENT_PEND_BIT;
     }
 
@@ -141,7 +145,8 @@ U8 bRadio_Check_Tx_RX(void)
 
       si446x_read_rx_fifo(Si446xCmd.FIFO_INFO.RX_FIFO_COUNT, &customRadioPacket[0]);
 
-      printf("rx");
+//      printf("rx");
+      nRxPkt++;
       return SI446X_CMD_GET_INT_STATUS_REP_PH_PEND_PACKET_RX_PEND_BIT;
     }
       

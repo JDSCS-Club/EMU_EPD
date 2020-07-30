@@ -12,6 +12,10 @@
 
 #include "si446x_defs.h"
 
+extern int nTxPkt;		//	Tx Packet Count
+extern int nRxPkt;		//	Rx Packet Count
+
+
 /*****************************************************************************
  *  Global Macros & Definitions
  *****************************************************************************/
