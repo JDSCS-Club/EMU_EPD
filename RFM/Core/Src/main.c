@@ -21,7 +21,6 @@
 #include <stdint.h>         //  uint16_t
 
 /* USER CODE END Header */
-
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
 
@@ -102,6 +101,8 @@ static void MX_USB_OTG_FS_PCD_Init(void);
 
 #include "codec.h"				//	speex Codec
 
+#include "keypad.h"				//	RFM Keypad
+
 //si4463 Interrupt
 
 uint8_t RF_NIRQ;
@@ -175,7 +176,6 @@ int main(void)
   /* USER CODE BEGIN 1 */
 
   /* USER CODE END 1 */
-  
 
   /* MCU Configuration--------------------------------------------------------*/
 
@@ -245,7 +245,7 @@ int main(void)
   //	Radio Spi
   RF_RxTx_Mode();
 
-  if( 1 )
+#if 1
   {
 	  //	Driver #1	-	WDS
 
@@ -262,9 +262,9 @@ int main(void)
 		printf ( "%08x\n", Si446xCmd.PART_INFO.ROMID );
 		printf ( "-------------------------\n" );
 
-		rfm_main();		//	RFM Main
+//		rfm_main();		//	RFM Main
   }
-  else
+#else
   {
 	  //	Driver #2
 	  //*
@@ -283,15 +283,15 @@ int main(void)
 
 	  SI4463_Test();
   }
+#endif
 
   /* USER CODE END 2 */
- 
- 
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
 
-  int nTick;
+  int nCurrTick;
+  static int nLedTick = 0;
 
   while (1)
   {
@@ -299,14 +299,18 @@ int main(void)
 
     /* USER CODE BEGIN 3 */
 
-	  nTick = HAL_GetTick();
+	  nCurrTick = HAL_GetTick();
 
-	HAL_Delay( 1000 );
+	LoopProcKey( nCurrTick );
 
-    HAL_GPIO_TogglePin( LED_ST_GPIO_Port, LED_ST_Pin );
+	if ( ( nCurrTick - nLedTick ) >= 1000 )
+	{
+	    HAL_GPIO_TogglePin( LED_ST_GPIO_Port, LED_ST_Pin );
 
-    printf( "%s(%d) - Loop(%d)\n", __func__, __LINE__, nTick );
+	    printf( "%s(%d) - Loop(%d)\n", __func__, __LINE__, nCurrTick );
 
+	    nLedTick = nCurrTick;
+	}
   }
   /* USER CODE END 3 */
 }
@@ -321,11 +325,12 @@ void SystemClock_Config(void)
   RCC_ClkInitTypeDef RCC_ClkInitStruct = {0};
   RCC_PeriphCLKInitTypeDef PeriphClkInitStruct = {0};
 
-  /** Configure the main internal regulator output voltage 
+  /** Configure the main internal regulator output voltage
   */
   __HAL_RCC_PWR_CLK_ENABLE();
   __HAL_PWR_VOLTAGESCALING_CONFIG(PWR_REGULATOR_VOLTAGE_SCALE1);
-  /** Initializes the CPU, AHB and APB busses clocks 
+  /** Initializes the RCC Oscillators according to the specified parameters
+  * in the RCC_OscInitTypeDef structure.
   */
   RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSE;
   RCC_OscInitStruct.HSEState = RCC_HSE_BYPASS;
@@ -339,7 +344,7 @@ void SystemClock_Config(void)
   {
     Error_Handler();
   }
-  /** Initializes the CPU, AHB and APB busses clocks 
+  /** Initializes the CPU, AHB and APB buses clocks
   */
   RCC_ClkInitStruct.ClockType = RCC_CLOCKTYPE_HCLK|RCC_CLOCKTYPE_SYSCLK
                               |RCC_CLOCKTYPE_PCLK1|RCC_CLOCKTYPE_PCLK2;
@@ -378,7 +383,7 @@ static void MX_ADC1_Init(void)
   /* USER CODE BEGIN ADC1_Init 1 */
 
   /* USER CODE END ADC1_Init 1 */
-  /** Configure the global features of the ADC (Clock, Resolution, Data Alignment and number of conversion) 
+  /** Configure the global features of the ADC (Clock, Resolution, Data Alignment and number of conversion)
   */
   hadc1.Instance = ADC1;
   hadc1.Init.ClockPrescaler = ADC_CLOCK_SYNC_PCLK_DIV2;
@@ -396,7 +401,7 @@ static void MX_ADC1_Init(void)
   {
     Error_Handler();
   }
-  /** Configure for the selected ADC regular channel its corresponding rank in the sequencer and its sample time. 
+  /** Configure for the selected ADC regular channel its corresponding rank in the sequencer and its sample time.
   */
   sConfig.Channel = ADC_CHANNEL_11;
   sConfig.Rank = 1;
@@ -739,10 +744,10 @@ static void MX_USB_OTG_FS_PCD_Init(void)
 
 }
 
-/** 
+/**
   * Enable DMA controller clock
   */
-static void MX_DMA_Init(void) 
+static void MX_DMA_Init(void)
 {
 
   /* DMA controller clock enable */
@@ -786,7 +791,7 @@ static void MX_GPIO_Init(void)
   HAL_GPIO_WritePin(GPIOE, PWR_RF_Pin|PWR_AUDIO_Pin, GPIO_PIN_SET);
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(GPIOE, SPK_ON_Pin|STANDBY_Pin|AUDIO_ON_Pin|LIGHT_ON_Pin 
+  HAL_GPIO_WritePin(GPIOE, SPK_ON_Pin|STANDBY_Pin|AUDIO_ON_Pin|LIGHT_ON_Pin
                           |GPIO_PIN_11|GPIO_PIN_12|GPIO_PIN_13|GPIO_PIN_14, GPIO_PIN_RESET);
 
   /*Configure GPIO pin Output Level */
@@ -796,7 +801,7 @@ static void MX_GPIO_Init(void)
   HAL_GPIO_WritePin(TRN_RST_GPIO_Port, TRN_RST_Pin, GPIO_PIN_RESET);
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(GPIOB, RX_EN_Pin|RF_TX_Pin|RF_RX_Pin|LED_ON_A_Pin 
+  HAL_GPIO_WritePin(GPIOB, RX_EN_Pin|RF_TX_Pin|RF_RX_Pin|LED_ON_A_Pin
                           |LED_ON_B_Pin|FLASH_ON_Pin, GPIO_PIN_RESET);
 
   /*Configure GPIO pin Output Level */
@@ -808,11 +813,11 @@ static void MX_GPIO_Init(void)
   /*Configure GPIO pin Output Level */
   HAL_GPIO_WritePin(LED_ST_GPIO_Port, LED_ST_Pin, GPIO_PIN_RESET);
 
-  /*Configure GPIO pins : PWR_RF_Pin PWR_AUDIO_Pin SPK_ON_Pin STANDBY_Pin 
-                           AUDIO_ON_Pin LIGHT_ON_Pin PE11 PE12 
+  /*Configure GPIO pins : PWR_RF_Pin PWR_AUDIO_Pin SPK_ON_Pin STANDBY_Pin
+                           AUDIO_ON_Pin LIGHT_ON_Pin PE11 PE12
                            PE13 PE14 */
-  GPIO_InitStruct.Pin = PWR_RF_Pin|PWR_AUDIO_Pin|SPK_ON_Pin|STANDBY_Pin 
-                          |AUDIO_ON_Pin|LIGHT_ON_Pin|GPIO_PIN_11|GPIO_PIN_12 
+  GPIO_InitStruct.Pin = PWR_RF_Pin|PWR_AUDIO_Pin|SPK_ON_Pin|STANDBY_Pin
+                          |AUDIO_ON_Pin|LIGHT_ON_Pin|GPIO_PIN_11|GPIO_PIN_12
                           |GPIO_PIN_13|GPIO_PIN_14;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
@@ -851,9 +856,9 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(TRN_RST_GPIO_Port, &GPIO_InitStruct);
 
-  /*Configure GPIO pins : RX_EN_Pin RF_TX_Pin RF_RX_Pin LED_ON_A_Pin 
+  /*Configure GPIO pins : RX_EN_Pin RF_TX_Pin RF_RX_Pin LED_ON_A_Pin
                            LED_ON_B_Pin FLASH_ON_Pin */
-  GPIO_InitStruct.Pin = RX_EN_Pin|RF_TX_Pin|RF_RX_Pin|LED_ON_A_Pin 
+  GPIO_InitStruct.Pin = RX_EN_Pin|RF_TX_Pin|RF_RX_Pin|LED_ON_A_Pin
                           |LED_ON_B_Pin|FLASH_ON_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
@@ -867,12 +872,14 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_HIGH;
   HAL_GPIO_Init(SS_GPIO_Port, &GPIO_InitStruct);
 
-  /*Configure GPIO pins : ON_OFF_KEY_Pin DOME1_Pin DOME2_Pin DOME3_Pin 
-                           DOME4_Pin DOME6_Pin SOS_KEY_Pin PTT_KEY_Pin */
-  GPIO_InitStruct.Pin = ON_OFF_KEY_Pin|DOME1_Pin|DOME2_Pin|DOME3_Pin 
-                          |DOME4_Pin|DOME6_Pin|SOS_KEY_Pin|PTT_KEY_Pin;
-  GPIO_InitStruct.Mode = GPIO_MODE_IT_RISING_FALLING;
-  GPIO_InitStruct.Pull = GPIO_PULLUP;
+  /*Configure GPIO pins : ON_OFF_KEY_Pin DOME1_Pin DOME2_Pin DOME3_Pin
+                           DOME4_Pin DOME5_Pin DOME6_Pin SOS_KEY_Pin
+                           PTT_KEY_Pin */
+  GPIO_InitStruct.Pin = ON_OFF_KEY_Pin|DOME1_Pin|DOME2_Pin|DOME3_Pin
+                          |DOME4_Pin|DOME5_Pin|DOME6_Pin|SOS_KEY_Pin
+                          |PTT_KEY_Pin;
+  GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
   HAL_GPIO_Init(GPIOD, &GPIO_InitStruct);
 
   /*Configure GPIO pins : ON_OFF_EN_Pin LED_ST_Pin */
@@ -883,23 +890,8 @@ static void MX_GPIO_Init(void)
   HAL_GPIO_Init(GPIOD, &GPIO_InitStruct);
 
   /* EXTI interrupt init*/
-  HAL_NVIC_SetPriority(EXTI0_IRQn, 0, 0);
-  HAL_NVIC_EnableIRQ(EXTI0_IRQn);
-
-  HAL_NVIC_SetPriority(EXTI1_IRQn, 0, 0);
-  HAL_NVIC_EnableIRQ(EXTI1_IRQn);
-
-  HAL_NVIC_SetPriority(EXTI2_IRQn, 0, 0);
-  HAL_NVIC_EnableIRQ(EXTI2_IRQn);
-
-  HAL_NVIC_SetPriority(EXTI3_IRQn, 0, 0);
-  HAL_NVIC_EnableIRQ(EXTI3_IRQn);
-
   HAL_NVIC_SetPriority(EXTI4_IRQn, 0, 0);
   HAL_NVIC_EnableIRQ(EXTI4_IRQn);
-
-  HAL_NVIC_SetPriority(EXTI9_5_IRQn, 0, 0);
-  HAL_NVIC_EnableIRQ(EXTI9_5_IRQn);
 
 }
 
@@ -949,7 +941,7 @@ void Error_Handler(void)
   * @retval None
   */
 void assert_failed(uint8_t *file, uint32_t line)
-{ 
+{
   /* USER CODE BEGIN 6 */
   /* User can add his own implementation to report the file name and line number,
      tex: printf("Wrong parameters value: file %s on line %d\r\n", file, line) */
