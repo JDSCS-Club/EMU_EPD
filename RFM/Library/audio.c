@@ -291,10 +291,10 @@ void InitCodecMAX9860   ( void )
 #define NLO (N&0xFF)		//	NLO is lower 8 bits of N
 
 	//========================================================================
-	//  Audio Master Clock 13 MHz ¼³Á¤.
+	//  Audio Master Clock 13 MHz ì„¤ì •.
 
 	//========================================================================
-	//  Codec ÃÊ±âÈ­. ( MAX9860ETG+ )
+	//  Codec ì´ˆê¸°í™”. ( MAX9860ETG+ )
 
 	/*	Initialize the MAX9860 by setting registers	*/
 	//	registers at 0x03, 0x04, and 0x05 are clock control registers
@@ -395,7 +395,7 @@ int	AudioLoopback( void )
 //
 //		if ( input_check() != 0 )
 //		{
-//			//	Å°ÀÔ·Â ¹Þ´Â °æ¿ì break;
+//			//	í‚¤ìž…ë ¥ ë°›ëŠ” ê²½ìš° break;
 //			break;
 //		}
 //	}
@@ -605,7 +605,7 @@ int		AudioCodecLoopback		( int bOnOff )
 void	QPutAudioStream( char * sBuf, int nSize )
 //========================================================================
 {
-	//	RF Data·Î ºÎÅÍ ¼ö½ÅµÈ Audio Stream
+	//	RF Dataë¡œ ë¶€í„° ìˆ˜ì‹ ëœ Audio Stream
 
 	//	RF Data Recv -> Audio Out
 	if ( g_eAudioMode & eAModRFRx )

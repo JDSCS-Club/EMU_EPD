@@ -23,7 +23,7 @@
 
 #ifndef GetDbgLevel
 
-#define GetDbgLevel( args ... )     (0)         //  GetDbgLevelÀÌ Á¤ÀÇµÇÁö ¾ÊÀ¸¸é Default 0
+#define GetDbgLevel( args ... )     (0)         //  GetDbgLevelì´ ì •ì˜ë˜ì§€ ì•Šìœ¼ë©´ Default 0
 
 #endif
 
@@ -44,15 +44,15 @@ void Adc_Power( void )
     static int old_adc_pwr = 3100;
     int adc_pwr;
 
-    static int  bOldIsCharge = 0;        //  ÃæÀüÁß.
-    int         bIsCharge;       //  ÃæÀüÁß.
+    static int  bOldIsCharge = 0;        //  ì¶©ì „ì¤‘.
+    int         bIsCharge;       //  ì¶©ì „ì¤‘.
 
     HAL_ADC_Start( &hadc1 );
     HAL_ADC_PollForConversion( &hadc1, 100 );
 
     adc_pwr = HAL_ADC_GetValue( &hadc1 );
 
-    //  ÃæÀüÁßÀÎÁö °Ë»ç.
+    //  ì¶©ì „ì¤‘ì¸ì§€ ê²€ì‚¬.
     bIsCharge = ( HAL_GPIO_ReadPin( BAT_CHRG_GPIO_Port, BAT_CHRG_Pin ) ) ? 0 : 1;
 
     if( GetDbgLevel() > 0 )
@@ -68,7 +68,7 @@ void Adc_Power( void )
     {
         if ( bIsCharge == 0 )
         {
-            //  ÃæÀü ´ÜÀÚ Á¦°Å½Ã -  LED Off
+            //  ì¶©ì „ ë‹¨ì ì œê±°ì‹œ -  LED Off
             HAL_GPIO_WritePin( LED_ON_A_GPIO_Port, LED_ON_A_Pin, GPIO_PIN_RESET );  //  Green
             HAL_GPIO_WritePin( LED_ON_B_GPIO_Port, LED_ON_B_Pin, GPIO_PIN_RESET );  //  Red
         }
@@ -78,22 +78,22 @@ void Adc_Power( void )
 
     if( bIsCharge )
     {
-        //  ÃæÀüÁß. - Charging Start.
+        //  ì¶©ì „ì¤‘. - Charging Start.
 
         LCDBattery( 6 );
 
-        //  LED »óÅÂ. - ÃæÀüÁß Red / ÃæÀü¿Ï·á : Green
+        //  LED ìƒíƒœ. - ì¶©ì „ì¤‘ Red / ì¶©ì „ì™„ë£Œ : Green
 
         if ( adc_pwr < 2550 )
         {
-            //  ÃæÀüÁß.
+            //  ì¶©ì „ì¤‘.
             //  Red LED
             HAL_GPIO_WritePin( LED_ON_A_GPIO_Port, LED_ON_A_Pin, GPIO_PIN_RESET );  //  Green
             HAL_GPIO_WritePin( LED_ON_B_GPIO_Port, LED_ON_B_Pin, GPIO_PIN_SET );    //  Red
         }
         else
         {
-            //  ÃæÀü¿Ï·á.
+            //  ì¶©ì „ì™„ë£Œ.
             //  Green LED
             HAL_GPIO_WritePin( LED_ON_A_GPIO_Port, LED_ON_A_Pin, GPIO_PIN_SET );    //  Green
             HAL_GPIO_WritePin( LED_ON_B_GPIO_Port, LED_ON_B_Pin, GPIO_PIN_RESET );  //  Red
