@@ -1,0 +1,26 @@
+*.bat           text eol=crlf
+*.sh            eol=lf
+
+# Windows Files
+*.sln		       	text eol=crlf
+*.vcxproj       	text eol=crlf
+*.vcxproj.filters	text eol=crlf
+
+
+#*               text=auto
+#*.c             text
+#*.cc            text
+#*.gyp           text
+#*.gypi          text
+#*.h             text
+#*.ps1           text eol=crlf
+#*.rst           text
+#*.sh            text
+#*.txt           text
+#.gitignore      text
+#.gitattributes  text
+#Makefile        text
+#configure       text
+#
+#configure       eol=lf
+#VERSION.txt     eol=lf
