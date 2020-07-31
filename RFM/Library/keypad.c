@@ -200,6 +200,8 @@ void KeyVol( int bValue )
 		//	Spk On
 		LCDSpeaker( 1 );
 
+		HAL_GPIO_WritePin( SPK_ON_GPIO_Port, SPK_ON_Pin, GPIO_PIN_SET );
+
 //		//	Codec Loopback On
 //		/*
 //		AudioCodecLoopback( 1 );
@@ -215,6 +217,8 @@ void KeyVol( int bValue )
 
 		//	Spk Off
 		LCDSpeaker( 0 );
+
+		HAL_GPIO_WritePin( SPK_ON_GPIO_Port, SPK_ON_Pin, GPIO_PIN_RESET );
 
 //		//	Codec Loopback Off
 //		/*
@@ -309,39 +313,6 @@ void	KeyPwrOnOff		( int bValue )
 		//	Power Off
 
 		HAL_GPIO_WritePin( ON_OFF_EN_GPIO_Port, ON_OFF_EN_Pin, GPIO_PIN_RESET );
-
-		//if ( g_bPowerOnOff )
-		//{
-		//	//	Power On -> Off
-		//	g_bPowerOnOff = 0;
-
-		//	//	LCD Off
-		//	LCDClear();
-		//	
-		//	//	RF / Codec Power Off
-		//	HAL_GPIO_WritePin( PWR_RF_GPIO_Port, PWR_RF_Pin, GPIO_PIN_RESET );
-		//	HAL_GPIO_WritePin( PWR_AUDIO_GPIO_Port, PWR_AUDIO_Pin, GPIO_PIN_RESET );
-
-		//	//	LED Off
-		//	HAL_GPIO_WritePin( LED_ON_A_GPIO_Port, LED_ON_A_Pin, GPIO_PIN_RESET );
-		//	HAL_GPIO_WritePin( LED_ON_B_GPIO_Port, LED_ON_B_Pin, GPIO_PIN_RESET );
-		//	HAL_GPIO_WritePin( LED_ST_GPIO_Port, LED_ST_Pin, GPIO_PIN_RESET );
-
-		//	//	Light Off
-		//	HAL_GPIO_WritePin( FLASH_ON_GPIO_Port, FLASH_ON_Pin, GPIO_PIN_RESET );
-		//}
-		//else
-		//{
-		//	//	Power Off -> On
-		//	g_bPowerOnOff = 1;
-
-		//	//	RF / Codec Power On
-		//	HAL_GPIO_WritePin( PWR_RF_GPIO_Port, PWR_RF_Pin, GPIO_PIN_SET );
-		//	HAL_GPIO_WritePin( PWR_AUDIO_GPIO_Port, PWR_AUDIO_Pin, GPIO_PIN_SET );
-
-		//	//	Initialize
-		//	Initialize();
-		//}
 	}
 }
 

@@ -103,6 +103,8 @@ static void MX_USB_OTG_FS_PCD_Init(void);
 
 #include "keypad.h"				//	RFM Keypad
 
+#include "audio.h"				//	MAX9860
+
 //si4463 Interrupt
 
 uint8_t RF_NIRQ;
@@ -222,8 +224,11 @@ int main(void)
 
 	//========================================================================
 	//	Codec MAX9860ETG+
+
 	if ( HAL_OK == HAL_I2C_IsDeviceReady( &hi2c1, (uint16_t)( 0x10 << 1 ), 2, 2 ) )
 	{
+		SetAudioIC( AudioMAX9860 );
+
 		//  Read Rev.
 		char buf[10];
 		int cntRetry;
