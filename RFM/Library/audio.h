@@ -26,7 +26,12 @@
 
 #include "queueBuf.h"
 
-#include "rf_pa.h"				//	I2S_DMA_LOOP_SIZE / I2S_DMA_LOOP_QCNT
+//#define		I2S_DMA_LOOP_SIZE		(RFPktDataLen/2)	//	[4Byte Commnad] [ 60Byte Stream Data ]
+
+#define		I2S_DMA_LOOP_SIZE		( 60 / 2 )	//	[4Byte Commnad] [ 60Byte Stream Data ]
+#define		I2S_DMA_LOOP_QCNT		8		//	Queue Count
+
+//#include "rf_pa.h"				//	I2S_DMA_LOOP_SIZE / I2S_DMA_LOOP_QCNT
 
 enum eAudioMode
 {
@@ -99,53 +104,6 @@ int		GetAudioIC( void );
 int		WriteI2CCodec		( uint8_t addr, uint8_t data );
 void	InitCodecMAX9860	( void );
 
-
-//========================================================================
-//
-//		Codec ( XE3005 )
-//
-//========================================================================
-
-
-// Instruction definitions
-enum XE300X_REG
-{
-	READ_REG	=	0xC0,
-	WRITE_REG	=	0x80,
-
-	// Register addresses
-	A_REG		=	0x00,
-	B_REG		=	0x01,
-	C_REG		=	0x02,
-	D_REG		=	0x03,
-	E_REG		=	0x04,
-	F_REG		=	0x05,
-	G_REG		=	0x06,
-	H_REG		=	0x07,
-	I_REG		=	0x08,
-	J_REG		=	0x09,
-	K_REG		=	0x0A,
-	L_REG		=	0x0B,
-	M_REG		=	0x0C,
-	N_REG		=	0x0D,
-	O_REG		=	0x0E,
-	P_REG		=	0x0F,
-};
-
-
-//========================================================================
-//	Codec Register Setting
-
-//	CodecXXXX - Codec SPI 제어.
-
-void	WriteSPICodec			( uint8_t addr, uint8_t data );
-void	InitCodecXE3005			( void );
-
-void	CodecMuteDAC			( int bMute );
-void	CodecMuteADC			( int bMute );
-
-void	CodecLoopback			( int bOnOff );
-
 //========================================================================
 
 int		AudioLoopback			( void );
@@ -167,8 +125,5 @@ int		AudioRFTx				( void );		//	RF Data Tx
 int		AudioRFRx				( void );		//	RF Data Rx
 
 void	AudioDebugEnable		( void );
-
-
-
 
 #endif

@@ -208,81 +208,96 @@ int main(void)
   MX_USB_OTG_FS_PCD_Init();
   /* USER CODE BEGIN 2 */
 
-  //========================================================================
-  //    Initial
+	//========================================================================
+	//    Initial
 
-  //	Serial
-//  SerialInit( &huart1, &huart2 );   //  Init Serial Handle
-  SerialInit( NULL, &huart2 );   //  Init Serial Handle
-  setbuf ( stdout, NULL );		            //	1024 byte buffer clear
-//  setvbuf ( stdout, NULL, _IOLBF, NULL );	//	Line Buffer
-  setvbuf ( stdout, NULL, _IONBF, NULL );	//	No Buffer
+	//	Serial
+	//  SerialInit( &huart1, &huart2 );   //  Init Serial Handle
+	SerialInit( NULL, &huart2 );   //  Init Serial Handle
+	setbuf ( stdout, NULL );		            //	1024 byte buffer clear
+	//  setvbuf ( stdout, NULL, _IOLBF, NULL );	//	Line Buffer
+	setvbuf ( stdout, NULL, _IONBF, NULL );	//	No Buffer
 
-  printf( "%s(%d) - Start\n", __func__, __LINE__ );
+	printf( "%s(%d) - Start\n", __func__, __LINE__ );
 
+	//========================================================================
+	//	Codec MAX9860ETG+
+	if ( HAL_OK == HAL_I2C_IsDeviceReady( &hi2c1, (uint16_t)( 0x10 << 1 ), 2, 2 ) )
+	{
+		//  Read Rev.
+		char buf[10];
+		int cntRetry;
 
-  //========================================================================
-  //	OLED
-  if ( HAL_OK == HAL_I2C_IsDeviceReady( &hi2c3, (uint16_t)( SSD1306_I2C_ADDRESS ), 2, 2 ) )
-  {
-      //========================================================================
-      //    OLED가 연결되어있음.
-//      SetDevID( DevRF900T );        //  송신기.
+		cntRetry = 0;
 
-      //    LCD Init
-      LCDInit();
+		memset( buf, 0, sizeof( buf ) );
+		while ( HAL_I2C_Mem_Read( &hi2c1, (uint16_t)( 0x10 << 1 ), (uint16_t)0xFF, I2C_MEMADD_SIZE_8BIT, buf, (uint16_t)1, 1000 ) != HAL_OK && cntRetry < 10 ) cntRetry++;
 
-      LCDMenu();
-  }
-  else
-  {
-      //========================================================================
-      //    OLED가 없으면 -> 수신기
-//      SetDevID( DevRF900M );        //  수신기.
-  }
+		printf( "%s(%d) - Codec ( MAX9860ETG+ ) / Rev. 0x%02X\n", __func__, __LINE__, buf[0] );
 
-  //========================================================================
-  //	Radio Spi
-  RF_RxTx_Mode();
+		//  Codec 초기화.
+
+		InitCodecMAX9860();
+	}
+
+	//========================================================================
+	//	OLED
+	if ( HAL_OK == HAL_I2C_IsDeviceReady( &hi2c3, (uint16_t)( SSD1306_I2C_ADDRESS ), 2, 2 ) )
+	{
+	//========================================================================
+	//    OLED가 연결되어있음.
+	//      SetDevID( DevRF900T );        //  송신기.
+
+	  //    LCD Init
+	  LCDInit();
+
+	  LCDMenu();
+	}
+	else
+	{
+	//========================================================================
+	//    OLED가 없으면 -> 수신기
+	//      SetDevID( DevRF900M );        //  수신기.
+	}
+
+	//========================================================================
+	//	Radio Spi
+	RF_RxTx_Mode();
 
 #if 1
-  {
-	  //	Driver #1	-	WDS
+	//	Driver #1	-	WDS
 
-	  vRadio_Init();		//	Init Radio
+	vRadio_Init();		//	Init Radio
 
-		si446x_part_info ();
+	si446x_part_info ();
 
-		printf ( "=========================\n" );
-		printf ( "%08x\n", Si446xCmd.PART_INFO.CHIPREV );
-		printf ( "%08x\n", Si446xCmd.PART_INFO.PART );
-		printf ( "%08x\n", Si446xCmd.PART_INFO.PBUILD );
-		printf ( "%08x\n", Si446xCmd.PART_INFO.ID );
-		printf ( "%08x\n", Si446xCmd.PART_INFO.CUSTOMER );
-		printf ( "%08x\n", Si446xCmd.PART_INFO.ROMID );
-		printf ( "-------------------------\n" );
+	printf ( "=========================\n" );
+	printf ( "%08x\n", Si446xCmd.PART_INFO.CHIPREV );
+	printf ( "%08x\n", Si446xCmd.PART_INFO.PART );
+	printf ( "%08x\n", Si446xCmd.PART_INFO.PBUILD );
+	printf ( "%08x\n", Si446xCmd.PART_INFO.ID );
+	printf ( "%08x\n", Si446xCmd.PART_INFO.CUSTOMER );
+	printf ( "%08x\n", Si446xCmd.PART_INFO.ROMID );
+	printf ( "-------------------------\n" );
 
-//		rfm_main();		//	RFM Main
-  }
+	//		rfm_main();		//	RFM Main
 #else
-  {
-	  //	Driver #2
-	  //*
-	   RF_Tx();	//	Tx Mode
-	   /*/
-	   RF_Rx();	//	Rx Mode
-	   //	*/
+	//	Driver #2
+	//*
+	RF_Tx();	//	Tx Mode
+	/*/
+	RF_Rx();	//	Rx Mode
+	//	*/
 
-	  RF_Init();
+	RF_Init();
 
-	  SI4463_Debug(1);
+	SI4463_Debug(1);
 
-	  RF_PartInfo();
+	RF_PartInfo();
 
-	  RF_FuncInfo();
+	RF_FuncInfo();
 
-	  SI4463_Test();
-  }
+	SI4463_Test();
 #endif
 
   /* USER CODE END 2 */
