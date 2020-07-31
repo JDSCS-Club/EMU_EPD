@@ -202,12 +202,8 @@ void KeyVol( int bValue )
 
 		HAL_GPIO_WritePin( SPK_ON_GPIO_Port, SPK_ON_Pin, GPIO_PIN_SET );
 
-//		//	Codec Loopback On
-//		/*
-//		AudioCodecLoopback( 1 );
-//		/*/
-//		AudioRxTxLoop();
-//		//	*/
+		//	Codec Loopback On
+		AudioRxTxLoop();
 	}
 	else
 	{
@@ -220,12 +216,8 @@ void KeyVol( int bValue )
 
 		HAL_GPIO_WritePin( SPK_ON_GPIO_Port, SPK_ON_Pin, GPIO_PIN_RESET );
 
-//		//	Codec Loopback Off
-//		/*
-//		AudioCodecLoopback( 0 );
-//		/*/
-//		AudioTxNull();
-//		//	*/
+		//	Codec Loopback Off
+		AudioTxNull();
 	}
 }
 

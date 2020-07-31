@@ -104,6 +104,18 @@ uint32_t	g_eAudioMode = 0;		//	Audio Mode
 
 uint32_t	g_eAudioSample = eASampleDefault;		//	Audio Sampling ( Default : 8 KHz )
 
+
+QBuf_t		g_qBufAudioRFRx;		//	Audio Queue Buffer	( RF Rx Buffer )
+uint16_t	g_bufAudioRFRx[I2S_DMA_LOOP_SIZE * I2S_DMA_LOOP_QCNT] = { 0, };	//	512
+
+QBuf_t		g_qBufAudioRFTx;		//	Audio Queue Buffer	( RF Tx Buffer )
+uint16_t	g_bufAudioRFTx[I2S_DMA_LOOP_SIZE * I2S_DMA_LOOP_QCNT] = { 0, };	//	512
+
+
+uint16_t	t_audio_buff[I2S_DMA_LOOP_SIZE * 2];   // RADIO_MAX_PACKET_LENGTH * 2];
+uint16_t	r_audio_buff[I2S_DMA_LOOP_SIZE * 2];   //[RADIO_MAX_PACKET_LENGTH * 2];
+
+
 //========================================================================
 // Function
 
@@ -214,6 +226,13 @@ void HAL_I2SEx_TxRxCpltCallback( I2S_HandleTypeDef *hi2s )
 	if ( pCallback_I2SEx_TxRxCpltCallback )
 	{
 		pCallback_I2SEx_TxRxCpltCallback( hi2s );
+	}
+	else
+	{
+		//	Default Loopback
+		//	pAudioTable = sine_table;
+		memcpy( &bufAudio[0], &bufAudio[I2S_DMA_LOOP_SIZE], I2S_DMA_LOOP_SIZE * 2 );
+		HAL_I2SEx_TransmitReceive_DMA( &hi2s3, (uint16_t*)bufAudio, (uint16_t*)&bufAudio[I2S_DMA_LOOP_SIZE], I2S_DMA_LOOP_SIZE );
 	}
 }
 

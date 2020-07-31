@@ -106,10 +106,7 @@ void	InitCodecMAX9860	( void );
 
 //========================================================================
 
-int		AudioLoopback			( void );
 int		AudioLoopbackDMA		( void );
-
-int		AudioCodecLoopback		( int bOnOff );
 
 void	SetCallbackI2STxRxCplt	( void ( *pCallbackTxRxCplt )( I2S_HandleTypeDef *hi2s ) );
 

@@ -211,6 +211,13 @@ int main(void)
   /* USER CODE BEGIN 2 */
 
 	//========================================================================
+	//    Start PWM
+
+	//    I2S MCLK - 2 MHz
+	HAL_TIM_PWM_Start( &htim3, TIM_CHANNEL_2 );       //      2 MHz
+	HAL_TIMEx_PWMN_Start( &htim3, TIM_CHANNEL_2 );
+
+	//========================================================================
 	//    Initial
 
 	//	Serial
@@ -240,9 +247,19 @@ int main(void)
 
 		printf( "%s(%d) - Codec ( MAX9860ETG+ ) / Rev. 0x%02X\n", __func__, __LINE__, buf[0] );
 
+	    //========================================================================
 		//  Codec 초기화.
-
 		InitCodecMAX9860();
+
+	    //========================================================================
+		//	Audio Buffer 초기화.
+		AudioInit();
+
+	    //========================================================================
+	    //  Set Callback Function
+//	    SetCallbackI2STxRxCplt ( RF_PA_I2SEx_TxRxCpltCallback );
+
+	    //========================================================================
 	}
 
 	//========================================================================
@@ -624,6 +641,9 @@ static void MX_TIM3_Init(void)
 
   /* USER CODE BEGIN TIM3_Init 0 */
 
+    //  72000000 / 18 / 2 = 2000000 ( 2MHz )
+    //  72000000 / 3 / 2 = 12000000 ( 12MHz ) - MCLK ( MAX9860+ )
+
   /* USER CODE END TIM3_Init 0 */
 
   TIM_MasterConfigTypeDef sMasterConfig = {0};
@@ -633,7 +653,7 @@ static void MX_TIM3_Init(void)
 
   /* USER CODE END TIM3_Init 1 */
   htim3.Instance = TIM3;
-  htim3.Init.Prescaler = 18-1;
+  htim3.Init.Prescaler = 3-1;
   htim3.Init.CounterMode = TIM_COUNTERMODE_UP;
   htim3.Init.Period = 2-1;
   htim3.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
