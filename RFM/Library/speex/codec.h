@@ -31,7 +31,7 @@
 #else
 #include "stm32f10x.h"
 #endif
-#include "Vocoder.h"
+#include "vocoder.h"
 
 
 /* Exported types ------------------------------------------------------------*/

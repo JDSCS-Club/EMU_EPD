@@ -29,7 +29,8 @@ OPT = -Og
 # paths
 #######################################
 # Build path
-BUILD_DIR = build
+BUILD_DIR = build/$(TARGET)
+TARGET_DIR = build
 
 ######################################
 # source
@@ -66,7 +67,70 @@ Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_uart.c \
 Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_pcd.c \
 Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_pcd_ex.c \
 Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_ll_usb.c \
-Core/Src/system_stm32f4xx.c  
+Core/Src/system_stm32f4xx.c \
+Library/speex/STM32/libspeex/filters.c \
+Library/speex/STM32/libspeex/modes.c \
+Library/speex/STM32/libspeex/quant_lsp.c \
+Library/speex/STM32/libspeex/cb_search.c \
+Library/speex/STM32/libspeex/nb_celp.c \
+Library/speex/STM32/libspeex/vq.c \
+Library/speex/STM32/libspeex/ltp.c \
+Library/speex/libspeex/hexc_10_32_table.c \
+Library/speex/libspeex/lsp.c \
+Library/speex/libspeex/sb_celp.c \
+Library/speex/libspeex/hexc_table.c \
+Library/speex/libspeex/filterbank.c \
+Library/speex/libspeex/kiss_fft.c \
+Library/speex/libspeex/speex.c \
+Library/speex/libspeex/bits.c \
+Library/speex/libspeex/window.c \
+Library/speex/libspeex/high_lsp_tables.c \
+Library/speex/libspeex/exc_5_256_table.c \
+Library/speex/libspeex/exc_10_16_table.c \
+Library/speex/libspeex/lsp_tables_nb.c \
+Library/speex/libspeex/kiss_fftr.c \
+Library/speex/libspeex/resample.c \
+Library/speex/libspeex/exc_5_64_table.c \
+Library/speex/libspeex/smallft.c \
+Library/speex/libspeex/stereo.c \
+Library/speex/libspeex/vbr.c \
+Library/speex/libspeex/exc_20_32_table.c \
+Library/speex/libspeex/exc_10_32_table.c \
+Library/speex/libspeex/lpc.c \
+Library/speex/libspeex/preprocess.c \
+Library/speex/libspeex/modes_wb.c \
+Library/speex/libspeex/exc_8_128_table.c \
+Library/speex/libspeex/jitter.c \
+Library/speex/libspeex/gain_table.c \
+Library/speex/libspeex/gain_table_lbr.c \
+Library/speex/libspeex/mdf.c \
+Library/speex/libspeex/buffer.c \
+Library/speex/libspeex/speex_header.c \
+Library/speex/libspeex/speex_callbacks.c \
+Library/speex/vocoder.c \
+Library/speex/codec.c \
+Drivers/radio/radio.c \
+Drivers/radio/radio_comm.c \
+Drivers/radio/radio_hal.c \
+Drivers/si4463/radio_si4463.c \
+Drivers/si4463/si4463.c \
+Drivers/radio/Si446x/si446x_api_lib.c \
+Drivers/radio/Si446x/si446x_nirq.c \
+Drivers/display/fonts/PHan_Lib.c \
+Drivers/display/fonts/PHanFont.c \
+Library/queueBuf.c \
+Library/serial.c \
+Library/unicode.c \
+Library/cli.c \
+Library/rfm.c \
+Library/keypad.c \
+
+#Core/Src/syscalls.c \
+
+# CPP sources
+CPP_SOURCES =  \
+Drivers/display/Adafruit_GFX.cpp \
+Drivers/display/Adafruit_SSD1306.cpp
 
 # ASM sources
 ASM_SOURCES =  \
@@ -80,12 +144,17 @@ PREFIX = arm-none-eabi-
 # The gcc compiler bin path can be either defined in make command via GCC_PATH variable (> make GCC_PATH=xxx)
 # either it can be added to the PATH environment variable.
 ifdef GCC_PATH
-CC = $(GCC_PATH)/$(PREFIX)gcc
-AS = $(GCC_PATH)/$(PREFIX)gcc -x assembler-with-cpp
+CC = $(GCC_PATH)/$(PREFIX)g++ -std=c++11
+AS = $(GCC_PATH)/$(PREFIX)g++ -x assembler-with-cpp
+#CC = $(GCC_PATH)/$(PREFIX)gcc -std=c99
+#AS = $(GCC_PATH)/$(PREFIX)gcc -x assembler-with-cpp
 CP = $(GCC_PATH)/$(PREFIX)objcopy
 SZ = $(GCC_PATH)/$(PREFIX)size
 else
-CC = $(PREFIX)gcc
+#CC = $(PREFIX)g++ -std=c++11
+#AS = $(PREFIX)g++ -x assembler-with-cpp
+CC = $(PREFIX)gcc -std=c99 
+#CC = $(PREFIX)gcc -std=c99 -g -O0
 AS = $(PREFIX)gcc -x assembler-with-cpp
 CP = $(PREFIX)objcopy
 SZ = $(PREFIX)size
@@ -115,7 +184,8 @@ AS_DEFS =
 # C defines
 C_DEFS =  \
 -DUSE_HAL_DRIVER \
--DSTM32F407xx
+-DSTM32F407xx \
+-DHAVE_CONFIG_H \
 
 
 # AS includes
@@ -124,11 +194,23 @@ AS_INCLUDES =
 # C includes
 C_INCLUDES =  \
 -ICore/Inc \
+-ICore/Src \
+-ILibrary \
 -IDrivers/STM32F4xx_HAL_Driver/Inc \
 -IDrivers/STM32F4xx_HAL_Driver/Inc/Legacy \
 -IDrivers/CMSIS/Device/ST/STM32F4xx/Include \
 -IDrivers/CMSIS/Include \
--IDrivers/CMSIS/Include
+-IDrivers/radio \
+-IDrivers/radio/Si446x \
+-IDrivers/si4463 \
+-IDrivers/display \
+-IDrivers/display/fonts \
+-ILibrary/speex \
+-ILibrary/speex/include \
+-ILibrary/speex/STM32 \
+-ILibrary/speex/STM32/include \
+-ILibrary/speex/STM32/libspeex/gcc \
+-ILibrary/speex/libspeex \
 
 
 # compile gcc flags
@@ -152,12 +234,12 @@ CFLAGS += -MMD -MP -MF"$(@:%.o=%.d)"
 LDSCRIPT = STM32F407VGTx_FLASH.ld
 
 # libraries
-LIBS = -lc -lm -lnosys 
+LIBS = -lc -lm -lnosys -lstdc++
 LIBDIR = 
 LDFLAGS = $(MCU) -specs=nano.specs -T$(LDSCRIPT) $(LIBDIR) $(LIBS) -Wl,-Map=$(BUILD_DIR)/$(TARGET).map,--cref -Wl,--gc-sections
 
 # default action: build all
-all: $(BUILD_DIR)/$(TARGET).elf $(BUILD_DIR)/$(TARGET).hex $(BUILD_DIR)/$(TARGET).bin
+all: $(BUILD_DIR)/$(TARGET).elf $(TARGET_DIR)/$(TARGET).hex $(TARGET_DIR)/$(TARGET).bin
 
 
 #######################################
@@ -166,12 +248,17 @@ all: $(BUILD_DIR)/$(TARGET).elf $(BUILD_DIR)/$(TARGET).hex $(BUILD_DIR)/$(TARGET
 # list of objects
 OBJECTS = $(addprefix $(BUILD_DIR)/,$(notdir $(C_SOURCES:.c=.o)))
 vpath %.c $(sort $(dir $(C_SOURCES)))
+OBJECTS += $(addprefix $(BUILD_DIR)/,$(notdir $(CPP_SOURCES:.cpp=.o)))
+vpath %.cpp $(sort $(dir $(CPP_SOURCES)))
 # list of ASM program objects
 OBJECTS += $(addprefix $(BUILD_DIR)/,$(notdir $(ASM_SOURCES:.s=.o)))
 vpath %.s $(sort $(dir $(ASM_SOURCES)))
 
 $(BUILD_DIR)/%.o: %.c Makefile | $(BUILD_DIR) 
 	$(CC) -c $(CFLAGS) -Wa,-a,-ad,-alms=$(BUILD_DIR)/$(notdir $(<:.c=.lst)) $< -o $@
+
+$(BUILD_DIR)/%.o: %.cpp Makefile | $(BUILD_DIR) 
+	$(CC) -c $(CFLAGS) -Wa,-a,-ad,-alms=$(BUILD_DIR)/$(notdir $(<:.cpp=.lst)) $< -o $@
 
 $(BUILD_DIR)/%.o: %.s Makefile | $(BUILD_DIR)
 	$(AS) -c $(CFLAGS) $< -o $@
@@ -180,14 +267,14 @@ $(BUILD_DIR)/$(TARGET).elf: $(OBJECTS) Makefile
 	$(CC) $(OBJECTS) $(LDFLAGS) -o $@
 	$(SZ) $@
 
-$(BUILD_DIR)/%.hex: $(BUILD_DIR)/%.elf | $(BUILD_DIR)
+$(TARGET_DIR)/%.hex: $(BUILD_DIR)/%.elf | $(BUILD_DIR)
 	$(HEX) $< $@
 	
-$(BUILD_DIR)/%.bin: $(BUILD_DIR)/%.elf | $(BUILD_DIR)
+$(TARGET_DIR)/%.bin: $(BUILD_DIR)/%.elf | $(BUILD_DIR)
 	$(BIN) $< $@	
 	
 $(BUILD_DIR):
-	mkdir $@		
+	mkdir -p $@		
 
 #######################################
 # clean up
