@@ -40,17 +40,6 @@ enum eAudioMode
 	eAModRFRx			=	0x4,
 };
 
-enum eAudioSample
-{
-	eASample8KHz		=	0x0,
-	eASample4KHz		=	0x1,
-	eASample2KHz		=	0x2,
-	eASample1KHz		=	0x3,
-	eASampleDefault		=	eASample8KHz,
-};
-
-extern uint32_t	g_eAudioSample;
-
 extern uint16_t sine_table[];
 extern uint16_t null_table[];
 extern uint16_t nAudioTable;
@@ -83,8 +72,7 @@ void	AudioRxTxLoop			( void );
 enum eAudioIC
 {
 	AudioNone		=	0x00,
-	AudioXE3005		=	0x01,
-	AudioMAX9860	=	0x02,
+	AudioMAX9860	=	0x01,
 };
 
 extern int	g_nAudioIC;
@@ -110,17 +98,8 @@ int		AudioLoopbackDMA		( void );
 
 void	SetCallbackI2STxRxCplt	( void ( *pCallbackTxRxCplt )( I2S_HandleTypeDef *hi2s ) );
 
-void	QPutAudioStream			( char *sBuf, int nSize );
+//void	QPutAudioStream			( char *sBuf, int nSize );
 
 int		AudioLoopbackDMASpeex	( void );
-
-void	SetAudioLoopSampling	( int _eAudioSample );
-
-int		AudioRFRxTx				( void );		//	RF Data Tx/Rx
-
-int		AudioRFTx				( void );		//	RF Data Tx
-int		AudioRFRx				( void );		//	RF Data Rx
-
-void	AudioDebugEnable		( void );
 
 #endif

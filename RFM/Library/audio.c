@@ -92,18 +92,6 @@ uint16_t nAudioTable = 0;
 uint16_t bufAudio[I2S_DMA_LOOP_SIZE * I2S_DMA_LOOP_QCNT] = { 0, };	//	512
 	//	[ Frame1 | Frame2 ]
 
-uint16_t bufAudioTemp[I2S_DMA_LOOP_SIZE];		//	Temp Audio Buffer
-
-uint16_t bufAudioRF[I2S_DMA_LOOP_SIZE * 2];	//	RF Recv Send Buffer
-
-uint16_t pwm_table[ 256 ] = { 0, };
-
-static int s_bDebug = 0;
-
-uint32_t	g_eAudioMode = 0;		//	Audio Mode
-
-uint32_t	g_eAudioSample = eASampleDefault;		//	Audio Sampling ( Default : 8 KHz )
-
 
 QBuf_t		g_qBufAudioRFRx;		//	Audio Queue Buffer	( RF Rx Buffer )
 uint16_t	g_bufAudioRFRx[I2S_DMA_LOOP_SIZE * I2S_DMA_LOOP_QCNT] = { 0, };	//	512
@@ -119,23 +107,6 @@ uint16_t	r_audio_buff[I2S_DMA_LOOP_SIZE * 2];   //[RADIO_MAX_PACKET_LENGTH * 2];
 //========================================================================
 // Function
 
-
-//========================================================================
-void	AudioDebugEnable	( void )
-//========================================================================
-{
-	if ( s_bDebug )
-	{
-		printf( "%s(%d) - Disable\n", __func__, __LINE__ );
-		s_bDebug = 0;
-	}
-	else
-	{
-		printf( "%s(%d) - Enable\n", __func__, __LINE__ );
-		s_bDebug = 1;
-	}
-}
-
 //========================================================================
 void AudioInit( void )
 //========================================================================
@@ -149,8 +120,6 @@ void AudioInit( void )
 	//	Init RF Audio Rx Buffer
 	qBufInit( &g_qBufAudioRFRx, (uint8_t *)g_bufAudioRFRx, ( I2S_DMA_LOOP_SIZE * 2 ) * I2S_DMA_LOOP_QCNT );
 	qBufInit( &g_qBufAudioRFTx, (uint8_t *)g_bufAudioRFTx, ( I2S_DMA_LOOP_SIZE * 2 ) * I2S_DMA_LOOP_QCNT );
-
-	memset( bufAudioRF, 0x00, sizeof( bufAudioRF ) );
 
 	HAL_I2SEx_TransmitReceive_DMA( &hi2s3, (uint16_t*)sine_table, (uint16_t*)bufAudio, 256 );
 }
@@ -179,8 +148,8 @@ void AudioRxTxLoop( void )
 //========================================================================
 {
 //	g_bModeAudioRF = 0;
-	g_eAudioMode |= ( eAModLoopbackDMA );
-	g_eAudioMode &= ~( eAModRFTx | eAModRFRx );
+//	g_eAudioMode |= ( eAModLoopbackDMA );
+//	g_eAudioMode &= ~( eAModRFTx | eAModRFRx );
 
 	nAudioTable = 2;
 	//	pAudioTable = sine_table;
@@ -368,19 +337,19 @@ int	AudioLoopbackDMA( void )
 	return 0;
 }
 
-//========================================================================
-void	QPutAudioStream( char * sBuf, int nSize )
-//========================================================================
-{
-	//	RF Data로 부터 수신된 Audio Stream
-
-	//	RF Data Recv -> Audio Out
-	if ( g_eAudioMode & eAModRFRx )
-	{
-		//	Audio Buffer Put
-		qBufPut( &g_qBufAudioRFRx, (uint8_t *)sBuf, nSize );
-	}
-}
+////========================================================================
+//void	QPutAudioStream( char * sBuf, int nSize )
+////========================================================================
+//{
+//	//	RF Data로 부터 수신된 Audio Stream
+//
+//	//	RF Data Recv -> Audio Out
+//	if ( g_eAudioMode & eAModRFRx )
+//	{
+//		//	Audio Buffer Put
+//		qBufPut( &g_qBufAudioRFRx, (uint8_t *)sBuf, nSize );
+//	}
+//}
 
 
 //========================================================================
@@ -388,62 +357,6 @@ int		AudioLoopbackDMASpeex( void )
 //========================================================================
 {
 	printf( "%s(%d)\n", __func__, __LINE__ );
-
-	return 0;
-}
-
-//========================================================================
-void	SetAudioLoopSampling( int _eAudioSample )
-//========================================================================
-{
-	printf( "%s(%d) - 0x%08X\n", __func__, __LINE__, _eAudioSample );
-
-	g_eAudioSample = _eAudioSample;
-}
-
-//========================================================================
-int		AudioRFRxTx			( void )		//	RF Data Recv
-//========================================================================
-{
-	//	Rx / Tx Data
-	//	Rx <- RF Recv
-	//	Tx -> RF Send
-
-	printf( "%s(%d)\n", __func__, __LINE__ );
-
-	g_eAudioMode |= ( eAModRFTx | eAModRFRx );
-
-	return 0;
-}
-
-
-//========================================================================
-int		AudioRFTx			( void )		//	RF Data Recv
-//========================================================================
-{
-	//	Rx / Tx Data
-	//	Tx -> RF Send
-
-	printf( "%s(%d)\n", __func__, __LINE__ );
-
-	g_eAudioMode |= eAModRFTx;
-	g_eAudioMode &= ~eAModRFRx;
-
-	return 0;
-}
-
-
-//========================================================================
-int		AudioRFRx			( void )		//	RF Data Recv
-//========================================================================
-{
-	//	Rx / Tx Data
-	//	Rx <- RF Recv
-
-	printf( "%s(%d)\n", __func__, __LINE__ );
-
-	g_eAudioMode |= eAModRFRx;
-	g_eAudioMode &= ~eAModRFTx;
 
 	return 0;
 }
