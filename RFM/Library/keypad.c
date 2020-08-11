@@ -137,8 +137,13 @@ void KeyOK( int bValue )
 		HAL_GPIO_WritePin( SPK_ON_GPIO_Port, SPK_ON_Pin, GPIO_PIN_SET );
 
 		//	Codec Loopback On
-		AudioRxTxLoop();
-//		AudioLoopbackDMASpeex();
+//		AudioRxTxLoop();
+//		AudioLoopbackDMA();
+
+//DEL		AudioLoopbackDMASpeex();
+		//	-> Speex는 성능문제로 사용 X
+
+		AudioLoopbackDMACompress();
 	}
 	else
 	{
@@ -266,6 +271,7 @@ void KeyVol( int bValue )
 
 		//	Codec Loopback On
 		AudioRxTxLoop();
+		//AudioLoopbackDMA();
 	}
 	else
 	{

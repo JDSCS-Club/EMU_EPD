@@ -30,7 +30,9 @@
 
 //#define		I2S_DMA_LOOP_SIZE		( 60 / 2 )	//	[4Byte Commnad] [ 60Byte Stream Data ]
 //#define		I2S_DMA_LOOP_QCNT		8		//	Queue Count
-#define		I2S_DMA_LOOP_SIZE		160		//	[4Byte Commnad] [ 60Byte Stream Data ]
+//#define		I2S_DMA_LOOP_SIZE		160		//
+
+#define		I2S_DMA_LOOP_SIZE		32	//	[4Byte Commnad] [ 60Byte Stream Data ]
 #define		I2S_DMA_LOOP_QCNT		4		//	Queue Count
 
 //#include "rf_pa.h"				//	I2S_DMA_LOOP_SIZE / I2S_DMA_LOOP_QCNT
@@ -99,6 +101,8 @@ void	InitCodecMAX9860	( void );
 
 int		AudioLoopbackDMA		( void );
 int 	AudioLoopbackDMASpeex	( void );
+
+int		AudioLoopbackDMACompress( void );
 
 void	LoopProcAudio			( void );
 
