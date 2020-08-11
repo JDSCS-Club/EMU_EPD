@@ -33,6 +33,8 @@
 #endif
 #include "vocoder.h"
 
+#include "speex/speex_bits.h"		//	SpeexBits
+
 
 /* Exported types ------------------------------------------------------------*/
 /* Exported constants --------------------------------------------------------*/
@@ -40,8 +42,25 @@
 #define REAL_VOICE 2
 #define RECORDED_VOICE 3
 
+#define ALL_FRAMES      300   /* the encoded male voice length */
+
+extern SpeexBits bits;/* Holds bits so they can be read and written by the Speex routines */
+extern void *enc_state, *dec_state;/* Holds the states of the encoder & the decoder */
+
+extern char out_bytes[ENCODED_FRAME_SIZE];
+extern char input_bytes[ENCODED_FRAME_SIZE];
+
+extern uint16_t sample_index;
+
+extern char input_bytes[ENCODED_FRAME_SIZE];
+
+extern const uint8_t male_voice[];
+
 /* Exported macro ------------------------------------------------------------*/
 /* Exported functions ------------------------------------------------------- */
+
+void Speex_Init(void);
+
 
 #endif /*__CODEC_H */
 

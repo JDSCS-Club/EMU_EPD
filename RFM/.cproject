@@ -57,6 +57,7 @@
 									<listOptionValue builtIn="false" value="../Library/speex/STM32/include"/>
 									<listOptionValue builtIn="false" value="../Library/speex/STM32/libspeex/gcc"/>
 									<listOptionValue builtIn="false" value="../Library/speex/libspeex"/>
+									<listOptionValue builtIn="false" value="../Library/speex/include/speex"/>
 									<listOptionValue builtIn="false" value="../Drivers/display"/>
 								</option>
 								<inputType id="com.st.stm32cube.ide.mcu.gnu.managedbuild.tool.c.compiler.input.c.985221664" superClass="com.st.stm32cube.ide.mcu.gnu.managedbuild.tool.c.compiler.input.c"/>

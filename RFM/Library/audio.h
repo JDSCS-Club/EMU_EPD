@@ -28,8 +28,10 @@
 
 //#define		I2S_DMA_LOOP_SIZE		(RFPktDataLen/2)	//	[4Byte Commnad] [ 60Byte Stream Data ]
 
-#define		I2S_DMA_LOOP_SIZE		( 60 / 2 )	//	[4Byte Commnad] [ 60Byte Stream Data ]
-#define		I2S_DMA_LOOP_QCNT		8		//	Queue Count
+//#define		I2S_DMA_LOOP_SIZE		( 60 / 2 )	//	[4Byte Commnad] [ 60Byte Stream Data ]
+//#define		I2S_DMA_LOOP_QCNT		8		//	Queue Count
+#define		I2S_DMA_LOOP_SIZE		160		//	[4Byte Commnad] [ 60Byte Stream Data ]
+#define		I2S_DMA_LOOP_QCNT		4		//	Queue Count
 
 //#include "rf_pa.h"				//	I2S_DMA_LOOP_SIZE / I2S_DMA_LOOP_QCNT
 
@@ -40,12 +42,12 @@ enum eAudioMode
 	eAModRFRx			=	0x4,
 };
 
-extern uint16_t sine_table[];
+extern int16_t sine_table[];
 extern uint16_t null_table[];
 extern uint16_t nAudioTable;
 
-extern QBuf_t	g_qBufAudioRFRx;		//	Audio Queue Buffer	( RF Rx Buffer )
-extern QBuf_t	g_qBufAudioRFTx;		//	Audio Queue Buffer	( RF Tx Buffer )
+extern QBuf_t	g_qBufAudioRx;		//	Audio Queue Buffer	( RF Rx Buffer )
+extern QBuf_t	g_qBufAudioTx;		//	Audio Queue Buffer	( RF Tx Buffer )
 
 extern uint16_t	g_bufAudioRFRx[];		//	512
 extern uint16_t	g_bufAudioRFTx[];		//	512
@@ -62,11 +64,12 @@ extern uint16_t	g_bufAudioRFTx[];		//	512
 
 void	AudioInit				( void );
 void	AudioTxSine				( void );
-void	AudioTxNull				( void );
+void	AudioStop				( void );
 void	AudioTxStop				( void );
 
 void	AudioRxTxLoop			( void );
 
+void	SetCallbackI2STxRxCplt	( void ( *pCallbackTxRxCplt )( I2S_HandleTypeDef *hi2s ) );
 
 //========================================================================
 enum eAudioIC
@@ -95,11 +98,15 @@ void	InitCodecMAX9860	( void );
 //========================================================================
 
 int		AudioLoopbackDMA		( void );
+int 	AudioLoopbackDMASpeex	( void );
 
-void	SetCallbackI2STxRxCplt	( void ( *pCallbackTxRxCplt )( I2S_HandleTypeDef *hi2s ) );
+void	LoopProcAudio			( void );
+
+int		GetSpkVol	    ( void );
+void	SetSpkVol	    ( int nSpkVol );
+
+
 
 //void	QPutAudioStream			( char *sBuf, int nSize );
-
-int		AudioLoopbackDMASpeex	( void );
 
 #endif

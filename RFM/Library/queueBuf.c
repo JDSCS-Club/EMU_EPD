@@ -58,7 +58,8 @@ int qput( Queue_t *q, unsigned char k )
 {
 	if ( (q->rear + 1) % QMAX == q->front )
 	{
-		printf( "\n\tCircular Queue Overflow." );
+//		printf( "\n\tCircular Queue Overflow." );
+//		printf( "\n\tQOver" );
 		return -1;
 	}
 	q->queue[q->rear] = k;
@@ -118,7 +119,7 @@ int qBufPut( QBuf_t *q, uint8_t *pBuf, int size )
 {
 	if ( ( q->rear + size ) % q->size == q->front )
 	{
-		printf( "\n\tCircular Queue Overflow." );
+//		printf( "\n\tCircular Queue Overflow." );
 		return -1;
 	}
 
@@ -139,7 +140,7 @@ int qBufGet( QBuf_t *q, uint8_t *pBuf, int size )
 	//*
 	if ( q->front == q->rear )
 	{
-		printf( "\n\tCircular Queue Underflow." );
+//		printf( "\n\tCircular Queue Underflow." );
 		return -1;
 	}
 	//	*/

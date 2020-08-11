@@ -37,7 +37,6 @@
 
 /* Private typedef -----------------------------------------------------------*/
 /* Private define ------------------------------------------------------------*/
-#define ALL_FRAMES      300   /* the encoded male voice length */
 
 #define LCD_DELAY       0x7FFFFF
 #define BUTTON_DELAY    0xFFFFF
@@ -149,7 +148,7 @@ MENU_LABEL:
     } 
       
     speex_bits_read_from(&bits, input_bytes, ENCODED_FRAME_SIZE);
-    speex_decode_int(dec_state, &bits, (spx_int16_t*)OUT_Buffer[0]);
+    speex_decode_int(dec_state, &bits, OUT_Buffer[0]);
   
     /* and the second one. */
     for(i=0;i<ENCODED_FRAME_SIZE; i++)
@@ -158,7 +157,7 @@ MENU_LABEL:
     } 
  
     speex_bits_read_from(&bits, input_bytes, ENCODED_FRAME_SIZE);
-    speex_decode_int(dec_state, &bits, (spx_int16_t*)OUT_Buffer[1]);
+    speex_decode_int(dec_state, &bits, OUT_Buffer[1]);
 
     NB_Frames++;
 
@@ -177,7 +176,7 @@ MENU_LABEL:
         /* Copy the encoded data into the bit-stream struct */
         speex_bits_read_from(&bits, input_bytes, ENCODED_FRAME_SIZE);
         /* Decode the data */
-        speex_decode_int(dec_state, &bits, (spx_int16_t*)OUT_Buffer[0]);
+        speex_decode_int(dec_state, &bits, OUT_Buffer[0]);
         
         Start_Decoding = 0;
         NB_Frames++;
@@ -192,7 +191,7 @@ MENU_LABEL:
         /* Copy the encoded data into the bit-stream struct */
         speex_bits_read_from(&bits, input_bytes, ENCODED_FRAME_SIZE);
         /* Decode the data */
-        speex_decode_int(dec_state, &bits, (spx_int16_t*)OUT_Buffer[1]);
+        speex_decode_int(dec_state, &bits, OUT_Buffer[1]);
         
         Start_Decoding = 0;
         NB_Frames++;
@@ -227,13 +226,13 @@ MENU_LABEL:
         /* Flush all the bits in the struct so we can encode a new frame */
         speex_bits_reset(&bits);
         /* Encode the frame */
-        speex_encode_int(enc_state, (spx_int16_t*)IN_Buffer[0], &bits);
+        speex_encode_int(enc_state, IN_Buffer[0], &bits);
         /* Copy the bits to an array of char that can be decoded */
         speex_bits_write(&bits, (char *)out_bytes, ENCODED_FRAME_SIZE);
         /* Copy the encoded data into the bit-stream struct */
         speex_bits_read_from(&bits, (char *)out_bytes, ENCODED_FRAME_SIZE);
         /* Decode the data */
-        speex_decode_int(dec_state, &bits, (spx_int16_t*)OUT_Buffer[0]);
+        speex_decode_int(dec_state, &bits, OUT_Buffer[0]);
 
         Start_Encoding = 0;	
       }
@@ -242,13 +241,13 @@ MENU_LABEL:
         /* Flush all the bits in the struct so we can encode a new frame */
         speex_bits_reset(&bits);
         /* Encode the frame */
-        speex_encode_int(enc_state, (spx_int16_t*)IN_Buffer[1], &bits);
+        speex_encode_int(enc_state, IN_Buffer[1], &bits);
         /* Copy the bits to an array of char that can be decoded */
         speex_bits_write(&bits, (char *)out_bytes, ENCODED_FRAME_SIZE);
         /* Copy the encoded data into the bit-stream struct */
         speex_bits_read_from(&bits, (char *)out_bytes, ENCODED_FRAME_SIZE);
         /* Decode the data */
-        speex_decode_int(dec_state, &bits, (spx_int16_t*)OUT_Buffer[1]);
+        speex_decode_int(dec_state, &bits, OUT_Buffer[1]);
         
         Start_Encoding = 0;
       }
@@ -294,7 +293,7 @@ MENU_LABEL:
         /* Flush all the bits in the struct so we can encode a new frame */
         speex_bits_reset(&bits);
         /* Encode the frame */
-        speex_encode_int(enc_state, (spx_int16_t*)IN_Buffer[0], &bits);
+        speex_encode_int(enc_state, IN_Buffer[0], &bits);
         /* Copy the bits to an array of char that can be decoded */
         speex_bits_write(&bits, (char *)out_bytes, ENCODED_FRAME_SIZE);
         
@@ -313,7 +312,7 @@ MENU_LABEL:
         /* Flush all the bits in the struct so we can encode a new frame */
         speex_bits_reset(&bits);
         /* Encode the frame */
-        speex_encode_int(enc_state, (spx_int16_t*)IN_Buffer[1], &bits);
+        speex_encode_int(enc_state, IN_Buffer[1], &bits);
         /* Copy the bits to an array of char that can be decoded */
         speex_bits_write(&bits, (char *)out_bytes, ENCODED_FRAME_SIZE);
         
@@ -365,7 +364,7 @@ MENU_LABEL:
         /* Copy the encoded data into the bit-stream struct */    
         speex_bits_read_from(&bits, (char*)input_bytes, ENCODED_FRAME_SIZE);  
         /* Decode the data */
-        speex_decode_int(dec_state, &bits, (spx_int16_t *)OUT_Buffer[0]);
+        speex_decode_int(dec_state, &bits, OUT_Buffer[0]);
         /* Signal the end of the decoding */
         Start_Decoding = 0;
         
@@ -384,7 +383,7 @@ MENU_LABEL:
         /* Copy the encoded data into the bit-stream struct */    
         speex_bits_read_from(&bits, (char*)input_bytes, ENCODED_FRAME_SIZE);  
         /* Decode the data */
-        speex_decode_int(dec_state, &bits, (spx_int16_t *)OUT_Buffer[1]);
+        speex_decode_int(dec_state, &bits, OUT_Buffer[1]);
         /* Signal the end of the decoding */
         Start_Decoding = 0;
         
