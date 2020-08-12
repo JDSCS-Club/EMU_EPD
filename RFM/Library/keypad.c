@@ -338,7 +338,7 @@ void KeySos( int bValue )
 	{
 		//	송신중
 		LCDSetCursor( 20, 13 );
-		LCDPrintf( "송신중..." );
+		LCDPrintf( "통화중..." );
 
 		//	통화 - 시작
 //		SendCall( 1 );		//	SendRF - Send Call ( 송신기 -> 송신기 )
