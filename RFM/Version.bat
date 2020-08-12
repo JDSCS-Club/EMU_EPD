@@ -1,4 +1,4 @@
-REM @echo off
+@echo off
 
 echo %1 %2
 echo START Process

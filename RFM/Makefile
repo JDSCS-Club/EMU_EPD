@@ -126,6 +126,7 @@ Library/unicode.c \
 Library/cli.c \
 Library/rfm.c \
 Library/keypad.c \
+Library/RFMProtocol.c \
 
 #Core/Src/syscalls.c \
 
