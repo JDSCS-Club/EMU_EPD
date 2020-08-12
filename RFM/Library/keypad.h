@@ -26,7 +26,7 @@ void	LoopProcKey ( uint32_t tickCurr );
 
 void	KeyMenu			( int bValue );
 void	KeyUp			( int bValue );
-void	KeyFM			( int bValue );
+void	KeyOK			( int bValue );
 
 void	KeyLight		( int bValue );
 void	KeyDown			( int bValue );

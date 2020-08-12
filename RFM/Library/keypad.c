@@ -73,7 +73,7 @@ void LoopProcKey ( uint32_t tickCurr )
 
 			if ( btnStatOld[0] != btnStat[0] )	KeyMenu		( !btnStat[0] );	//	DOME1
 			if ( btnStatOld[1] != btnStat[1] )	KeyUp		( !btnStat[1] );	//	DOME2
-			if ( btnStatOld[2] != btnStat[2] )	KeyFM		( !btnStat[2] );	//	DOME3
+			if ( btnStatOld[2] != btnStat[2] )	KeyOK		( !btnStat[2] );	//	DOME3
 			if ( btnStatOld[3] != btnStat[3] )	KeyLight	( !btnStat[3] );	//	DOME4
 			if ( btnStatOld[4] != btnStat[4] )	KeyDown		( !btnStat[4] );	//	DOME5
 			if ( btnStatOld[5] != btnStat[5] )	KeyVol		( !btnStat[5] );	//	DOME6
@@ -116,21 +116,49 @@ void KeyMenu( int bValue )
 }
 
 //========================================================================
-void KeyUp( int bValue )
+void KeyOK( int bValue )
 //========================================================================
 {
 	//	bValue : 0(Up) / 1(Down)
 	printf( "%s(%d)\n", __func__, __LINE__ );
 
-}
+	//	Speex Loopback Test
+	//	Audio Loopback Proc
 
+	if ( bValue )
+	{
+		//	송신중
+		LCDSetCursor( 10, 13 );
+		LCDPrintf( "Audio Speex" );
 
-//========================================================================
-void KeyFM( int bValue )
-//========================================================================
-{
-	//	bValue : 0(Up) / 1(Down)
-	printf( "%s(%d)\n", __func__, __LINE__ );
+		//	Spk On
+		LCDSpeaker( 1 );
+
+		HAL_GPIO_WritePin( SPK_ON_GPIO_Port, SPK_ON_Pin, GPIO_PIN_SET );
+
+		//	Codec Loopback On
+//		AudioRxTxLoop();
+//		AudioLoopbackDMA();
+
+//DEL		AudioLoopbackDMASpeex();
+		//	-> Speex는 성능문제로 사용 X
+
+		AudioLoopbackDMACompress();
+	}
+	else
+	{
+		//    편성 : 100
+		LCDSetCursor( 20, 13 );
+		LCDPrintf( "편성 : 100" );
+
+		//	Spk Off
+		LCDSpeaker( 0 );
+
+		HAL_GPIO_WritePin( SPK_ON_GPIO_Port, SPK_ON_Pin, GPIO_PIN_RESET );
+
+		//	Codec Loopback Off
+		AudioStop();
+	}
 
 }
 
@@ -174,12 +202,51 @@ void KeyLight( int bValue )
 }
 
 //========================================================================
+void KeyUp( int bValue )
+//========================================================================
+{
+	//	bValue : 0(Up) / 1(Down)
+	printf( "%s(%d)\n", __func__, __LINE__ );
+
+}
+
+
+//========================================================================
 void KeyDown( int bValue )
 //========================================================================
 {
 	//	bValue : 0(Up) / 1(Down)
 	printf( "%s(%d)\n", __func__, __LINE__ );
 
+	if ( bValue )
+	{
+		//	sine
+		LCDSetCursor( 10, 13 );
+		LCDPrintf( "sine wave" );
+
+		//	Spk On
+		LCDSpeaker( 1 );
+
+		HAL_GPIO_WritePin( SPK_ON_GPIO_Port, SPK_ON_Pin, GPIO_PIN_SET );
+
+		//	Codec Loopback On
+		AudioPlayDMASine();
+
+	}
+	else
+	{
+		//	편성 : 100
+		LCDSetCursor( 20, 13 );
+		LCDPrintf( "편성 : 100" );
+
+		//	Spk Off
+		LCDSpeaker( 0 );
+
+		HAL_GPIO_WritePin( SPK_ON_GPIO_Port, SPK_ON_Pin, GPIO_PIN_RESET );
+
+		//	Codec Loopback Off
+		AudioStop();
+	}
 }
 
 //========================================================================
@@ -204,6 +271,7 @@ void KeyVol( int bValue )
 
 		//	Codec Loopback On
 		AudioRxTxLoop();
+		//AudioLoopbackDMA();
 	}
 	else
 	{
@@ -217,7 +285,7 @@ void KeyVol( int bValue )
 		HAL_GPIO_WritePin( SPK_ON_GPIO_Port, SPK_ON_Pin, GPIO_PIN_RESET );
 
 		//	Codec Loopback Off
-		AudioTxNull();
+		AudioStop();
 	}
 }
 

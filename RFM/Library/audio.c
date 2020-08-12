@@ -46,9 +46,17 @@
 
 #include "audio.h"
 
+
+#include "codec.h"
+//#ifdef HAVE_CONFIG_H
+//#include "config.h"
+//#endif
+#include <speex/speex.h>
+
 //========================================================================
 // Define
 
+#if 0
 uint16_t sine_table[256] = {
 
    0x0000, 0x0324, 0x0647, 0x096a, 0x0c8b, 0x0fab, 0x12c8, 0x15e2,
@@ -85,18 +93,36 @@ uint16_t sine_table[256] = {
    0xe708, 0xea1e, 0xed38, 0xf055, 0xf375, 0xf696, 0xf9b9, 0xfcdc,
 };
 
+#else
+//	Sine Wave
+//	Numbers Per Row	: 16
+int16_t sine_table[160] = {
+		-1, 6252, 12803, 18323, 23170, 27165, 30381, 32165, 32767, 32165, 30162, 27165, 23170, 18323, 12274, 6252, 0, -6253, -12804, -18324, -23171, -27166, -30382, -32166, -32768, -32166, -30163, -27166, -23171, -18324, -12275, -6253,
+		-1, 6252, 12803, 18323, 23170, 27165, 30381, 32165, 32767, 32165, 30162, 27165, 23170, 18323, 12274, 6252, 0, -6253, -12804, -18324, -23171, -27166, -30382, -32166, -32768, -32166, -30163, -27166, -23171, -18324, -12275, -6253,
+		-1, 6252, 12803, 18323, 23170, 27165, 30381, 32165, 32767, 32165, 30162, 27165, 23170, 18323, 12274, 6252, 0, -6253, -12804, -18324, -23171, -27166, -30382, -32166, -32768, -32166, -30163, -27166, -23171, -18324, -12275, -6253,
+		-1, 6252, 12803, 18323, 23170, 27165, 30381, 32165, 32767, 32165, 30162, 27165, 23170, 18323, 12274, 6252, 0, -6253, -12804, -18324, -23171, -27166, -30382, -32166, -32768, -32166, -30163, -27166, -23171, -18324, -12275, -6253,
+		-1, 6252, 12803, 18323, 23170, 27165, 30381, 32165, 32767, 32165, 30162, 27165, 23170, 18323, 12274, 6252, 0, -6253, -12804, -18324, -23171, -27166, -30382, -32166, -32768, -32166, -30163, -27166, -23171, -18324, -12275, -6253,
+};
+
+#endif
+
+uint16_t speex_sine_table[160]; 	//	256 * 5 = 160 * 8
+
 uint16_t null_table[256] = { 0, };
 
 uint16_t nAudioTable = 0;
 
-uint16_t bufAudio[I2S_DMA_LOOP_SIZE * I2S_DMA_LOOP_QCNT] = { 0, };	//	512
+//uint16_t bufAudio[I2S_DMA_LOOP_SIZE * I2S_DMA_LOOP_QCNT] = { 0, };	//	512
 	//	[ Frame1 | Frame2 ]
+volatile uint16_t bufAudio[FRAME_SIZE * 2] = { 0, };	//	512
+
+volatile uint16_t bufAudioCodec[FRAME_SIZE * 2] = { 0, };	//	512
 
 
-QBuf_t		g_qBufAudioRFRx;		//	Audio Queue Buffer	( RF Rx Buffer )
+QBuf_t		g_qBufAudioRx;		//	Audio Queue Buffer	( RF Rx Buffer )
 uint16_t	g_bufAudioRFRx[I2S_DMA_LOOP_SIZE * I2S_DMA_LOOP_QCNT] = { 0, };	//	512
 
-QBuf_t		g_qBufAudioRFTx;		//	Audio Queue Buffer	( RF Tx Buffer )
+QBuf_t		g_qBufAudioTx;		//	Audio Queue Buffer	( RF Tx Buffer )
 uint16_t	g_bufAudioRFTx[I2S_DMA_LOOP_SIZE * I2S_DMA_LOOP_QCNT] = { 0, };	//	512
 
 
@@ -118,10 +144,54 @@ void AudioInit( void )
 	nAudioTable = 2;	//	Loopback
 
 	//	Init RF Audio Rx Buffer
-	qBufInit( &g_qBufAudioRFRx, (uint8_t *)g_bufAudioRFRx, ( I2S_DMA_LOOP_SIZE * 2 ) * I2S_DMA_LOOP_QCNT );
-	qBufInit( &g_qBufAudioRFTx, (uint8_t *)g_bufAudioRFTx, ( I2S_DMA_LOOP_SIZE * 2 ) * I2S_DMA_LOOP_QCNT );
+	qBufInit( &g_qBufAudioRx, (uint8_t *)g_bufAudioRFRx, ( I2S_DMA_LOOP_SIZE * 2 ) * I2S_DMA_LOOP_QCNT );
+	qBufInit( &g_qBufAudioTx, (uint8_t *)g_bufAudioRFTx, ( I2S_DMA_LOOP_SIZE * 2 ) * I2S_DMA_LOOP_QCNT );
 
 	HAL_I2SEx_TransmitReceive_DMA( &hi2s3, (uint16_t*)sine_table, (uint16_t*)bufAudio, 256 );
+
+	//========================================================================
+	//	Speex Codec
+	Speex_Init();
+
+	//========================================================================
+	//	Speex Encoding -> Decoding
+
+	int i;
+	int index;
+
+	index = 0;
+
+	//	sine table copy
+	memcpy( speex_sine_table, sine_table, 160 * 2 );
+
+	int tick_start, tick_end;
+
+	tick_start = HAL_GetTick();
+
+#if 1
+	//========================================================================
+	//	Encoding
+
+    speex_bits_reset(&bits);
+
+	/* Encode the frame */
+	speex_encode_int(enc_state, &speex_sine_table[0], &bits);
+	/* Copy the bits to an array of char that can be decoded */
+	speex_bits_write(&bits, (char *)out_bytes, ENCODED_FRAME_SIZE);
+
+	//========================================================================
+	//	Decoding
+	/* Copy the encoded data into the bit-stream struct */
+	speex_bits_read_from(&bits, (char *)out_bytes, ENCODED_FRAME_SIZE);
+	/* Decode the data */
+	speex_decode_int(dec_state, &bits, &speex_sine_table[0] );
+#endif
+
+	tick_end = HAL_GetTick();
+
+	printf("%s : [%d] %d / %d\n", __func__, tick_end - tick_start, tick_start, tick_end);
+
+	//========================================================================
 }
 
 //========================================================================
@@ -135,12 +205,14 @@ void AudioTxSine( void )
 
 
 //========================================================================
-void AudioTxNull( void )
+void AudioStop( void )
 //========================================================================
 {
 	nAudioTable = 1;
 	//	pAudioTable = null_table;
 	HAL_I2SEx_TransmitReceive_DMA( &hi2s3, (uint16_t*)null_table, (uint16_t*)bufAudio, 256 );
+
+	SetCallbackI2STxRxCplt( NULL );
 }
 
 //========================================================================
@@ -153,7 +225,7 @@ void AudioRxTxLoop( void )
 
 	nAudioTable = 2;
 	//	pAudioTable = sine_table;
-	HAL_I2SEx_TransmitReceive_DMA( &hi2s3, (uint16_t*)bufAudio, (uint16_t*)&bufAudio[256], 256 );
+	HAL_I2SEx_TransmitReceive_DMA( &hi2s3, (uint16_t*)bufAudio, (uint16_t*)&bufAudio[I2S_DMA_LOOP_SIZE], I2S_DMA_LOOP_SIZE );
 }
 
 //========================================================================
@@ -302,6 +374,7 @@ void InitCodecMAX9860   ( void )
 	WriteI2CCodec( 0x08, 0x00 );	//AVFLT = 0, DVFLT = 0 (not sure which filter would be best for this, choosing no filter)
 
 	//	Digital level control registers
+	//		Spk. Vol
 	WriteI2CCodec( 0x09, 0x06 );	//0 DAC adjustment, this would require testing and/or a better understanding of the overall system
 	WriteI2CCodec( 0x0A, 0x33 );	//both ADC's set to 0 adjustment, same reason as above AND mic not supported yet
 	WriteI2CCodec( 0x0B, 0x00 );	//no gain on DAC, unsure of DVST bits safer to disable
@@ -324,6 +397,34 @@ void InitCodecMAX9860   ( void )
 	//	power management register
 //	WriteI2CCodec( 0x10, 0x88 );	//powered on, DAC on, both ADC's off (since this is not set up for microphone input)
 	WriteI2CCodec( 0x10, 0x8A );	//powered on, DAC on, both ADC(Left) Enable
+
+	//========================================================================
+	//	Set Speaker Volume
+//    WriteI2CCodec( 0x09, 0x0C );	//  0x0C ( -3 )
+//    WriteI2CCodec( 0x09, 0x1E );	//  0x0C ( -12 )
+//    WriteI2CCodec( 0x09, 0x2A );	//  0x0C ( -18 )
+//    WriteI2CCodec( 0x09, 0x30 );	//  0x0C ( -21 )
+
+//	//	sine 파 출력 검사. ( I2S Data 영역 검사 )
+//	WriteI2CCodec( 0x09, 0x36 );	//  0x0C ( -24 )
+
+//    WriteI2CCodec( 0x09, 0x3E );	//  0x0C ( -28 )
+//            WriteI2CCodec( 0x0B, 0x20 );	//  01 ( +6 dB )
+
+}
+
+
+//========================================================================
+void Default_I2SEx_TxRxCpltCallback( I2S_HandleTypeDef *hi2s )
+//========================================================================
+{
+	//	printf( "%s(%d)\n", __func__, __LINE__ );
+
+	//========================================================================
+	//	Speex Loopback
+	//	pAudioTable = sine_table;
+	memcpy( &bufAudio[0], &bufAudio[I2S_DMA_LOOP_SIZE], I2S_DMA_LOOP_SIZE * 2 );
+	HAL_I2SEx_TransmitReceive_DMA( &hi2s3, (uint16_t*)bufAudio, (uint16_t*)&bufAudio[I2S_DMA_LOOP_SIZE], I2S_DMA_LOOP_SIZE );
 }
 
 //========================================================================
@@ -332,10 +433,345 @@ int	AudioLoopbackDMA( void )
 {
 	printf( "%s(%d)\n", __func__, __LINE__ );
 
-	AudioRxTxLoop();
+//	AudioRxTxLoop();
+
+	SetCallbackI2STxRxCplt( Default_I2SEx_TxRxCpltCallback );
+
+	//	Speex ( 1 frame ) : 160 sample ( 320 bytes ) / 20 msec
+	HAL_I2SEx_TransmitReceive_DMA( &hi2s3, (uint16_t*)bufAudio, (uint16_t*)&bufAudio[FRAME_SIZE], FRAME_SIZE );
 
 	return 0;
 }
+
+//========================================================================
+void AudioSpeex_I2SEx_TxRxCpltCallback( I2S_HandleTypeDef *hi2s )
+//========================================================================
+{
+	//	printf( "%s(%d)\n", __func__, __LINE__ );
+
+	//========================================================================
+	//	Speex Loopback
+	//	pAudioTable = sine_table;
+//	memcpy( &bufAudio[0], &bufAudio[FRAME_SIZE], FRAME_SIZE );
+
+	//	Audio Buffer Put
+	qBufPut( &g_qBufAudioRx, (uint8_t *)&bufAudio[FRAME_SIZE], FRAME_SIZE );
+	qBufGet( &g_qBufAudioTx, (uint8_t *)&bufAudio[0], FRAME_SIZE );
+
+	HAL_I2SEx_TransmitReceive_DMA( &hi2s3, (uint16_t*)bufAudio, (uint16_t*)&bufAudio[FRAME_SIZE], FRAME_SIZE );
+}
+
+//	interpolation compress ( 보간압축 )
+#define	AUDIO_COMPR_RATE	8	//	Audio 압축율.
+//#define	AUDIO_COMPR_RATE	4	//	Audio 압축율.
+//#define	AUDIO_COMPR_RATE	2	//	Audio 압축율.
+//#define	AUDIO_COMPR_RATE	1	//	Audio 압축율.
+
+#define	FRAME_ENC_SIZE		(I2S_DMA_LOOP_SIZE / AUDIO_COMPR_RATE)
+
+int16_t	bufAudioEnc[FRAME_ENC_SIZE];
+int16_t	bufAudioDec[FRAME_ENC_SIZE];
+
+//========================================================================
+void AudioLoopback_I2SEx_TxRxCpltCallback( I2S_HandleTypeDef *hi2s )
+//========================================================================
+{
+	//	printf( "%s(%d)\n", __func__, __LINE__ );
+
+	//	Loopback Encoding / Decoding
+
+	//	Audio Buffer Put
+//	qBufPut( &g_qBufAudioRx, (uint8_t *)&bufAudio[FRAME_SIZE], FRAME_SIZE );
+//	qBufGet( &g_qBufAudioTx, (uint8_t *)&bufAudio[0], FRAME_SIZE );
+
+	int16_t	*inBuf = &bufAudio[I2S_DMA_LOOP_SIZE];
+	int16_t	*outBuf = &bufAudio[0];
+
+	//	Encoding : 8 KHz -> 2 KHz
+	int i;
+	for( i = 0; i < FRAME_ENC_SIZE; i++ )
+	{
+		bufAudioEnc[i] = inBuf[ i * AUDIO_COMPR_RATE];
+	}
+
+	memcpy( bufAudioDec, bufAudioEnc, FRAME_ENC_SIZE * 2 );
+
+	int dtVal;	//	sample 보간.
+
+	//	Decoding : 2 KHz -> 8 KHz
+	for( i = 0; i < I2S_DMA_LOOP_SIZE; i++ )
+	{
+		if ( i % AUDIO_COMPR_RATE == 0 )
+		{
+			outBuf[ i ] = bufAudioDec[i / AUDIO_COMPR_RATE];
+			if( i == ( I2S_DMA_LOOP_SIZE - 1) ) dtVal = 0;
+			else dtVal = (bufAudioDec[(i / AUDIO_COMPR_RATE) + 1] - outBuf[ i ]) / AUDIO_COMPR_RATE;
+		}
+		else
+		{
+			//	sample간 보간.
+			outBuf[ i ] = outBuf[ i - 1 ] + dtVal;
+		}
+//		outBuf[ i ] = bufAudioDec[i / AUDIO_COMPR_RATE];
+	}
+
+	HAL_I2SEx_TransmitReceive_DMA( &hi2s3, (uint16_t*)outBuf, (uint16_t*)inBuf, FRAME_SIZE );
+}
+
+//========================================================================
+void AudioSine_I2SEx_TxRxCpltCallback( I2S_HandleTypeDef *hi2s )
+//========================================================================
+{
+	//	printf( "%s(%d)\n", __func__, __LINE__ );
+
+	//========================================================================
+	//	Speex Loopback
+	//	pAudioTable = sine_table;
+//	memcpy( &bufAudio[0], &bufAudio[FRAME_SIZE], FRAME_SIZE );
+
+#if 1
+
+	static int idx = 0;
+
+	HAL_I2SEx_TransmitReceive_DMA( 	&hi2s3,
+									(uint16_t*)&speex_sine_table[idx*160],			//	Audio Tx
+									(uint16_t*)&bufAudio[FRAME_SIZE],
+									FRAME_SIZE
+									);
+
+//	idx = (idx + 1) % 8;
+
+#else
+
+	HAL_I2SEx_TransmitReceive_DMA( 	&hi2s3,
+									(uint16_t*)&sine_table[0],			//	Audio Tx
+									(uint16_t*)&bufAudio[FRAME_SIZE],
+									256
+									);
+
+#endif
+}
+
+
+//========================================================================
+int		AudioLoopbackDMACompress( void )
+//========================================================================
+{
+	printf( "%s(%d)\n", __func__, __LINE__ );
+
+	SetCallbackI2STxRxCplt( AudioLoopback_I2SEx_TxRxCpltCallback );
+
+	//	Speex ( 1 frame ) : 160 sample ( 320 bytes ) / 20 msec
+	HAL_I2SEx_TransmitReceive_DMA( &hi2s3, (uint16_t*)bufAudio, (uint16_t*)&bufAudio[FRAME_SIZE], FRAME_SIZE );
+
+	return 0;
+}
+
+
+//========================================================================
+int		AudioLoopbackDMASpeex( void )
+//========================================================================
+{
+	printf( "%s(%d)\n", __func__, __LINE__ );
+
+	SetCallbackI2STxRxCplt( AudioSpeex_I2SEx_TxRxCpltCallback );
+
+	//	Speex ( 1 frame ) : 160 sample ( 320 bytes ) / 20 msec
+	HAL_I2SEx_TransmitReceive_DMA( &hi2s3, (uint16_t*)bufAudio, (uint16_t*)&bufAudio[FRAME_SIZE], FRAME_SIZE );
+
+	return 0;
+}
+
+//========================================================================
+int		AudioPlayDMASine( void )
+//========================================================================
+{
+	printf( "%s(%d)\n", __func__, __LINE__ );
+
+	SetCallbackI2STxRxCplt( AudioSine_I2SEx_TxRxCpltCallback );
+
+	//	Speex ( 1 frame ) : 160 sample ( 320 bytes ) / 20 msec
+	HAL_I2SEx_TransmitReceive_DMA( &hi2s3, (uint16_t*)bufAudio, (uint16_t*)&bufAudio[FRAME_SIZE], FRAME_SIZE );
+
+	return 0;
+}
+
+static int tick_start, tick_mid, tick_mid2, tick_end;
+
+//========================================================================
+void	LoopProcAudio			( void )
+//========================================================================
+{
+
+#if 0
+
+	while( qBufCnt(&g_qBufAudioRx) >= FRAME_SIZE )
+	{
+
+#if 1
+		tick_start = HAL_GetTick();
+
+		qBufGet( &g_qBufAudioRx, &bufAudioCodec[0], FRAME_SIZE );
+		/* Flush all the bits in the struct so we can encode a new frame */
+		speex_bits_reset(&bits);
+
+		//========================================================================
+		//	Encoding
+		/* Encode the frame */
+		speex_encode_int(enc_state, (spx_int16_t*)&bufAudioCodec[0], &bits);
+		/* Copy the bits to an array of char that can be decoded */
+		speex_bits_write(&bits, (char *)out_bytes, ENCODED_FRAME_SIZE);
+
+		tick_mid = HAL_GetTick();
+
+		//========================================================================
+		//	Decoding
+		/* Copy the encoded data into the bit-stream struct */
+		speex_bits_read_from(&bits, (char *)out_bytes, ENCODED_FRAME_SIZE);
+		/* Decode the data */
+		speex_decode_int(dec_state, &bits, (spx_int16_t*)&bufAudioCodec[FRAME_SIZE]);
+
+		tick_mid2 = HAL_GetTick();
+
+		qBufPut( &g_qBufAudioTx, &bufAudioCodec[FRAME_SIZE], FRAME_SIZE );
+
+		tick_end = HAL_GetTick();
+
+		printf("[%d] %d / %d / %d / %d\n", tick_end - tick_start, tick_start, tick_mid, tick_mid2, tick_end );
+
+#else
+
+		qBufGet( &g_qBufAudioRx, &bufAudioCodec[0], FRAME_SIZE );
+		qBufPut( &g_qBufAudioTx, &bufAudioCodec[0], FRAME_SIZE );
+
+#endif
+
+	}
+
+#else
+
+#if 0
+
+	int i;
+
+	while( qBufCnt(&g_qBufAudioTx) <= FRAME_SIZE * ( I2S_DMA_LOOP_QCNT - 1) )
+	{
+		/* we prepare two buffers of decoded data: */
+		/* the first one, */
+
+		tick_start = HAL_GetTick();
+
+		for(i=0;i<ENCODED_FRAME_SIZE; i++)
+		{
+			input_bytes[i] = male_voice[sample_index++];
+		}
+
+		speex_bits_read_from(&bits, input_bytes, ENCODED_FRAME_SIZE);
+		speex_decode_int(dec_state, &bits, (spx_int16_t*)&bufAudioCodec[0]);
+
+//		for( i = 0; i < FRAME_SIZE; i++ )
+//		{
+////			printf("%d ", (int16_t)bufAudioCodec[i] );
+//			bufAudioCodec[i] <<= 2;
+//		}
+
+		qBufPut( &g_qBufAudioTx, &bufAudioCodec[0], FRAME_SIZE );
+
+		tick_end = HAL_GetTick();
+
+		printf("[%d] %d / %d\n", tick_end - tick_start, tick_start , tick_end );
+
+//		for( i = 0; i < FRAME_SIZE; i++ )
+//		{
+//			printf("%d ", (int16_t)bufAudioCodec[i] );
+//		}
+//		printf("\n");
+	}
+
+	if( sample_index >= ALL_FRAMES ) sample_index = 0;
+
+#else
+
+//	{
+//
+//		qBufPut( &g_qBufAudioTx, &bufAudioCodec[0], FRAME_SIZE );
+//
+//	}
+
+#endif
+
+#endif
+
+}
+
+
+//========================================================================
+int		GetSpkVol	    ( void )
+//========================================================================
+{
+    uint8_t     nSpkVol = 0;
+
+    if ( HAL_OK != HAL_I2C_IsDeviceReady( &hi2c1, (uint16_t)( 0x50 << 1 ), 2, 2 ) )
+    {
+        printf( "%s(%d) - EEPROM Error\n", __func__, __LINE__ );
+
+        return -1;
+    }
+
+    at24_HAL_ReadBytes( &hi2c1, 0xA0, 0x0F, (uint8_t *)&nSpkVol, 1 );
+    printf( "%s(%d) - %d\n", __func__, __LINE__, nSpkVol );
+
+    return nSpkVol;
+}
+
+//========================================================================
+void	SetSpkVol	    ( int nSpkVol )
+//========================================================================
+{
+    if ( HAL_OK != HAL_I2C_IsDeviceReady( &hi2c1, (uint16_t)( 0x50 << 1 ), 2, 2 ) )
+    {
+        printf( "%s(%d) - EEPROM Error\n", __func__, __LINE__ );
+
+        return ;
+    }
+
+    printf( "%s(%d) - %d\n", __func__, __LINE__, nSpkVol );
+    at24_HAL_WriteBytes( &hi2c1, 0xA0, 0x0F, (uint8_t *)&nSpkVol, 1 );
+
+    //========================================================================
+    //	Codec MAX9860ETG+
+    if ( HAL_OK == HAL_I2C_IsDeviceReady( &hi2c1, (uint16_t)( 0x10 << 1 ), 2, 2 ) )
+    {
+        // Power DAC / ADC Disable
+//        WriteI2CCodec( 0x10, 0x00 );	//powered on, DAC on, both ADC(Left) Enable
+        switch ( nSpkVol )
+        {
+        case 0:
+
+            WriteI2CCodec( 0x09, 0xBA );	//  Mute ( 0xBC )
+//            WriteI2CCodec( 0x0B, 0x00 );	//  00 ( 0 dB )
+            break;
+        case 1:
+            WriteI2CCodec( 0x09, 0x0C );	//  0x0C ( -3 )
+//            WriteI2CCodec( 0x0B, 0x20 );	//  01 ( +6 dB )
+            break;
+        case 2:
+            WriteI2CCodec( 0x09, 0x06 );	//  0x02 ( 0 dB ) DAC adjustment, this would require testing and/or a better understanding of the overall system
+//            WriteI2CCodec( 0x0B, 0x40 );	//  10 ( +12 dB )
+            break;
+        case 3:
+            WriteI2CCodec( 0x09, 0x00 );	//  0x02 ( +3 )
+//            WriteI2CCodec( 0x0B, 0x60 );	//  10 ( +18 dB )
+            break;
+        }
+
+        // Power DAC / ADC Enable
+//        WriteI2CCodec( 0x10, 0x8A );	//powered on, DAC on, both ADC(Left) Enable
+    }
+
+}
+
+
 
 ////========================================================================
 //void	QPutAudioStream( char * sBuf, int nSize )
@@ -347,16 +783,7 @@ int	AudioLoopbackDMA( void )
 //	if ( g_eAudioMode & eAModRFRx )
 //	{
 //		//	Audio Buffer Put
-//		qBufPut( &g_qBufAudioRFRx, (uint8_t *)sBuf, nSize );
+//		qBufPut( &g_qBufAudioRx, (uint8_t *)sBuf, nSize );
 //	}
 //}
 
-
-//========================================================================
-int		AudioLoopbackDMASpeex( void )
-//========================================================================
-{
-	printf( "%s(%d)\n", __func__, __LINE__ );
-
-	return 0;
-}
