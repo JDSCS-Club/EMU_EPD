@@ -20,8 +20,8 @@
 -------------------------------------------------------------------------------------------*/
 
 //========================================================================
-#ifndef RF_PA_H
-#define RF_PA_H
+#ifndef MENU_H
+#define MENU_H
 //========================================================================
 
 #include "RFMProtocol.h"		//	
@@ -37,29 +37,12 @@
 
 #define		RF_CMD_SIZE				RFPktHdrLen			//	[4Byte Commnad]
 
-//#define		I2S_DMA_LOOP_SIZE		(RFPktDataLen/2)	//	[4Byte Commnad] [ 60Byte Stream Data ]
-//
-//#define		I2S_DMA_LOOP_QCNT		8		//	Queue Count
-////#define		I2S_DMA_LOOP_QCNT		6	//	Queue Count
-
 //========================================================================
-
-enum eRFMMode
-{
-	RFMModeNormal	=	0,
-	RFMModeTx		=	1,
-	RFMModeRx		=	2,
-};
 
 extern int		g_nSpkLevel;                //  Default (2) - 0(Mute) / 1 / 2(Normal) / 3
 
 extern char		*g_sTrainSet[];
 extern int		g_cntTrainSet;
-
-//========================================================================
-int		GetRFMMode		( void );
-void	SetRFMMode		( int nRFMMode );
-//========================================================================
 
 void    UpdateLCDMain	( void );
 void    UpdateLCDMenu	( void );

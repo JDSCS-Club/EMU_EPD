@@ -111,7 +111,8 @@ void KeyMenu( int bValue )
 
 	if ( bValue )
 	{
-		LCDMenu();
+//		LCDMenu();
+		ProcBtnMenu();
 	}
 }
 
@@ -121,6 +122,15 @@ void KeyOK( int bValue )
 {
 	//	bValue : 0(Up) / 1(Down)
 	printf( "%s(%d)\n", __func__, __LINE__ );
+
+#if 1
+
+	if ( bValue )
+	{
+		ProcBtnOK();
+	}
+
+#else
 
 	//	Speex Loopback Test
 	//	Audio Loopback Proc
@@ -159,6 +169,7 @@ void KeyOK( int bValue )
 		//	Codec Loopback Off
 		AudioStop();
 	}
+#endif
 
 }
 
@@ -208,6 +219,10 @@ void KeyUp( int bValue )
 	//	bValue : 0(Up) / 1(Down)
 	printf( "%s(%d)\n", __func__, __LINE__ );
 
+	if( bValue )
+	{
+		ProcBtnUp();
+	}
 }
 
 
@@ -215,6 +230,15 @@ void KeyUp( int bValue )
 void KeyDown( int bValue )
 //========================================================================
 {
+#if 1
+	printf( "%s(%d)\n", __func__, __LINE__ );
+
+	if( bValue )
+	{
+		ProcBtnDown();
+	}
+
+#else
 	//	bValue : 0(Up) / 1(Down)
 	printf( "%s(%d)\n", __func__, __LINE__ );
 
@@ -247,6 +271,7 @@ void KeyDown( int bValue )
 		//	Codec Loopback Off
 		AudioStop();
 	}
+#endif
 }
 
 //========================================================================

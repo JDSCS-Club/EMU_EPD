@@ -23,6 +23,20 @@
 //========================================================================
 
 
+enum eRFMMode
+{
+	RFMModeNormal	=	0,
+	RFMModeTx		=	1,
+	RFMModeRx		=	2,
+};
+
+
+//========================================================================
+int		GetRFMMode		( void );
+void	SetRFMMode		( int nRFMMode );
+//========================================================================
+
+
 int		GetDevID		( void );
 void	SetDevID		( int nDevID );
 

@@ -31,65 +31,12 @@
 
 #include "menu.h"
 
-///// FIXME :Interrupter Rutine
-//uint8_t RF_NIRQ;
-//
-//// FIXME : radio Command
-//U8			radioCmd[16u];
-//
-//QBuf_t		g_qBufAudioRFRx;		//	Audio Queue Buffer	( RF Rx Buffer )
-//uint16_t	g_bufAudioRFRx[I2S_DMA_LOOP_SIZE * I2S_DMA_LOOP_QCNT] = { 0, };	//	512
-//
-//QBuf_t		g_qBufAudioRFTx;		//	Audio Queue Buffer	( RF Tx Buffer )
-//uint16_t	g_bufAudioRFTx[I2S_DMA_LOOP_SIZE * I2S_DMA_LOOP_QCNT] = { 0, };	//	512
-//
-//
-//uint16_t	t_audio_buff[I2S_DMA_LOOP_SIZE * 2];   // RADIO_MAX_PACKET_LENGTH * 2];
-//uint16_t	r_audio_buff[I2S_DMA_LOOP_SIZE * 2];   //[RADIO_MAX_PACKET_LENGTH * 2];
-
 //========================================================================
 #define	 DEFAULT_SPK_VOL	 1
 #define	 MAX_SPK_VOL		 3
 
 int	 g_nSpkLevel = DEFAULT_SPK_VOL;				//  Default (1) - 0(Mute) / 1 / 2(Normal) / 3
 //========================================================================
-
-int	 g_nRFMMode = RFMModeNormal;	  //  eRFMMode
-
-//========================================================================
-int		GetRFMMode	( void )
-//========================================================================
-{
-	return g_nRFMMode;
-}
-
-//========================================================================
-void	SetRFMMode	( int nRFMMode )
-//========================================================================
-{
-	g_nRFMMode = nRFMMode;
-}
-
-
-//
-////si4463 Interrupt
-//void HAL_GPIO_EXTI_Callback ( uint16_t GPIO_Pin )
-//{
-//	uint8_t st;
-//
-//	printf( " HAL_GPIO_EXTI_Callback\r\n" );
-//
-//	st = HAL_GPIO_ReadPin ( GPIOC, GPIO_PIN_4 );
-//	if ( st )	//rising edge
-//	{
-//		RF_NIRQ = TRUE;
-//	}
-//	else	//falling edge
-//	{
-//		RF_NIRQ = FALSE;
-//	}
-//}
-
 
 #if 0
 
