@@ -134,37 +134,6 @@ void HAL_GPIO_EXTI_Callback ( uint16_t GPIO_Pin )
 }
 
 
-//========================================================================
-void RF_Tx_Mode()
-//========================================================================
-{
-    //  송신 모드
-
-    HAL_GPIO_WritePin( RF_TX_GPIO_Port, RF_TX_Pin, GPIO_PIN_SET );
-    HAL_GPIO_WritePin( RF_RX_GPIO_Port, RF_RX_Pin, GPIO_PIN_RESET );
-}
-
-//========================================================================
-void RF_Rx_Mode()
-//========================================================================
-{
-    //  수신 모드
-
-    HAL_GPIO_WritePin( RF_TX_GPIO_Port, RF_TX_Pin, GPIO_PIN_RESET );
-    HAL_GPIO_WritePin( RF_RX_GPIO_Port, RF_RX_Pin, GPIO_PIN_SET );
-}
-
-//========================================================================
-void RF_RxTx_Mode()
-//========================================================================
-{
-    //  송/수신 모드
-
-    HAL_GPIO_WritePin( RF_TX_GPIO_Port, RF_TX_Pin, GPIO_PIN_SET );
-    HAL_GPIO_WritePin( RF_RX_GPIO_Port, RF_RX_Pin, GPIO_PIN_SET );
-}
-
-
 #include "radio_si4463.h"	//	si4463 driver
 
 /* USER CODE END 0 */

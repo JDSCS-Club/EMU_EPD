@@ -704,40 +704,10 @@ void	LoopProcAudio			( void )
 
 }
 
-
 //========================================================================
-int		GetSpkVol	    ( void )
-//========================================================================
-{
-    uint8_t     nSpkVol = 0;
-
-    if ( HAL_OK != HAL_I2C_IsDeviceReady( &hi2c1, (uint16_t)( 0x50 << 1 ), 2, 2 ) )
-    {
-        printf( "%s(%d) - EEPROM Error\n", __func__, __LINE__ );
-
-        return -1;
-    }
-
-    at24_HAL_ReadBytes( &hi2c1, 0xA0, 0x0F, (uint8_t *)&nSpkVol, 1 );
-    printf( "%s(%d) - %d\n", __func__, __LINE__, nSpkVol );
-
-    return nSpkVol;
-}
-
-//========================================================================
-void	SetSpkVol	    ( int nSpkVol )
+void	AudioSpkVol	    ( int nSpkVol )
 //========================================================================
 {
-    if ( HAL_OK != HAL_I2C_IsDeviceReady( &hi2c1, (uint16_t)( 0x50 << 1 ), 2, 2 ) )
-    {
-        printf( "%s(%d) - EEPROM Error\n", __func__, __LINE__ );
-
-        return ;
-    }
-
-    printf( "%s(%d) - %d\n", __func__, __LINE__, nSpkVol );
-    at24_HAL_WriteBytes( &hi2c1, 0xA0, 0x0F, (uint8_t *)&nSpkVol, 1 );
-
     //========================================================================
     //	Codec MAX9860ETG+
     if ( HAL_OK == HAL_I2C_IsDeviceReady( &hi2c1, (uint16_t)( 0x10 << 1 ), 2, 2 ) )

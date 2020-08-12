@@ -106,8 +106,7 @@ int		AudioLoopbackDMACompress( void );
 
 void	LoopProcAudio			( void );
 
-int		GetSpkVol	    ( void );
-void	SetSpkVol	    ( int nSpkVol );
+void	AudioSpkVol	    ( int nSpkVol );
 
 
 
