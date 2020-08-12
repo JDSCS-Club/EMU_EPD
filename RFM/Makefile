@@ -136,7 +136,10 @@ Drivers/display/Adafruit_SSD1306.cpp
 
 # ASM sources
 ASM_SOURCES =  \
-startup_stm32f407xx.s
+startup_stm32f407xx.s \
+Library/speex/STM32/libspeex/gcc/filters_cortexM3.s \
+Library/speex/STM32/libspeex/gcc/ltp_cortexM3.s \
+Library/speex/STM32/libspeex/gcc/vq_cortexm3.s \
 
 
 #######################################
@@ -241,7 +244,17 @@ LIBDIR =
 LDFLAGS = $(MCU) -specs=nano.specs -T$(LDSCRIPT) $(LIBDIR) $(LIBS) -Wl,-Map=$(BUILD_DIR)/$(TARGET).map,--cref -Wl,--gc-sections
 
 # default action: build all
-all: $(BUILD_DIR)/$(TARGET).elf $(TARGET_DIR)/$(TARGET).hex $(TARGET_DIR)/$(TARGET).bin
+all: Library/version.h $(BUILD_DIR)/$(TARGET).elf $(TARGET_DIR)/$(TARGET).hex $(TARGET_DIR)/$(TARGET).bin
+
+
+#-------------------------------------------------------------------------------
+# Make Version
+GITVERSION	=	`git rev-list HEAD --count | sed 's/:.*//g' | sed 's/[^0-9]//g'`
+
+MKVERSION	=	sed "26s/.*/\#define	APP_BUILD_VER\t$(GITVERSION)/g" Library/version.h.template > Library/version.h
+
+Library/version.h:
+	$(MKVERSION)
 
 
 #######################################

@@ -4,7 +4,7 @@
 
 if [ -b $1 ]
 then
-APP_NAME=RFM_F407_NOS
+APP_NAME=RFM
 else
 APP_NAME=$1
 fi
@@ -12,7 +12,7 @@ fi
 # 200123
 cdate=`date "+%y%m%d"`
 
-if [ $APP_NAME = "RF_PA_407VG_BD" ]; then
+if [ $APP_NAME = "RFM" ]; then
 VER_FILE=Core/Src/version.h
 else
 VER_FILE=Src/version.h
