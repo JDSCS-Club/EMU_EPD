@@ -17,7 +17,7 @@
 #include <stdio.h>			//	printf()
 #include <string.h>			//	memcpy()
 
-#include "queueBuf.h"
+#include "QBuf.h"
 
 //========================================================================
 // Define

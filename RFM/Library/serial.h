@@ -34,7 +34,7 @@
 #endif	//	stm32f207
 //=============================================================================
 
-#include "queueBuf.h"
+#include "QBuf.h"
 
 #define	RXFLAG_EMPTY	0
 #define	RXFLAG_XING		1

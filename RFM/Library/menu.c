@@ -8,7 +8,7 @@
 #include <stdarg.h>
 #include <stdbool.h>
 
-#include "queueBuf.h"
+#include "QBuf.h"
 
 #include "Adafruit_SSD1306.h"		//  LCD Display
 
@@ -30,13 +30,6 @@
 #include "cli.h"
 
 #include "menu.h"
-
-//========================================================================
-#define	 DEFAULT_SPK_VOL	 1
-#define	 MAX_SPK_VOL		 3
-
-int	 g_nSpkLevel = DEFAULT_SPK_VOL;				//  Default (1) - 0(Mute) / 1 / 2(Normal) / 3
-//========================================================================
 
 #if 0
 

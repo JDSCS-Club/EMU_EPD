@@ -274,12 +274,51 @@ void KeyDown( int bValue )
 #endif
 }
 
+
+//========================================================================
+#define	 DEFAULT_SPK_VOL	 1
+#define	 MAX_SPK_VOL		 3
+
+int	 g_nSpkLevel = DEFAULT_SPK_VOL;				//  Default (1) - 0(Mute) / 1 / 2(Normal) / 3
+//========================================================================
+
+
 //========================================================================
 void KeyVol( int bValue )
 //========================================================================
 {
 	//	bValue : 0(Up) / 1(Down)
 	printf( "%s(%d)\n", __func__, __LINE__ );
+
+#if 1
+
+	if( bValue )
+	{
+		g_nSpkLevel = ( g_nSpkLevel + 1 ) % 4;  //  0, 1, 2, 3
+
+		//========================================================================
+		SetSpkVol( g_nSpkLevel );
+		//========================================================================
+
+		if ( g_nSpkLevel )
+		{
+			//	RFM SPK On
+//				HAL_GPIO_WritePin( SPK_ON_GPIO_Port, SPK_ON_Pin, GPIO_PIN_SET );
+			//	RFM SPK Off
+			HAL_GPIO_WritePin( SPK_ON_GPIO_Port, SPK_ON_Pin, GPIO_PIN_RESET );
+
+			LCDSpeaker( g_nSpkLevel );
+		}
+		else
+		{
+			//	RFM SPK Off
+			HAL_GPIO_WritePin( SPK_ON_GPIO_Port, SPK_ON_Pin, GPIO_PIN_RESET );
+
+			LCDSpeaker( 0 );
+		}
+	}
+
+#else
 
 	//	Audio Loopback Proc
 
@@ -312,6 +351,8 @@ void KeyVol( int bValue )
 		//	Codec Loopback Off
 		AudioStop();
 	}
+
+#endif
 }
 
 //========================================================================

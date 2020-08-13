@@ -41,7 +41,7 @@
 #endif	//	stm32f207
 //=============================================================================
 
-#include "queueBuf.h"		//	Queue_t
+#include "QBuf.h"		//	Queue_t
 
 #define DEBUG_RX_QUEUE_SIZE	64
 
