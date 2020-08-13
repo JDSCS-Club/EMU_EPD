@@ -31,133 +31,52 @@
 
 #include "menu.h"
 
-#if 0
-
-static int bRxBuffering = 1;	//  Rx Buffering. ( Packet 4 ~ Packet 0)
-
-//========================================================================
-void RF_PA_I2SEx_TxRxCpltCallback ( I2S_HandleTypeDef *hi2s )
-//========================================================================
-{
-	static int idx = 0;
-	idx++;
-
-	int i;
-
-	if ( GetDevID() == DevRF900T )
-	{
-		//========================================================================
-		//  송신기.
-
-		//  r_audio_buff -> RF-Tx
-
-		if ( qBufCnt( &g_qBufAudioRFTx ) < ( ( I2S_DMA_LOOP_SIZE * 2 ) * ( I2S_DMA_LOOP_QCNT - 1 ) ) )
-		{
-			//  printf ( "P" );
-			//  memset( r_audio_buff, idx, 64 );		//  Data Setting
-
-			//	Queue Put
-			qBufPut( &g_qBufAudioRFTx, (uint8_t *)r_audio_buff, ( I2S_DMA_LOOP_SIZE * 2 ) );
-		}
-
-
-		/*
-
-		//========================================================================
-		//  Audio In -> Audio Out Loop
-		memcpy( t_audio_buff, r_audio_buff, 64 );
-
-		/*/
-
-		memset( t_audio_buff, 0, 64 );
-
-		//========================================================================
-		//  Rx Buffering ( Packet Count : 0 ~ 4 )
-		//  RF-Rx -> t_audio_buff
-		if ( bRxBuffering )
-		{
-			//  Buffering
-			if ( qBufCnt( &g_qBufAudioRFRx ) > ( ( I2S_DMA_LOOP_SIZE * 2 ) * 3 ) )
-			{
-				//  패킷이 4개 이상인경우 버퍼링 종료.
-				bRxBuffering = 0;
-
-				printf ( "E" );	 //  버퍼링종료
-			}
-		}
-
-		if ( bRxBuffering == 0 )
-		{
-			//  Rx Audio Out
-			if ( qBufCnt( &g_qBufAudioRFRx ) >= ( I2S_DMA_LOOP_SIZE * 2 ) )
-			{
-				//			printf ( "G" );
-							//  Queue Audio Data
-				qBufGet( &g_qBufAudioRFRx, (uint8_t*)t_audio_buff, ( I2S_DMA_LOOP_SIZE * 2 ) );
-			}
-			else
-			{
-				printf ( "B" );	 //  버퍼링시작
-				//  Data
-				bRxBuffering = 1;
-			}
-		}
-		//  */
-	}
-	else
-	{
-		//========================================================================
-		//  수신기.
-
-		memset( t_audio_buff, 0, 64 );
-		//  Rx Buffering ( Packet Count : 0 ~ 4 )
-		//  RF-Rx -> t_audio_buff
-		if ( bRxBuffering )
-		{
-			//  Buffering
-			if ( qBufCnt( &g_qBufAudioRFRx ) > ( ( I2S_DMA_LOOP_SIZE * 2 ) * 3 ) )
-			{
-				//  패킷이 4개 이상인경우 버퍼링 종료.
-				bRxBuffering = 0;
-
-				printf ( "E" );	 //  버퍼링종료
-			}
-		}
-
-		if ( bRxBuffering == 0 )
-		{
-			//  Rx Audio Out
-			if ( qBufCnt( &g_qBufAudioRFRx ) >= ( I2S_DMA_LOOP_SIZE * 2 ) )
-			{
-				//			printf ( "G" );
-							//  Queue Audio Data
-				qBufGet( &g_qBufAudioRFRx, (uint8_t *)t_audio_buff, ( I2S_DMA_LOOP_SIZE * 2 ) );
-			}
-			else
-			{
-				printf ( "B" );	 //  버퍼링시작
-
-				//  Data
-				bRxBuffering = 1;
-			}
-		}
-	}
-
-	if ( GetDevID() == DevRF900M && bRxBuffering == 1 )
-	{
-		//========================================================================
-		//  수신기 & 버퍼링중. -> Skip
-	}
-	else
-	{
-		HAL_I2SEx_TransmitReceive_DMA ( &hi2s3, t_audio_buff, r_audio_buff, I2S_DMA_LOOP_SIZE ); // 32byte
-	}
-}
-
-#endif
-
 static int stampRx;
 
+
+//========================================================================
+//	Menu LightCtrl
+Menu_t	g_MenuLightCtrl = {
+	{
+		"1. 조명소등", //  조명소등
+		"2. 조명점등", //  조명점등
+	},
+	sizeof( g_MenuLightCtrl.sItem ) / sizeof( char * ),		//	cntItem
+	0,
+	NULL
+};
+
+//========================================================================
+//	Menu TrainSet
+Menu_t	g_MenuTrainSet = {
+	{	" 100 편성",  //  100편성
+		" 101 편성",  //  101편성
+		" 102 편성",  //  102편성
+		" 103 편성",  //  103편성
+		" 104 편성",  //  104편성
+		" 105 편성",  //  105편성
+		" 106 편성",  //  106편성
+		" 107 편성",  //  107편성
+		" 108 편성",  //  108편성
+		" 109 편성",  //  109편성
+	},
+	sizeof( g_MenuTrainSet.sItem ) / sizeof( char * ),		//	cntItem
+	0,		// curr Idx
+	NULL	//	Callback Function
+};
+
+//========================================================================
+//	Main Menu
+Menu_t	g_MenuMain = {
+	{
+		"1. 조명제어",
+		"2. S/W 버전",
+		"3. 편성설정",
+	},
+	sizeof( g_MenuMain.sItem ) / sizeof( char * ),		//	cntItem
+	0,
+	NULL
+};
 
 //========================================================================
 char	*g_sMenu[]	=	{	"1. 조명제어",
@@ -337,6 +256,124 @@ void	ProcBtnMenu( void )
 	}
 }
 
+//========================================================================
+void	ProcLightOn ( void )
+//========================================================================
+{
+	LCDSetCursor( 20, 13 );
+	LCDPrintf( "[조명 점등]" );
+
+	SendLightOn();	 //  조명Off명령 전송.
+	SendLightOn();	 //  조명Off명령 전송.
+	SendLightOn();	 //  조명Off명령 전송.
+}
+
+//========================================================================
+void	ProcLightOff ( void )
+//========================================================================
+{
+	LCDSetCursor( 20, 13 );
+	LCDPrintf( "[조명 소등]" );
+
+	SendLightOff();	 //  조명Off명령 전송.
+	SendLightOff();	 //  조명Off명령 전송.
+	SendLightOff();	 //  조명Off명령 전송.
+}
+
+//========================================================================
+void	ProcDispVer ( void )
+//========================================================================
+{
+	//  S/W 버전
+	LCDSetCursor( 5, 13 );
+	LCDPrintf( "RFM v" APP_VER );
+}
+
+//========================================================================
+void	ProcMenuTrainSet( void )
+//========================================================================
+{
+	LCDSetCursor( 20, 13 );
+	LCDPrintf( "[편성설정]" );
+	g_idxTrainSet = g_idxMenuTrainSet;  //  메뉴 Index값으로 설정.
+	SetTrainSetIdx( g_idxTrainSet );
+
+	//  Radio Channel 설정.
+	pRadioConfiguration->Radio_ChannelNumber = g_idxTrainSet;
+
+	//  1초후 Main화면 갱신.
+	HAL_Delay( 1000 );
+	UpdateLCDMain();
+}
+
+//========================================================================
+void 	ProcMenuMain( int idxMenu )
+//========================================================================
+{
+	switch ( g_idxMenu )
+	{
+	case 0:		 //  조명소등.
+		//	Menu
+		g_inMenu = 3;		   	//  조명제어
+		g_idxMenuCtlLight = 0;  //  조명제어 메뉴 Index초기화.
+		UpdateLCDMenu();
+
+		break;
+	case 1:		 //  S/W 버전
+		ProcDispVer();
+
+		//  메뉴 Exit
+		g_inMenu = 0;
+
+		break;
+	case 2:		 //  편성설정.
+		g_inMenu = 2;
+		g_idxMenuTrainSet = g_idxTrainSet;
+		UpdateLCDMenu();
+		break;
+#if defined(USE_ENV_TEST)
+	case 3:		 //  RF 출력
+		//	RF Tx시작.
+		SetLoopRFTx( 1 );
+
+		LCDSetCursor( 5, 13 );
+		LCDPrintf( "[ RF Tx ]" );
+
+		//  메뉴 Exit
+		g_inMenu = 4;
+
+		break;
+#endif	//	defined(USE_ENV_TEST)
+	}
+}
+
+
+//========================================================================
+void 	ProcMenuLightCtrl( int idxMenu )
+//========================================================================
+{
+
+	//  Tx모드
+	RF_Tx_Mode();
+
+	LCDMenuUpDown( 0 );
+
+	if ( idxMenu == 0 )
+	{
+		ProcLightOff();
+	}
+	else
+	{
+		ProcLightOn();
+	}
+
+	//  1초후 Main화면 갱신.
+	HAL_Delay( 1000 );
+	UpdateLCDMain();
+
+	//  Rx모드
+	RF_Rx_Mode();
+}
 
 //========================================================================
 void	ProcBtnOK( void )
@@ -345,93 +382,18 @@ void	ProcBtnOK( void )
 	//	Menu
 	if ( g_inMenu == 1 )   //  메뉴모드.
 	{
-		switch ( g_idxMenu )
-		{
-		case 0:		 //  조명소등.
-			//	Menu
-			g_inMenu = 3;		   //  조명제어
-			g_idxMenuCtlLight = 0;  //  조명제어 메뉴 Index초기화.
-			UpdateLCDMenu();
-
-			break;
-		case 1:		 //  S/W 버전
-			LCDSetCursor( 5, 13 );
-			LCDPrintf( "RFM v" APP_VER );
-
-			//  메뉴 Exit
-			g_inMenu = 0;
-
-			break;
-		case 2:		 //  편성설정.
-			g_inMenu = 2;
-			g_idxMenuTrainSet = g_idxTrainSet;
-			UpdateLCDMenu();
-			break;
-#if defined(USE_ENV_TEST)
-		case 3:		 //  RF 출력
-			//	RF Tx시작.
-			SetLoopRFTx( 1 );
-
-			LCDSetCursor( 5, 13 );
-			LCDPrintf( "[ RF Tx ]" );
-
-			//  메뉴 Exit
-			g_inMenu = 4;
-
-			break;
-#endif	//	defined(USE_ENV_TEST)
-		}
+		ProcMenuMain( g_idxMenu );
 	}
 	else if ( g_inMenu == 2 )	   //  편성설정
 	{
-		LCDSetCursor( 20, 13 );
-		LCDPrintf( "[편성설정]" );
-		g_idxTrainSet = g_idxMenuTrainSet;  //  메뉴 Index값으로 설정.
-		SetTrainSetIdx( g_idxTrainSet );
-
-		//  Radio Channel 설정.
-		pRadioConfiguration->Radio_ChannelNumber = g_idxTrainSet;
-
-		//  1초후 Main화면 갱신.
-		HAL_Delay( 1000 );
-		UpdateLCDMain();
+		ProcMenuTrainSet();
 
 		//  메뉴 Exit
 		g_inMenu = 0;
 	}
 	else if ( g_inMenu == 3 )	   //  조명제어
 	{
-		//  Tx모드
-		RF_Tx_Mode();
-
-		LCDMenuUpDown( 0 );
-
-		if ( g_idxMenuCtlLight == 0 )
-		{
-			LCDSetCursor( 20, 13 );
-			LCDPrintf( "[조명 소등]" );
-
-			SendLightOff();	 //  조명Off명령 전송.
-			SendLightOff();	 //  조명Off명령 전송.
-			SendLightOff();	 //  조명Off명령 전송.
-		}
-		else
-		{
-			LCDSetCursor( 20, 13 );
-			LCDPrintf( "[조명 점등]" );
-
-			SendLightOn();	 //  조명Off명령 전송.
-			SendLightOn();	 //  조명Off명령 전송.
-			SendLightOn();	 //  조명Off명령 전송.
-		}
-
-		//  1초후 Main화면 갱신.
-		HAL_Delay( 1000 );
-		UpdateLCDMain();
-
-		//  Rx모드
-		RF_Rx_Mode();
-
+		ProcMenuLightCtrl( g_idxMenuCtlLight );
 		//  메뉴 Exit
 		g_inMenu = 0;
 	}

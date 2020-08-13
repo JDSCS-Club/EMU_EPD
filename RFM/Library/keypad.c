@@ -376,7 +376,7 @@ void KeyPtt( int bValue )
 		LCDPrintf( "송신중..." );
 
 		//	방송 - 시작
-//		SendPA( 1 );		//	SendRF - Send PA ( 송신기 -> 수신기 )
+		SendPA( 1 );		//	SendRF - Send PA ( 송신기 -> 수신기 )
 	}
 	else
 	{
@@ -385,7 +385,7 @@ void KeyPtt( int bValue )
 		LCDPrintf( "편성 : 100" );
 
 		//	방송 - 종료
-//		SendPA( 0 );		//	SendRF - Send PA ( 송신기 -> 수신기 )
+		SendPA( 0 );		//	SendRF - Send PA ( 송신기 -> 수신기 )
 	}
 
 }

@@ -88,7 +88,7 @@ void radio_SPI_ReadWrite(U8 byteCount, U8* wdata, U8* rdata)
   status = HAL_SPI_TransmitReceive_DMA(&hspi1, wdata, rdata, byteCount);
   if(status != HAL_OK)
   {
-    printf("radio SPI_ReadWrite error (%d)!!\n", status);
+    printf("radio SPI_ReadWrite Error (%d)!!\n", status);
   }
 
   while (HAL_SPI_GetState(&hspi1) != HAL_SPI_STATE_READY){}
@@ -113,7 +113,7 @@ U8 SpiReadWrite( U8 byteToWrite )
 	status = HAL_SPI_TransmitReceive_DMA(&hspi1, wdata, rdata, byteCount);
 	if(status != HAL_OK)
 	{
-		printf("radio SPI_ReadWrite error (%d)!!\n", status);
+		printf("radio SPI_ReadWrite Error (%d)!!\n", status);
 	}
 
 	while (HAL_SPI_GetState(&hspi1) != HAL_SPI_STATE_READY){}
@@ -136,7 +136,7 @@ U8 *SpiWriteData( U16 byteCount, U8 *byteToWrite )
 	status = HAL_SPI_TransmitReceive_DMA(&hspi1, wdata, rdata, byteCount);
 	if(status != HAL_OK)
 	{
-		printf("radio SPI_ReadWrite error (%d)!!\n", status);
+		printf("radio SPI_ReadWrite Error (%d)!!\n", status);
 	}
 
 	while (HAL_SPI_GetState(&hspi1) != HAL_SPI_STATE_READY){}
@@ -158,7 +158,7 @@ U8 *SpiReadData( U16 byteCount, U8 *byteToWrite )
 	status = HAL_SPI_TransmitReceive_DMA(&hspi1, wdata, rdata, byteCount);
 	if(status != HAL_OK)
 	{
-		printf("radio SPI_ReadWrite error (%d)!!\n", status);
+		printf("radio SPI_ReadWrite Error (%d)!!\n", status);
 	}
 
 	while (HAL_SPI_GetState(&hspi1) != HAL_SPI_STATE_READY){}

@@ -34,6 +34,44 @@
 #define		USE_RFT_ONLY_RX_SPK_ON		1		//	송신기 수신중일때 만 Spk On.
 
 //========================================================================
+//	Menu Structure
+
+//typedef struct _MenuItem
+//{
+//	char 	*sItem;						//	Item Name
+//	void	*pNextMenu;					//	Next Menu
+//} MenuItem_t;
+
+typedef struct _Menu
+{
+//	MenuItem_t 	*listItem;				//	Menu Item List
+	char 		**sItem;				//	Item Name
+	int			cntItem;				//	Menu Item Count
+	int			currIdx;				//	Current Item Index
+	void		(*cbFunc)(void *pMenu);	//	Callback Func
+} Menu_t;
+
+
+extern Menu_t	g_MenuMain;			//	Main Menu
+extern Menu_t	g_MenuLightCtrl;	//	Light Ctrl
+extern Menu_t	g_MenuTrainSet;		//	TrainSet
+
+//========================================================================
+//	Menu Procedure
+void	ProcMenuTrainSet	( void );
+void 	ProcMenuMain		( int idxMenu );
+void 	ProcMenuLightCtrl	( int idxMenu );
+
+
+//========================================================================
+
+void	ProcLightOn		( void );
+void	ProcLightOff	( void );
+
+void	ProcDispVer		( void );
+
+
+//========================================================================
 
 #define		RF_CMD_SIZE				RFPktHdrLen			//	[4Byte Commnad]
 
