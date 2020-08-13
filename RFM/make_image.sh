@@ -12,11 +12,11 @@ fi
 # 200123
 cdate=`date "+%y%m%d"`
 
-if [ $APP_NAME = "RFM" ]; then
-VER_FILE=Core/Src/version.h
-else
-VER_FILE=Src/version.h
-fi
+#if [ $APP_NAME = "RFM" ]; then
+VER_FILE=Library/version.h
+#else
+#VER_FILE=Src/version.h
+#fi
 
 ver_main=`grep "#define	APP_MAIN_VER" $VER_FILE | sed 's/[^0-9]//g'`
 ver_sub=`grep "#define	APP_SUB_VER" $VER_FILE  | sed 's/[^0-9]//g'`
@@ -36,6 +36,7 @@ WORK_PATH=`pwd`
 
 ################################################
 #	Copy build/ -> bin/
+mkdir -p ./bin
 
 IMG_NAME=${APP_NAME}_${cdate}_v${ver}
 

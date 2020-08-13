@@ -120,12 +120,15 @@ Drivers/display/fonts/PHan_Lib.c \
 Drivers/display/fonts/PHanFont.c \
 Library/adc.c \
 Library/audio.c \
-Library/queueBuf.c \
+Library/QBuf.c \
 Library/serial.c \
 Library/unicode.c \
 Library/cli.c \
+Library/i2c.c \
 Library/rfm.c \
 Library/keypad.c \
+Library/menu.c \
+Library/ProcPkt.c \
 Library/RFMProtocol.c \
 
 #Core/Src/syscalls.c \
@@ -297,6 +300,7 @@ $(BUILD_DIR):
 #######################################
 clean:
 	-rm -fR $(BUILD_DIR)
+	rm Library/version.h
   
 #######################################
 # dependencies
