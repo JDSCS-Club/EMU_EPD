@@ -38,17 +38,25 @@
 
 //typedef struct _MenuItem
 //{
-//	char 	*sItem;						//	Item Name
-//	void	*pNextMenu;					//	Next Menu
+//	char 	*sItem;							//	Item Name
+//	void	*pNextMenu;						//	Next Menu
 //} MenuItem_t;
+
+//#define	MAX_MENU_ITEM	20
 
 typedef struct _Menu
 {
-//	MenuItem_t 	*listItem;				//	Menu Item List
-	char 		**sItem;				//	Item Name
-	int			cntItem;				//	Menu Item Count
-	int			currIdx;				//	Current Item Index
-	void		(*cbFunc)(void *pMenu);	//	Callback Func
+	enum
+	{
+		MaxMenuItem = 20,
+	};
+
+//	MenuItem_t 	*listItem;					//	Menu Item List
+//	char 		*sItem[];					//	Item Name
+	char 		*sItem[MaxMenuItem];		//	Item Name
+	int			cntItem;					//	Menu Item Count
+	int			currIdx;					//	Current Item Index
+	void		(*cbFunc)( int idxItem );	//	Callback Func
 } Menu_t;
 
 
@@ -58,9 +66,10 @@ extern Menu_t	g_MenuTrainSet;		//	TrainSet
 
 //========================================================================
 //	Menu Procedure
-void	ProcMenuTrainSet	( void );
-void 	ProcMenuMain		( int idxMenu );
-void 	ProcMenuLightCtrl	( int idxMenu );
+
+void 	ProcMenuMain		( int idxItem );	//	Main
+void	ProcMenuTrainSet	( int idxItem );	//	TrainSet
+void 	ProcMenuLightCtrl	( int idxItem );	//	LightCtrl
 
 
 //========================================================================

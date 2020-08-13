@@ -40,10 +40,11 @@ Menu_t	g_MenuLightCtrl = {
 	{
 		"1. 조명소등", //  조명소등
 		"2. 조명점등", //  조명점등
+		NULL,
 	},
-	sizeof( g_MenuLightCtrl.sItem ) / sizeof( char * ),		//	cntItem
-	0,
-	NULL
+	2,		//	Item Count
+	0,		// 	curr Idx
+	ProcMenuLightCtrl		//	Callback Function
 };
 
 //========================================================================
@@ -59,10 +60,11 @@ Menu_t	g_MenuTrainSet = {
 		" 107 편성",  //  107편성
 		" 108 편성",  //  108편성
 		" 109 편성",  //  109편성
+		NULL,
 	},
-	sizeof( g_MenuTrainSet.sItem ) / sizeof( char * ),		//	cntItem
-	0,		// curr Idx
-	NULL	//	Callback Function
+	10,		//	Item Count
+	0,		// 	curr Idx
+	ProcMenuTrainSet		//	Callback Function
 };
 
 //========================================================================
@@ -72,12 +74,35 @@ Menu_t	g_MenuMain = {
 		"1. 조명제어",
 		"2. S/W 버전",
 		"3. 편성설정",
+		NULL,
 	},
-	sizeof( g_MenuMain.sItem ) / sizeof( char * ),		//	cntItem
-	0,
-	NULL
+	3,		//	Item Count
+	0,		// 	curr Idx
+	ProcMenuMain		//	Callback Function
 };
 
+int	 g_idxTrainSet = 0;	  //  Train Set Index
+
+
+//========================================================================
+Menu_t	*g_pActiveMenu	=	NULL;
+//========================================================================
+
+//========================================================================
+void	SetActiveMenu( Menu_t *pActiveMenu )
+//========================================================================
+{
+	g_pActiveMenu = pActiveMenu;
+}
+
+//========================================================================
+Menu_t	*GetActiveMenu( void )
+//========================================================================
+{
+	return g_pActiveMenu;
+}
+
+#if 0
 //========================================================================
 char	*g_sMenu[]	=	{	"1. 조명제어",
 							"2. S/W 버전",
@@ -126,7 +151,6 @@ int	 g_cntTrainSet = sizeof( g_sTrainSet ) / sizeof( char * );
 
 int	 g_idxMenuTrainSet = 0;  //  Menu Index
 
-int	 g_idxTrainSet = 0;	  //  Train Set Index
 
 //#endif
 
@@ -138,6 +162,7 @@ int	 g_cntMenuCtlLight = sizeof( g_sMenuCtlLight ) / sizeof( char * );
 
 int	 g_idxMenuCtlLight = 0;
 
+#endif
 
 //========================================================================
 void	UpdateLCDMain( void )
@@ -151,7 +176,7 @@ void	UpdateLCDMain( void )
 	//	편성 : 100
 	LCDSetCursor( 20, 13 );
 
-	sprintf( sBuf, "편성 : %s", g_sTrainSet[g_idxTrainSet] );
+	sprintf( sBuf, "편성 : %d", 100 + g_idxTrainSet );
 //	LCDPrintf( "편성 : 100" );
 	LCDPrintf( sBuf );
 }
@@ -160,35 +185,18 @@ void	UpdateLCDMain( void )
 void	UpdateLCDMenu( void )
 //========================================================================
 {
-	char	**sMenu;
-	int		*pIdxMenu, *pCntMenu;
-
-	switch ( g_inMenu )
+	if ( GetActiveMenu() == NULL )
 	{
-	case 1:	 //  Main Menu
-		sMenu		=	g_sMenu;
-		pIdxMenu	=	&g_idxMenu;
-		pCntMenu	=	&g_cntMenu;
-		break;
-	case 2:	 //  편성설정
-		sMenu		=	g_sMenuTrainSet;
-		pIdxMenu	=	&g_idxMenuTrainSet;
-		pCntMenu	=	&g_cntTrainSet;
-		break;
-	case 3:	 //  조명제어
-		sMenu		=	g_sMenuCtlLight;
-		pIdxMenu	=	&g_idxMenuCtlLight;
-		pCntMenu	=	&g_cntMenuCtlLight;
-		break;
-
-	default:	//  메뉴모드가 아닌경우.
 		UpdateLCDMain();
 		return;
 	}
 
-	if ( *pIdxMenu < 0 ) *pIdxMenu = 0;
+	char	**sMenu;
+	int		*pIdxMenu, *pCntMenu;
 
-	if ( *pIdxMenu >= *pCntMenu ) *pIdxMenu = *pCntMenu - 1;
+	sMenu		=	g_pActiveMenu->sItem;
+	pIdxMenu	=	&g_pActiveMenu->currIdx;
+	pCntMenu	=	&g_pActiveMenu->cntItem;
 
 	//  Main화면 Clear
 	LCDClearMain();
@@ -207,13 +215,14 @@ void	UpdateLCDMenu( void )
 void	ProcBtnUp( void )
 //========================================================================
 {
+	if ( g_pActiveMenu == NULL ) return;
+
 	//	Menu
-	switch ( g_inMenu )   //  메뉴모드.
+	g_pActiveMenu->currIdx--;
+
+	if ( g_pActiveMenu->currIdx < 0 )
 	{
-	case 1:		g_idxMenu--;			break;		//	Main Menu
-	case 2:		g_idxMenuTrainSet--;	break;		//	편성설정
-	case 3:		g_idxMenuCtlLight--;	break;		//	조명제어
-	default:	return;
+		g_pActiveMenu->currIdx = 0;
 	}
 
 	UpdateLCDMenu();   //  메뉴화면 Update
@@ -223,13 +232,15 @@ void	ProcBtnUp( void )
 void	ProcBtnDown( void )
 //========================================================================
 {
+	if ( g_pActiveMenu == NULL ) return;
+
 	//	Menu
-	switch ( g_inMenu )   //  메뉴모드.
+
+	g_pActiveMenu->currIdx++;
+
+	if ( g_pActiveMenu->currIdx >= g_pActiveMenu->cntItem )
 	{
-	case 1:		g_idxMenu++;			break;		//	Main Menu
-	case 2:		g_idxMenuTrainSet++;	break;		//	편성설정
-	case 3:		g_idxMenuCtlLight++;	break;		//	조명제어
-	default:	return;
+		g_pActiveMenu->currIdx = g_pActiveMenu->cntItem  - 1;
 	}
 
 	UpdateLCDMenu();   //  메뉴화면 Update
@@ -241,19 +252,22 @@ void	ProcBtnMenu( void )
 {
 	//	Menu
 
-	if ( g_inMenu == 0 )
+	if ( GetActiveMenu() == NULL )
 	{
 		//  메뉴모드가 아닌경우 메뉴로 진입.
-		g_inMenu = 1;		//	메뉴로 진입.
-		g_idxMenu = 0;		//	Index 초기화.
-		UpdateLCDMenu();	//	메뉴화면 Update
+
+		//	Set Main Menu
+		SetActiveMenu( &g_MenuMain );
 	}
 	else
 	{
 		//  메뉴 진입상태 -> 메인화면으로 이동.
-		g_inMenu = 0;		//	메인으로 진입.
-		UpdateLCDMenu();	//	메뉴화면 Update
+
+		//	Set Main Menu
+		SetActiveMenu( NULL );
 	}
+
+	UpdateLCDMenu();	//	메뉴화면 Update
 }
 
 //========================================================================
@@ -290,12 +304,12 @@ void	ProcDispVer ( void )
 }
 
 //========================================================================
-void	ProcMenuTrainSet( void )
+void	ProcMenuTrainSet( int idxItem  )
 //========================================================================
 {
 	LCDSetCursor( 20, 13 );
 	LCDPrintf( "[편성설정]" );
-	g_idxTrainSet = g_idxMenuTrainSet;  //  메뉴 Index값으로 설정.
+	g_idxTrainSet = idxItem;  //  메뉴 Index값으로 설정.
 	SetTrainSetIdx( g_idxTrainSet );
 
 	//  Radio Channel 설정.
@@ -304,33 +318,45 @@ void	ProcMenuTrainSet( void )
 	//  1초후 Main화면 갱신.
 	HAL_Delay( 1000 );
 	UpdateLCDMain();
+
+	//  메뉴 Exit
+//		g_inMenu = 0;
+	SetActiveMenu( NULL );
 }
 
 //========================================================================
-void 	ProcMenuMain( int idxMenu )
+void 	ProcMenuMain( int idxItem )
 //========================================================================
 {
-	switch ( g_idxMenu )
+	switch ( idxItem )
 	{
-	case 0:		 //  조명소등.
+	case 0:		 //  조명제어
 		//	Menu
-		g_inMenu = 3;		   	//  조명제어
-		g_idxMenuCtlLight = 0;  //  조명제어 메뉴 Index초기화.
+
+		SetActiveMenu( &g_MenuLightCtrl );
+		GetActiveMenu()->currIdx = 0;	//	메뉴 Index초기화.
+
 		UpdateLCDMenu();
 
 		break;
+
 	case 1:		 //  S/W 버전
-		ProcDispVer();
 
 		//  메뉴 Exit
-		g_inMenu = 0;
+		SetActiveMenu( NULL );
+
+		ProcDispVer();
 
 		break;
+
 	case 2:		 //  편성설정.
-		g_inMenu = 2;
-		g_idxMenuTrainSet = g_idxTrainSet;
+
+		SetActiveMenu( &g_MenuTrainSet );
+		GetActiveMenu()->currIdx = g_idxTrainSet;	//	메뉴 Index초기화.
+
 		UpdateLCDMenu();
 		break;
+
 #if defined(USE_ENV_TEST)
 	case 3:		 //  RF 출력
 		//	RF Tx시작.
@@ -349,16 +375,15 @@ void 	ProcMenuMain( int idxMenu )
 
 
 //========================================================================
-void 	ProcMenuLightCtrl( int idxMenu )
+void 	ProcMenuLightCtrl( int idxItem )
 //========================================================================
 {
-
 	//  Tx모드
 	RF_Tx_Mode();
 
 	LCDMenuUpDown( 0 );
 
-	if ( idxMenu == 0 )
+	if ( idxItem == 0 )
 	{
 		ProcLightOff();
 	}
@@ -371,6 +396,8 @@ void 	ProcMenuLightCtrl( int idxMenu )
 	HAL_Delay( 1000 );
 	UpdateLCDMain();
 
+	SetActiveMenu( NULL );
+
 	//  Rx모드
 	RF_Rx_Mode();
 }
@@ -379,41 +406,19 @@ void 	ProcMenuLightCtrl( int idxMenu )
 void	ProcBtnOK( void )
 //========================================================================
 {
-	//	Menu
-	if ( g_inMenu == 1 )   //  메뉴모드.
-	{
-		ProcMenuMain( g_idxMenu );
-	}
-	else if ( g_inMenu == 2 )	   //  편성설정
-	{
-		ProcMenuTrainSet();
-
-		//  메뉴 Exit
-		g_inMenu = 0;
-	}
-	else if ( g_inMenu == 3 )	   //  조명제어
-	{
-		ProcMenuLightCtrl( g_idxMenuCtlLight );
-		//  메뉴 Exit
-		g_inMenu = 0;
-	}
-#if defined(USE_ENV_TEST)
-	else if ( g_inMenu == 4 )	   //  RF Tx
-	{
-		//	RF Tx 종료
-		SetLoopRFTx( 0 );
-
-		//  메뉴 Exit
-		UpdateLCDMain();
-		g_inMenu = 0;
-	}
-#endif
-	else
+	if ( GetActiveMenu() == NULL )
 	{
 		LCDClearMain();
 		//========================================================================
 		//  편성 : XXX
 		UpdateLCDMain();
+
+		return;
+	}
+	else if ( g_pActiveMenu->cbFunc != NULL )
+	{
+		//	Menu Procedure Function
+		g_pActiveMenu->cbFunc( g_pActiveMenu->currIdx );
 	}
 }
 
