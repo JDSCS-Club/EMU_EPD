@@ -33,7 +33,7 @@
 
 // CONFIGURATION PARAMETERS
 #define RADIO_CONFIGURATION_DATA_RADIO_XO_FREQ                     30000000L
-#define RADIO_CONFIGURATION_DATA_CHANNEL_NUMBER                    0x00
+#define RADIO_CONFIGURATION_DATA_CHANNEL_NUMBER                    0x0A
 #define RADIO_CONFIGURATION_DATA_RADIO_PACKET_LENGTH               0x40
 #define RADIO_CONFIGURATION_DATA_RADIO_STATE_AFTER_POWER_UP        0x03
 #define RADIO_CONFIGURATION_DATA_RADIO_DELAY_CNT_AFTER_RESET       0xF000
@@ -42,7 +42,7 @@
 0xC5, 0xC5, 0xC5, 0xC5, 0xC5, 0xC5, 0xC5, 0xC5, 0xC5, 0xC5, 0xC5, 0xC5, 0xC5, 0xC5, 0xC5, 0xC5, 0xC5, 0xC5, 0xC5, 0xC5, \
 0xC5, 0xC5, 0xC5, 0xC5}
 
-#include "si446x_patch.h"
+#include "..\drivers\radio\Si446x\si446x_patch.h"
 
 
 // CONFIGURATION COMMANDS
@@ -57,7 +57,7 @@
 // Command:                  RF_GPIO_PIN_CFG
 // Description:              Configures the GPIO pins.
 */
-#define RF_GPIO_PIN_CFG 0x13, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
+#define RF_GPIO_PIN_CFG 0x13, 0x00, 0x00, 0x60, 0x61, 0x00, 0x00, 0x00
 
 /*
 // Set properties:           RF_GLOBAL_XO_TUNE_2

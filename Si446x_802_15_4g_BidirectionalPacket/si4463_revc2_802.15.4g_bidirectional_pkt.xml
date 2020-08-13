@@ -4,7 +4,7 @@
     <tbpFrequencyAndPower Type="System.Windows.Forms.TabPage">
       <grbFequencyControl Type="System.Windows.Forms.GroupBox">
         <DataItem Type="System.Windows.Forms.NumericUpDown" Name="nudChannelNumber">
-          <Value>0</Value>
+          <Value>10</Value>
         </DataItem>
         <DataItem Type="System.Windows.Forms.NumericUpDown" Name="nudCenterFrequency">
           <Value>915</Value>
@@ -409,16 +409,16 @@
           <SelectedIndex>DONOTHING</SelectedIndex>
         </DataItem>
         <DataItem Type="System.Windows.Forms.CheckBox" Name="chbGpio2Pullup">
-          <Checked>False</Checked>
+          <Checked>True</Checked>
         </DataItem>
         <DataItem Type="System.Windows.Forms.ComboBox" Name="cbbGpio2">
-          <SelectedIndex>DONOTHING</SelectedIndex>
+          <SelectedIndex>TX_STATE</SelectedIndex>
         </DataItem>
         <DataItem Type="System.Windows.Forms.CheckBox" Name="chbGpio3Pullup">
-          <Checked>False</Checked>
+          <Checked>True</Checked>
         </DataItem>
         <DataItem Type="System.Windows.Forms.ComboBox" Name="cbbGpio3">
-          <SelectedIndex>DONOTHING</SelectedIndex>
+          <SelectedIndex>RX_STATE</SelectedIndex>
         </DataItem>
         <DataItem Type="System.Windows.Forms.CheckBox" Name="chbNirqPullup">
           <Checked>False</Checked>
