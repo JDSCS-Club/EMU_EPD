@@ -102,68 +102,6 @@ Menu_t	*GetActiveMenu( void )
 	return g_pActiveMenu;
 }
 
-#if 0
-//========================================================================
-char	*g_sMenu[]	=	{	"1. 조명제어",
-							"2. S/W 버전",
-#if defined(USE_RFT_MENU_TRAINSET)
-							"3. 편성설정",
-#endif
-#if defined(USE_ENV_TEST)
-	//  환경시험용 Menu
-							"4. RF 출력",
-#endif
-						};
-
-int	 g_cntMenu = sizeof( g_sMenu ) / sizeof( char * );
-
-int	 g_idxMenu = 0;
-
-int	 g_inMenu = 0;	   //  Menu 진입상태.
-
-//#if defined(USE_RFT_MENU_TRAINSET)
-
-char	*g_sTrainSet[]	=	{	"100",  //  100편성
-								"101",  //  101편성
-								"102",  //  102편성
-								"103",  //  103편성
-								"104",  //  104편성
-								"105",  //  105편성
-								"106",  //  106편성
-								"107",  //  107편성
-								"108",  //  108편성
-								"109",  //  109편성
-							};
-
-char	*g_sMenuTrainSet[]	=	{	" 100 편성",  //  100편성
-									" 101 편성",  //  101편성
-									" 102 편성",  //  102편성
-									" 103 편성",  //  103편성
-									" 104 편성",  //  104편성
-									" 105 편성",  //  105편성
-									" 106 편성",  //  106편성
-									" 107 편성",  //  107편성
-									" 108 편성",  //  108편성
-									" 109 편성",  //  109편성
-								};
-
-int	 g_cntTrainSet = sizeof( g_sTrainSet ) / sizeof( char * );
-
-int	 g_idxMenuTrainSet = 0;  //  Menu Index
-
-
-//#endif
-
-char	*g_sMenuCtlLight[]	=	{	"1. 조명소등",  //  조명소등
-									"2. 조명점등",  //  조명점등
-								};
-
-int	 g_cntMenuCtlLight = sizeof( g_sMenuCtlLight ) / sizeof( char * );
-
-int	 g_idxMenuCtlLight = 0;
-
-#endif
-
 //========================================================================
 void	UpdateLCDMain( void )
 //========================================================================
@@ -215,7 +153,7 @@ void	UpdateLCDMenu( void )
 void	ProcBtnUp( void )
 //========================================================================
 {
-	if ( g_pActiveMenu == NULL ) return;
+	if ( GetActiveMenu() == NULL ) return;
 
 	//	Menu
 	g_pActiveMenu->currIdx--;
@@ -232,7 +170,7 @@ void	ProcBtnUp( void )
 void	ProcBtnDown( void )
 //========================================================================
 {
-	if ( g_pActiveMenu == NULL ) return;
+	if ( GetActiveMenu() == NULL ) return;
 
 	//	Menu
 
@@ -258,6 +196,7 @@ void	ProcBtnMenu( void )
 
 		//	Set Main Menu
 		SetActiveMenu( &g_MenuMain );
+		GetActiveMenu()->currIdx = 0;	//	메뉴 Index초기화.
 	}
 	else
 	{
@@ -320,7 +259,6 @@ void	ProcMenuTrainSet( int idxItem  )
 	UpdateLCDMain();
 
 	//  메뉴 Exit
-//		g_inMenu = 0;
 	SetActiveMenu( NULL );
 }
 
@@ -366,7 +304,7 @@ void 	ProcMenuMain( int idxItem )
 		LCDPrintf( "[ RF Tx ]" );
 
 		//  메뉴 Exit
-		g_inMenu = 4;
+		SetActiveMenu( NULL );
 
 		break;
 #endif	//	defined(USE_ENV_TEST)

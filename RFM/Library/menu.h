@@ -36,14 +36,6 @@
 //========================================================================
 //	Menu Structure
 
-//typedef struct _MenuItem
-//{
-//	char 	*sItem;							//	Item Name
-//	void	*pNextMenu;						//	Next Menu
-//} MenuItem_t;
-
-//#define	MAX_MENU_ITEM	20
-
 typedef struct _Menu
 {
 	enum
@@ -51,8 +43,6 @@ typedef struct _Menu
 		MaxMenuItem = 20,
 	};
 
-//	MenuItem_t 	*listItem;					//	Menu Item List
-//	char 		*sItem[];					//	Item Name
 	char 		*sItem[MaxMenuItem];		//	Item Name
 	int			cntItem;					//	Menu Item Count
 	int			currIdx;					//	Current Item Index
