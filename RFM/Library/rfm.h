@@ -94,7 +94,7 @@ int		cmd_info		( int argc, char * argv[] );
 
 int		InitRFM			( void );
 int		RFM_main		( void );
-void	LoopProcRFM		( void );
+void	LoopProcRFM		( int nTick );
 
 
 //========================================================================

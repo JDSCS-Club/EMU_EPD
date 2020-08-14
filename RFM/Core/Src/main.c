@@ -184,8 +184,9 @@ int main(void)
 	//========================================================================
 	//    Start PWM
 
-	//    I2S MCLK - 2 MHz
-	HAL_TIM_PWM_Start( &htim3, TIM_CHANNEL_2 );       //      2 MHz
+	//    I2S MCLK - 12 MHz
+  	//		72000000 / 3 / 2 = 12000000 ( 12MHz ) - MCLK ( MAX9860+ )
+	HAL_TIM_PWM_Start( &htim3, TIM_CHANNEL_2 );       //      12 MHz
 	HAL_TIMEx_PWMN_Start( &htim3, TIM_CHANNEL_2 );
 
 	//========================================================================
@@ -200,7 +201,7 @@ int main(void)
 
 	printf( "%s(%d) - Start\n", __func__, __LINE__ );
 
-#if 0
+#if 1
 
 	//========================================================================
 	//    RFM Main Routine

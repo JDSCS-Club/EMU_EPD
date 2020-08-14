@@ -702,6 +702,7 @@ int InitRFM( void )
 
 #endif
 
+#if 0
 	if ( GetDevID() == DevRF900T )
 	{
 		for ( int i = 0; i < pRadioConfiguration->Radio_PacketLength; i++ )
@@ -722,6 +723,8 @@ int InitRFM( void )
 			pRadioConfiguration->Radio_ChannelNumber,
 			pRadioConfiguration->Radio_PacketLength );
 	}
+#endif
+
 }
 
 
@@ -731,6 +734,7 @@ int RFM_main( void )
 //========================================================================
 {
 	printf( "%s(%d)\n", __func__, __LINE__ );
+
 	InitRFM();
 
 	int nTick;
@@ -744,7 +748,7 @@ int RFM_main( void )
 		LoopProcKey( nTick );
 
 		//	Loop RFM
-		LoopProcRFM();
+		LoopProcRFM( nTick );
 
 		//	Loop Process ( CLI )
 		LoopProcCLI();
@@ -753,24 +757,20 @@ int RFM_main( void )
 
 
 //========================================================================
-void LoopProcRFM ( void )
+void LoopProcRFM ( int nTick )
 //========================================================================
 {
 	static int stampRx;
-
 
 	static int idx = 0;
 
 	int i;
 
-
 	RFMPkt	bufRFTx;
 
 	U8 bMain_IT_Status;
 
-	int nTick;
-
-	nTick = HAL_GetTick();  //  TickCount
+	return ;
 
 #if defined(USE_ENV_TEST)
 
