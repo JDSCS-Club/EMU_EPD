@@ -48,8 +48,6 @@ int		input_check		( void );
 
 void	SerialInit		( UART_HandleTypeDef *_phuart1, UART_HandleTypeDef *_phuart2 );
 
-
 extern Queue_t			g_qDebug, g_qRS485;
-
 
 #endif	/* _SERIAL_H_ */

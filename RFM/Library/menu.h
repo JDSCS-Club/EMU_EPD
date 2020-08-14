@@ -11,14 +11,6 @@
 	1. 2019. 10.	: Created
 -------------------------------------------------------------------------------------------*/
 
-/*------------------------------------------------------------------------------------------
-	[ 구현목록 정의 ]
-	* Func1 구현. 
-		- Func1 기능 세부내용.
-
-	* Func2 구현. 
--------------------------------------------------------------------------------------------*/
-
 //========================================================================
 #ifndef MENU_H
 #define MENU_H
@@ -62,23 +54,19 @@ void	ProcLightOff	( void );
 void	ProcDispVer		( void );
 
 //========================================================================
+//	Menu LCD Disp
 
 void    UpdateLCDMain	( void );
 void    UpdateLCDMenu	( void );
+
+//========================================================================
+//	Menu Key Proc
 
 void    ProcBtnUp		( void );
 void    ProcBtnDown		( void );
 
 void    ProcBtnMenu		( void );
 void    ProcBtnOK		( void );
-
-#if defined(USE_ENV_TEST)
-
-void	SetLoopRFTx		( int bEnable );	//	RF Data 전송 유지..
-
-int		cmd_rftx		( int argc, char * argv[] );
-
-#endif	//	defined(USE_ENV_TEST)
 
 //========================================================================
 #endif

@@ -93,9 +93,9 @@
 //	Device ID
 enum eDevID
 {
-	DevNone		=	0x00,
-	DevRF900M	=	0x01,       //  RF900M 수신기 
-	DevRF900T	=	0x02,       //  RF900T 송신기
+	DevNone			=	0x00,
+	DevRF900M		=	0x01,       //  RF900M 수신기
+	DevRF900T		=	0x02,       //  RF900T 송신기
 };
 
 //==========================================================================
@@ -117,17 +117,17 @@ enum ePktID
 //	Device Status
 enum eStatus
 {
-	StatNone	=	0x00,		//	Normal
-	StatPATx	=	0x01,       //  방송 송신중. ( 송신기 -> 수신기 )
-	StatPARx	=	0x02,       //  방송 수신중.
-	StatCallTx	=	0x03,       //  통화 송신중. ( 송신기 -> 송신기 )
-	StatCallRx	=	0x04,       //  통화 수신중.
+	StatNone		=	0x00,		//	Normal
+	StatPATx		=	0x01,       //  방송 송신중. ( 송신기 -> 수신기 )
+	StatPARx		=	0x02,       //  방송 수신중.
+	StatCallTx		=	0x03,       //  통화 송신중. ( 송신기 -> 송신기 )
+	StatCallRx		=	0x04,       //  통화 수신중.
 };
 
 enum eStartStop
 {
-	PACallStart =	0x01,		//	Start
-	PACallStop	=	0x00,		//	Stop
+	PACallStart 	=	0x01,		//	Start
+	PACallStop		=	0x00,		//	Stop
 };
 
 //==========================================================================

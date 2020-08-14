@@ -48,7 +48,6 @@
 //xQueueHandle xDebugQueueRx;
 //#define MAX_UART0_COUNT		15
 
-
 Queue_t		g_qDebug, g_qRS485;
 
 uint8_t		dataDbgTx[8];	//	console
@@ -237,24 +236,6 @@ void SerialInit( UART_HandleTypeDef *_phuart1, UART_HandleTypeDef *_phuart2 )
 #endif
 }
 
-
-/*
- * \brief
-                입력이 있는지 확인
-		Rx Queue의 Empty를 체크
- * \author
-                *
- * \param
-                *
- * \return
-                return 1 when input exist, else 0
- * \date
-                *
- * \version
-                *
- * \see
-                *
- */
 //===========================================================================
 int input_check( void )
 //===========================================================================

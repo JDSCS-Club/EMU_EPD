@@ -122,6 +122,11 @@ user_command_t	user_command_table[] = {
 		cmd_diag,},
 #endif	//	defined(_DIAG_H_)
 
+	{"debug",
+		"debug		-	set debug level.",
+		(char *)0,
+		cmd_debug, },
+
 #if defined(RFM_H)
 	{"ch",
 		"ch		-	Setting Channel",
@@ -206,10 +211,7 @@ user_command_t	user_command_table[] = {
 		"spi[.b|w|l] [wr/rd] [dev [data]]",
 		cmd_spi},
 #endif 	//	defined( _SPI_H_ )
-//	{"debug",
-//		"debug		-	set debug level.",
-//		(char *)0,
-//		cmd_debug, },
+
 #endif
 
 #endif
