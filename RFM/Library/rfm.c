@@ -25,7 +25,6 @@
 
 #include "audio.h"                  //  WriteI2CCodec()
 
-
 #include "serial.h"					//  SerialInit()
 
 #if defined(_WIN32)
@@ -59,15 +58,12 @@ int GetDevID    ( void )
 	return g_nDevID;
 }
 
-
 //========================================================================
 void SetDevID    ( int nDevID )
 //========================================================================
 {
 	g_nDevID = nDevID;
 }
-
-
 
 //========================================================================
 int		GetRFMMode	( void )
@@ -196,9 +192,7 @@ void	SetSpkVol	    ( int nSpkVol )
     {
     	AudioSpkVol( nSpkVol );
     }
-
 }
-
 
 //========================================================================
 
@@ -419,8 +413,6 @@ void RFM_I2SEx_TxRxCpltCallback( I2S_HandleTypeDef *hi2s )
 	static int idx = 0;
 	idx++;
 
-	int i;
-
 	if ( GetDevID() == DevRF900T )
 	{
 		//========================================================================
@@ -436,7 +428,6 @@ void RFM_I2SEx_TxRxCpltCallback( I2S_HandleTypeDef *hi2s )
 			//	Queue Put
 			qBufPut( &g_qBufAudioTx, (uint8_t *)r_audio_buff, ( I2S_DMA_LOOP_SIZE * 2 ) );
 		}
-
 
 		/*
 
@@ -1137,6 +1128,7 @@ void LoopProcRFM ( int nTick )
 			bOldKeyDown = bKeyDown;
 		}
 #endif
+
 		//========================================================================
 		//  ADC_Power
 		//  Normal Mode 일때 Battery 체크.
@@ -1346,7 +1338,8 @@ void LoopProcRFM ( int nTick )
 		break;
 	}
 
-	//  수신중 해제
+	//========================================================================
+	//	수신중 해제
 	if( nTick - stampRx > 500 && GetRFMMode() == RFMModeRx )
 	{
 		// Rx 패킷이 500 ms 없을 경우 수신모드 해제
@@ -1372,7 +1365,7 @@ void LoopProcRFM ( int nTick )
 
 	if ( nTick - s_nTickStandby >= 1000 )
 	{
-		//  Standby GPIO Toggle
+		//	Standby GPIO Toggle
 		if ( GetRFMMode() == RFMModeRx )
 		{
 			//  수신기:수신중 LED On ( Standby LED On )

@@ -16,9 +16,24 @@
 #define KEY_PAD_H
 //========================================================================
 
-void	GetKeyStat	( int *btnStat );
+enum eKeypad
+{
+	eKeyMenu		=	0,
+	eKeyUp			=	1,
+	eKeyOk			=	2,
+	eKeyLight		=	3,
+	eKeyDown		=	4,
+	eKeyVol			=	5,
+	eKeyPtt			=	6,
+	eKeySos			=	7,
+	eKeyPwrOnOff	=	8,
+};
 
-void	LoopProcKey ( uint32_t tickCurr );
+int		GetKey			( int eKey );
+
+void	GetKeyStat		( int *btnStat );
+
+void	LoopProcKey 	( uint32_t tickCurr );
 
 //========================================================================
 //		KeyPad ( Dome Button )

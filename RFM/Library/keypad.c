@@ -32,6 +32,15 @@
 //========================================================================
 // Function
 
+static int s_btnStat[9] = { 1, };	//	Default ( 1 - pull-up )
+
+//========================================================================
+int	GetKey( int eKey )
+//========================================================================
+{
+	return !(s_btnStat[eKey]);	//	Pull-up ( Active Low )
+}
+
 
 //========================================================================
 void GetKeyStat( int *btnStat )
@@ -55,8 +64,7 @@ void LoopProcKey ( uint32_t tickCurr )
 //========================================================================
 {
 	static uint32_t tickBase = 0;
-	static int btnStatOld[9] = { 1, };	//	Default ( 1 - pull-up )
-	static int btnStat[9];
+	int 	btnStat[9];
 
 	//    if( ( HAL_GetTick() - tickBase ) >= 1000 )
 	if ( ( tickCurr - tickBase ) >= 100 )
@@ -66,22 +74,22 @@ void LoopProcKey ( uint32_t tickCurr )
 		//	Key 값 얻기.
 		GetKeyStat( btnStat );
 
-		if ( memcmp( btnStatOld, btnStat, sizeof( btnStat ) ) != 0 )
+		if ( memcmp( s_btnStat, btnStat, sizeof( btnStat ) ) != 0 )
 		{
 			//	Key Value Changed.
 
-			if ( btnStatOld[0] != btnStat[0] )	KeyMenu		( !btnStat[0] );	//	DOME1
-			if ( btnStatOld[1] != btnStat[1] )	KeyUp		( !btnStat[1] );	//	DOME2
-			if ( btnStatOld[2] != btnStat[2] )	KeyOK		( !btnStat[2] );	//	DOME3
-			if ( btnStatOld[3] != btnStat[3] )	KeyLight	( !btnStat[3] );	//	DOME4
-			if ( btnStatOld[4] != btnStat[4] )	KeyDown		( !btnStat[4] );	//	DOME5
-			if ( btnStatOld[5] != btnStat[5] )	KeyVol		( !btnStat[5] );	//	DOME6
-			if ( btnStatOld[6] != btnStat[6] )	KeyPtt		( !btnStat[6] );	//	PTT
-			if ( btnStatOld[7] != btnStat[7] )	KeySos		( !btnStat[7] );	//	SOS
-			if ( btnStatOld[8] != btnStat[8] )	KeyPwrOnOff	( !btnStat[8] );	//	ON/OFF
+			if ( s_btnStat[0] != btnStat[0] )	KeyMenu		( !btnStat[0] );	//	DOME1
+			if ( s_btnStat[1] != btnStat[1] )	KeyUp		( !btnStat[1] );	//	DOME2
+			if ( s_btnStat[2] != btnStat[2] )	KeyOK		( !btnStat[2] );	//	DOME3
+			if ( s_btnStat[3] != btnStat[3] )	KeyLight	( !btnStat[3] );	//	DOME4
+			if ( s_btnStat[4] != btnStat[4] )	KeyDown		( !btnStat[4] );	//	DOME5
+			if ( s_btnStat[5] != btnStat[5] )	KeyVol		( !btnStat[5] );	//	DOME6
+			if ( s_btnStat[6] != btnStat[6] )	KeyPtt		( !btnStat[6] );	//	PTT
+			if ( s_btnStat[7] != btnStat[7] )	KeySos		( !btnStat[7] );	//	SOS
+			if ( s_btnStat[8] != btnStat[8] )	KeyPwrOnOff	( !btnStat[8] );	//	ON/OFF
 
 			//	값 저장.
-			memcpy( btnStatOld, btnStat, sizeof( btnStat ) );
+			memcpy( s_btnStat, btnStat, sizeof( btnStat ) );
 		}
 
 		tickBase = tickCurr;
@@ -102,6 +110,7 @@ void LoopProcKey ( uint32_t tickCurr )
 void KeyMenu( int bValue )
 //========================================================================
 {
+	//========================================================================
 	//	bValue : 0(Up) / 1(Down)
 	printf( "%s(%d)\n", __func__, __LINE__ );
 
@@ -116,6 +125,7 @@ void KeyMenu( int bValue )
 void KeyOK( int bValue )
 //========================================================================
 {
+	//========================================================================
 	//	bValue : 0(Up) / 1(Down)
 	printf( "%s(%d)\n", __func__, __LINE__ );
 
@@ -130,12 +140,15 @@ void KeyOK( int bValue )
 void KeyLight( int bValue )
 //========================================================================
 {
+	//========================================================================
 	//	bValue : 0(Up) / 1(Down)
 	printf( "%s(%d)\n", __func__, __LINE__ );
 
+	//========================================================================
 	//	Light On/Off Toggle
 	static int bOnOff = 0;
 
+	//========================================================================
 	//	GPIO제어.
 	if ( bValue )
 	{
@@ -145,9 +158,6 @@ void KeyLight( int bValue )
 			HAL_GPIO_WritePin( FLASH_ON_GPIO_Port, FLASH_ON_Pin, GPIO_PIN_SET );
 
 			LCDLight( 1 );
-
-//			SendLight( 1 );		//	SendRF - Light On
-
 			bOnOff = 1;
 		}
 		else
@@ -156,9 +166,6 @@ void KeyLight( int bValue )
 			HAL_GPIO_WritePin( FLASH_ON_GPIO_Port, FLASH_ON_Pin, GPIO_PIN_RESET );
 
 			LCDLight( 0 );
-
-//			SendLight( 0 );		//	SendRF - Light Off
-
 			bOnOff = 0;
 		}
 	}
@@ -168,6 +175,7 @@ void KeyLight( int bValue )
 void KeyUp( int bValue )
 //========================================================================
 {
+	//========================================================================
 	//	bValue : 0(Up) / 1(Down)
 	printf( "%s(%d)\n", __func__, __LINE__ );
 
@@ -181,6 +189,8 @@ void KeyUp( int bValue )
 void KeyDown( int bValue )
 //========================================================================
 {
+	//========================================================================
+	//	bValue : 0(Up) / 1(Down)
 	printf( "%s(%d)\n", __func__, __LINE__ );
 
 	if( bValue )
@@ -193,6 +203,7 @@ void KeyDown( int bValue )
 void KeyVol( int bValue )
 //========================================================================
 {
+	//========================================================================
 	//	bValue : 0(Up) / 1(Down)
 	printf( "%s(%d)\n", __func__, __LINE__ );
 
@@ -233,6 +244,7 @@ void KeyVol( int bValue )
 void KeyPtt( int bValue )
 //========================================================================
 {
+	//========================================================================
 	//	bValue : 0(Up) / 1(Down)
 	printf( "%s(%d)\n", __func__, __LINE__ );
 
@@ -240,21 +252,39 @@ void KeyPtt( int bValue )
 
 	if ( bValue )
 	{
-		//	송신중
 		LCDSetCursor( 20, 13 );
-		LCDPrintf( "송신중..." );
+		LCDPrintf( "방송중..." );
 
-		//	방송 - 시작
-		SendPA( 1 );		//	SendRF - Send PA ( 송신기 -> 수신기 )
+		SetRFMMode( RFMModeTx );
+
+		//  Green LED On
+		HAL_GPIO_WritePin ( LED_ON_A_GPIO_Port, LED_ON_A_Pin, GPIO_PIN_SET ); //  Green LED
+
+//		//	방송 - 시작
+//		SendPA( 1 );		//	SendRF - Send PA ( 송신기 -> 수신기 )
 	}
 	else
 	{
-		//    편성 : 100
-		LCDSetCursor( 20, 13 );
-		LCDPrintf( "편성 : 100" );
+		//========================================================================
+		//  편성 : XXX
+		UpdateLCDMain();
 
-		//	방송 - 종료
-		SendPA( 0 );		//	SendRF - Send PA ( 송신기 -> 수신기 )
+		//========================================================================
+		RF_Rx_Mode();
+		//========================================================================
+
+		SetRFMMode( RFMModeNormal );
+
+		//  Green LED Off
+		HAL_GPIO_WritePin ( LED_ON_A_GPIO_Port, LED_ON_A_Pin, GPIO_PIN_RESET ); //  Green LED
+
+//		// Start RX with radio packet length
+//		vRadio_StartRX (
+//			pRadioConfiguration->Radio_ChannelNumber,
+//			pRadioConfiguration->Radio_PacketLength );
+
+//		//	방송 - 종료
+//		SendPA( 0 );		//	SendRF - Send PA ( 송신기 -> 수신기 )
 	}
 
 }

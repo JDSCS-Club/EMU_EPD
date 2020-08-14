@@ -280,7 +280,6 @@ void 	ProcMenuMain( int idxItem )
 		break;
 
 	case 1:		 //  S/W 버전
-
 		//  메뉴 Exit
 		SetActiveMenu( NULL );
 
