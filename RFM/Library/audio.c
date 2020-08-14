@@ -118,17 +118,18 @@ volatile uint16_t bufAudio[FRAME_SIZE * 2] = { 0, };	//	512
 
 volatile uint16_t bufAudioCodec[FRAME_SIZE * 2] = { 0, };	//	512
 
-
+//========================================================================
+//	Audio Buffer ( PCM )
 QBuf_t		g_qBufAudioRx;		//	Audio Queue Buffer	( RF Rx Buffer )
-uint16_t	g_bufAudioRFRx[I2S_DMA_LOOP_SIZE * I2S_DMA_LOOP_QCNT] = { 0, };	//	512
+uint16_t	g_bufAudioRx[I2S_DMA_LOOP_SIZE * I2S_DMA_LOOP_QCNT] = { 0, };	//	512
 
 QBuf_t		g_qBufAudioTx;		//	Audio Queue Buffer	( RF Tx Buffer )
-uint16_t	g_bufAudioRFTx[I2S_DMA_LOOP_SIZE * I2S_DMA_LOOP_QCNT] = { 0, };	//	512
+uint16_t	g_bufAudioTx[I2S_DMA_LOOP_SIZE * I2S_DMA_LOOP_QCNT] = { 0, };	//	512
 
+uint16_t	t_audio_buff[I2S_DMA_LOOP_SIZE * 2];
+uint16_t	r_audio_buff[I2S_DMA_LOOP_SIZE * 2];
 
-uint16_t	t_audio_buff[I2S_DMA_LOOP_SIZE * 2];   // RADIO_MAX_PACKET_LENGTH * 2];
-uint16_t	r_audio_buff[I2S_DMA_LOOP_SIZE * 2];   //[RADIO_MAX_PACKET_LENGTH * 2];
-
+//========================================================================
 
 //========================================================================
 // Function
@@ -143,9 +144,10 @@ void AudioInit( void )
 //	nAudioTable = 0;
 	nAudioTable = 2;	//	Loopback
 
+	//========================================================================
 	//	Init RF Audio Rx Buffer
-	qBufInit( &g_qBufAudioRx, (uint8_t *)g_bufAudioRFRx, ( I2S_DMA_LOOP_SIZE * 2 ) * I2S_DMA_LOOP_QCNT );
-	qBufInit( &g_qBufAudioTx, (uint8_t *)g_bufAudioRFTx, ( I2S_DMA_LOOP_SIZE * 2 ) * I2S_DMA_LOOP_QCNT );
+	qBufInit( &g_qBufAudioRx, (uint8_t *)g_bufAudioRx, ( I2S_DMA_LOOP_SIZE * 2 ) * I2S_DMA_LOOP_QCNT );
+	qBufInit( &g_qBufAudioTx, (uint8_t *)g_bufAudioTx, ( I2S_DMA_LOOP_SIZE * 2 ) * I2S_DMA_LOOP_QCNT );
 
 	HAL_I2SEx_TransmitReceive_DMA( &hi2s3, (uint16_t*)sine_table, (uint16_t*)bufAudio, 256 );
 
@@ -552,131 +554,6 @@ void AudioSine_I2SEx_TxRxCpltCallback( I2S_HandleTypeDef *hi2s )
 #endif
 }
 
-
-#if 0
-
-static int bRxBuffering = 1;	//  Rx Buffering. ( Packet 4 ~ Packet 0)
-
-//========================================================================
-void RF_PA_I2SEx_TxRxCpltCallback ( I2S_HandleTypeDef *hi2s )
-//========================================================================
-{
-	static int idx = 0;
-	idx++;
-
-	int i;
-
-	if ( GetDevID() == DevRF900T )
-	{
-		//========================================================================
-		//  송신기.
-
-		//  r_audio_buff -> RF-Tx
-
-		if ( qBufCnt( &g_qBufAudioRFTx ) < ( ( I2S_DMA_LOOP_SIZE * 2 ) * ( I2S_DMA_LOOP_QCNT - 1 ) ) )
-		{
-			//  printf ( "P" );
-			//  memset( r_audio_buff, idx, 64 );		//  Data Setting
-
-			//	Queue Put
-			qBufPut( &g_qBufAudioRFTx, (uint8_t *)r_audio_buff, ( I2S_DMA_LOOP_SIZE * 2 ) );
-		}
-
-
-		/*
-
-		//========================================================================
-		//  Audio In -> Audio Out Loop
-		memcpy( t_audio_buff, r_audio_buff, 64 );
-
-		/*/
-
-		memset( t_audio_buff, 0, 64 );
-
-		//========================================================================
-		//  Rx Buffering ( Packet Count : 0 ~ 4 )
-		//  RF-Rx -> t_audio_buff
-		if ( bRxBuffering )
-		{
-			//  Buffering
-			if ( qBufCnt( &g_qBufAudioRFRx ) > ( ( I2S_DMA_LOOP_SIZE * 2 ) * 3 ) )
-			{
-				//  패킷이 4개 이상인경우 버퍼링 종료.
-				bRxBuffering = 0;
-
-				printf ( "E" );	 //  버퍼링종료
-			}
-		}
-
-		if ( bRxBuffering == 0 )
-		{
-			//  Rx Audio Out
-			if ( qBufCnt( &g_qBufAudioRFRx ) >= ( I2S_DMA_LOOP_SIZE * 2 ) )
-			{
-				//			printf ( "G" );
-							//  Queue Audio Data
-				qBufGet( &g_qBufAudioRFRx, (uint8_t*)t_audio_buff, ( I2S_DMA_LOOP_SIZE * 2 ) );
-			}
-			else
-			{
-				printf ( "B" );	 //  버퍼링시작
-				//  Data
-				bRxBuffering = 1;
-			}
-		}
-		//  */
-	}
-	else
-	{
-		//========================================================================
-		//  수신기.
-
-		memset( t_audio_buff, 0, 64 );
-		//  Rx Buffering ( Packet Count : 0 ~ 4 )
-		//  RF-Rx -> t_audio_buff
-		if ( bRxBuffering )
-		{
-			//  Buffering
-			if ( qBufCnt( &g_qBufAudioRFRx ) > ( ( I2S_DMA_LOOP_SIZE * 2 ) * 3 ) )
-			{
-				//  패킷이 4개 이상인경우 버퍼링 종료.
-				bRxBuffering = 0;
-
-				printf ( "E" );	 //  버퍼링종료
-			}
-		}
-
-		if ( bRxBuffering == 0 )
-		{
-			//  Rx Audio Out
-			if ( qBufCnt( &g_qBufAudioRFRx ) >= ( I2S_DMA_LOOP_SIZE * 2 ) )
-			{
-				//			printf ( "G" );
-							//  Queue Audio Data
-				qBufGet( &g_qBufAudioRFRx, (uint8_t *)t_audio_buff, ( I2S_DMA_LOOP_SIZE * 2 ) );
-			}
-			else
-			{
-				printf ( "B" );	 //  버퍼링시작
-
-				//  Data
-				bRxBuffering = 1;
-			}
-		}
-	}
-
-	if ( GetDevID() == DevRF900M && bRxBuffering == 1 )
-	{
-		//========================================================================
-		//  수신기 & 버퍼링중. -> Skip
-	}
-	else
-	{
-		HAL_I2SEx_TransmitReceive_DMA ( &hi2s3, t_audio_buff, r_audio_buff, I2S_DMA_LOOP_SIZE ); // 32byte
-	}
-}
-
-#endif
 
 
 //========================================================================

@@ -22,6 +22,10 @@
 #define RFM_H
 //========================================================================
 
+#include "RFMProtocol.h"		//
+
+//========================================================================
+// Define
 
 enum eRFMMode
 {
@@ -29,6 +33,15 @@ enum eRFMMode
 	RFMModeTx		=	1,
 	RFMModeRx		=	2,
 };
+
+//========================================================================
+#define	 DEFAULT_SPK_VOL	 1
+#define	 MAX_SPK_VOL		 3
+
+
+extern int		g_nSpkLevel;		//  Default (2) - 0(Mute) / 1 / 2(Normal) / 3
+
+extern int		g_idxTrainSet;		//  Train Set Index
 
 
 //========================================================================
@@ -56,7 +69,6 @@ void	SetSpkVol	    ( int nSpkVol );
 void	RF_Tx_Mode		( void );
 void	RF_Rx_Mode		( void );
 
-
 void	RFM_Spk			( int bOnOff );		//	1(On) / 0(Off)
 
 void	RF_Ping			( void );
@@ -71,10 +83,16 @@ void	PrintVerInfo	( void );
 //	Command
 
 int		cmd_ch			( int argc, char * argv[] );
-
 int		cmd_car			( int argc, char * argv[] );
-
 int		cmd_info		( int argc, char * argv[] );
+
+//========================================================================
+//		RFM Procedure
+//========================================================================
+
+int		InitRFM			( void );
+int		RFM_main		( void );
+void	LoopProcRFM		( void );
 
 
 //========================================================================

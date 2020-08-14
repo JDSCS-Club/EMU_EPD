@@ -24,6 +24,8 @@
 
 #include "radio.h"				//	pRadioConfiguration
 
+#include "ProcPkt.h"			//	TestProcPkt
+
 /*------------------------------------------------------------------------*/
 /*                          Global variables                              */
 /*------------------------------------------------------------------------*/
@@ -106,7 +108,7 @@ U16 wPayloadLenghtFromPhr(U8* pbPhrMsb);
  */
 
 
-void rfm_main(void)
+void TestProcPkt(void)
 {
 	// Initialize the Hardware and Radio
 //  vInitializeHW();

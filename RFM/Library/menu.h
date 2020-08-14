@@ -38,12 +38,8 @@
 
 typedef struct _Menu
 {
-	enum
-	{
-		MaxMenuItem = 20,
-	};
 
-	char 		*sItem[MaxMenuItem];		//	Item Name
+	char 		**sItem;					//	Item Name
 	int			cntItem;					//	Menu Item Count
 	int			currIdx;					//	Current Item Index
 	void		(*cbFunc)( int idxItem );	//	Callback Func
@@ -76,9 +72,6 @@ void	ProcDispVer		( void );
 
 //========================================================================
 
-extern int		g_nSpkLevel;                //  Default (2) - 0(Mute) / 1 / 2(Normal) / 3
-
-extern char		*g_sTrainSet[];
 extern int		g_cntTrainSet;
 
 void    UpdateLCDMain	( void );

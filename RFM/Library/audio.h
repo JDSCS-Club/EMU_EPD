@@ -51,8 +51,12 @@ extern uint16_t nAudioTable;
 extern QBuf_t	g_qBufAudioRx;		//	Audio Queue Buffer	( RF Rx Buffer )
 extern QBuf_t	g_qBufAudioTx;		//	Audio Queue Buffer	( RF Tx Buffer )
 
-extern uint16_t	g_bufAudioRFRx[];		//	512
-extern uint16_t	g_bufAudioRFTx[];		//	512
+extern uint16_t	g_bufAudioRx[];		//	512
+extern uint16_t	g_bufAudioTx[];		//	512
+
+extern uint16_t	t_audio_buff[];
+extern uint16_t	r_audio_buff[];
+
 
 //========================================================================
 //

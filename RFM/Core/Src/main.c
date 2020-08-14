@@ -105,6 +105,8 @@ static void MX_USB_OTG_FS_PCD_Init(void);
 
 #include "audio.h"				//	MAX9860
 
+#include "rfm.h"				//	SetDevID()
+
 //si4463 Interrupt
 
 uint8_t RF_NIRQ;
@@ -235,20 +237,20 @@ int main(void)
 	//	OLED
 	if ( HAL_OK == HAL_I2C_IsDeviceReady( &hi2c3, (uint16_t)( SSD1306_I2C_ADDRESS ), 2, 2 ) )
 	{
-	//========================================================================
-	//    OLED가 연결되어있음.
-	//      SetDevID( DevRF900T );        //  송신기.
+		//========================================================================
+		//    OLED가 연결되어있음.
+		SetDevID( DevRF900T );        //  송신기.
 
-	  //    LCD Init
-	  LCDInit();
+		//    LCD Init
+		LCDInit();
 
-	  LCDMenu();
+		LCDMenu();
 	}
 	else
 	{
-	//========================================================================
-	//    OLED가 없으면 -> 수신기
-	//      SetDevID( DevRF900M );        //  수신기.
+		//========================================================================
+		//    OLED가 없으면 -> 수신기
+		SetDevID( DevRF900M );        //  수신기.
 	}
 
 	//========================================================================
@@ -271,7 +273,8 @@ int main(void)
 	printf ( "%08x\n", Si446xCmd.PART_INFO.ROMID );
 	printf ( "-------------------------\n" );
 
-	//		rfm_main();		//	RFM Main
+//	TestProcPkt();		//	RFM Main
+
 #else
 	//	Driver #2
 	//*
@@ -305,7 +308,7 @@ int main(void)
 
     /* USER CODE BEGIN 3 */
 
-	  nCurrTick = HAL_GetTick();
+	nCurrTick = HAL_GetTick();
 
 	LoopProcKey( nCurrTick );
 

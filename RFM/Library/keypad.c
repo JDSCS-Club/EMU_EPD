@@ -16,6 +16,9 @@
 #include <stdio.h>
 
 #include "main.h"				//	DOME_GPIO_Port, ...
+
+#include "rfm.h"				//	g_nSpkLevel, ...
+
 #include "keypad.h"
 
 #include "Adafruit_SSD1306.h"	//	OLED Display
@@ -26,12 +29,8 @@
 // Define
 
 
-
-
 //========================================================================
 // Function
-
-
 
 
 //========================================================================
@@ -123,54 +122,10 @@ void KeyOK( int bValue )
 	//	bValue : 0(Up) / 1(Down)
 	printf( "%s(%d)\n", __func__, __LINE__ );
 
-#if 1
-
 	if ( bValue )
 	{
 		ProcBtnOK();
 	}
-
-#else
-
-	//	Speex Loopback Test
-	//	Audio Loopback Proc
-
-	if ( bValue )
-	{
-		//	송신중
-		LCDSetCursor( 10, 13 );
-		LCDPrintf( "Audio Speex" );
-
-		//	Spk On
-		LCDSpeaker( 1 );
-
-		HAL_GPIO_WritePin( SPK_ON_GPIO_Port, SPK_ON_Pin, GPIO_PIN_SET );
-
-		//	Codec Loopback On
-//		AudioRxTxLoop();
-//		AudioLoopbackDMA();
-
-//DEL		AudioLoopbackDMASpeex();
-		//	-> Speex는 성능문제로 사용 X
-
-		AudioLoopbackDMACompress();
-	}
-	else
-	{
-		//    편성 : 100
-		LCDSetCursor( 20, 13 );
-		LCDPrintf( "편성 : 100" );
-
-		//	Spk Off
-		LCDSpeaker( 0 );
-
-		HAL_GPIO_WritePin( SPK_ON_GPIO_Port, SPK_ON_Pin, GPIO_PIN_RESET );
-
-		//	Codec Loopback Off
-		AudioStop();
-	}
-#endif
-
 }
 
 
@@ -230,7 +185,6 @@ void KeyUp( int bValue )
 void KeyDown( int bValue )
 //========================================================================
 {
-#if 1
 	printf( "%s(%d)\n", __func__, __LINE__ );
 
 	if( bValue )
@@ -238,49 +192,7 @@ void KeyDown( int bValue )
 		ProcBtnDown();
 	}
 
-#else
-	//	bValue : 0(Up) / 1(Down)
-	printf( "%s(%d)\n", __func__, __LINE__ );
-
-	if ( bValue )
-	{
-		//	sine
-		LCDSetCursor( 10, 13 );
-		LCDPrintf( "sine wave" );
-
-		//	Spk On
-		LCDSpeaker( 1 );
-
-		HAL_GPIO_WritePin( SPK_ON_GPIO_Port, SPK_ON_Pin, GPIO_PIN_SET );
-
-		//	Codec Loopback On
-		AudioPlayDMASine();
-
-	}
-	else
-	{
-		//	편성 : 100
-		LCDSetCursor( 20, 13 );
-		LCDPrintf( "편성 : 100" );
-
-		//	Spk Off
-		LCDSpeaker( 0 );
-
-		HAL_GPIO_WritePin( SPK_ON_GPIO_Port, SPK_ON_Pin, GPIO_PIN_RESET );
-
-		//	Codec Loopback Off
-		AudioStop();
-	}
-#endif
 }
-
-
-//========================================================================
-#define	 DEFAULT_SPK_VOL	 1
-#define	 MAX_SPK_VOL		 3
-
-int	 g_nSpkLevel = DEFAULT_SPK_VOL;				//  Default (1) - 0(Mute) / 1 / 2(Normal) / 3
-//========================================================================
 
 
 //========================================================================
@@ -290,10 +202,9 @@ void KeyVol( int bValue )
 	//	bValue : 0(Up) / 1(Down)
 	printf( "%s(%d)\n", __func__, __LINE__ );
 
-#if 1
-
 	if( bValue )
 	{
+
 		g_nSpkLevel = ( g_nSpkLevel + 1 ) % 4;  //  0, 1, 2, 3
 
 		//========================================================================
@@ -317,42 +228,6 @@ void KeyVol( int bValue )
 			LCDSpeaker( 0 );
 		}
 	}
-
-#else
-
-	//	Audio Loopback Proc
-
-	if ( bValue )
-	{
-		//	송신중
-		LCDSetCursor( 10, 13 );
-		LCDPrintf( "Audio Loopback" );
-
-		//	Spk On
-		LCDSpeaker( 1 );
-
-		HAL_GPIO_WritePin( SPK_ON_GPIO_Port, SPK_ON_Pin, GPIO_PIN_SET );
-
-		//	Codec Loopback On
-		AudioRxTxLoop();
-		//AudioLoopbackDMA();
-	}
-	else
-	{
-		//    편성 : 100
-		LCDSetCursor( 20, 13 );
-		LCDPrintf( "편성 : 100" );
-
-		//	Spk Off
-		LCDSpeaker( 0 );
-
-		HAL_GPIO_WritePin( SPK_ON_GPIO_Port, SPK_ON_Pin, GPIO_PIN_RESET );
-
-		//	Codec Loopback Off
-		AudioStop();
-	}
-
-#endif
 }
 
 //========================================================================
@@ -422,7 +297,7 @@ void KeySos( int bValue )
 
 
 //========================================================================
-//		Side Button
+//		Power Button
 //========================================================================
 
 //========================================================================
@@ -441,5 +316,66 @@ void	KeyPwrOnOff		( int bValue )
 		HAL_GPIO_WritePin( ON_OFF_EN_GPIO_Port, ON_OFF_EN_Pin, GPIO_PIN_RESET );
 	}
 }
+
+//========================================================================
+
+
+
+//========================================================================
+//		Power Button
+//========================================================================
+
+
+void	KeyTestLoopback( int bValue )
+{
+
+#if 0
+
+	//	Speex Loopback Test
+	//	Audio Loopback Proc
+
+	if ( bValue )
+	{
+		//	송신중
+		LCDSetCursor( 10, 13 );
+		LCDPrintf( "Audio Speex" );
+
+		//	Spk On
+		LCDSpeaker( 1 );
+
+		HAL_GPIO_WritePin( SPK_ON_GPIO_Port, SPK_ON_Pin, GPIO_PIN_SET );
+
+		//	Codec Loopback On
+//		AudioRxTxLoop();
+//		AudioLoopbackDMA();
+
+		//	Codec Loopback On
+//		AudioPlayDMASine();
+
+//DEL		AudioLoopbackDMASpeex();
+		//	-> Speex는 성능문제로 사용 X
+
+		AudioLoopbackDMACompress();
+	}
+	else
+	{
+		//    편성 : 100
+		LCDSetCursor( 20, 13 );
+		LCDPrintf( "편성 : 100" );
+
+		//	Spk Off
+		LCDSpeaker( 0 );
+
+		HAL_GPIO_WritePin( SPK_ON_GPIO_Port, SPK_ON_Pin, GPIO_PIN_RESET );
+
+		//	Codec Loopback Off
+		AudioStop();
+	}
+#endif
+
+}
+
+
+
 
 //========================================================================
