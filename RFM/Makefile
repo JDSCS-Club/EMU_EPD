@@ -130,6 +130,9 @@ Library/keypad.c \
 Library/menu.c \
 Library/ProcPkt.c \
 Library/RFMProtocol.c \
+Library/diag.c \
+Library/version.c \
+
 
 #Core/Src/syscalls.c \
 
