@@ -35,14 +35,17 @@ enum eRFMMode
 };
 
 //========================================================================
-#define	 DEFAULT_SPK_VOL	 1
-#define	 MAX_SPK_VOL		 3
 
+enum eRFMConfig
+{
+	DefaultSpkVol	=	1,
+	MaxSpkVol		=	3,			//	볼륨 최대값.
+	MaxTrainSet		=	10,			//	10편성.
+};
 
 extern int		g_nSpkLevel;		//  Default (2) - 0(Mute) / 1 / 2(Normal) / 3
 
 extern int		g_idxTrainSet;		//  Train Set Index
-
 
 //========================================================================
 int		GetRFMMode		( void );
@@ -75,7 +78,6 @@ void	RF_Ping			( void );
 void	RF_RSSI			( void );
 
 //========================================================================
-
 
 void	PrintVerInfo	( void );
 

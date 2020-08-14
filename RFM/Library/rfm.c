@@ -43,7 +43,7 @@ int		g_nDevID		=	DevNone;			//  Device ID ( 1 : RF900M / 2 : RF900T )
 
 int		g_idxTrainSet	=	0;	  				//  Train Set Index
 
-int	 	g_nSpkLevel		=	DEFAULT_SPK_VOL;	//  Default (1) - 0(Mute) / 1 / 2(Normal) / 3
+int	 	g_nSpkLevel		=	DefaultSpkVol;	//  Default (1) - 0(Mute) / 1 / 2(Normal) / 3
 
 int	 	g_nRFMMode 		=	RFMModeNormal;		//  eRFMMode
 
@@ -360,7 +360,7 @@ int cmd_ch      ( int argc, char * argv[] )
         break;
     }
 
-    if ( nCh < 0 || g_cntTrainSet <= nCh )  nCh = 0;
+    if ( nCh < 0 || MaxTrainSet <= nCh )  nCh = 0;
 
     printf( "%s(%d) - Channel : %d\n", __func__, __LINE__, nCh );
 
@@ -558,7 +558,7 @@ int InitRFM( void )
 		uint8_t	 idxTrainSet;
 		idxTrainSet = GetTrainSetIdx();
 
-		if ( idxTrainSet < 0 || idxTrainSet >= g_cntTrainSet )
+		if ( idxTrainSet < 0 || idxTrainSet >= MaxTrainSet )
 		{
 			idxTrainSet = 0;
 
@@ -636,9 +636,9 @@ int InitRFM( void )
 		int	 nSpkVol;
 		nSpkVol = GetSpkVol();
 
-		if ( nSpkVol < 0 || nSpkVol > MAX_SPK_VOL )
+		if ( nSpkVol < 0 || nSpkVol > MaxSpkVol )
 		{
-			nSpkVol = DEFAULT_SPK_VOL;
+			nSpkVol = DefaultSpkVol;
 			SetSpkVol( nSpkVol );
 		}
 
@@ -675,8 +675,6 @@ int InitRFM( void )
 	}
 
 #endif
-
-	radio_spi_init( &hspi1 );
 
 
 #if defined(USE_RADIO_SI4463)
@@ -735,9 +733,16 @@ int RFM_main( void )
 	printf( "%s(%d)\n", __func__, __LINE__ );
 	InitRFM();
 
+	int nTick;
+
 	/* Infinite main loop */
 	while ( 1 )
 	{
+		nTick = HAL_GetTick();
+
+		//	Loop RFM
+		LoopProcKey( nTick );
+
 		//	Loop RFM
 		LoopProcRFM();
 
@@ -758,8 +763,6 @@ void LoopProcRFM ( void )
 
 	int i;
 
-	static U8 lPktSending = 0u;
-	HAL_StatusTypeDef res;
 
 	RFMPkt	bufRFTx;
 
@@ -950,6 +953,7 @@ void LoopProcRFM ( void )
 			nOldRFMMode = nRFMMode;
 		}
 
+#if 0
 		//========================================================================
 		//  On/Off
 
@@ -1126,7 +1130,7 @@ void LoopProcRFM ( void )
 
 			bOldKeyDown = bKeyDown;
 		}
-
+#endif
 		//========================================================================
 		//  ADC_Power
 		//  Normal Mode 일때 Battery 체크.
@@ -1204,8 +1208,6 @@ void LoopProcRFM ( void )
 			//for ( i = 0; i < 64; i++ )	printf( "%02X ", bufRFTx[i] );
 			//printf( "\n" );
 		}
-		/* Clear Packet Sending flag */
-		lPktSending = 0u;
 		break;
 
 	//========================================================================

@@ -72,8 +72,6 @@ void	ProcDispVer		( void );
 
 //========================================================================
 
-extern int		g_cntTrainSet;
-
 void    UpdateLCDMain	( void );
 void    UpdateLCDMenu	( void );
 
