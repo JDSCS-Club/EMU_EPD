@@ -53,8 +53,6 @@
 
 #include "radio.h"				//	RF-IC WDS
 
-//#include "radio_cw.h"			//	RF-IC WDS ( Continuous Wave ) - 무변조방식
-
 #include "si446x_api_lib.h"		//	Pro2Cmd
 
 #include "radio_comm.h"			//	g_bEnableDbgRadioComm
@@ -101,7 +99,6 @@ void display_diag_menu( void )
 	printf( "       *                                                            *\n" );
 	printf( "       *  1 : Audio Test.                                           *\n" );
 	printf( "       *  2 : RF test.                                              *\n" );
-	printf( "       *  3 : RF test. (WDS)                                        *\n" );
 	printf( "       **************************************************************\n" );
 	printf( "       *  4 : spi test.                                             *\n" );
 	printf( "       *  5 : External Flash Memory Test.(Write/Read/Compare)       *\n" );
@@ -123,7 +120,6 @@ int cmd_diag_proc( char *cmd )
 	{
 	case '1':	cmd_diag_Audio( 0, 0 );		break;
 	case '2':	cmd_diag_RF( 0, 0 );		break;
-	case '3':	cmd_diag_RF_WDS( 0, 0 );	break;
 		//		case '2':	cmd_test2( 0, 0 );			break;
 		//		case '3':	cmd_test3( 0, 0 );			break;
 		//		case '4':	cmd_test4( 0, 0 );			break;
@@ -169,22 +165,6 @@ int cmd_diag( int argc, char *argv[] )
 		{
 			return 0;
 		}
-//
-//		switch ( sel )
-//		{
-//		case '1':	cmd_diag_Audio( 0, 0 );		break;
-//		case '2':	cmd_diag_RF( 0, 0 );		break;
-//		case '3':	cmd_diag_RF_WDS( 0, 0 );	break;
-////		case '2':	cmd_test2( 0, 0 );			break;
-////		case '3':	cmd_test3( 0, 0 );			break;
-////		case '4':	cmd_test4( 0, 0 );			break;
-////		case '5':	cmd_test5( 0, 0 );			break;
-//		case 'q':
-//		case 'Q':
-//			return 0;
-//		default:
-//			break;
-//		}
 
 		printf( "Press ENTER key to continue. " );
 		readline( ibuf );
@@ -241,35 +221,15 @@ void display_diag_Audio( void )
 
 
 //========================================================================
-//					diag main command function
-//========================================================================
-int cmd_diag_Audio( int argc, char *argv[] )
+int cmd_diag_proc_Audio( char *cmd )
 //========================================================================
 {
-	char	ibuf[80];
-	int		v, sel;
+//	sel = ibuf[0];
+	char sel = cmd[0];
 
-	while ( 1 )
+	switch ( sel )
 	{
-		display_diag_Audio();
-
-		memset( ibuf, 0, sizeof( ibuf ) );
-		v = readline( ibuf );
-
-		if ( v <= 0 )
-		{
-			continue;
-		}
-
-		sel = ibuf[0];
-
-
-		switch ( sel )
-		{
-
 #if 0
-#if defined(_WIN32)
-#else
 		case '1':	AudioTxSine();							break;
 		case '2':	AudioTxNull();							break;
 		case '3':	AudioTxStop();							break;
@@ -286,27 +246,58 @@ int cmd_diag_Audio( int argc, char *argv[] )
 		case 'i':	InitCodecXE3005();							break;
 		case 'e':	AudioDebugEnable();						break;
 #endif
-
+	case 'q':
+	case 'Q':
+#if defined(USE_FREERTOS)
+#else
+		cmd_diag(0, 0);
 #endif
-		case 'q':
-		case 'Q':
-			return 0;
-		default:
-			break;
+		return 0;
+	default:
+		break;
+	}
+
+	return 1;
+}
+
+//========================================================================
+int cmd_diag_Audio( int argc, char *argv[] )
+//========================================================================
+{
+#if defined(USE_FREERTOS)
+
+	char	ibuf[80];
+	int		v, sel;
+
+	while ( 1 )
+	{
+		display_diag_Audio();
+
+		memset( ibuf, 0, sizeof( ibuf ) );
+		v = readline( ibuf );
+
+		if ( v <= 0 )
+		{
+			continue;
 		}
 
+		if ( cmd_diag_proc_Audio( ibuf ) == 0 )
+		{
+			break;
+		}
 
 		printf( "Press ENTER key to continue. " );
 		readline( ibuf );
 
-#if defined(USE_FREERTOS)
 		taskYIELD();
-#else
-		HAL_Delay( 0 );
-#endif
 	}
 
-	/* NOTREACHED */
+#else
+	//	HAL_Delay( 0 );
+	SetCLIPrompt( display_diag_Audio );
+	SetCLIProc( cmd_diag_proc_Audio );
+
+#endif
 
 	return 0;
 }
@@ -342,11 +333,44 @@ void display_diag_RF( void )
 
 
 //========================================================================
-//					diag main command function
+int cmd_diag_proc_RF( char *cmd )
+//========================================================================
+{
+//	sel = ibuf[0];
+	char sel = cmd[0];
+
+	switch ( sel )
+	{
+#if defined(_WIN32)
+#else
+		case '0':	RF_Info();					break;
+		case '1':	cmd_test_rf1( 0, 0 );		break;
+		case '2':	cmd_test_rf2( 0, 0 );		break;
+		case '3':	cmd_test_rf3( 0, 0 );		break;
+		case 'i':	cmd_test_rf_init( 0, 0 );	break;
+		case 'v':	cmd_test_rf_vinit( 0, 0 );	break;
+		case 'd':	cmd_test_rf_debug( 0, 0 );	break;
+#endif
+	case 'q':
+	case 'Q':
+#if defined(USE_FREERTOS)
+#else
+		cmd_diag(0, 0);
+#endif
+		return 0;
+	default:
+		break;
+	}
+
+	return 1;
+}
+
 //========================================================================
 int cmd_diag_RF( int argc, char *argv[] )
 //========================================================================
 {
+#if defined(USE_FREERTOS)
+
 	char	ibuf[80];
 	int		v, sel;
 
@@ -361,124 +385,29 @@ int cmd_diag_RF( int argc, char *argv[] )
 			continue;
 		}
 
-		sel = ibuf[0];
-
-
-		switch ( sel )
+		if ( cmd_diag_proc_Audio( ibuf ) == 0 )
 		{
-#if defined(_WIN32)
-#else
-		case '0':	RF_Info();					break;
-		case '1':	cmd_test_rf1( 0, 0 );		break;
-		case '2':	cmd_test_rf2( 0, 0 );		break;
-		case '3':	cmd_test_rf3( 0, 0 );		break;
-		case 'i':	cmd_test_rf_init( 0, 0 );	break;
-		case 'v':	cmd_test_rf_vinit( 0, 0 );	break;
-		case 'd':	cmd_test_rf_debug( 0, 0 );	break;
-#endif
-		case 'q':
-		case 'Q':
-			return 0;
-		default:
 			break;
 		}
 
 		printf( "Press ENTER key to continue. " );
 		readline( ibuf );
 
-#if defined(USE_FREERTOS)
 		taskYIELD();
-#else
-		HAL_Delay( 0 );
-#endif
 	}
+
+#else
+	//	HAL_Delay( 0 );
+	SetCLIPrompt( display_diag_RF );
+	SetCLIProc( cmd_diag_proc_RF );
+
+#endif
 
 	/* NOTREACHED */
 
 	return 0;
 }
 
-
-//========================================================================
-void display_diag_RF_WDS( void )
-//========================================================================
-{
-	CLEAR_VT_SCREEN();
-	GOTO_VT_XY();
-
-	printf( "\n" );
-	printf( "\n" );
-	printf( "\n" );
-	printf( "\n" );
-
-	printf( "       **************************************************************\n" );
-	printf( "       *                         RF Test. (WDS)                     *\n" );
-	printf( "       *                                                            *\n" );
-	printf( "       *  0 : RF-IC Info                                            *\n" );
-	printf( "       *  1 : RF Tx.                                                *\n" );
-	printf( "       *  2 : RF Rx.                                                *\n" );
-	printf( "       *  3 : RF Tx->Rx Loopback                                    *\n" );
-	printf( "       *  i : RF-Init                                               *\n" );
-	printf( "       *  v : Verify RF-Init                                        *\n" );
-	printf( "       *  d : Enable Debug SPI                                      *\n" );
-	printf( "       **************************************************************\n" );
-	printf( "\n" );
-	printf( "           Please select number[to quit, push 'q', 'Q']:" );
-}
-
-
-//========================================================================
-//					diag main command function
-//========================================================================
-int cmd_diag_RF_WDS( int argc, char *argv[] )
-//========================================================================
-{
-	char	ibuf[80];
-	int		v, sel;
-
-	while ( 1 )
-	{
-		display_diag_RF_WDS();
-
-		v = readline( ibuf );
-
-		if ( v <= 0 )
-		{
-			continue;
-		}
-
-		sel = ibuf[0];
-
-		switch ( sel )
-		{
-		case '0':	cmd_rfwds_info(0, 0);		break;
-		case '1':	cmd_rfwds1( 0, 0 );			break;
-		case '2':	cmd_rfwds2( 0, 0 );			break;
-		case '3':	cmd_rfwds3( 0, 0 );			break;
-		case 'i':	cmd_rfwds_init( 0, 0 );		break;
-		case 'v':	cmd_rfwds_vinit( 0, 0 );	break;
-		case 'd':	cmd_rfwds_debug( 0, 0 );	break;
-		case 'q':
-		case 'Q':
-			return 0;
-		default:
-			break;
-		}
-
-		printf( "Press ENTER key to continue. " );
-		readline( ibuf );
-
-#if defined(USE_FREERTOS)
-		taskYIELD();
-#else
-		HAL_Delay( 0 );
-#endif
-	}
-
-	/* NOTREACHED */
-
-	return 0;
-}
 
 //========================================================================
 int	cmd_test1(int argc, char *argv[])
@@ -962,142 +891,6 @@ int cmd_debug(int argc, char *argv[])
 
 	return 0;
 }
-
-//========================================================================
-int cmd_audio( int argc, char *argv[] )
-//========================================================================
-{
-	//	audio [ loop / null / sine / spk / mute ] [0/1 - spk relay]
-	if ( argc < 2 )
-	{
-		printf( "%s(%d) - return\n", __func__, __LINE__ );
-		return 0;
-	}
-
-	if ( strcmp( argv[1], "spk" ) == 0 )
-	{
-		if ( argc >= 3 )
-		{
-			if ( strcmp( argv[2], "1" ) == 0 )
-			{
-				//	Spk On
-				printf( "%s(%d) - Spk Relay : On\n", __func__, __LINE__ );
-				HAL_GPIO_WritePin( SPK_ON_GPIO_Port, SPK_ON_Pin, GPIO_PIN_SET );
-			}
-			else if ( strcmp( argv[2], "0" ) == 0 )
-			{
-				//	Spk On
-				printf( "%s(%d) - Spk Relay : Off\n", __func__, __LINE__ );
-				HAL_GPIO_WritePin( SPK_ON_GPIO_Port, SPK_ON_Pin, GPIO_PIN_RESET );
-			}
-		}
-	}
-	else if ( strcmp( argv[1], "loop" ) == 0 )
-	{
-		//	Audio Loop Test
-		printf( "%s(%d) - loop\n", __func__, __LINE__ );
-
-		AudioRxTxLoop();
-
-		//	Spk On
-		HAL_GPIO_WritePin( SPK_ON_GPIO_Port, SPK_ON_Pin, GPIO_PIN_SET );
-	}
-	else if ( strcmp( argv[1], "null" ) == 0 )
-	{
-		//	Audio Output Null
-		printf( "%s(%d) - null\n", __func__, __LINE__ );
-
-//		//	Spk Off
-//		HAL_GPIO_WritePin( SPK_ON_GPIO_Port, SPK_ON_Pin, GPIO_PIN_RESET );
-
-		AudioTxNull();
-	}
-	else if ( strcmp( argv[1], "sine" ) == 0 )
-	{
-		//	Audio Output Sine Wave
-		printf( "%s(%d) - sine\n", __func__, __LINE__ );
-		AudioTxSine();
-
-//		//	Spk On
-//		HAL_GPIO_WritePin( SPK_ON_GPIO_Port, SPK_ON_Pin, GPIO_PIN_SET );
-	}
-	else if ( strcmp( argv[1], "stop" ) == 0 )
-	{
-		//	Audio Loop Test
-		printf( "%s(%d) - %s\n", __func__, __LINE__, argv[1] );
-
-		AudioTxStop();
-	}
-	else
-	{
-		printf( "%s(%d) - Invalid Cmd : %s\n", __func__, __LINE__, argv[1] );
-	}
-
-	return 1;
-}
-
-
-//========================================================================
-int cmd_codec( int argc, char *argv[] )
-//========================================================================
-{
-	//	audio [ loop / null / sine / spk / mute ] [0/1 - spk relay]
-	if ( argc < 2 )
-	{
-		printf( "%s(%d) - return\n", __func__, __LINE__ );
-		return 0;
-	}
-
-	int bOnOff = 0;
-
-	if ( argc >= 3 )
-	{
-		if ( strcmp( argv[2], "1" ) == 0 )
-		{
-			bOnOff = 1;
-		}
-		else if ( strcmp( argv[2], "0" ) == 0 )
-		{
-			bOnOff = 0;
-		}
-	}
-
-	if ( strcmp( argv[1], "init" ) == 0 )
-	{
-		//	Audio Init
-		printf( "%s(%d) - init\n", __func__, __LINE__ );
-
-		AudioTxStop();
-		HAL_Delay( 500 );
-
-		InitCodecXE3005();
-		HAL_Delay( 500 );
-
-		AudioInit();
-	}
-	else if ( strcmp( argv[1], "mute" ) == 0 )
-	{
-		//	Audio Output Sine Wave
-		printf( "%s(%d) - %s(%d)\n", __func__, __LINE__, argv[1], bOnOff );
-
-		CodecMuteDAC( bOnOff );
-	}
-	else if ( strcmp( argv[1], "loop" ) == 0 )
-	{
-		//	Audio Codec Loopback
-		printf( "%s(%d) - %s(%d)\n", __func__, __LINE__, argv[1], bOnOff );
-
-		CodecLoopback( bOnOff );
-	}
-	else
-	{
-		printf( "%s(%d) - Invalid Cmd : %s\n", __func__, __LINE__, argv[1] );
-	}
-
-	return 1;
-}
-
-
 
 //========================================================================
 int cmd_wr( int argc, char *argv[] )

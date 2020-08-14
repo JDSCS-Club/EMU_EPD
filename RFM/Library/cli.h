@@ -1,14 +1,14 @@
 /*------------------------------------------------------------------------------------------
-	Project			: LED
+	Project			: RFM
 	Description		: console과 관련된 함수들 및 command line 처리
 
 	Writer			: $Author: zlkit $
 	Revision		: $Rev: 1891 $
-	Date			: 2019. 01.
+	Date			: 2020. 08.
 	Copyright		: Piranti Corp. ( zlkit@piranti.co.kr )
 	 
 	Revision History 
-	1. 2019. 01.	: Created
+	1. 2020. 08.	: Created
 -------------------------------------------------------------------------------------------*/
 
 #ifndef	_CLI_H_
@@ -46,7 +46,6 @@ void	vCLITask	( void *pvParameters );	//	LED Task
 
 extern int			data_option;
 
-
 //========================================================================
 //	Default CLI Process
 void	CLIPrompt		( void );
@@ -58,13 +57,14 @@ void	SetCLIPrompt	( void ( *fnPrompt )( void ) );
 void	SetCLIProc		( int ( *fnProc )( char *cmd ) );
 //========================================================================
 
-int cmd_ver(int argc, char *argv[]);
+//========================================================================
+//	Default Command
 
-int cmd_help( int argc, char *argv[] );
+int cmd_help	( int argc, char *argv[] );
+int cmd_reset	( int argc, char *argv[] );
+int cmd_uptime	( int argc, char *argv[] );
+int cmd_ver		( int argc, char *argv[] );
 
-int cmd_uptime(int argc, char *argv[]);
-
-int cmd_reset(int argc, char *argv[]);
-
+//========================================================================
 
 #endif	/* _CLI_H_ */

@@ -38,13 +38,11 @@
 
 typedef struct _Menu
 {
-
 	char 		**sItem;					//	Item Name
 	int			cntItem;					//	Menu Item Count
 	int			currIdx;					//	Current Item Index
 	void		(*cbFunc)( int idxItem );	//	Callback Func
 } Menu_t;
-
 
 extern Menu_t	g_MenuMain;			//	Main Menu
 extern Menu_t	g_MenuLightCtrl;	//	Light Ctrl
@@ -57,18 +55,11 @@ void 	ProcMenuMain		( int idxItem );	//	Main
 void	ProcMenuTrainSet	( int idxItem );	//	TrainSet
 void 	ProcMenuLightCtrl	( int idxItem );	//	LightCtrl
 
-
 //========================================================================
 
 void	ProcLightOn		( void );
 void	ProcLightOff	( void );
-
 void	ProcDispVer		( void );
-
-
-//========================================================================
-
-#define		RF_CMD_SIZE				RFPktHdrLen			//	[4Byte Commnad]
 
 //========================================================================
 
@@ -88,15 +79,6 @@ void	SetLoopRFTx		( int bEnable );	//	RF Data 전송 유지..
 int		cmd_rftx		( int argc, char * argv[] );
 
 #endif	//	defined(USE_ENV_TEST)
-
-void	RF_PA_loop		( void );
-
-int		RF_PA_Init		( void );
-
-int		RF_PA_main		( void );
-
-void	RF_PA_I2SEx_TxRxCpltCallback	( I2S_HandleTypeDef* hi2s );
-
 
 //========================================================================
 #endif

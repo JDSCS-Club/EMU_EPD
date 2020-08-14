@@ -1,14 +1,14 @@
 /*------------------------------------------------------------------------------------------
-	Project			: It Library
-	Description		: 
+	Project			: RFM
+	Description		: ADC Battery Power
 
 	Writer			: $Author: zlkit $
 	Revision		: $Rev: 1891 $
-	Date			: 2019. 10.
+	Date			: 2020. 08.
 	Copyright		: Piranti Corp.	( sw@piranti.co.kr )
 	 
 	Revision History 
-	1. 2019. 10.	: Created
+	1. 2020. 08.	: Created
 -------------------------------------------------------------------------------------------*/
 
 /*------------------------------------------------------------------------------------------

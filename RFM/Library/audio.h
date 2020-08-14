@@ -32,10 +32,11 @@
 //#define		I2S_DMA_LOOP_QCNT		8		//	Queue Count
 //#define		I2S_DMA_LOOP_SIZE		160		//
 
-#define		I2S_DMA_LOOP_SIZE		32	//	[4Byte Commnad] [ 60Byte Stream Data ]
-#define		I2S_DMA_LOOP_QCNT		4		//	Queue Count
-
-//#include "rf_pa.h"				//	I2S_DMA_LOOP_SIZE / I2S_DMA_LOOP_QCNT
+enum eAudioConfI2SDMA
+{
+	I2S_DMA_LOOP_SIZE	=	32,		//	[4Byte Commnad] [ 60Byte Stream Data ]
+	I2S_DMA_LOOP_QCNT	=	4,		//	Queue Count
+};
 
 enum eAudioMode
 {
@@ -64,7 +65,6 @@ extern uint16_t	r_audio_buff[];
 //
 //========================================================================
 
-
 //========================================================================
 //	AudioXXXX - I2S 제어
 
@@ -91,7 +91,6 @@ int		GetAudioIC( void );
 
 //========================================================================
 
-
 //========================================================================
 //
 //		Codec ( MAX9860 )
@@ -105,15 +104,20 @@ void	InitCodecMAX9860	( void );
 
 int		AudioLoopbackDMA		( void );
 int 	AudioLoopbackDMASpeex	( void );
-
 int		AudioLoopbackDMACompress( void );
 
 void	LoopProcAudio			( void );
 
-void	AudioSpkVol	    ( int nSpkVol );
-
-
+void	AudioSpkVol				( int nSpkVol );
 
 //void	QPutAudioStream			( char *sBuf, int nSize );
+
+//========================================================================
+//	Command Function
+
+int 	cmd_audio	( int argc, char *argv[] );
+int 	cmd_codec	( int argc, char *argv[] );
+
+//========================================================================
 
 #endif

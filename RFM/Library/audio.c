@@ -412,9 +412,7 @@ void InitCodecMAX9860   ( void )
 
 //    WriteI2CCodec( 0x09, 0x3E );	//  0x0C ( -28 )
 //            WriteI2CCodec( 0x0B, 0x20 );	//  01 ( +6 dB )
-
 }
-
 
 //========================================================================
 void Default_I2SEx_TxRxCpltCallback( I2S_HandleTypeDef *hi2s )
@@ -554,8 +552,6 @@ void AudioSine_I2SEx_TxRxCpltCallback( I2S_HandleTypeDef *hi2s )
 #endif
 }
 
-
-
 //========================================================================
 int		AudioLoopbackDMACompress( void )
 //========================================================================
@@ -569,7 +565,6 @@ int		AudioLoopbackDMACompress( void )
 
 	return 0;
 }
-
 
 //========================================================================
 int		AudioLoopbackDMASpeex( void )
@@ -745,7 +740,6 @@ void	AudioSpkVol	    ( int nSpkVol )
 }
 
 
-
 ////========================================================================
 //void	QPutAudioStream( char * sBuf, int nSize )
 ////========================================================================
@@ -759,4 +753,140 @@ void	AudioSpkVol	    ( int nSpkVol )
 //		qBufPut( &g_qBufAudioRx, (uint8_t *)sBuf, nSize );
 //	}
 //}
+
+
+//========================================================================
+int cmd_audio( int argc, char *argv[] )
+//========================================================================
+{
+	//	audio [ loop / null / sine / spk / mute ] [0/1 - spk relay]
+	if ( argc < 2 )
+	{
+		printf( "%s(%d) - return\n", __func__, __LINE__ );
+		return 0;
+	}
+
+	if ( strcmp( argv[1], "spk" ) == 0 )
+	{
+		if ( argc >= 3 )
+		{
+			if ( strcmp( argv[2], "1" ) == 0 )
+			{
+				//	Spk On
+				printf( "%s(%d) - Spk Relay : On\n", __func__, __LINE__ );
+				HAL_GPIO_WritePin( SPK_ON_GPIO_Port, SPK_ON_Pin, GPIO_PIN_SET );
+			}
+			else if ( strcmp( argv[2], "0" ) == 0 )
+			{
+				//	Spk On
+				printf( "%s(%d) - Spk Relay : Off\n", __func__, __LINE__ );
+				HAL_GPIO_WritePin( SPK_ON_GPIO_Port, SPK_ON_Pin, GPIO_PIN_RESET );
+			}
+		}
+	}
+	else if ( strcmp( argv[1], "loop" ) == 0 )
+	{
+		//	Audio Loop Test
+		printf( "%s(%d) - loop\n", __func__, __LINE__ );
+
+		AudioRxTxLoop();
+
+		//	Spk On
+		HAL_GPIO_WritePin( SPK_ON_GPIO_Port, SPK_ON_Pin, GPIO_PIN_SET );
+	}
+	else if ( strcmp( argv[1], "null" ) == 0 )
+	{
+		//	Audio Output Null
+		printf( "%s(%d) - null\n", __func__, __LINE__ );
+
+//		//	Spk Off
+//		HAL_GPIO_WritePin( SPK_ON_GPIO_Port, SPK_ON_Pin, GPIO_PIN_RESET );
+
+		AudioTxNull();
+	}
+	else if ( strcmp( argv[1], "sine" ) == 0 )
+	{
+		//	Audio Output Sine Wave
+		printf( "%s(%d) - sine\n", __func__, __LINE__ );
+		AudioTxSine();
+
+//		//	Spk On
+//		HAL_GPIO_WritePin( SPK_ON_GPIO_Port, SPK_ON_Pin, GPIO_PIN_SET );
+	}
+	else if ( strcmp( argv[1], "stop" ) == 0 )
+	{
+		//	Audio Loop Test
+		printf( "%s(%d) - %s\n", __func__, __LINE__, argv[1] );
+
+		AudioTxStop();
+	}
+	else
+	{
+		printf( "%s(%d) - Invalid Cmd : %s\n", __func__, __LINE__, argv[1] );
+	}
+
+	return 1;
+}
+
+
+//========================================================================
+int cmd_codec( int argc, char *argv[] )
+//========================================================================
+{
+	//	audio [ loop / null / sine / spk / mute ] [0/1 - spk relay]
+	if ( argc < 2 )
+	{
+		printf( "%s(%d) - return\n", __func__, __LINE__ );
+		return 0;
+	}
+
+	int bOnOff = 0;
+
+	if ( argc >= 3 )
+	{
+		if ( strcmp( argv[2], "1" ) == 0 )
+		{
+			bOnOff = 1;
+		}
+		else if ( strcmp( argv[2], "0" ) == 0 )
+		{
+			bOnOff = 0;
+		}
+	}
+
+	if ( strcmp( argv[1], "init" ) == 0 )
+	{
+		//	Audio Init
+		printf( "%s(%d) - init\n", __func__, __LINE__ );
+
+		AudioTxStop();
+		HAL_Delay( 500 );
+
+		InitCodecXE3005();
+		HAL_Delay( 500 );
+
+		AudioInit();
+	}
+	else if ( strcmp( argv[1], "mute" ) == 0 )
+	{
+		//	Audio Output Sine Wave
+		printf( "%s(%d) - %s(%d)\n", __func__, __LINE__, argv[1], bOnOff );
+
+		CodecMuteDAC( bOnOff );
+	}
+	else if ( strcmp( argv[1], "loop" ) == 0 )
+	{
+		//	Audio Codec Loopback
+		printf( "%s(%d) - %s(%d)\n", __func__, __LINE__, argv[1], bOnOff );
+
+		CodecLoopback( bOnOff );
+	}
+	else
+	{
+		printf( "%s(%d) - Invalid Cmd : %s\n", __func__, __LINE__, argv[1] );
+	}
+
+	return 1;
+}
+
 

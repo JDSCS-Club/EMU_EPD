@@ -1,14 +1,14 @@
 /*------------------------------------------------------------------------------------------
-	Project			: LED
+	Project			: RFM
 	Description		: console과 관련된 함수들 및 command line 처리
 
 	Writer			: $Author: zlkit $
 	Revision		: $Rev: 1891 $
-	Date			: 2019. 01.
+	Date			: 2020. 08.
 	Copyright		: Piranti Corp. ( zlkit@piranti.co.kr )
 	 
 	Revision History 
-	1. 2019. 01.	: Created
+	1. 2020. 08.	: Created
 -------------------------------------------------------------------------------------------*/
 
 #include <stdio.h>
@@ -49,23 +49,14 @@
 #endif
 //=============================================================================
 
-//#include "diag.h"
-
 #include "cli.h"
 #include "serial.h"
 
-//#include "spi.h"
+#include "version.h"		//	APP_VER / APP_BUILD_DATE
 
-//#include "version.h"		//	APP_VER / APP_BUILD_DATE
+#include "rfm.h"			//	cmd_ch()
 
-#if defined(_WIN32)
-#else	//	stm32f407
-
-//#include "rfm.h"			//	cmd_ch()
-
-//#include "rf_pa.h"
-
-#endif
+#include "diag.h"
 
 //#if defined(_WIN32)
 //#else
@@ -90,9 +81,7 @@ int			input_check		( void );
 
 char		prompt_string[0x10];
 
-
 int			data_option = 1;
-
 
 //=============================================================================
 
@@ -122,8 +111,16 @@ user_command_t	user_command_table[] = {
 		"reset		-	restart system",
 		(char *)0,
 		cmd_reset,},
+
 #if		defined(USE_BOOTLOADER)
 #else
+
+#if defined(_DIAG_H_)
+	{"diag",
+		"diag		-	diagnostic test",
+		(char *)0,
+		cmd_diag,},
+#endif	//	defined(_DIAG_H_)
 
 #if defined(RFM_H)
 	{"ch",
@@ -150,10 +147,6 @@ user_command_t	user_command_table[] = {
 
 #if 0
 
-	{"diag",
-		"diag		-	diagnostic test",
-		(char *)0,
-		cmd_diag,},
 	{"test",
 		(char *)0,
 		(char *)0,
@@ -162,14 +155,6 @@ user_command_t	user_command_table[] = {
 		"do			-	set do value",
 		(char *)0,
 		cmd_do,},
-//	{"logpr",
-//		"logpr		-	show system log",
-//		(char *)0,
-//		cmd_logpr,},
-//	{"logx",
-//		"logx		-	clear system log",
-//		(char *)0,
-//		cmd_logx,},
 	{"wr",
 		"wr			-	write byte to address",
 		"wr[.b|w|l] addr data",
@@ -228,19 +213,14 @@ user_command_t	user_command_table[] = {
 #endif
 
 #endif
-		/*
-			{"period",
-				"period   - call a command periodically.",
-				"period [-seconds] command [args]",
-				cmd_period,},
-			{"ts",
-				"ts       - display task status",
-				(char *)0,
-				cmd_ts,},
+/*
+	{"ts",
+		"ts       - display task status",
+		(char *)0,
+		cmd_ts,},
 
-		 */
+ */
 };
-
 
 char	old_cmd[MAX_COMMAND_LENGTH];
 
@@ -390,113 +370,6 @@ int getarg(char *buffer, char *argv[])
 	}
 
 	return argc;
-}
-
-//========================================================================
-int cmd_help( int argc, char *argv[] )
-//========================================================================
-{
-	int	i;
-	int	ok = 0;
-
-//	printf( "%s(%d)\n", __func__, __LINE__ );
-
-	for ( i = 1; i < NELEMENTS( user_command_table ); i++ )
-	{
-		if ( 1 < argc )
-		{
-			if ( strcmp( argv[1], user_command_table[i].command_name ) == 0 )
-			{
-				if ( user_command_table[i].command_help1 != NULL )
-				{
-					printf( "%s\n", user_command_table[i].command_help1 );
-				}
-				if ( user_command_table[i].command_help2 != NULL )
-				{
-					printf( "%s\n", user_command_table[i].command_help2 );
-				}
-				ok = 1;
-			}
-		}
-		else
-		{
-			if ( user_command_table[i].command_help1 != NULL )
-			{
-				printf( "%s\n", user_command_table[i].command_help1 );
-			}
-			ok = 1;
-		}
-	}
-	if ( ok == 0 )
-	{
-		printf( "unknown command %s\n", argv[1] );
-	}
-	return 0;
-}
-
-//========================================================================
-int cmd_uptime(int argc, char *argv[])
-//========================================================================
-{
-
-//=============================================================================
-#if defined(_WIN32)
-//=============================================================================
-
-//=============================================================================
-#else	//	stm32f207
-//=============================================================================
-
-#if defined( USE_FREERTOS )
-	unsigned long	tmp = xTaskGetTickCount() / configTICK_RATE_HZ;
-#else
-	unsigned long	tmp = HAL_GetTick() / 1000;
-#endif
-	
-	int	sec, min, hour;
-	int	day;
-
-	day = (tmp / 3600 / 24);
-	tmp = tmp % (3600 * 24);
-
-	hour = tmp / 3600;
-	tmp = tmp % 3600;
-
-	min = tmp / 60;
-	sec = tmp % 60;
-
-	if (0 < day)
-	{
-		printf("%d day(s) %d:%02d:%02d up.\n", day, hour, min, sec);
-	}
-	else
-	{
-		printf("%d:%02d:%02d up.\n", hour, min, sec);
-	}
-
-//=============================================================================
-#endif
-//=============================================================================
-
-	return 0;
-}
-
-//========================================================================
-int cmd_ver(int argc, char *argv[])
-//========================================================================
-{
-//	printf("Version = %s(%s)\n", APP_VER, APP_BUILD_DATE );
-
-	return 0;
-}
-
-
-//========================================================================
-int cmd_reset(int argc, char *argv[])
-//========================================================================
-{
-  	NVIC_SystemReset();
-	return 0;
 }
 
 //========================================================================
@@ -716,7 +589,7 @@ void	CLIPrompt( void )
 }
 
 void	( *g_fnCLIPrompt )( void ) = CLIPrompt;
-int	( *g_fnCLIProc )( char * ) = ProcessCommand;
+int		( *g_fnCLIProc )( char * ) = ProcessCommand;
 
 //========================================================================
 void	SetCLIPrompt( void ( *fnPrompt )( void ) )
@@ -764,26 +637,8 @@ void	vCLITask	( void *pvParameters )
 #endif
 //========================================================================
 {
-
 	/* The parameters are not used. */
 	( void ) pvParameters;
-
-
-#if defined(_WIN32)
-#else
-
-#if defined(USE_FREERTOS)
-	osDelay( 500 );
-#else
-	HAL_Delay( 500 );
-#endif
-
-//	//========================================================================
-//	//  RF Initialize
-//	RF_Init();
-//	//========================================================================
-
-#endif
 
 	/*
 	 * print Logo & version
@@ -805,40 +660,112 @@ void	vCLITask	( void *pvParameters )
 	}
 }
 
-#if 0
 //========================================================================
-int cmd_period(int argc, char *argv[])
+int cmd_help( int argc, char *argv[] )
 //========================================================================
 {
-	char	newcmd[128];
-	int	idx = 1;
-	int	seconds = 1;
-	char	*p;
 	int	i;
-	char	ch;
-	portTickType	delay;
+	int	ok = 0;
 
-	if (argv[idx][0] == '-') {
-		seconds = abs(atoi(argv[idx]));
-		idx++;
-	}
+//	printf( "%s(%d)\n", __func__, __LINE__ );
 
-	if (seconds == 0) {
-		delay = configTICK_RATE_HZ;	/* default 1 second */
-	} else {
-		delay = seconds * configTICK_RATE_HZ;
+	for ( i = 1; i < NELEMENTS( user_command_table ); i++ )
+	{
+		if ( 1 < argc )
+		{
+			if ( strcmp( argv[1], user_command_table[i].command_name ) == 0 )
+			{
+				if ( user_command_table[i].command_help1 != NULL )
+				{
+					printf( "%s\n", user_command_table[i].command_help1 );
+				}
+				if ( user_command_table[i].command_help2 != NULL )
+				{
+					printf( "%s\n", user_command_table[i].command_help2 );
+				}
+				ok = 1;
+			}
+		}
+		else
+		{
+			if ( user_command_table[i].command_help1 != NULL )
+			{
+				printf( "%s\n", user_command_table[i].command_help1 );
+			}
+			ok = 1;
+		}
 	}
-	p = newcmd;
-	for (i = idx; i < argc; i++) {
-		p += sprintf(p, "%s ", argv[i]);
+	if ( ok == 0 )
+	{
+		printf( "unknown command %s\n", argv[1] );
 	}
-
-	do {
-		ProcessCommand(newcmd);
-	} while ( xQueueReceive( xDebugQueueRx, &ch, delay) == pdFAIL );
 	return 0;
 }
+
+//========================================================================
+int cmd_uptime(int argc, char *argv[])
+//========================================================================
+{
+
+//=============================================================================
+#if defined(_WIN32)
+//=============================================================================
+
+//=============================================================================
+#else	//	stm32f207
+//=============================================================================
+
+#if defined( USE_FREERTOS )
+	unsigned long	tmp = xTaskGetTickCount() / configTICK_RATE_HZ;
+#else
+	unsigned long	tmp = HAL_GetTick() / 1000;
 #endif
+
+	int	sec, min, hour;
+	int	day;
+
+	day = (tmp / 3600 / 24);
+	tmp = tmp % (3600 * 24);
+
+	hour = tmp / 3600;
+	tmp = tmp % 3600;
+
+	min = tmp / 60;
+	sec = tmp % 60;
+
+	if (0 < day)
+	{
+		printf("%d day(s) %d:%02d:%02d up.\n", day, hour, min, sec);
+	}
+	else
+	{
+		printf("%d:%02d:%02d up.\n", hour, min, sec);
+	}
+
+//=============================================================================
+#endif
+//=============================================================================
+
+	return 0;
+}
+
+//========================================================================
+int cmd_ver(int argc, char *argv[])
+//========================================================================
+{
+	printf("Version = %s(%s)\n", APP_VER, APP_BUILD_DATE );
+
+	return 0;
+}
+
+
+//========================================================================
+int cmd_reset(int argc, char *argv[])
+//========================================================================
+{
+  	NVIC_SystemReset();
+	return 0;
+}
 
 /*
 //========================================================================
@@ -854,7 +781,6 @@ int cmd_ts(int argc, char *argv[])
 	vPortFree(pbuffer);
 	return 0;
 }
-
 */
 
 

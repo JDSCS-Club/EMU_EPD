@@ -1,5 +1,5 @@
 /*------------------------------------------------------------------------------------------
-	Project			: It Library
+	Project			: RFM
 	Description		: 
 
 	Writer			: $Author: zlkit $
@@ -703,6 +703,9 @@ int InitRFM( void )
 #endif
 
 #if 0
+
+	//	RF 송/수신 설정.
+
 	if ( GetDevID() == DevRF900T )
 	{
 		for ( int i = 0; i < pRadioConfiguration->Radio_PacketLength; i++ )
@@ -744,8 +747,11 @@ int RFM_main( void )
 	{
 		nTick = HAL_GetTick();
 
-		//	Loop RFM
-		LoopProcKey( nTick );
+		if ( GetDevID() == DevRF900T )
+		{
+			//	송신기 - KeyPad 동작.
+			LoopProcKey( nTick );
+		}
 
 		//	Loop RFM
 		LoopProcRFM( nTick );
