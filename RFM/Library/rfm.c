@@ -27,6 +27,8 @@
 
 #include "serial.h"					//  SerialInit()
 
+#include "keypad.h"					//	GetKey()
+
 #if defined(_WIN32)
 #else
 #include "radio.h"					//  bRadio_Check_Tx_RX()
@@ -782,30 +784,10 @@ void LoopProcRFM ( int nTick )
 {
 	static int stampRx;
 
-	static int idx = 0;
-
-	int i;
+//	static int idx = 0;
+//	int i;
 
 	RFMPkt	bufRFTx;
-
-	U8 bMain_IT_Status;
-
-	return ;
-
-#if defined(USE_ENV_TEST)
-
-	if ( s_bEnLoopRFTx )
-	{
-		//	RF 전송모드
-
-		vRadio_StartTx_Variable_Packet (
-			pRadioConfiguration->Radio_ChannelNumber,
-			&bufRFTx,
-			pRadioConfiguration->Radio_PacketLength );
-
-	}
-
-#endif	//	defined(USE_ENV_TEST)
 
 	//========================================================================
 	//  Transmit - 송신기
@@ -813,6 +795,7 @@ void LoopProcRFM ( int nTick )
 	{
 		if( GetRFMMode() != RFMModeRx )
 		{
+#if 0
 			//  수신중이 아닌경우 PTT / SOS키 누를시 음성송출.
 			static int bPTTOnOff = 0;	   //  PTT On/Off상태
 			static int bOldPTT_Key = 1;
@@ -913,8 +896,10 @@ void LoopProcRFM ( int nTick )
 
 				bOldSOS_Key = bSOS_Key;
 			}
+#endif
 
-			if( bPTTOnOff || bSOSOnOff )
+//			if( bPTTOnOff || bSOSOnOff )
+			if( GetKey(eKeyPtt) || GetKey(eKeySos) )
 			{
 				//========================================================================
 				RF_Tx_Mode();
@@ -929,7 +914,7 @@ void LoopProcRFM ( int nTick )
 					//  송신기 -> 수신기
 					bufRFTx.hdr.addrSrc = GetDevID();		//  Src : 송신기 DevRF900T
 
-					if( bPTTOnOff )
+					if( GetKey(eKeyPtt) )	// bPTTOnOff )
 					{
 						//  송신기 -> 수신기
 						bufRFTx.hdr.addrDest	=	DevRF900M;		 //  Dest : 수신기
@@ -942,10 +927,15 @@ void LoopProcRFM ( int nTick )
 						bufRFTx.hdr.nPktID		=	PktCall;
 					}
 
+#if 1
+					SendPacket( (uint8_t *)&bufRFTx,
+						pRadioConfiguration->Radio_PacketLength );
+#else
 					vRadio_StartTx_Variable_Packet (
 						pRadioConfiguration->Radio_ChannelNumber,
 						(uint8_t *)&bufRFTx,
 						pRadioConfiguration->Radio_PacketLength );
+#endif
 				}
 			}
 		}
@@ -972,209 +962,6 @@ void LoopProcRFM ( int nTick )
 
 			nOldRFMMode = nRFMMode;
 		}
-
-#if 0
-		//========================================================================
-		//  On/Off
-
-		static int bOldOnOff;
-		int bOnOff;
-
-		bOnOff = HAL_GPIO_ReadPin( ON_OFF_KEY_GPIO_Port, ON_OFF_KEY_Pin );
-
-		if( bOldOnOff != bOnOff )
-		{
-			if( bOnOff == 0 )
-			{
-				// On/Off 버튼 눌렀다 뗄경우 Off
-
-				//	Power Off
-				HAL_GPIO_WritePin( ON_OFF_EN_GPIO_Port, ON_OFF_EN_Pin, GPIO_PIN_RESET );
-			}
-
-			bOldOnOff = bOnOff;
-		}
-
-		//========================================================================
-		//  Flash Light
-		static int bOldKeyLight = 1;
-		static int bLightOnOff; //  toggle
-		int bKeyLight;
-
-		bKeyLight = HAL_GPIO_ReadPin( DOME4_GPIO_Port, DOME4_Pin );
-
-		if( bOldKeyLight != bKeyLight )
-		{
-			if( bKeyLight == 1 )
-			{
-				bLightOnOff = !(bLightOnOff); //  toggle
-			}
-
-			if( bLightOnOff )
-			{
-				//	Flash Light On
-				HAL_GPIO_WritePin( FLASH_ON_GPIO_Port, FLASH_ON_Pin, GPIO_PIN_SET );
-
-				LCDLight( 1 );
-			}
-			else
-			{
-				//	Flash Light Off
-				HAL_GPIO_WritePin( FLASH_ON_GPIO_Port, FLASH_ON_Pin, GPIO_PIN_RESET );
-
-				LCDLight( 0 );
-			}
-
-
-			bOldKeyLight = bKeyLight;
-		}
-
-		//========================================================================
-		//  Spk
-		static int bOldKeySpk = 1;
-//		static int bSpkOnOff = 1; //  toggle
-		int bKeySpk;
-
-		bKeySpk = HAL_GPIO_ReadPin( DOME6_GPIO_Port, DOME6_Pin );
-
-		if ( bOldKeySpk != bKeySpk )
-		{
-			if ( bKeySpk == 1 )
-			{
-//				bSpkOnOff = !(bSpkOnOff); //  toggle
-				g_nSpkLevel = ( g_nSpkLevel + 1 ) % 4;  //  0, 1, 2, 3
-
-				//========================================================================
-				SetSpkVol( g_nSpkLevel );
-				//========================================================================
-			}
-
-			if ( g_nSpkLevel )
-			{
-				//	RFM SPK On
-//				HAL_GPIO_WritePin( SPK_ON_GPIO_Port, SPK_ON_Pin, GPIO_PIN_SET );
-				//	RFM SPK Off
-				HAL_GPIO_WritePin( SPK_ON_GPIO_Port, SPK_ON_Pin, GPIO_PIN_RESET );
-
-				LCDSpeaker( g_nSpkLevel );
-			}
-			else
-			{
-				//	RFM SPK Off
-				HAL_GPIO_WritePin( SPK_ON_GPIO_Port, SPK_ON_Pin, GPIO_PIN_RESET );
-
-				LCDSpeaker( 0 );
-			}
-
-			bOldKeySpk = bKeySpk;
-		}
-
-
-		//========================================================================
-		//  Menu Key
-		static int bOldKeyMenu = 1;
-		int bKeyMenu;
-
-		bKeyMenu = HAL_GPIO_ReadPin( DOME1_GPIO_Port, DOME1_Pin );
-
-		if ( bOldKeyMenu != bKeyMenu )
-		{
-			if ( bKeyMenu )
-			{
-			}
-			else
-			{
-				//	Menu
-				ProcBtnMenu();
-			}
-
-			bOldKeyMenu = bKeyMenu;
-		}
-
-		//========================================================================
-		//  OK Key
-		static int bOldKeyOK = 1;
-		int bKeyOK;
-
-		bKeyOK = HAL_GPIO_ReadPin( DOME3_GPIO_Port, DOME3_Pin );
-
-		if ( bOldKeyOK != bKeyOK )
-		{
-			if ( bKeyOK )
-			{
-			}
-			else
-			{
-				ProcBtnOK();
-			}
-
-			bOldKeyOK = bKeyOK;
-		}
-
-		//========================================================================
-		//  Up Key
-		static int bOldKeyUp = 1;
-		int bKeyUp;
-
-		bKeyUp = HAL_GPIO_ReadPin( DOME2_GPIO_Port, DOME2_Pin );
-
-		if ( bOldKeyUp != bKeyUp )
-		{
-			if ( bKeyUp )
-			{
-			}
-			else
-			{
-				ProcBtnUp();
-			}
-
-			bOldKeyUp = bKeyUp;
-		}
-
-		//========================================================================
-		//  Down Key
-		static int bOldKeyDown = 1;
-		int bKeyDown;
-
-		bKeyDown = HAL_GPIO_ReadPin( DOME5_GPIO_Port, DOME5_Pin );
-
-		if ( bOldKeyDown != bKeyDown )
-		{
-			if ( bKeyDown )
-			{
-			}
-			else
-			{
-				ProcBtnDown();
-			}
-
-			bOldKeyDown = bKeyDown;
-		}
-#endif
-
-		//========================================================================
-		//  ADC_Power
-		//  Normal Mode 일때 Battery 체크.
-		//	RSSI 수신감도 체크.
-		static int oldTick = 0;
-
-		if ( nTick - oldTick > 1000 )
-		{
-			//  Period : 1 sec
-			if ( GetRFMMode() == RFMModeNormal )
-			{
-				Adc_Power();
-
-#if defined(USE_RSSI)
-				//	RSSI Ping
-				RF_RSSI();	//	주기적으로 상태정보 전송.
-#endif	//	defined(USE_RSSI)
-			}
-
-			oldTick = nTick;
-		}
-
-		//========================================================================
 	}
 	else
 	{
@@ -1182,7 +969,7 @@ void LoopProcRFM ( int nTick )
 		//  수신기.
 		//  Buffering
 		if ( bRxBuffering == 1 &&
-			qBufCnt( &g_qBufAudioRx ) > ( ( I2S_DMA_LOOP_SIZE * 2 ) * 3 ) )
+			qBufCnt( &g_qBufAudioRx ) > ( ( I2S_DMA_LOOP_SIZE * 2 ) * 2 ) )
 		{
 			//  버퍼링 완료시점.
 			//	  I2S 구동 재계.
@@ -1209,6 +996,7 @@ void LoopProcRFM ( int nTick )
 	}
 	//========================================================================
 
+#if 0
 	bMain_IT_Status = bRadio_Check_Tx_RX();
 
 	switch ( bMain_IT_Status )
@@ -1360,6 +1148,7 @@ void LoopProcRFM ( int nTick )
 	default:
 		break;
 	}
+#endif
 
 	//========================================================================
 	//	수신중 해제

@@ -179,7 +179,8 @@ void CallbackRecvPacket( const char *pData, int nSize )
 	//  Queue Buffer Put
 //		printf ( "P" );
 
-	RFMPkt	*pRFPkt = (RFMPkt *)&customRadioPacket[0];
+//	RFMPkt	*pRFPkt = (RFMPkt *)&customRadioPacket[0];
+	RFMPkt	*pRFPkt = (RFMPkt *)&pData;
 
 	if( GetDevID() == DevRF900T && pRFPkt->hdr.nPktID == PktCall )
 	{
@@ -326,7 +327,8 @@ void LoopProcPkt( int nTick )
 
 		Dump("Rx", customRadioPacket, 0x40);
 
-		CallbackRecvPacket( customRadioPacket, 0x40 );
+//		CallbackRecvPacket( customRadioPacket, 0x40 );
+		CallbackRecvPacket( &customRadioPacket[2], (0x40 - 2) );
 
 		// Configure PKT_CONFIG1 for RX
 		si446x_set_property(SI446X_PROP_GRP_ID_PKT, 1, SI446X_PROP_GRP_INDEX_PKT_CONFIG1, bPktConfig1ForRx);
