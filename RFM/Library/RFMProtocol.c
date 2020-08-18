@@ -28,6 +28,8 @@
 
 #include "main.h"				//	FLASH_ON_Pin / GPIO_PIN_SET / ...
 
+#include "ProcPkt.h"			//	SendPacekt()
+
 //==========================================================================
 //	Define
 
@@ -139,9 +141,14 @@ void SendPA( int nStartStop )
 	//========================================================================
 	//	Send RF
 
+#if 1
+	SendPacket( (U8 *)&stPkt, (U8)sizeof( RFMPktHdr ) + sizeof( RFMPktPACall ) );
+
+#else
 	vRadio_StartTx_Variable_Packet ( (U8)pRadioConfiguration->Radio_ChannelNumber,
 		(U8 *)&stPkt,
 		(U8)sizeof( RFMPktHdr ) + sizeof( RFMPktPACall ) );// pRadioConfiguration->Radio_PacketLength );
+#endif
 
 	//========================================================================
 }
@@ -170,9 +177,13 @@ void SendCall( int nStartStop )
 	//========================================================================
 	//	Send RF
 
+#if 1
+	SendPacket( (U8 *)&stPkt, (U8)sizeof( RFMPktHdr ) + sizeof( RFMPktPACall ) );
+#else
 	vRadio_StartTx_Variable_Packet ( (U8)pRadioConfiguration->Radio_ChannelNumber,
 		(U8 *)&stPkt,
 		(U8)(sizeof( RFMPktHdr ) + sizeof( RFMPktPACall )) );// pRadioConfiguration->Radio_PacketLength );
+#endif
 
 	//========================================================================
 }

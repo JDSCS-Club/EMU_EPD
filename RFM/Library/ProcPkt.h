@@ -17,14 +17,23 @@
 //========================================================================
 
 //========================================================================
+//	Dump Function
+
+void	Dump		( const char *sTitle, const char *sBuf, int nSize );
+
+//========================================================================
 //	Packet Procedure
-void	LoopProcPkt	( void );
+int		InitProcPkt ( void );
+
+void	LoopProcPkt	( int nTick );
 
 int		SendPacket	( const char *sBuf, int nSize );
 
 //========================================================================
 //	Demo Example
 void	TestProcPkt	( void );
+
+BIT gSampleCode_SendVariablePacket(void);
 
 //========================================================================
 #endif

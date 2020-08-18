@@ -75,9 +75,6 @@ SEGMENT_VARIABLE(abPacketReference[RADIO_CONFIGURATION_DATA_ACK_MAC_PAYLOAD_LENG
 /*------------------------------------------------------------------------*/
 /*                      Local function prototypes                         */
 /*------------------------------------------------------------------------*/
-void vPlf_McuInit        (void);
-void vInitializeHW       (void);
-void LoopProcPkt (void);
 
 // Compare the expected custom payload with the incoming payload
 BIT  gSampleCode_StringCompare(U8* pbiPacketContent, U8* pbiString, U8 bLength, BIT gIgnorePhrFcsDw);
@@ -101,29 +98,59 @@ U16 wPayloadLenghtFromPhr(U8* pbPhrMsb);
 /*                          Function implementations                      */
 /*------------------------------------------------------------------------*/
 
-/** \fn void main(void)
- * \brief The main function of the demo.
- *
- * \todo Create description
- */
-
-
-void TestProcPkt(void)
+//========================================================================
+void Dump( const char *sTitle, const char *sBuf, int nSize )
+//========================================================================
 {
-	// Initialize the Hardware and Radio
-	//  vInitializeHW();
+	printf( "%s : ", sTitle );
 
-#ifdef SILABS_LCD_DOG_GLCD
-	/* Initialize graphic LCD */
-	vLcd_InitLcd();
+	int i;
+	for( i = 0; i < nSize; i++ )
+	{
+		printf("%02X ", sBuf[i]);
+	}
 
-	/* Set logo location to center */
-	bLcd_LcdSetPictureCursor(bLcd_Line1_c, 35u);
+	printf("\n");
+}
 
-	/* Draw SiLabs logo */
-	vLcd_LcdDrawPicture(silabs66x30);
-#endif
 
+//========================================================================
+void TestProcPkt(void)
+//========================================================================
+{
+	InitProcPkt();
+
+	static uint32_t s_nTick;
+
+	uint32_t currTick;
+
+	s_nTick = HAL_GetTick();
+
+	while (TRUE)
+	{
+		currTick = HAL_GetTick();
+
+		if( (currTick - s_nTick) >= 1 )
+		{
+			//	1 msec Tick
+			//	Proc( s_nTick - currTick )
+			s_nTick = currTick;
+
+			if (lPer_MsCnt < 0xFFFF)
+			{
+				lPer_MsCnt++;
+			}
+		}
+
+		// Demo Application Poll-Handler function
+		LoopProcPkt( currTick );
+	}
+}
+
+//========================================================================
+int	InitProcPkt ( void )
+//========================================================================
+{
 	// Find out wheather it is 2GFSK or 4GFSK. PKT_CONFIG1 will have to be configured accordingly
 	bRadio_FindProperty(pRadioConfiguration->Radio_ConfigurationArray, SI446X_PROP_GRP_ID_MODEM, SI446X_PROP_GRP_INDEX_MODEM_MOD_TYPE, &bModulationType);
 
@@ -142,63 +169,8 @@ void TestProcPkt(void)
 	// Start RX with Packet handler settings
 	vRadio_StartRX(pRadioConfiguration->Radio_ChannelNumber,0u);
 
-	static uint32_t s_nTick;
-
-	static uint32_t s_oldTick;
-	uint32_t currTick;
-
-	s_nTick = HAL_GetTick();
-
-	s_oldTick = s_nTick;
-
-	while (TRUE)
-	{
-		// The following Handlers requires care on invoking time interval
-		//    if (wIsr_Timer2Tick)
-		//    {
-		//      if (lPer_MsCnt < 0xFFFF)
-		//      {
-		//        lPer_MsCnt++;
-		//      }
-		//
-		//      vHmi_LedHandler();
-		//      vHmi_BuzzHandler();
-		//      vHmi_PbHandler();
-		//
-		//      wIsr_Timer2Tick = 0;
-		//    }
-
-		//if( HAL_GetTick() )
-		currTick = HAL_GetTick();
-		//	  HAL_GetTick() = s_nTick;
-		//    HAL_Delay( 1 );		//	1 msec
-
-		if( (currTick - s_nTick) >= 1 )
-		{
-			//	1 msec Tick
-			//	Proc( s_nTick - currTick )
-			s_nTick = currTick;
-
-			if (lPer_MsCnt < 0xFFFF)
-			{
-				lPer_MsCnt++;
-			}
-		}
-
-		if( ( currTick - s_oldTick ) >= 1000 )
-		{
-			//	1 sec
-
-			printf("%s : Tx(%d) / Rx(%d)\n",__func__, nTxPkt, nRxPkt);
-
-			s_oldTick = currTick;
-		}
-
-		// Demo Application Poll-Handler function
-		LoopProcPkt();
-	}
+	return TRUE;
 }
-
 
 /**
  *  Demo Application Poll-Handler
@@ -207,9 +179,11 @@ void TestProcPkt(void)
  *
  */
 //========================================================================
-void LoopProcPkt()
+void LoopProcPkt( int nTick )
 //========================================================================
 {
+	static int s_oldTick = 0;
+
 	static SEGMENT_VARIABLE(lPktSending, U8, SEG_XDATA) = 0u;
 
 	bMain_IT_Status = bRadio_Check_Tx_RX();
@@ -274,6 +248,8 @@ void LoopProcPkt()
 		customRadioPacket[0u] = bBitOrderReverse(customRadioPacket[0u]);
 		customRadioPacket[1u] = bBitOrderReverse(customRadioPacket[1u]);
 
+		Dump("Rx", customRadioPacket, 0x40);
+
 		if (gSampleCode_StringCompare(&customRadioPacket[0], &abPacketReference[0], (U8)(RADIO_CONFIGURATION_DATA_ACK_MAC_PAYLOAD_LENGTH+2),COMPARE_PHR_AND_PAYLOAD_FULL) == TRUE)
 		{
 			// Configure PKT_CONFIG1 for RX
@@ -321,6 +297,16 @@ void LoopProcPkt()
 		break;
 	} /* switch */
 
+	if( ( nTick - s_oldTick ) >= 1000 )
+	{
+		//	1 sec
+
+		printf("%s : Tx(%d) / Rx(%d)\n",__func__, nTxPkt, nRxPkt);
+
+		s_oldTick = nTick;
+	}
+
+
 	if ((lPer_MsCnt >= PACKET_SEND_INTERVAL) && (0u == lPktSending))
 	{
 		if (TRUE == gSampleCode_SendVariablePacket())
@@ -341,7 +327,6 @@ void LoopProcPkt()
  */
 BIT gSampleCode_StringCompare(U8* pbiPacketContent, U8* pbiString, U8 bLength, BIT gIgnorePhrFcsDw)
 {
-
 	if ( gIgnorePhrFcsDw && (wPayloadLenghtFromPhr(pbiPacketContent) == wPayloadLenghtFromPhr(pbiString)) )
 	{
 		// Compare input arrays excluding PHR
@@ -354,7 +339,6 @@ BIT gSampleCode_StringCompare(U8* pbiPacketContent, U8* pbiString, U8 bLength, B
 				return TRUE;
 			}
 		}
-
 	}
 	else
 	{
@@ -569,10 +553,11 @@ void vSampleCode_SendAcknowledge(void)
 
 U8 bBitOrderReverse(U8 bByteToReverse)
 {
+#if 0
 	bByteToReverse = (bByteToReverse & 0xF0) >> 4 | (bByteToReverse & 0x0F) << 4;
 	bByteToReverse = (bByteToReverse & 0xCC) >> 2 | (bByteToReverse & 0x33) << 2;
 	bByteToReverse = (bByteToReverse & 0xAA) >> 1 | (bByteToReverse & 0x55) << 1;
-
+#endif
 	return bByteToReverse;
 }
 
@@ -583,13 +568,34 @@ int SendPacket( const char *sBuf, int nSize )
 {
 	//	printf("%s(%d)\n", __func__, __LINE__);
 
+	char buf[0x40];
+
+	buf[0] = 0x18;
+	buf[1] = 0x02;
+
+	//*
+
+	memcpy( &buf[2], sBuf, 0x40 - 2);
+
+	Dump("Tx", buf, 0x40);
+
+	/*/
+
+//	buf[2] = 0x02;
+//	buf[3] = 0x00;
+//	buf[4] = 0x6A;
+
+	memcpy( &buf[5], sBuf, 0x40 - 5);
+
+	//	*/
+
 	// Override PKT_CONFIG1
 	bRadio_FindProperty(pRadioConfiguration->Radio_ConfigurationArray, SI446X_PROP_GRP_ID_PKT, SI446X_PROP_GRP_INDEX_PKT_CONFIG1, &bPropValue1);
 	// Configure PH field split, CRC endian, bit order for RX
 	si446x_set_property(SI446X_PROP_GRP_ID_PKT, 1, SI446X_PROP_GRP_INDEX_PKT_CONFIG1, bPropValue1);
 
 	// Send custom packet
-	vRadio_StartTx_Variable_Packet_MultiField(pRadioConfiguration->Radio_ChannelNumber, &sBuf[0], pRadioConfiguration->Radio_PacketLength);
+	vRadio_StartTx_Variable_Packet_MultiField(pRadioConfiguration->Radio_ChannelNumber, &buf[0], pRadioConfiguration->Radio_PacketLength);
 
 	/* Packet sending initialized */
 	return TRUE;

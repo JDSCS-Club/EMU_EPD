@@ -140,6 +140,10 @@ user_command_t	user_command_table[] = {
 		"info	-	Display Information",
 		(char *)0,
 		cmd_info},
+	{"rfstat",
+		"rfstat	-	RF Tx / Rx Information",
+		(char *)0,
+		cmd_rfstat},
 #endif	//	defined(RFM_H)
 
 #if defined(USE_ENV_TEST)

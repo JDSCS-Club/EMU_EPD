@@ -398,6 +398,15 @@ int cmd_info    ( int argc, char * argv[] )
 
 
 //========================================================================
+int cmd_rfstat    ( int argc, char * argv[] )
+//========================================================================
+{
+    //	rfstat - RF Tx / Rx Status
+    printf( "[RF Info] Tx : %d / Rx : %d\n", nTxPkt, nRxPkt );
+}
+
+
+//========================================================================
 //		RFM I2S Callback
 //========================================================================
 
@@ -727,6 +736,18 @@ int RFM_main( void )
 
 	InitRFM();
 
+	//========================================================================
+	//	Radio Spi
+	RF_RxTx_Mode();
+
+#if 0
+
+	TestProcPkt();		//	RFM Main
+
+#endif
+
+	InitProcPkt();
+
 	int nTick;
 
 	/* Infinite main loop */
@@ -747,7 +768,7 @@ int RFM_main( void )
 		LoopProcCLI();
 
 		//	Loop Proc Packet : RF Packet
-		LoopProcPkt();
+		LoopProcPkt( nTick );
 	}
 }
 

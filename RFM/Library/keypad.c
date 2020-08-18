@@ -260,8 +260,9 @@ void KeyPtt( int bValue )
 		//  Green LED On
 		HAL_GPIO_WritePin ( LED_ON_A_GPIO_Port, LED_ON_A_Pin, GPIO_PIN_SET ); //  Green LED
 
-//		//	방송 - 시작
-//		SendPA( 1 );		//	SendRF - Send PA ( 송신기 -> 수신기 )
+		//	방송 - 시작
+		SendPA( 1 );		//	SendRF - Send PA ( 송신기 -> 수신기 )
+//		gSampleCode_SendVariablePacket();
 	}
 	else
 	{
@@ -283,8 +284,8 @@ void KeyPtt( int bValue )
 //			pRadioConfiguration->Radio_ChannelNumber,
 //			pRadioConfiguration->Radio_PacketLength );
 
-//		//	방송 - 종료
-//		SendPA( 0 );		//	SendRF - Send PA ( 송신기 -> 수신기 )
+		//	방송 - 종료
+		SendPA( 0 );		//	SendRF - Send PA ( 송신기 -> 수신기 )
 	}
 
 }
@@ -306,7 +307,7 @@ void KeySos( int bValue )
 		LCDPrintf( "통화중..." );
 
 		//	통화 - 시작
-//		SendCall( 1 );		//	SendRF - Send Call ( 송신기 -> 송신기 )
+		SendCall( 1 );		//	SendRF - Send Call ( 송신기 -> 송신기 )
 	}
 	else
 	{
@@ -315,7 +316,7 @@ void KeySos( int bValue )
 		LCDPrintf( "편성 : 100" );
 
 		//	통화 - 종료
-//		SendCall( 0 );		//	SendRF - Send Call ( 송신기 -> 송신기 )
+		SendCall( 0 );		//	SendRF - Send Call ( 송신기 -> 송신기 )
 	}
 }
 

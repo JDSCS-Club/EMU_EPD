@@ -87,6 +87,7 @@ void	PrintVerInfo	( void );
 int		cmd_ch			( int argc, char * argv[] );
 int		cmd_car			( int argc, char * argv[] );
 int		cmd_info		( int argc, char * argv[] );
+int 	cmd_rfstat		( int argc, char * argv[] );
 
 #if defined(USE_ENV_TEST)
 
