@@ -11,12 +11,18 @@
 #include "si446x_api_lib.h"     //  SI446X_SUCCESS
 
 #include "radio.h"				//	tRadioConfiguration
-/*
-#include "radio_config.h"		//	RadioConfiguration
-/*/
-//#include "radio_config_Si4463_c2a.h"		//	RadioConfiguration
+
+#if defined(USE_IEEE802_15_4G)
+
 #include "radio_config_802_15_4g.h"
-//	*/
+
+#else
+
+#include "radio_config.h"		//	RadioConfiguration
+//#include "radio_config_Si4463_c2a.h"		//	RadioConfiguration
+
+#endif
+
 #include "radio_hal.h"			//	RF_NIRQ
 
 /*****************************************************************************
@@ -142,8 +148,12 @@ U8 bRadio_Check_Tx_RX(void)
 			/* Packet RX */
 
 			/* Get payload length */
+#if defined(USE_IEEE802_15_4G)
 			// TX FIFO may need to be written for ACK. Do it now to save time for the TX-RX turnaround
 			si446x_fifo_info(0x00 | SI446X_CMD_FIFO_INFO_ARG_FIFO_TX_BIT);
+#else
+            si446x_fifo_info ( 0x00 );
+#endif
 
 			si446x_read_rx_fifo(Si446xCmd.FIFO_INFO.RX_FIFO_COUNT, &customRadioPacket[0]);
 
@@ -161,6 +171,7 @@ U8 bRadio_Check_Tx_RX(void)
 
 	return 0;
 }
+
 
 /*!
  *  Set Radio to RX mode. .

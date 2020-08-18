@@ -26,6 +26,8 @@
 
 #include "ProcPkt.h"			//	TestProcPkt
 
+#include "main.h"
+
 /*------------------------------------------------------------------------*/
 /*                          Global variables                              */
 /*------------------------------------------------------------------------*/
@@ -151,6 +153,9 @@ void TestProcPkt(void)
 int	InitProcPkt ( void )
 //========================================================================
 {
+
+#if defined( USE_IEEE802_15_4G )
+
 	// Find out wheather it is 2GFSK or 4GFSK. PKT_CONFIG1 will have to be configured accordingly
 	bRadio_FindProperty(pRadioConfiguration->Radio_ConfigurationArray, SI446X_PROP_GRP_ID_MODEM, SI446X_PROP_GRP_INDEX_MODEM_MOD_TYPE, &bModulationType);
 
@@ -169,7 +174,194 @@ int	InitProcPkt ( void )
 	// Start RX with Packet handler settings
 	vRadio_StartRX(pRadioConfiguration->Radio_ChannelNumber,0u);
 
+#else
+
+	//  RF 수신 Start
+	vRadio_StartRX(
+		pRadioConfiguration->Radio_ChannelNumber,
+		pRadioConfiguration->Radio_PacketLength );
+
+#endif
+
 	return TRUE;
+}
+
+void CallbackRecvPacket( const char *pData, int nSize )
+{
+
+#if 0
+	//  Queue Buffer Put
+//		printf ( "P" );
+
+	RFMPkt	*pRFPkt = (RFMPkt *)&customRadioPacket[0];
+
+	if( GetDevID() == DevRF900T && pRFPkt->hdr.nPktID == PktCall )
+	{
+		//  송신기
+		uint16_t	 *pAudioBuf = (uint16_t*)pRFPkt->dat.data;
+
+		//*
+//#if defined(USE_CODEC_MAX9860)
+//			//  MAX9860 : Codec I2C로 볼륨조절.
+//#else
+		if ( GetAudioIC() == AudioXE3005 )
+		{
+			//  XE3005 : PCM 값으로 볼륨조절.
+			if ( g_nSpkLevel == 2 )
+			{
+				//  Spk Volume 조절 ( X 4 )
+				for ( i = 0; i < I2S_DMA_LOOP_SIZE; i++ )
+				{
+					pAudioBuf[i] = (int16_t)pAudioBuf[i] << 2;
+				}
+			}
+			else if ( g_nSpkLevel == 3 )
+			{
+				//  Spk Volume 조절 ( X 16 )
+				for ( i = 0; i < I2S_DMA_LOOP_SIZE; i++ )
+				{
+					pAudioBuf[i] = (int16_t)pAudioBuf[i] << 4;
+				}
+			}
+		}
+//#endif
+		//  */
+
+		stampRx = nTick;
+		SetRFMMode( RFMModeRx );
+
+#if defined(USE_RFT_ONLY_RX_SPK_ON)
+		//  송신기 : 수신중인 경우 SPK ON
+		HAL_GPIO_WritePin( SPK_ON_GPIO_Port, SPK_ON_Pin, GPIO_PIN_SET );
+#endif
+
+		//  Red LED On
+		HAL_GPIO_WritePin ( LED_ON_B_GPIO_Port, LED_ON_B_Pin, GPIO_PIN_SET ); //  RED LED
+
+		//  통화 : 송신기 -> 송신기
+		qBufPut( &g_qBufAudioRFRx, (uint8_t*)pAudioBuf, ( I2S_DMA_LOOP_SIZE * 2 ) );
+	}
+	else if (
+				pRFPkt->hdr.addrSrc == DevRF900T
+				&& pRFPkt->hdr.addrDest == DevRF900M
+				&& pRFPkt->hdr.nPktID == PktPA
+			  )
+	{
+		if ( GetDevID() == DevRF900M )
+		{
+			//  수신기
+			uint16_t	 *pAudioBuf = (uint16_t*)pRFPkt->dat.data;
+
+			//  방송 : 송신기 -> 수신기
+			qBufPut( &g_qBufAudioRFRx, (uint8_t*)pAudioBuf, ( I2S_DMA_LOOP_SIZE * 2 ) );
+
+			// 조명 On
+			HAL_GPIO_WritePin ( LIGHT_ON_GPIO_Port, LIGHT_ON_Pin, GPIO_PIN_SET );
+
+			stampRx = nTick;
+			SetRFMMode( RFMModeRx );
+
+			//  수신기 Spk Relay On
+			HAL_GPIO_WritePin( AUDIO_ON_GPIO_Port, AUDIO_ON_Pin, GPIO_PIN_SET );
+		}
+		else
+		{
+			//========================================================================
+			uint16_t	 *pAudioBuf = (uint16_t*)pRFPkt->dat.data;
+
+//#if defined(USE_CODEC_MAX9860)
+//				//  MAX9860 : Codec I2C로 볼륨조절.
+//#else
+			if ( GetAudioIC() == AudioXE3005 )
+			{
+				//  XE3005 : PCM 값으로 볼륨조절.
+				if ( g_nSpkLevel == 2 )
+				{
+					//  Spk Volume 조절 ( X 4 )
+					for ( i = 0; i < I2S_DMA_LOOP_SIZE; i++ )
+					{
+						pAudioBuf[i] = (int16_t)pAudioBuf[i] << 2;
+					}
+				}
+				else if ( g_nSpkLevel == 3 )
+				{
+					//  Spk Volume 조절 ( X 16 )
+					for ( i = 0; i < I2S_DMA_LOOP_SIZE; i++ )
+					{
+						pAudioBuf[i] = (int16_t)pAudioBuf[i] << 4;
+					}
+				}
+			}
+//#endif
+
+#if defined(USE_RFT_ONLY_RX_SPK_ON)
+			//  송신기 : 수신중인 경우 SPK ON
+			HAL_GPIO_WritePin( SPK_ON_GPIO_Port, SPK_ON_Pin, GPIO_PIN_SET );
+#endif
+
+			//  방송 : 송신기 -> 수신기
+			qBufPut( &g_qBufAudioRFRx, (uint8_t*)pAudioBuf, ( I2S_DMA_LOOP_SIZE * 2 ) );
+			//========================================================================
+
+			//  송신기
+			stampRx = nTick;
+			SetRFMMode( RFMModeRx );
+
+			//  Red LED On
+			HAL_GPIO_WritePin ( LED_ON_B_GPIO_Port, LED_ON_B_Pin, GPIO_PIN_SET ); //  RED LED
+		}
+	}
+
+	if ( GetDbgLevel() > 0 )
+	{
+		for ( i = 0; i < 64; i++ )	printf( "%02X ", customRadioPacket[i] );
+		printf( "\n" );
+	}
+
+	//========================================================================
+	//  Status Data
+	if ( pRFPkt->hdr.nPktID == PktStat )
+	{
+		//	상태정보 수신.
+		printf ( "[Stat] Car:%d\n", pRFPkt->dat.stat.nCarNo );
+	}
+
+	if ( GetDevID() == DevRF900M )
+	{
+		//  수신기 조명제어.
+
+		if ( pRFPkt->hdr.nPktID == PktLightOff )
+		{
+			// 조명 Off 명령 수신시.
+			HAL_GPIO_WritePin ( LIGHT_ON_GPIO_Port, LIGHT_ON_Pin, GPIO_PIN_RESET );
+		}
+		else if ( pRFPkt->hdr.nPktID == PktLightOn )
+		{
+			// 조명 Off 명령 수신시.
+			HAL_GPIO_WritePin ( LIGHT_ON_GPIO_Port, LIGHT_ON_Pin, GPIO_PIN_SET );
+		}
+	}
+
+	idx++;
+
+	if ( idx % 250 == 0 )
+	{
+		//  1초간격
+		printf ( "R" );
+		//for ( i = 0; i < 64; i++ )	printf( "%02X ", customRadioPacket[i] );
+		//printf( "\n" );
+	}
+
+	if ( GetRFMMode() != RFMModeTx )
+	{
+		//  송신모드가 아닌경우 수신 Start
+		// Start RX with radio packet length
+		vRadio_StartRX (
+			pRadioConfiguration->Radio_ChannelNumber,
+			pRadioConfiguration->Radio_PacketLength );
+	}
+#endif
+
 }
 
 /**
@@ -187,6 +379,8 @@ void LoopProcPkt( int nTick )
 	static SEGMENT_VARIABLE(lPktSending, U8, SEG_XDATA) = 0u;
 
 	bMain_IT_Status = bRadio_Check_Tx_RX();
+
+#if defined( USE_I333802_15_4G )
 
 	switch (bMain_IT_Status)
 	{
@@ -297,6 +491,57 @@ void LoopProcPkt( int nTick )
 		break;
 	} /* switch */
 
+#else
+
+	static int idx = 0;
+
+	switch ( bMain_IT_Status )
+	{
+	//========================================================================
+	//  Transmit
+	case SI446X_CMD_GET_INT_STATUS_REP_PH_PEND_PACKET_SENT_PEND_BIT:
+
+		HAL_GPIO_TogglePin ( LED_ST_GPIO_Port, LED_ST_Pin );
+//		HAL_GPIO_TogglePin ( LED_ON_B_GPIO_Port, LED_ON_B_Pin );
+
+		idx++;
+
+		printf ( "T" );
+
+		if ( idx % 250 == 0 )
+		{
+			printf ( "T" );
+
+			//for ( i = 0; i < 64; i++ )	printf( "%02X ", bufRFTx[i] );
+			//printf( "\n" );
+		}
+		/* Clear Packet Sending flag */
+		lPktSending = 0u;
+		break;
+
+	//========================================================================
+	//  Receive
+	case SI446X_CMD_GET_INT_STATUS_REP_PH_PEND_PACKET_RX_PEND_BIT:
+
+		HAL_GPIO_TogglePin ( LED_ST_GPIO_Port, LED_ST_Pin );
+
+		Dump("Rx", customRadioPacket, 0x40);
+
+		CallbackRecvPacket( customRadioPacket, 0x40 );
+
+		vRadio_StartRX (
+			pRadioConfiguration->Radio_ChannelNumber,
+			pRadioConfiguration->Radio_PacketLength );
+
+		break;
+
+	default:
+		break;
+	}
+
+
+#endif
+
 	if( ( nTick - s_oldTick ) >= 1000 )
 	{
 		//	1 sec
@@ -305,7 +550,6 @@ void LoopProcPkt( int nTick )
 
 		s_oldTick = nTick;
 	}
-
 
 	if ((lPer_MsCnt >= PACKET_SEND_INTERVAL) && (0u == lPktSending))
 	{
@@ -568,6 +812,7 @@ int SendPacket( const char *sBuf, int nSize )
 {
 	//	printf("%s(%d)\n", __func__, __LINE__);
 
+#if defined(USE_IEEE802_15_4G)
 	char buf[0x40];
 
 	buf[0] = 0x18;
@@ -598,7 +843,20 @@ int SendPacket( const char *sBuf, int nSize )
 	vRadio_StartTx_Variable_Packet_MultiField(pRadioConfiguration->Radio_ChannelNumber, &buf[0], pRadioConfiguration->Radio_PacketLength);
 
 	/* Packet sending initialized */
+
 	return TRUE;
+#else
+
+	Dump("Tx", sBuf, 0x40);
+
+	vRadio_StartTx_Variable_Packet (
+		pRadioConfiguration->Radio_ChannelNumber,
+		&sBuf[0],
+		pRadioConfiguration->Radio_PacketLength );
+
+	return TRUE;
+
+#endif
 }
 
 /*!

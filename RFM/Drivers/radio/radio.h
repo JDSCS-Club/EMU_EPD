@@ -15,12 +15,15 @@
 extern int nTxPkt;		//	Tx Packet Count
 extern int nRxPkt;		//	Rx Packet Count
 
+//========================================================================
+//#define		USE_IEEE802_15_4G	1
+//========================================================================
 
 /*****************************************************************************
  *  Global Macros & Definitions
  *****************************************************************************/
 /*! Maximal packet length definition (FIFO size) */
-#define RADIO_MAX_PACKET_LENGTH     64u
+#define RADIO_MAX_PACKET_LENGTH     	64u
 #define RADIO_MAX_ACK_PACKET_LENGTH     64u
 
 /*****************************************************************************
