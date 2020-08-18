@@ -264,7 +264,6 @@ void RF_Tx_Mode()
 
     HAL_GPIO_WritePin( RF_TX_GPIO_Port, RF_TX_Pin, GPIO_PIN_SET );
     HAL_GPIO_WritePin( RF_RX_GPIO_Port, RF_RX_Pin, GPIO_PIN_RESET );
-
 }
 
 //========================================================================
@@ -275,7 +274,6 @@ void RF_Rx_Mode()
 
     HAL_GPIO_WritePin( RF_TX_GPIO_Port, RF_TX_Pin, GPIO_PIN_RESET );
     HAL_GPIO_WritePin( RF_RX_GPIO_Port, RF_RX_Pin, GPIO_PIN_SET );
-
 }
 
 //========================================================================
@@ -527,8 +525,6 @@ void RFM_I2SEx_TxRxCpltCallback( I2S_HandleTypeDef *hi2s )
 //		RFM Procedure
 //========================================================================
 
-
-
 //========================================================================
 int InitRFM( void )
 //========================================================================
@@ -749,6 +745,9 @@ int RFM_main( void )
 
 		//	Loop Process ( CLI )
 		LoopProcCLI();
+
+		//	Loop Proc Packet : RF Packet
+		LoopProcPkt();
 	}
 }
 
