@@ -380,7 +380,7 @@ void LoopProcPkt( int nTick )
 
 	bMain_IT_Status = bRadio_Check_Tx_RX();
 
-#if defined( USE_I333802_15_4G )
+#if defined( USE_IEEE802_15_4G )
 
 	switch (bMain_IT_Status)
 	{
@@ -404,7 +404,13 @@ void LoopProcPkt( int nTick )
 			// Configure PKT_CONFIG1 for RX
 			si446x_set_property(SI446X_PROP_GRP_ID_PKT, 1, SI446X_PROP_GRP_INDEX_PKT_CONFIG1, bPktConfig1ForRx);
 			// Start RX with Packet handler settings
+
+#if OLD
 			vRadio_StartRX(pRadioConfiguration->Radio_ChannelNumber,0u);
+#else
+			vRadio_StartRX(pRadioConfiguration->Radio_ChannelNumber,
+				pRadioConfiguration->Radio_PacketLength);
+#endif
 		}
 		else
 		{
@@ -428,7 +434,12 @@ void LoopProcPkt( int nTick )
 			// Configure PKT_CONFIG1 for RX
 			si446x_set_property(SI446X_PROP_GRP_ID_PKT, 1, SI446X_PROP_GRP_INDEX_PKT_CONFIG1, bPktConfig1ForRx);
 			// Start RX with Packet handler settings
+#if OLD
 			vRadio_StartRX(pRadioConfiguration->Radio_ChannelNumber,0u);
+#else
+			vRadio_StartRX(pRadioConfiguration->Radio_ChannelNumber,
+				pRadioConfiguration->Radio_PacketLength);
+#endif
 		}
 
 		/* Clear Packet Sending flag */
@@ -449,7 +460,12 @@ void LoopProcPkt( int nTick )
 			// Configure PKT_CONFIG1 for RX
 			si446x_set_property(SI446X_PROP_GRP_ID_PKT, 1, SI446X_PROP_GRP_INDEX_PKT_CONFIG1, bPktConfig1ForRx);
 			// Start RX with Packet handler settings
+#if OLD
 			vRadio_StartRX(pRadioConfiguration->Radio_ChannelNumber,0u);
+#else
+			vRadio_StartRX(pRadioConfiguration->Radio_ChannelNumber,
+				pRadioConfiguration->Radio_PacketLength);
+#endif
 
 			printf("%s(%d) - Ack\n", __func__, __LINE__);
 			//        // Buzz once
@@ -482,7 +498,12 @@ void LoopProcPkt( int nTick )
 				// Configure PKT_CONFIG1 for RX
 				si446x_set_property(SI446X_PROP_GRP_ID_PKT, 1, SI446X_PROP_GRP_INDEX_PKT_CONFIG1, bPktConfig1ForRx);
 				// Start RX with Packet handler settings
+#if OLD
 				vRadio_StartRX(pRadioConfiguration->Radio_ChannelNumber,0u);
+#else
+				vRadio_StartRX(pRadioConfiguration->Radio_ChannelNumber,
+					pRadioConfiguration->Radio_PacketLength);
+#endif
 			}
 		}
 		break;
@@ -797,7 +818,7 @@ void vSampleCode_SendAcknowledge(void)
 
 U8 bBitOrderReverse(U8 bByteToReverse)
 {
-#if 0
+#if 1
 	bByteToReverse = (bByteToReverse & 0xF0) >> 4 | (bByteToReverse & 0x0F) << 4;
 	bByteToReverse = (bByteToReverse & 0xCC) >> 2 | (bByteToReverse & 0x33) << 2;
 	bByteToReverse = (bByteToReverse & 0xAA) >> 1 | (bByteToReverse & 0x55) << 1;
@@ -822,17 +843,17 @@ int SendPacket( const char *sBuf, int nSize )
 
 	memcpy( &buf[2], sBuf, 0x40 - 2);
 
-	Dump("Tx", buf, 0x40);
-
 	/*/
 
-//	buf[2] = 0x02;
-//	buf[3] = 0x00;
-//	buf[4] = 0x6A;
+	buf[2] = 0x02;
+	buf[3] = 0x00;
+	buf[4] = 0x6A;
 
 	memcpy( &buf[5], sBuf, 0x40 - 5);
 
 	//	*/
+
+	Dump("Tx", buf, 0x40);
 
 	// Override PKT_CONFIG1
 	bRadio_FindProperty(pRadioConfiguration->Radio_ConfigurationArray, SI446X_PROP_GRP_ID_PKT, SI446X_PROP_GRP_INDEX_PKT_CONFIG1, &bPropValue1);

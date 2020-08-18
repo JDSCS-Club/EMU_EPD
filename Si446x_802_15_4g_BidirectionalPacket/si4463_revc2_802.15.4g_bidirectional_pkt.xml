@@ -148,10 +148,10 @@
           <tbpGeneralFieldConfig Type="System.Windows.Forms.TabPage">
             <grbDataBitOrder Type="System.Windows.Forms.GroupBox">
               <DataItem Type="System.Windows.Forms.RadioButton" Name="rdbDataLsbFirst">
-                <Checked>False</Checked>
+                <Checked>True</Checked>
               </DataItem>
               <DataItem Type="System.Windows.Forms.RadioButton" Name="rdbDataMsbFirst">
-                <Checked>True</Checked>
+                <Checked>False</Checked>
               </DataItem>
             </grbDataBitOrder>
             <DataItem Type="System.Windows.Forms.CheckBox" Name="chbRxChainOnAfterRx">
@@ -343,7 +343,7 @@
                 <Value>2</Value>
               </DataItem>
               <DataItem Type="System.Windows.Forms.CheckBox" Name="chbField1DataWhitening">
-                <Checked>False</Checked>
+                <Checked>True</Checked>
               </DataItem>
             </grbField1>
           </tbpField1>
