@@ -32,7 +32,6 @@
 /*                          Global variables                              */
 /*------------------------------------------------------------------------*/
 SEGMENT_VARIABLE(bMain_IT_Status, U8, SEG_XDATA);
-SEGMENT_VARIABLE(lPer_MsCnt, U16, SEG_DATA);
 
 /*------------------------------------------------------------------------*/
 /*                              Defines                                   */
@@ -66,13 +65,11 @@ SEGMENT_VARIABLE(lPer_MsCnt, U16, SEG_DATA);
 /*------------------------------------------------------------------------*/
 /*                          Local variables                               */
 /*------------------------------------------------------------------------*/
-SEGMENT_VARIABLE(rollingCounter, U16, SEG_XDATA);
 
 SEGMENT_VARIABLE(bPropValue1, U8, SEG_XDATA);
 SEGMENT_VARIABLE(bPropValue2, U8, SEG_XDATA);
 SEGMENT_VARIABLE(bModulationType, U8, SEG_XDATA);
 SEGMENT_VARIABLE(bPktConfig1ForRx, U8, SEG_XDATA);
-SEGMENT_VARIABLE(abPacketReference[RADIO_CONFIGURATION_DATA_ACK_MAC_PAYLOAD_LENGTH+2], U8, SEG_XDATA) = RADIO_CONFIGURATION_DATA_ACK_PAYLOAD;
 
 /*------------------------------------------------------------------------*/
 /*                      Local function prototypes                         */
@@ -80,9 +77,6 @@ SEGMENT_VARIABLE(abPacketReference[RADIO_CONFIGURATION_DATA_ACK_MAC_PAYLOAD_LENG
 
 // Compare the expected custom payload with the incoming payload
 BIT  gSampleCode_StringCompare(U8* pbiPacketContent, U8* pbiString, U8 bLength, BIT gIgnorePhrFcsDw);
-
-// Waiting for a short period of time
-void vSample_Code_Wait(U16 wWaitTime);
 
 // Send "ACK" message  
 void vSampleCode_SendAcknowledge(void);
@@ -107,6 +101,7 @@ void Dump( const char *sTitle, const char *sBuf, int nSize )
 	printf( "%s : ", sTitle );
 
 	int i;
+
 	for( i = 0; i < nSize; i++ )
 	{
 		printf("%02X ", sBuf[i]);
@@ -131,18 +126,6 @@ void TestProcPkt(void)
 	while (TRUE)
 	{
 		currTick = HAL_GetTick();
-
-		if( (currTick - s_nTick) >= 1 )
-		{
-			//	1 msec Tick
-			//	Proc( s_nTick - currTick )
-			s_nTick = currTick;
-
-			if (lPer_MsCnt < 0xFFFF)
-			{
-				lPer_MsCnt++;
-			}
-		}
 
 		// Demo Application Poll-Handler function
 		LoopProcPkt( currTick );
@@ -376,8 +359,6 @@ void LoopProcPkt( int nTick )
 {
 	static int s_oldTick = 0;
 
-	static SEGMENT_VARIABLE(lPktSending, U8, SEG_XDATA) = 0u;
-
 	bMain_IT_Status = bRadio_Check_Tx_RX();
 
 #if defined( USE_IEEE802_15_4G )
@@ -385,65 +366,13 @@ void LoopProcPkt( int nTick )
 	switch (bMain_IT_Status)
 	{
 	case SI446X_CMD_GET_INT_STATUS_REP_PH_PEND_PACKET_SENT_PEND_BIT:
+		// Custom message sent successfully
 
-		if(gSampleCode_StringCompare(&customRadioPacket[0],&abPacketReference[0],(U8)(RADIO_CONFIGURATION_DATA_ACK_MAC_PAYLOAD_LENGTH+2),COMPARE_PHR_AND_PAYLOAD_FULL) == TRUE)
-		{
-			// Message "ACK" sent successfully
-			//        vHmi_ChangeLedState(eHmi_Led4_c, eHmi_LedBlinkOnce_c);
-
-			// Restore packet field settings for regular packet sending
-			// Packet length, CRC and DW settings may have been different for ACK
-			// Configure field length
-			si446x_set_property(SI446X_PROP_GRP_ID_PKT, 2, SI446X_PROP_PKT_FIELD_2_LENGTH_FIELD_2_LENGTH_12_8_INDEX, 0x00, ((pRadioConfiguration->Radio_PacketLength)-2));
-			//Enable/disable Data Whitening based on how regular packets were configured in radio_config.h
-			bRadio_FindProperty(pRadioConfiguration->Radio_ConfigurationArray, SI446X_PROP_GRP_ID_PKT, SI446X_PROP_GRP_INDEX_PKT_FIELD_2_CONFIG, &bPropValue1);
-			//Turn on/off ALT CRC engine, turn on/off primary CRC engine based on how regular packets were configured in radio_config.h
-			bRadio_FindProperty(pRadioConfiguration->Radio_ConfigurationArray, SI446X_PROP_GRP_ID_PKT, SI446X_PROP_GRP_INDEX_PKT_FIELD_2_CRC_CONFIG, &bPropValue2);
-			si446x_set_property(SI446X_PROP_GRP_ID_PKT, 2, SI446X_PROP_GRP_INDEX_PKT_FIELD_2_CONFIG, bPropValue1, bPropValue2);
-
-			// Configure PKT_CONFIG1 for RX
-			si446x_set_property(SI446X_PROP_GRP_ID_PKT, 1, SI446X_PROP_GRP_INDEX_PKT_CONFIG1, bPktConfig1ForRx);
-			// Start RX with Packet handler settings
-
-#if OLD
-			vRadio_StartRX(pRadioConfiguration->Radio_ChannelNumber,0u);
-#else
-			vRadio_StartRX(pRadioConfiguration->Radio_ChannelNumber,
-				pRadioConfiguration->Radio_PacketLength);
-#endif
-		}
-		else
-		{
-			// Custom message sent successfully
-			//        vHmi_ChangeLedState(eHmi_Led1_c, eHmi_LedBlinkOnce_c);
-
-			// Configure expected ACK PHR to match to the packet that was just sent
-			// Set FCS and DW fileds for the expected ACK
-			abPacketReference[0u] = (customRadioPacket[0u]) & 0x18;
-			if ((bBitOrderReverse(customRadioPacket[0u]) & 0x10) == 0x10)
-			{
-				// Expected ACK length should be ACK lenght + 2 FCS bytes
-				abPacketReference[1u] = bBitOrderReverse((U8)(RADIO_CONFIGURATION_DATA_ACK_MAC_PAYLOAD_LENGTH + 2));
-			}
-			else
-			{
-				// Expected ACK length should be ACK lenght + 4 FCS bytes
-				abPacketReference[1u] = bBitOrderReverse((U8)(RADIO_CONFIGURATION_DATA_ACK_MAC_PAYLOAD_LENGTH + 4));
-			}
-
-			// Configure PKT_CONFIG1 for RX
-			si446x_set_property(SI446X_PROP_GRP_ID_PKT, 1, SI446X_PROP_GRP_INDEX_PKT_CONFIG1, bPktConfig1ForRx);
-			// Start RX with Packet handler settings
-#if OLD
-			vRadio_StartRX(pRadioConfiguration->Radio_ChannelNumber,0u);
-#else
-			vRadio_StartRX(pRadioConfiguration->Radio_ChannelNumber,
-				pRadioConfiguration->Radio_PacketLength);
-#endif
-		}
-
-		/* Clear Packet Sending flag */
-		lPktSending = 0u;
+		// Configure PKT_CONFIG1 for RX
+		si446x_set_property(SI446X_PROP_GRP_ID_PKT, 1, SI446X_PROP_GRP_INDEX_PKT_CONFIG1, bPktConfig1ForRx);
+		// Start RX with Packet handler settings
+		vRadio_StartRX(pRadioConfiguration->Radio_ChannelNumber,
+			pRadioConfiguration->Radio_PacketLength);
 
 		break;
 
@@ -455,57 +384,14 @@ void LoopProcPkt( int nTick )
 
 		Dump("Rx", customRadioPacket, 0x40);
 
-		if (gSampleCode_StringCompare(&customRadioPacket[0], &abPacketReference[0], (U8)(RADIO_CONFIGURATION_DATA_ACK_MAC_PAYLOAD_LENGTH+2),COMPARE_PHR_AND_PAYLOAD_FULL) == TRUE)
-		{
-			// Configure PKT_CONFIG1 for RX
-			si446x_set_property(SI446X_PROP_GRP_ID_PKT, 1, SI446X_PROP_GRP_INDEX_PKT_CONFIG1, bPktConfig1ForRx);
-			// Start RX with Packet handler settings
-#if OLD
-			vRadio_StartRX(pRadioConfiguration->Radio_ChannelNumber,0u);
-#else
-			vRadio_StartRX(pRadioConfiguration->Radio_ChannelNumber,
-				pRadioConfiguration->Radio_PacketLength);
-#endif
+		CallbackRecvPacket( customRadioPacket, 0x40 );
 
-			printf("%s(%d) - Ack\n", __func__, __LINE__);
-			//        // Buzz once
-			//        vHmi_ChangeBuzzState(eHmi_BuzzOnce_c);
-			//
-			//        // "ACK" arrived successfully
-			//        vHmi_ChangeLedState(eHmi_Led1_c, eHmi_LedBlinkOnce_c);
-			//        vHmi_ChangeLedState(eHmi_Led2_c, eHmi_LedBlinkOnce_c);
-			//        vHmi_ChangeLedState(eHmi_Led3_c, eHmi_LedBlinkOnce_c);
-			//        vHmi_ChangeLedState(eHmi_Led4_c, eHmi_LedBlinkOnce_c);
+		// Configure PKT_CONFIG1 for RX
+		si446x_set_property(SI446X_PROP_GRP_ID_PKT, 1, SI446X_PROP_GRP_INDEX_PKT_CONFIG1, bPktConfig1ForRx);
+		// Start RX with Packet handler settings
+		vRadio_StartRX(pRadioConfiguration->Radio_ChannelNumber,
+			pRadioConfiguration->Radio_PacketLength);
 
-			break;
-		}
-		else
-		{
-			if (gSampleCode_StringCompare((U8 *) &customRadioPacket[0u], pRadioConfiguration->Radio_CustomPayload,
-					pRadioConfiguration->Radio_PacketLength,COMPARE_PHR_LENGTH_AND_PAYLOAD) == TRUE )
-			{
-				// Custom packet arrived
-				// Blink once LED1 as payload match
-				//          vHmi_ChangeLedState(eHmi_Led1_c, eHmi_LedBlinkOnce_c);
-
-				// Send ACK back
-				vSampleCode_SendAcknowledge();
-				printf("%s(%d) - Send Ack\n", __func__, __LINE__);
-			}
-			else
-			{
-				// Incorrect packet content arrived
-				// Configure PKT_CONFIG1 for RX
-				si446x_set_property(SI446X_PROP_GRP_ID_PKT, 1, SI446X_PROP_GRP_INDEX_PKT_CONFIG1, bPktConfig1ForRx);
-				// Start RX with Packet handler settings
-#if OLD
-				vRadio_StartRX(pRadioConfiguration->Radio_ChannelNumber,0u);
-#else
-				vRadio_StartRX(pRadioConfiguration->Radio_ChannelNumber,
-					pRadioConfiguration->Radio_PacketLength);
-#endif
-			}
-		}
 		break;
 
 	default:
@@ -563,6 +449,7 @@ void LoopProcPkt( int nTick )
 
 #endif
 
+#if 1
 	if( ( nTick - s_oldTick ) >= 1000 )
 	{
 		//	1 sec
@@ -571,53 +458,7 @@ void LoopProcPkt( int nTick )
 
 		s_oldTick = nTick;
 	}
-
-	if ((lPer_MsCnt >= PACKET_SEND_INTERVAL) && (0u == lPktSending))
-	{
-		if (TRUE == gSampleCode_SendVariablePacket())
-		{
-			/* Reset packet send counter */
-			lPer_MsCnt = 0u;
-
-			/* Set Packet Sending flag */
-			lPktSending = 1u;
-		}
-	}
-}
-
-/*!
- * This function is used to compare the content of the received packet to a string
- *
- * @return  None.
- */
-BIT gSampleCode_StringCompare(U8* pbiPacketContent, U8* pbiString, U8 bLength, BIT gIgnorePhrFcsDw)
-{
-	if ( gIgnorePhrFcsDw && (wPayloadLenghtFromPhr(pbiPacketContent) == wPayloadLenghtFromPhr(pbiString)) )
-	{
-		// Compare input arrays excluding PHR
-		pbiPacketContent += 2;
-		pbiString += 2;
-		while ((*pbiPacketContent++ == *pbiString++) && (bLength > 2u))
-		{
-			if( (--bLength) == 2u )
-			{
-				return TRUE;
-			}
-		}
-	}
-	else
-	{
-		// Compare input arrays including PHR
-		while ((*pbiPacketContent++ == *pbiString++) && (bLength > 0u))
-		{
-			if( (--bLength) == 0u )
-			{
-				return TRUE;
-			}
-		}
-	}
-
-	return FALSE;
+#endif
 }
 
 /*!
@@ -650,167 +491,6 @@ U16 wPayloadLenghtFromPhr(U8* pbPhrMsb)
 }
 
 /*!
- * This function is used to wait for a little time.
- *
- * @return  None.
- */
-void vSample_Code_Wait(U16 wWaitTime)
-{
-	SEGMENT_VARIABLE(wDelay, U16 , SEG_DATA) = wWaitTime;
-
-	for (; wDelay--; )
-	{
-		NOP();
-	}
-}
-
-/*!
- * This function is used to send "ACK"back to the sender.
- *
- * @return  None.
- */
-void vSampleCode_SendAcknowledge(void)
-{
-	SEGMENT_VARIABLE(bAckFrameLengthUpperByte, U8, SEG_XDATA);
-	SEGMENT_VARIABLE(bAckFrameLengthLowerByte, U8, SEG_XDATA);
-	SEGMENT_VARIABLE(bPhrLsbUpperByte, U8, SEG_XDATA);
-	SEGMENT_VARIABLE(bCnt, U8, SEG_XDATA);
-
-
-	// Configure field length
-	si446x_set_property(SI446X_PROP_GRP_ID_PKT, 2, SI446X_PROP_PKT_FIELD_2_LENGTH_FIELD_2_LENGTH_12_8_INDEX, 0x00, RADIO_CONFIGURATION_DATA_ACK_MAC_PAYLOAD_LENGTH);	
-
-	// Get FCS and DW fields from the received PHR to match CRC and DW settings of the ACK
-	bPhrLsbUpperByte = (bBitOrderReverse(customRadioPacket[0u]) & 0x18);
-
-
-	switch (bPhrLsbUpperByte)
-	{
-	case PHR_CRC16_DW_DIS:
-
-		if (bModulationType == MOD_TYPE_2GFSK)
-		{
-			//Override PKT_CONFIG1
-			//No CRC invert, CRC endian MSBYTE first, Bit order LSBIT first, disable 4GFSK
-			si446x_set_property(SI446X_PROP_GRP_ID_PKT, 1, SI446X_PROP_GRP_INDEX_PKT_CONFIG1, 0x83);
-			//Disable Data Whitening (PKT_FIELD_2_CONFIG), disable 4GFSK
-			//Turn on ALT CRC engine, turn off primary CRC engine (PKT_FIELD_2_CRC_CONFIG)
-			si446x_set_property(SI446X_PROP_GRP_ID_PKT, 2, SI446X_PROP_GRP_INDEX_PKT_FIELD_2_CONFIG, 0x00, 0x11);
-		}
-		else if (bModulationType == MOD_TYPE_4GFSK)
-		{
-			//Override PKT_CONFIG1
-			//No CRC invert, CRC endian MSBYTE first, Bit order LSBIT first, enable 4GFSK
-			si446x_set_property(SI446X_PROP_GRP_ID_PKT, 1, SI446X_PROP_GRP_INDEX_PKT_CONFIG1, 0xA3);
-			//Disable Data Whitening (PKT_FIELD_2_CONFIG), enable 4GFSK
-			//Turn on ALT CRC engine, turn off primary CRC engine (PKT_FIELD_2_CRC_CONFIG)
-			si446x_set_property(SI446X_PROP_GRP_ID_PKT, 2, SI446X_PROP_GRP_INDEX_PKT_FIELD_2_CONFIG, 0x10, 0x11);
-		}
-
-		// Generate ACK Frame Length (i.e. length of MAC payload (Field 2) + length of CRC)
-		bAckFrameLengthUpperByte = (RADIO_CONFIGURATION_DATA_ACK_MAC_PAYLOAD_LENGTH & 0x0700)>>8;
-		bAckFrameLengthLowerByte = (RADIO_CONFIGURATION_DATA_ACK_MAC_PAYLOAD_LENGTH & 0x00FF) + 2;
-
-		break;
-
-	case PHR_CRC16_DW_EN:
-
-		if (bModulationType == MOD_TYPE_2GFSK)
-		{
-			//Override PKT_CONFIG1
-			//No CRC invert, CRC endian MSBYTE first, Bit order LSBIT first, disable 4GFSK
-			si446x_set_property(SI446X_PROP_GRP_ID_PKT, 1, SI446X_PROP_GRP_INDEX_PKT_CONFIG1, 0x83);
-			//Enable Data Whitening (PKT_FIELD_2_CONFIG), disable 4GFSK
-			//Turn on ALT CRC engine, turn off primary CRC engine (PKT_FIELD_2_CRC_CONFIG)
-			si446x_set_property(SI446X_PROP_GRP_ID_PKT, 2, SI446X_PROP_GRP_INDEX_PKT_FIELD_2_CONFIG, 0x02, 0x11);
-		}
-		else if (bModulationType == MOD_TYPE_4GFSK)
-		{
-			//Override PKT_CONFIG1
-			//No CRC invert, CRC endian MSBYTE first, Bit order LSBIT first, enable 4GFSK
-			si446x_set_property(SI446X_PROP_GRP_ID_PKT, 1, SI446X_PROP_GRP_INDEX_PKT_CONFIG1, 0xA3);
-			//Enable Data Whitening (PKT_FIELD_2_CONFIG), enable 4GFSK
-			//Turn on ALT CRC engine, turn off primary CRC engine (PKT_FIELD_2_CRC_CONFIG)
-			si446x_set_property(SI446X_PROP_GRP_ID_PKT, 2, SI446X_PROP_GRP_INDEX_PKT_FIELD_2_CONFIG, 0x12, 0x11);
-		}
-
-		// Generate ACK Frame Length (i.e. length of MAC payload (Field 2) + length of CRC)
-		bAckFrameLengthUpperByte = (RADIO_CONFIGURATION_DATA_ACK_MAC_PAYLOAD_LENGTH & 0x0700)>>8;
-		bAckFrameLengthLowerByte = (RADIO_CONFIGURATION_DATA_ACK_MAC_PAYLOAD_LENGTH & 0x00FF) + 2;
-
-		break;
-
-	case PHR_CRC32_DW_DIS:
-
-		if (bModulationType == MOD_TYPE_2GFSK)
-		{
-			//Override PKT_CONFIG1
-			//CRC invert, CRC endian MSBYTE first, Bit order LSBIT first, disable 4GFSK
-			si446x_set_property(SI446X_PROP_GRP_ID_PKT, 1, SI446X_PROP_GRP_INDEX_PKT_CONFIG1, 0x87);
-			// Disable Data Whitening (PKT_FIELD_2_CONFIG), disable 4GFSK
-			//Turn off ALT CRC engine, turn on primary CRC engine (PKT_FIELD_2_CRC_CONFIG)
-			si446x_set_property(SI446X_PROP_GRP_ID_PKT, 2, SI446X_PROP_GRP_INDEX_PKT_FIELD_2_CONFIG, 0x00, 0x22);
-		}
-		else if (bModulationType == MOD_TYPE_4GFSK)
-		{
-			//Override PKT_CONFIG1
-			//CRC invert, CRC endian MSBYTE first, Bit order LSBIT first, enable 4GFSK
-			si446x_set_property(SI446X_PROP_GRP_ID_PKT, 1, SI446X_PROP_GRP_INDEX_PKT_CONFIG1, 0xA7);
-			// Disable Data Whitening (PKT_FIELD_2_CONFIG), enable 4GFSK
-			//Turn off ALT CRC engine, turn on primary CRC engine (PKT_FIELD_2_CRC_CONFIG)
-			si446x_set_property(SI446X_PROP_GRP_ID_PKT, 2, SI446X_PROP_GRP_INDEX_PKT_FIELD_2_CONFIG, 0x10, 0x22);
-		}
-
-		// Generate ACK Frame Length (i.e. length of MAC payload (Field 2) + length of CRC)
-		bAckFrameLengthUpperByte = (RADIO_CONFIGURATION_DATA_ACK_MAC_PAYLOAD_LENGTH & 0x0700)>>8;
-		bAckFrameLengthLowerByte = (RADIO_CONFIGURATION_DATA_ACK_MAC_PAYLOAD_LENGTH & 0x00FF) + 4;
-
-		break;
-
-	case PHR_CRC32_DW_EN:
-
-		if (bModulationType == MOD_TYPE_2GFSK)
-		{
-			//Override PKT_CONFIG1
-			//CRC invert, CRC endian MSBYTE first, Bit order LSBIT first, disable 4GFSK
-			si446x_set_property(SI446X_PROP_GRP_ID_PKT, 1, SI446X_PROP_GRP_INDEX_PKT_CONFIG1, 0x87);
-			// Enable Data Whitening (PKT_FIELD_2_CONFIG), disable 4GFSK
-			//Turn off ALT CRC engine, turn on primary CRC engine (PKT_FIELD_2_CRC_CONFIG)
-			si446x_set_property(SI446X_PROP_GRP_ID_PKT, 2, SI446X_PROP_GRP_INDEX_PKT_FIELD_2_CONFIG, 0x02, 0x22);
-		}
-		else if (bModulationType == MOD_TYPE_4GFSK)
-		{
-			//Override PKT_CONFIG1
-			//CRC invert, CRC endian MSBYTE first, Bit order LSBIT first, enable 4GFSK
-			si446x_set_property(SI446X_PROP_GRP_ID_PKT, 1, SI446X_PROP_GRP_INDEX_PKT_CONFIG1, 0xA7);
-			// Enable Data Whitening (PKT_FIELD_2_CONFIG), enable 4GFSK
-			//Turn off ALT CRC engine, turn on primary CRC engine (PKT_FIELD_2_CRC_CONFIG)
-			si446x_set_property(SI446X_PROP_GRP_ID_PKT, 2, SI446X_PROP_GRP_INDEX_PKT_FIELD_2_CONFIG, 0x12, 0x22);
-		}
-
-		// Generate ACK Frame Length (i.e. length of MAC payload (Field 2) + length of CRC)
-		bAckFrameLengthUpperByte = (RADIO_CONFIGURATION_DATA_ACK_MAC_PAYLOAD_LENGTH & 0x0700)>>8;
-		bAckFrameLengthLowerByte = (RADIO_CONFIGURATION_DATA_ACK_MAC_PAYLOAD_LENGTH & 0x00FF) + 4;
-
-		break;
-	}
-
-	// Generate payload
-	// Set up payload arrays in MSB
-	abPacketReference[0u] = (customRadioPacket[0u] & 0x18) | bBitOrderReverse(bAckFrameLengthUpperByte);
-	abPacketReference[1u] = bBitOrderReverse(bAckFrameLengthLowerByte);
-
-	for (bCnt=0; bCnt<(RADIO_CONFIGURATION_DATA_ACK_MAC_PAYLOAD_LENGTH+2); bCnt++)
-	{
-		customRadioPacket[bCnt] = abPacketReference[bCnt];
-	}
-
-	// Sending ACK packet
-	vRadio_StartTx_Variable_Packet_MultiField(pRadioConfiguration->Radio_ChannelNumber, &customRadioPacket[0], RADIO_CONFIGURATION_DATA_ACK_MAC_PAYLOAD_LENGTH+2);
-
-}
-
-/*!
  * This function is used to reverse the bit order of the input byte
  *
  * @return  Reversed byte.
@@ -818,11 +498,10 @@ void vSampleCode_SendAcknowledge(void)
 
 U8 bBitOrderReverse(U8 bByteToReverse)
 {
-#if 1
 	bByteToReverse = (bByteToReverse & 0xF0) >> 4 | (bByteToReverse & 0x0F) << 4;
 	bByteToReverse = (bByteToReverse & 0xCC) >> 2 | (bByteToReverse & 0x33) << 2;
 	bByteToReverse = (bByteToReverse & 0xAA) >> 1 | (bByteToReverse & 0x55) << 1;
-#endif
+
 	return bByteToReverse;
 }
 
@@ -834,6 +513,7 @@ int SendPacket( const char *sBuf, int nSize )
 	//	printf("%s(%d)\n", __func__, __LINE__);
 
 #if defined(USE_IEEE802_15_4G)
+
 	char buf[0x40];
 
 	buf[0] = 0x18;
@@ -866,6 +546,7 @@ int SendPacket( const char *sBuf, int nSize )
 	/* Packet sending initialized */
 
 	return TRUE;
+
 #else
 
 	Dump("Tx", sBuf, 0x40);
@@ -878,43 +559,5 @@ int SendPacket( const char *sBuf, int nSize )
 	return TRUE;
 
 #endif
-}
-
-/*!
- * This function is used to send the custom packet.
- *
- * @return  None.
- */
-BIT gSampleCode_SendVariablePacket(void)
-{
-	//	printf("%s(%d)\n", __func__, __LINE__);
-
-	SEGMENT_VARIABLE(boPbPushTrack,  U8, SEG_DATA);
-	SEGMENT_VARIABLE(lTemp,         U16, SEG_DATA);
-	SEGMENT_VARIABLE(pos,            U8, SEG_DATA);
-
-	//  gHmi_PbIsPushed(&boPbPushTrack, &lTemp);
-
-	//  if( boPbPushTrack & eHmi_Pb1_c)
-	if( 1 )	//boPbPushTrack & eHmi_Pb1_c)
-	{
-		for(pos = 0u; pos < pRadioConfiguration->Radio_PacketLength; pos++)
-		{
-			customRadioPacket[pos] = pRadioConfiguration->Radio_CustomPayload[pos];
-		}
-
-		// Override PKT_CONFIG1
-		bRadio_FindProperty(pRadioConfiguration->Radio_ConfigurationArray, SI446X_PROP_GRP_ID_PKT, SI446X_PROP_GRP_INDEX_PKT_CONFIG1, &bPropValue1);
-		// Configure PH field split, CRC endian, bit order for RX
-		si446x_set_property(SI446X_PROP_GRP_ID_PKT, 1, SI446X_PROP_GRP_INDEX_PKT_CONFIG1, bPropValue1);
-
-		// Send custom packet
-		vRadio_StartTx_Variable_Packet_MultiField(pRadioConfiguration->Radio_ChannelNumber, &customRadioPacket[0], pRadioConfiguration->Radio_PacketLength);
-
-		/* Packet sending initialized */
-		return TRUE;
-	}
-
-	return FALSE;
 }
 
