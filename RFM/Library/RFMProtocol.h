@@ -154,7 +154,7 @@ typedef struct _RFMPktHdr
 #else	//	Non - Hopping
 
 #define		RFPktHdrLen		4
-#define		RFPktDataLen	60
+#define		RFPktDataLen	58
 
 //==========================================================================
 typedef struct _RFMPktHdr

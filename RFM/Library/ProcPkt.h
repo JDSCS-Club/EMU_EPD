@@ -29,11 +29,11 @@ void	LoopProcPkt	( int nTick );
 
 int		SendPacket	( const char *sBuf, int nSize );
 
+void 	CallbackRecvPacket	( const char *pData, int nSize );
+
 //========================================================================
 //	Demo Example
 void	TestProcPkt	( void );
-
-BIT gSampleCode_SendVariablePacket(void);
 
 //========================================================================
 #endif

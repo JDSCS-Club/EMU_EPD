@@ -262,7 +262,6 @@ void KeyPtt( int bValue )
 
 		//	방송 - 시작
 		SendPA( 1 );		//	SendRF - Send PA ( 송신기 -> 수신기 )
-//		gSampleCode_SendVariablePacket();
 	}
 	else
 	{

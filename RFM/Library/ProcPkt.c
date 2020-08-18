@@ -28,6 +28,10 @@
 
 #include "main.h"
 
+#include "RFMProtocol.h"		//	RFMPkt
+#include "rfm.h"				//	eRFMMode
+#include "audio.h"				//	I2S_DMA_LOOP_SIZE
+
 /*------------------------------------------------------------------------*/
 /*                          Global variables                              */
 /*------------------------------------------------------------------------*/
@@ -80,9 +84,6 @@ BIT  gSampleCode_StringCompare(U8* pbiPacketContent, U8* pbiString, U8 bLength, 
 
 // Send "ACK" message  
 void vSampleCode_SendAcknowledge(void);
-
-// Send the custom message
-BIT  gSampleCode_SendVariablePacket(void);
 
 // Reverse bit order
 U8 bBitOrderReverse(U8 bByteToReverse);
@@ -169,10 +170,12 @@ int	InitProcPkt ( void )
 	return TRUE;
 }
 
+//========================================================================
 void CallbackRecvPacket( const char *pData, int nSize )
+//========================================================================
 {
-
-#if 0
+	static int idx = 0;
+#if 1
 	//  Queue Buffer Put
 //		printf ( "P" );
 
@@ -183,34 +186,7 @@ void CallbackRecvPacket( const char *pData, int nSize )
 		//  송신기
 		uint16_t	 *pAudioBuf = (uint16_t*)pRFPkt->dat.data;
 
-		//*
-//#if defined(USE_CODEC_MAX9860)
-//			//  MAX9860 : Codec I2C로 볼륨조절.
-//#else
-		if ( GetAudioIC() == AudioXE3005 )
-		{
-			//  XE3005 : PCM 값으로 볼륨조절.
-			if ( g_nSpkLevel == 2 )
-			{
-				//  Spk Volume 조절 ( X 4 )
-				for ( i = 0; i < I2S_DMA_LOOP_SIZE; i++ )
-				{
-					pAudioBuf[i] = (int16_t)pAudioBuf[i] << 2;
-				}
-			}
-			else if ( g_nSpkLevel == 3 )
-			{
-				//  Spk Volume 조절 ( X 16 )
-				for ( i = 0; i < I2S_DMA_LOOP_SIZE; i++ )
-				{
-					pAudioBuf[i] = (int16_t)pAudioBuf[i] << 4;
-				}
-			}
-		}
-//#endif
-		//  */
-
-		stampRx = nTick;
+//		stampRx = nTick;
 		SetRFMMode( RFMModeRx );
 
 #if defined(USE_RFT_ONLY_RX_SPK_ON)
@@ -222,7 +198,7 @@ void CallbackRecvPacket( const char *pData, int nSize )
 		HAL_GPIO_WritePin ( LED_ON_B_GPIO_Port, LED_ON_B_Pin, GPIO_PIN_SET ); //  RED LED
 
 		//  통화 : 송신기 -> 송신기
-		qBufPut( &g_qBufAudioRFRx, (uint8_t*)pAudioBuf, ( I2S_DMA_LOOP_SIZE * 2 ) );
+		qBufPut( &g_qBufAudioRx, (uint8_t*)pAudioBuf, ( I2S_DMA_LOOP_SIZE * 2 ) );
 	}
 	else if (
 				pRFPkt->hdr.addrSrc == DevRF900T
@@ -236,12 +212,12 @@ void CallbackRecvPacket( const char *pData, int nSize )
 			uint16_t	 *pAudioBuf = (uint16_t*)pRFPkt->dat.data;
 
 			//  방송 : 송신기 -> 수신기
-			qBufPut( &g_qBufAudioRFRx, (uint8_t*)pAudioBuf, ( I2S_DMA_LOOP_SIZE * 2 ) );
+			qBufPut( &g_qBufAudioRx, (uint8_t*)pAudioBuf, ( I2S_DMA_LOOP_SIZE * 2 ) );
 
 			// 조명 On
 			HAL_GPIO_WritePin ( LIGHT_ON_GPIO_Port, LIGHT_ON_Pin, GPIO_PIN_SET );
 
-			stampRx = nTick;
+//			stampRx = nTick;
 			SetRFMMode( RFMModeRx );
 
 			//  수신기 Spk Relay On
@@ -252,53 +228,22 @@ void CallbackRecvPacket( const char *pData, int nSize )
 			//========================================================================
 			uint16_t	 *pAudioBuf = (uint16_t*)pRFPkt->dat.data;
 
-//#if defined(USE_CODEC_MAX9860)
-//				//  MAX9860 : Codec I2C로 볼륨조절.
-//#else
-			if ( GetAudioIC() == AudioXE3005 )
-			{
-				//  XE3005 : PCM 값으로 볼륨조절.
-				if ( g_nSpkLevel == 2 )
-				{
-					//  Spk Volume 조절 ( X 4 )
-					for ( i = 0; i < I2S_DMA_LOOP_SIZE; i++ )
-					{
-						pAudioBuf[i] = (int16_t)pAudioBuf[i] << 2;
-					}
-				}
-				else if ( g_nSpkLevel == 3 )
-				{
-					//  Spk Volume 조절 ( X 16 )
-					for ( i = 0; i < I2S_DMA_LOOP_SIZE; i++ )
-					{
-						pAudioBuf[i] = (int16_t)pAudioBuf[i] << 4;
-					}
-				}
-			}
-//#endif
-
 #if defined(USE_RFT_ONLY_RX_SPK_ON)
 			//  송신기 : 수신중인 경우 SPK ON
 			HAL_GPIO_WritePin( SPK_ON_GPIO_Port, SPK_ON_Pin, GPIO_PIN_SET );
 #endif
 
 			//  방송 : 송신기 -> 수신기
-			qBufPut( &g_qBufAudioRFRx, (uint8_t*)pAudioBuf, ( I2S_DMA_LOOP_SIZE * 2 ) );
+			qBufPut( &g_qBufAudioRx, (uint8_t*)pAudioBuf, ( I2S_DMA_LOOP_SIZE * 2 ) );
 			//========================================================================
 
 			//  송신기
-			stampRx = nTick;
+//			stampRx = nTick;
 			SetRFMMode( RFMModeRx );
 
 			//  Red LED On
 			HAL_GPIO_WritePin ( LED_ON_B_GPIO_Port, LED_ON_B_Pin, GPIO_PIN_SET ); //  RED LED
 		}
-	}
-
-	if ( GetDbgLevel() > 0 )
-	{
-		for ( i = 0; i < 64; i++ )	printf( "%02X ", customRadioPacket[i] );
-		printf( "\n" );
 	}
 
 	//========================================================================
@@ -335,14 +280,6 @@ void CallbackRecvPacket( const char *pData, int nSize )
 		//printf( "\n" );
 	}
 
-	if ( GetRFMMode() != RFMModeTx )
-	{
-		//  송신모드가 아닌경우 수신 Start
-		// Start RX with radio packet length
-		vRadio_StartRX (
-			pRadioConfiguration->Radio_ChannelNumber,
-			pRadioConfiguration->Radio_PacketLength );
-	}
 #endif
 
 }
@@ -366,6 +303,9 @@ void LoopProcPkt( int nTick )
 	switch (bMain_IT_Status)
 	{
 	case SI446X_CMD_GET_INT_STATUS_REP_PH_PEND_PACKET_SENT_PEND_BIT:
+
+		HAL_GPIO_TogglePin ( LED_ST_GPIO_Port, LED_ST_Pin );
+
 		// Custom message sent successfully
 
 		// Configure PKT_CONFIG1 for RX
@@ -377,6 +317,8 @@ void LoopProcPkt( int nTick )
 		break;
 
 	case SI446X_CMD_GET_INT_STATUS_REP_PH_PEND_PACKET_RX_PEND_BIT:
+
+		HAL_GPIO_TogglePin ( LED_ST_GPIO_Port, LED_ST_Pin );
 
 		// PHR was put in the RX FIFO in an LSB order, Payload in an MSB order. Store both in MSB in customRadioPacket[]
 		customRadioPacket[0u] = bBitOrderReverse(customRadioPacket[0u]);
@@ -436,9 +378,15 @@ void LoopProcPkt( int nTick )
 
 		CallbackRecvPacket( customRadioPacket, 0x40 );
 
-		vRadio_StartRX (
-			pRadioConfiguration->Radio_ChannelNumber,
-			pRadioConfiguration->Radio_PacketLength );
+		//	Half-Duplex
+		if ( GetRFMMode() != RFMModeTx )
+		{
+			//  송신모드가 아닌경우 수신 Start
+			// Start RX with radio packet length
+			vRadio_StartRX (
+				pRadioConfiguration->Radio_ChannelNumber,
+				pRadioConfiguration->Radio_PacketLength );
+		}
 
 		break;
 
@@ -519,19 +467,7 @@ int SendPacket( const char *sBuf, int nSize )
 	buf[0] = 0x18;
 	buf[1] = 0x02;
 
-	//*
-
 	memcpy( &buf[2], sBuf, 0x40 - 2);
-
-	/*/
-
-	buf[2] = 0x02;
-	buf[3] = 0x00;
-	buf[4] = 0x6A;
-
-	memcpy( &buf[5], sBuf, 0x40 - 5);
-
-	//	*/
 
 	Dump("Tx", buf, 0x40);
 

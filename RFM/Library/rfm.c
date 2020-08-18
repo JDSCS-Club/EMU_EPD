@@ -759,6 +759,9 @@ int RFM_main( void )
 		{
 			//	송신기 - KeyPad 동작.
 			LoopProcKey( nTick );
+
+			//	ADC Power : Battery
+			LoopProcAdc( nTick );
 		}
 
 		//	Loop RFM

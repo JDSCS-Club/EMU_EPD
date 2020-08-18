@@ -26,6 +26,8 @@
 
 #include "QBuf.h"
 
+#include "RFMProtocol.h"		//	RFPktDataLen
+
 //#define		I2S_DMA_LOOP_SIZE		(RFPktDataLen/2)	//	[4Byte Commnad] [ 60Byte Stream Data ]
 
 //#define		I2S_DMA_LOOP_SIZE		( 60 / 2 )	//	[4Byte Commnad] [ 60Byte Stream Data ]
@@ -34,8 +36,9 @@
 
 enum eAudioConfI2SDMA
 {
-	I2S_DMA_LOOP_SIZE	=	32,		//	[4Byte Commnad] [ 60Byte Stream Data ]
-	I2S_DMA_LOOP_QCNT	=	4,		//	Queue Count
+//	I2S_DMA_LOOP_SIZE	=	32,		//	[4Byte Commnad] [ 60Byte Stream Data ]
+	I2S_DMA_LOOP_SIZE	=	(RFPktDataLen/2),	//	[4Byte Commnad] [ 60Byte Stream Data ]
+	I2S_DMA_LOOP_QCNT	=	4,					//	Queue Count
 };
 
 enum eAudioMode

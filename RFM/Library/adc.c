@@ -18,6 +18,8 @@
 
 #include "adc.h"
 
+#include "rfm.h"		//	RFMModeNormal
+
 //========================================================================
 // Define
 
@@ -109,6 +111,33 @@ void Adc_Power( void )
     }
 
     old_adc_pwr = adc_pwr;
+}
+
+//========================================================================
+void LoopProcAdc( int nTick )
+//========================================================================
+{
+	//========================================================================
+	//  ADC_Power
+	//  Normal Mode 일때 Battery 체크.
+	//	RSSI 수신감도 체크.
+	static int oldTick = 0;
+
+	if ( nTick - oldTick > 1000 )
+	{
+		//  Period : 1 sec
+		if ( GetRFMMode() == RFMModeNormal )
+		{
+			Adc_Power();
+
+	#if defined(USE_RSSI)
+			//	RSSI Ping
+			RF_RSSI();	//	주기적으로 상태정보 전송.
+	#endif	//	defined(USE_RSSI)
+		}
+
+		oldTick = nTick;
+	}
 }
 
 //========================================================================
