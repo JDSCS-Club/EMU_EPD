@@ -86,12 +86,6 @@ SEGMENT_VARIABLE(bPktConfig1ForRx, U8, SEG_XDATA);
 /*                      Local function prototypes                         */
 /*------------------------------------------------------------------------*/
 
-// Compare the expected custom payload with the incoming payload
-BIT  gSampleCode_StringCompare(U8* pbiPacketContent, U8* pbiString, U8 bLength, BIT gIgnorePhrFcsDw);
-
-// Send "ACK" message  
-void vSampleCode_SendAcknowledge(void);
-
 // Reverse bit order
 U8 bBitOrderReverse(U8 bByteToReverse);
 
@@ -106,7 +100,6 @@ U16 wPayloadLenghtFromPhr(U8* pbPhrMsb);
 void Dump( const char *sTitle, const char *sBuf, int nSize )
 //========================================================================
 {
-//	return;		//	Debug
 	if ( GetDbgLevel() == 0 )	return;
 
 	printf( "%s : ", sTitle );
@@ -200,7 +193,8 @@ void CallbackRecvPacket( const char *pData, int nSize )
 
 #if defined(USE_RFT_ONLY_RX_SPK_ON)
 		//  송신기 : 수신중인 경우 SPK ON
-		HAL_GPIO_WritePin( SPK_ON_GPIO_Port, SPK_ON_Pin, GPIO_PIN_SET );
+//		HAL_GPIO_WritePin( SPK_ON_GPIO_Port, SPK_ON_Pin, GPIO_PIN_SET );
+		RFM_Spk(1);
 #endif
 
 		//  Red LED On
@@ -239,7 +233,8 @@ void CallbackRecvPacket( const char *pData, int nSize )
 
 #if defined(USE_RFT_ONLY_RX_SPK_ON)
 			//  송신기 : 수신중인 경우 SPK ON
-			HAL_GPIO_WritePin( SPK_ON_GPIO_Port, SPK_ON_Pin, GPIO_PIN_SET );
+//			HAL_GPIO_WritePin( SPK_ON_GPIO_Port, SPK_ON_Pin, GPIO_PIN_SET );
+			RFM_Spk(1);
 #endif
 
 			//  방송 : 송신기 -> 수신기
@@ -293,8 +288,6 @@ void CallbackRecvPacket( const char *pData, int nSize )
 void LoopProcPkt( int nTick )
 //========================================================================
 {
-	static int s_oldTick = 0;
-
 	bMain_IT_Status = bRadio_Check_Tx_RX();
 
 #if defined( USE_IEEE802_15_4G )
@@ -302,6 +295,12 @@ void LoopProcPkt( int nTick )
 	switch (bMain_IT_Status)
 	{
 	case SI446X_CMD_GET_INT_STATUS_REP_PH_PEND_PACKET_SENT_PEND_BIT:
+
+		// Configure PKT_CONFIG1 for RX
+		si446x_set_property(SI446X_PROP_GRP_ID_PKT, 1, SI446X_PROP_GRP_INDEX_PKT_CONFIG1, bPktConfig1ForRx);
+		// Start RX with Packet handler settings
+		vRadio_StartRX(pRadioConfiguration->Radio_ChannelNumber,
+			pRadioConfiguration->Radio_PacketLength);
 
 		HAL_GPIO_TogglePin ( LED_ST_GPIO_Port, LED_ST_Pin );
 
@@ -313,12 +312,6 @@ void LoopProcPkt( int nTick )
 		{
 			printf ( "T" );
 		}
-
-		// Configure PKT_CONFIG1 for RX
-		si446x_set_property(SI446X_PROP_GRP_ID_PKT, 1, SI446X_PROP_GRP_INDEX_PKT_CONFIG1, bPktConfig1ForRx);
-		// Start RX with Packet handler settings
-		vRadio_StartRX(pRadioConfiguration->Radio_ChannelNumber,
-			pRadioConfiguration->Radio_PacketLength);
 
 		break;
 
@@ -365,19 +358,14 @@ void LoopProcPkt( int nTick )
 		HAL_GPIO_TogglePin ( LED_ST_GPIO_Port, LED_ST_Pin );
 //		HAL_GPIO_TogglePin ( LED_ON_B_GPIO_Port, LED_ON_B_Pin );
 
-		idx++;
-
-		printf ( "T" );
-
-		if ( idx % 250 == 0 )
+		nTxPkt++;
+		nTxStamp = HAL_GetTick();
+		if ( nTxPkt % 250 == 0 )
 		{
 			printf ( "T" );
-
-			//for ( i = 0; i < 64; i++ )	printf( "%02X ", bufRFTx[i] );
-			//printf( "\n" );
 		}
 		/* Clear Packet Sending flag */
-		lPktSending = 0u;
+
 		break;
 
 	//========================================================================
@@ -386,7 +374,14 @@ void LoopProcPkt( int nTick )
 
 		HAL_GPIO_TogglePin ( LED_ST_GPIO_Port, LED_ST_Pin );
 
+		nRxPkt++;
+		nRxStamp = HAL_GetTick();
+
 		Dump("Rx", customRadioPacket, 0x40);
+		if ( nRxPkt % 250 == 0 )
+		{
+			printf ( "R" );
+		}
 
 		CallbackRecvPacket( customRadioPacket, 0x40 );
 
@@ -410,6 +405,8 @@ void LoopProcPkt( int nTick )
 #endif
 
 #if 1
+	static int s_oldTick = 0;
+
 	if( ( nTick - s_oldTick ) >= 1000 )
 	{
 		//	1 sec

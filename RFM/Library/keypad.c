@@ -221,14 +221,16 @@ void KeyVol( int bValue )
 			//	RFM SPK On
 //				HAL_GPIO_WritePin( SPK_ON_GPIO_Port, SPK_ON_Pin, GPIO_PIN_SET );
 			//	RFM SPK Off
-			HAL_GPIO_WritePin( SPK_ON_GPIO_Port, SPK_ON_Pin, GPIO_PIN_RESET );
+//			HAL_GPIO_WritePin( SPK_ON_GPIO_Port, SPK_ON_Pin, GPIO_PIN_RESET );
+			RFM_Spk(0);
 
 			LCDSpeaker( g_nSpkLevel );
 		}
 		else
 		{
 			//	RFM SPK Off
-			HAL_GPIO_WritePin( SPK_ON_GPIO_Port, SPK_ON_Pin, GPIO_PIN_RESET );
+//			HAL_GPIO_WritePin( SPK_ON_GPIO_Port, SPK_ON_Pin, GPIO_PIN_RESET );
+			RFM_Spk(0);
 
 			LCDSpeaker( 0 );
 		}

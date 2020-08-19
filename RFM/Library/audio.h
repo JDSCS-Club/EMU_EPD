@@ -39,7 +39,8 @@ enum eAudioConfI2SDMA
 //	I2S_DMA_LOOP_SIZE	=	32,		//	[4Byte Commnad] [ 60Byte Stream Data ]
 	I2S_DMA_LOOP_SIZE	=	(RFPktDataLen/2),	//	[4Byte Commnad] [ 60Byte Stream Data ]
 //	I2S_DMA_LOOP_QCNT	=	4,					//	Queue Count
-	I2S_DMA_LOOP_QCNT	=	5,					//	Queue Count
+//	I2S_DMA_LOOP_QCNT	=	5,					//	Queue Count
+	I2S_DMA_LOOP_QCNT	=	8,					//	Queue Count
 };
 
 enum eAudioMode

@@ -439,9 +439,6 @@ static int bRxBuffering = 1;	//  Rx Buffering. ( Packet 4 ~ Packet 0)
 void RFM_I2SEx_TxRxCpltCallback( I2S_HandleTypeDef *hi2s )
 //========================================================================
 {
-//	static int idx = 0;
-//	idx++;
-
 	if ( GetDevID() == DevRF900T )
 	{
 		//========================================================================
@@ -689,7 +686,8 @@ int InitRFM( void )
 	if ( GetDevID() == DevRF900T )
 	{
 		//  송신기 : 수신중이 아닌경우 SPK OFF
-		HAL_GPIO_WritePin( SPK_ON_GPIO_Port, SPK_ON_Pin, GPIO_PIN_RESET );
+//		HAL_GPIO_WritePin( SPK_ON_GPIO_Port, SPK_ON_Pin, GPIO_PIN_RESET );
+		RFM_Spk(0);
 	}
 
 #endif
@@ -886,7 +884,8 @@ void LoopProcRFM ( int nTick )
 		if ( GetDevID() == DevRF900T )
 		{
 			//  송신기 : 수신중이 아닌경우 SPK OFF
-			HAL_GPIO_WritePin( SPK_ON_GPIO_Port, SPK_ON_Pin, GPIO_PIN_RESET );
+//			HAL_GPIO_WritePin( SPK_ON_GPIO_Port, SPK_ON_Pin, GPIO_PIN_RESET );
+			RFM_Spk(0);
 		}
 #endif
 
