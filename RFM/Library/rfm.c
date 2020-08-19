@@ -433,12 +433,66 @@ int cmd_rfstat    ( int argc, char * argv[] )
 //========================================================================
 
 
+//========================================================================
+//	interpolation compress ( 보간압축 )
+#if defined( USE_AUDIO_INTERPOL_COMPRESS )	//	보간압축사용.
+
+//#define	AUDIO_COMPR_RATE	8	//	Audio 압축율.
+#define	AUDIO_COMPR_RATE	4	//	Audio 압축율.
+//#define	AUDIO_COMPR_RATE	2	//	Audio 압축율.
+//#define	AUDIO_COMPR_RATE	1	//	Audio 압축율.
+
+#define	FRAME_ENC_SIZE		(I2S_DMA_LOOP_SIZE * AUDIO_COMPR_RATE)
+
+static int16_t	bufAudioEnc[FRAME_ENC_SIZE * 2];	//	Rx
+static int16_t	bufAudioDec[FRAME_ENC_SIZE * 2];	//	Tx
+
+#endif	//	defined( USE_AUDIO_INTERPOL_COMPRESS )	//	보간압축사용.
+//========================================================================
+
 static int bRxBuffering = 1;	//  Rx Buffering. ( Packet 4 ~ Packet 0)
 
 //========================================================================
 void RFM_I2SEx_TxRxCpltCallback( I2S_HandleTypeDef *hi2s )
 //========================================================================
 {
+	static int idx = 0;
+	int16_t		*pAudioTx;
+	int16_t		*pAudioRx;
+
+	if ( GetDevID() == DevRF900M && bRxBuffering == 1 )
+	{
+		//========================================================================
+		//  수신기 & 버퍼링중. -> Skip
+	}
+	else
+	{
+#if defined( USE_AUDIO_INTERPOL_COMPRESS )	//	보간압축사용.
+
+		//*
+		pAudioTx = &bufAudioDec[FRAME_ENC_SIZE * idx];
+		pAudioRx = &bufAudioEnc[FRAME_ENC_SIZE * (( idx + 1 ) % 2)];
+
+		HAL_I2SEx_TransmitReceive_DMA( &hi2s3,
+										pAudioTx,	//	Tx
+										pAudioRx,	//	Rx
+										FRAME_ENC_SIZE ); // 32byte
+
+		pAudioRx = &bufAudioEnc[FRAME_ENC_SIZE * idx];
+		idx = ( idx + 1 ) % 2;
+		pAudioTx = &bufAudioDec[FRAME_ENC_SIZE * idx];
+		/*/
+		memcpy( bufAudioDec, bufAudioEnc, FRAME_ENC_SIZE * 2);
+		HAL_I2SEx_TransmitReceive_DMA( &hi2s3, bufAudioDec, bufAudioEnc, FRAME_ENC_SIZE ); // 32byte
+		//	*/
+
+#else	//	defined( USE_AUDIO_INTERPOL_COMPRESS )	//	보간압축사용.
+
+		HAL_I2SEx_TransmitReceive_DMA( &hi2s3, t_audio_buff, r_audio_buff, I2S_DMA_LOOP_SIZE ); // 32byte
+
+#endif
+	}
+
 	if ( GetDevID() == DevRF900T )
 	{
 		//========================================================================
@@ -450,6 +504,19 @@ void RFM_I2SEx_TxRxCpltCallback( I2S_HandleTypeDef *hi2s )
 		{
 			//  printf ( "P" );
 			//  memset( r_audio_buff, idx, 64 );		//  Data Setting
+
+			//========================================================================
+#if defined( USE_AUDIO_INTERPOL_COMPRESS )	//	보간압축사용.
+
+			//	Encoding : 8 KHz -> 2 KHz
+			int i;
+			for( i = 0; i < I2S_DMA_LOOP_SIZE; i++ )
+			{
+				r_audio_buff[ i ] = pAudioRx[ i * AUDIO_COMPR_RATE ];
+			}
+
+#endif	//	defined( USE_AUDIO_INTERPOL_COMPRESS )	//	보간압축사용.
+			//========================================================================
 
 			//	Queue Put
 			qBufPut( &g_qBufAudioTx, (uint8_t *)r_audio_buff, ( I2S_DMA_LOOP_SIZE * 2 ) );
@@ -463,7 +530,11 @@ void RFM_I2SEx_TxRxCpltCallback( I2S_HandleTypeDef *hi2s )
 
 		/*/
 
-		memset( t_audio_buff, 0, 64 );
+#if defined( USE_AUDIO_INTERPOL_COMPRESS )	//	보간압축사용.
+		memset( pAudioTx, 0, FRAME_ENC_SIZE * 2 );	//	Tx
+#else
+		memset( t_audio_buff, 0, I2S_DMA_LOOP_SIZE * 2 );
+#endif
 
 		//========================================================================
 		//  Rx Buffering ( Packet Count : 0 ~ 4 )
@@ -487,7 +558,32 @@ void RFM_I2SEx_TxRxCpltCallback( I2S_HandleTypeDef *hi2s )
 			{
 				//	printf ( "G" );
 				//  Queue Audio Data
+
 				qBufGet( &g_qBufAudioRx, (uint8_t*)t_audio_buff, ( I2S_DMA_LOOP_SIZE * 2 ) );
+
+#if defined( USE_AUDIO_INTERPOL_COMPRESS )	//	보간압축사용.
+
+				int dtVal;	//	sample 보간.
+
+				//	Decoding : 2 KHz -> 8 KHz
+				int i;
+				for( i = 0; i < FRAME_ENC_SIZE; i++ )
+				{
+					if ( i % AUDIO_COMPR_RATE == 0 )
+					{
+						pAudioTx[ i ] = t_audio_buff[i / AUDIO_COMPR_RATE];
+						if( i == ( FRAME_ENC_SIZE - 1) ) dtVal = 0;		//	Last Sample
+						else dtVal = (t_audio_buff[(i / AUDIO_COMPR_RATE) + 1] - pAudioTx[ i ]) / AUDIO_COMPR_RATE;
+					}
+					else
+					{
+						//	sample간 보간.
+						pAudioTx[ i ] = pAudioTx[ i - 1 ] + dtVal;
+					}
+			//		outBuf[ i ] = bufAudioDec[i / AUDIO_COMPR_RATE];
+				}
+
+#endif	//	defined( USE_AUDIO_INTERPOL_COMPRESS )	//	보간압축사용.
 			}
 			else
 			{
@@ -503,7 +599,7 @@ void RFM_I2SEx_TxRxCpltCallback( I2S_HandleTypeDef *hi2s )
 		//========================================================================
 		//  수신기.
 
-		memset( t_audio_buff, 0, 64 );
+		memset( t_audio_buff, 0, I2S_DMA_LOOP_SIZE * 2 );
 		//  Rx Buffering ( Packet Count : 0 ~ 4 )
 		//  RF-Rx -> t_audio_buff
 		if ( bRxBuffering )
@@ -537,15 +633,6 @@ void RFM_I2SEx_TxRxCpltCallback( I2S_HandleTypeDef *hi2s )
 		}
 	}
 
-	if ( GetDevID() == DevRF900M && bRxBuffering == 1 )
-	{
-		//========================================================================
-		//  수신기 & 버퍼링중. -> Skip
-	}
-	else
-	{
-		HAL_I2SEx_TransmitReceive_DMA( &hi2s3, t_audio_buff, r_audio_buff, I2S_DMA_LOOP_SIZE ); // 32byte
-	}
 }
 
 

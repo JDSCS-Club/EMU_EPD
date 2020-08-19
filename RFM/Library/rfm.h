@@ -27,9 +27,11 @@
 //========================================================================
 //	Configuration
 
-#define		USE_RFT_MENU_TRAINSET		1		//	송신기 편성설정.
+#define		USE_RFT_MENU_TRAINSET			1		//	송신기 편성설정.
 
-#define		USE_RFT_ONLY_RX_SPK_ON		1		//	송신기 수신중일때 만 Spk On.
+#define		USE_RFT_ONLY_RX_SPK_ON			1		//	송신기 수신중일때 만 Spk On.
+
+#define		USE_AUDIO_INTERPOL_COMPRESS		1		//	보간압축사용.
 
 //========================================================================
 // Define

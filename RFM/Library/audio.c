@@ -126,8 +126,8 @@ uint16_t	g_bufAudioRx[I2S_DMA_LOOP_SIZE * I2S_DMA_LOOP_QCNT] = { 0, };	//	512
 QBuf_t		g_qBufAudioTx;		//	Audio Queue Buffer	( RF Tx Buffer )
 uint16_t	g_bufAudioTx[I2S_DMA_LOOP_SIZE * I2S_DMA_LOOP_QCNT] = { 0, };	//	512
 
-uint16_t	t_audio_buff[I2S_DMA_LOOP_SIZE * 2];
-uint16_t	r_audio_buff[I2S_DMA_LOOP_SIZE * 2];
+int16_t		t_audio_buff[I2S_DMA_LOOP_SIZE * 2];
+int16_t		r_audio_buff[I2S_DMA_LOOP_SIZE * 2];
 
 //========================================================================
 
@@ -469,8 +469,8 @@ void AudioSpeex_I2SEx_TxRxCpltCallback( I2S_HandleTypeDef *hi2s )
 
 #define	FRAME_ENC_SIZE		(I2S_DMA_LOOP_SIZE / AUDIO_COMPR_RATE)
 
-int16_t	bufAudioEnc[FRAME_ENC_SIZE];
-int16_t	bufAudioDec[FRAME_ENC_SIZE];
+static int16_t	bufAudioEnc[FRAME_ENC_SIZE];
+static int16_t	bufAudioDec[FRAME_ENC_SIZE];
 
 //========================================================================
 void AudioLoopback_I2SEx_TxRxCpltCallback( I2S_HandleTypeDef *hi2s )
