@@ -37,6 +37,13 @@
 /*------------------------------------------------------------------------*/
 SEGMENT_VARIABLE(bMain_IT_Status, U8, SEG_XDATA);
 
+int nTxPkt = 0;
+int nRxPkt = 0;
+
+int nTxStamp = 0;
+int nRxStamp = 0;
+
+
 /*------------------------------------------------------------------------*/
 /*                              Defines                                   */
 /*------------------------------------------------------------------------*/
@@ -99,6 +106,9 @@ U16 wPayloadLenghtFromPhr(U8* pbPhrMsb);
 void Dump( const char *sTitle, const char *sBuf, int nSize )
 //========================================================================
 {
+//	return;		//	Debug
+	if ( GetDbgLevel() == 0 )	return;
+
 	printf( "%s : ", sTitle );
 
 	int i;
@@ -174,13 +184,11 @@ int	InitProcPkt ( void )
 void CallbackRecvPacket( const char *pData, int nSize )
 //========================================================================
 {
-	static int idx = 0;
 #if 1
 	//  Queue Buffer Put
 //		printf ( "P" );
 
-//	RFMPkt	*pRFPkt = (RFMPkt *)&customRadioPacket[0];
-	RFMPkt	*pRFPkt = (RFMPkt *)&pData;
+	RFMPkt	*pRFPkt = (RFMPkt *)pData;
 
 	if( GetDevID() == DevRF900T && pRFPkt->hdr.nPktID == PktCall )
 	{
@@ -271,16 +279,6 @@ void CallbackRecvPacket( const char *pData, int nSize )
 		}
 	}
 
-	idx++;
-
-	if ( idx % 250 == 0 )
-	{
-		//  1초간격
-		printf ( "R" );
-		//for ( i = 0; i < 64; i++ )	printf( "%02X ", customRadioPacket[i] );
-		//printf( "\n" );
-	}
-
 #endif
 
 }
@@ -307,7 +305,14 @@ void LoopProcPkt( int nTick )
 
 		HAL_GPIO_TogglePin ( LED_ST_GPIO_Port, LED_ST_Pin );
 
+		nTxPkt++;
+		nTxStamp = HAL_GetTick();
+
 		// Custom message sent successfully
+		if ( nTxPkt % 250 == 0 )
+		{
+			printf ( "T" );
+		}
 
 		// Configure PKT_CONFIG1 for RX
 		si446x_set_property(SI446X_PROP_GRP_ID_PKT, 1, SI446X_PROP_GRP_INDEX_PKT_CONFIG1, bPktConfig1ForRx);
@@ -325,7 +330,14 @@ void LoopProcPkt( int nTick )
 		customRadioPacket[0u] = bBitOrderReverse(customRadioPacket[0u]);
 		customRadioPacket[1u] = bBitOrderReverse(customRadioPacket[1u]);
 
+		nRxPkt++;
+		nRxStamp = HAL_GetTick();
+
 		Dump("Rx", customRadioPacket, 0x40);
+		if ( nRxPkt % 250 == 0 )
+		{
+			printf ( "R" );
+		}
 
 //		CallbackRecvPacket( customRadioPacket, 0x40 );
 		CallbackRecvPacket( &customRadioPacket[2], (0x40 - 2) );
@@ -343,8 +355,6 @@ void LoopProcPkt( int nTick )
 	} /* switch */
 
 #else
-
-	static int idx = 0;
 
 	switch ( bMain_IT_Status )
 	{

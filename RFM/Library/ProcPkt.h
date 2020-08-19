@@ -16,6 +16,12 @@
 #define PROC_PKT_H
 //========================================================================
 
+extern int nTxPkt;		//	Tx Packet Count
+extern int nRxPkt;		//	Rx Packet Count
+
+extern int nTxStamp;	//	Tx Tick Stamp
+extern int nRxStamp;	//	Rx Tick Stamp
+
 //========================================================================
 //	Dump Function
 

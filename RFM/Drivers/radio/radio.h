@@ -12,8 +12,6 @@
 
 #include "si446x_defs.h"
 
-extern int nTxPkt;		//	Tx Packet Count
-extern int nRxPkt;		//	Rx Packet Count
 
 //========================================================================
 #define		USE_IEEE802_15_4G	1

@@ -35,6 +35,8 @@
 #include "si446x_api_lib.h"			//	Si446xCmd
 #endif
 
+#include "ProcPkt.h"				//	nTxPkt
+
 //========================================================================
 // Define
 
@@ -64,6 +66,9 @@ int GetDevID    ( void )
 void SetDevID    ( int nDevID )
 //========================================================================
 {
+	printf( "%s : %s(%d)\n", __func__,
+							( nDevID == DevRF900M )? "RFM":"RFT",
+							nDevID );
 	g_nDevID = nDevID;
 }
 
@@ -78,6 +83,19 @@ int		GetRFMMode	( void )
 void	SetRFMMode	( int nRFMMode )
 //========================================================================
 {
+	if( GetDbgLevel() > 0 )
+	{
+		printf( "%s : ", __func__ );
+		switch( nRFMMode )
+		{
+		case RFMModeNormal:		printf("Normal");	break;
+		case RFMModeTx:			printf("Tx");		break;
+		case RFMModeRx:			printf("Tx");		break;
+		default:				printf("N/A");		break;
+		}
+		printf("(%d)\n", nRFMMode);
+	}
+
 	g_nRFMMode = nRFMMode;
 }
 
@@ -263,6 +281,7 @@ void RF_Tx_Mode()
 //========================================================================
 {
     //  송신 모드
+	return ;
 
     HAL_GPIO_WritePin( RF_TX_GPIO_Port, RF_TX_Pin, GPIO_PIN_SET );
     HAL_GPIO_WritePin( RF_RX_GPIO_Port, RF_RX_Pin, GPIO_PIN_RESET );
@@ -273,6 +292,7 @@ void RF_Rx_Mode()
 //========================================================================
 {
     //  수신 모드
+	return ;
 
     HAL_GPIO_WritePin( RF_TX_GPIO_Port, RF_TX_Pin, GPIO_PIN_RESET );
     HAL_GPIO_WritePin( RF_RX_GPIO_Port, RF_RX_Pin, GPIO_PIN_SET );
@@ -419,8 +439,8 @@ static int bRxBuffering = 1;	//  Rx Buffering. ( Packet 4 ~ Packet 0)
 void RFM_I2SEx_TxRxCpltCallback( I2S_HandleTypeDef *hi2s )
 //========================================================================
 {
-	static int idx = 0;
-	idx++;
+//	static int idx = 0;
+//	idx++;
 
 	if ( GetDevID() == DevRF900T )
 	{
@@ -468,8 +488,8 @@ void RFM_I2SEx_TxRxCpltCallback( I2S_HandleTypeDef *hi2s )
 			//  Rx Audio Out
 			if ( qBufCnt( &g_qBufAudioRx ) >= ( I2S_DMA_LOOP_SIZE * 2 ) )
 			{
-				//			printf ( "G" );
-							//  Queue Audio Data
+				//	printf ( "G" );
+				//  Queue Audio Data
 				qBufGet( &g_qBufAudioRx, (uint8_t*)t_audio_buff, ( I2S_DMA_LOOP_SIZE * 2 ) );
 			}
 			else
@@ -506,8 +526,8 @@ void RFM_I2SEx_TxRxCpltCallback( I2S_HandleTypeDef *hi2s )
 			//  Rx Audio Out
 			if ( qBufCnt( &g_qBufAudioRx ) >= ( I2S_DMA_LOOP_SIZE * 2 ) )
 			{
-				//			printf ( "G" );
-							//  Queue Audio Data
+				//	printf ( "G" );
+				//  Queue Audio Data
 				qBufGet( &g_qBufAudioRx, (uint8_t *)t_audio_buff, ( I2S_DMA_LOOP_SIZE * 2 ) );
 			}
 			else
@@ -527,7 +547,7 @@ void RFM_I2SEx_TxRxCpltCallback( I2S_HandleTypeDef *hi2s )
 	}
 	else
 	{
-		HAL_I2SEx_TransmitReceive_DMA ( &hi2s3, t_audio_buff, r_audio_buff, I2S_DMA_LOOP_SIZE ); // 32byte
+		HAL_I2SEx_TransmitReceive_DMA( &hi2s3, t_audio_buff, r_audio_buff, I2S_DMA_LOOP_SIZE ); // 32byte
 	}
 }
 
@@ -700,35 +720,7 @@ int InitRFM( void )
 
 #endif
 
-#if 0
-
-	//	RF 송/수신 설정.
-
-	if ( GetDevID() == DevRF900T )
-	{
-		for ( int i = 0; i < pRadioConfiguration->Radio_PacketLength; i++ )
-			customRadioPacket[i] = i;
-
-		vRadio_StartTx_Variable_Packet ( pRadioConfiguration->Radio_ChannelNumber,
-										 &customRadioPacket[0],
-										 pRadioConfiguration->Radio_PacketLength );
-
-		//  RF 수신 Start
-		vRadio_StartRX(
-			pRadioConfiguration->Radio_ChannelNumber,
-			pRadioConfiguration->Radio_PacketLength );
-	}
-	else
-	{
-		vRadio_StartRX(
-			pRadioConfiguration->Radio_ChannelNumber,
-			pRadioConfiguration->Radio_PacketLength );
-	}
-#endif
-
 }
-
-
 
 //========================================================================
 int RFM_main( void )
@@ -782,11 +774,6 @@ int RFM_main( void )
 void LoopProcRFM ( int nTick )
 //========================================================================
 {
-	static int stampRx;
-
-//	static int idx = 0;
-//	int i;
-
 	RFMPkt	bufRFTx;
 
 	//========================================================================
@@ -795,110 +782,6 @@ void LoopProcRFM ( int nTick )
 	{
 		if( GetRFMMode() != RFMModeRx )
 		{
-#if 0
-			//  수신중이 아닌경우 PTT / SOS키 누를시 음성송출.
-			static int bPTTOnOff = 0;	   //  PTT On/Off상태
-			static int bOldPTT_Key = 1;
-			int bPTT_Key;
-
-			bPTT_Key = HAL_GPIO_ReadPin( PTT_KEY_GPIO_Port, PTT_KEY_Pin );
-
-			if( bOldPTT_Key != bPTT_Key )
-			{
-
-#if defined(USE_PTT_KEY_TOGGLE)
-				if ( bPTT_Key == 1 )
-				{
-					bPTTOnOff = !( bPTTOnOff );	 //  Toggle Key
-				}
-#else
-				bPTTOnOff = !(bPTT_Key);			//  Press(On) / Release(Off)
-#endif // USE_PTT_KEY_TOGGLE
-
-				//  PTT_KEY ON Check
-				if( bPTTOnOff )
-				{				//	송신중
-					LCDSetCursor( 20, 13 );
-					LCDPrintf( "방송중..." );
-
-					SetRFMMode( RFMModeTx );
-
-					//  Green LED On
-					HAL_GPIO_WritePin ( LED_ON_A_GPIO_Port, LED_ON_A_Pin, GPIO_PIN_SET ); //  Green LED
-				}
-				else
-				{
-					//========================================================================
-					//  편성 : XXX
-					UpdateLCDMain();
-
-					//========================================================================
-					RF_Rx_Mode();
-					//========================================================================
-
-					SetRFMMode( RFMModeNormal );
-
-					//  Green LED Off
-					HAL_GPIO_WritePin ( LED_ON_A_GPIO_Port, LED_ON_A_Pin, GPIO_PIN_RESET ); //  Green LED
-
-					// Start RX with radio packet length
-					vRadio_StartRX (
-						pRadioConfiguration->Radio_ChannelNumber,
-						pRadioConfiguration->Radio_PacketLength );
-
-				}
-
-				bOldPTT_Key = bPTT_Key;
-			}
-
-			static int bSOSOnOff = 0;	   //  SOS On/Off상태
-			static int bOldSOS_Key = 1;
-			int bSOS_Key;
-
-			bSOS_Key = HAL_GPIO_ReadPin( SOS_KEY_GPIO_Port, SOS_KEY_Pin );
-
-			if( bOldSOS_Key != bSOS_Key )
-			{
-				bSOSOnOff = !( bSOS_Key );
-
-				//  PTT_KEY ON Check
-				if( bSOSOnOff )
-				{				//	송신중
-					LCDSetCursor( 20, 13 );
-					LCDPrintf( "통화중..." );
-
-					SetRFMMode( RFMModeTx );
-
-					//  Green LED On
-					HAL_GPIO_WritePin ( LED_ON_A_GPIO_Port, LED_ON_A_Pin, GPIO_PIN_SET ); //  Green LED
-				}
-				else
-				{
-					//========================================================================
-					//  편성 : XXX
-					UpdateLCDMain();
-
-					//========================================================================
-					RF_Rx_Mode();
-					//========================================================================
-
-					SetRFMMode( RFMModeNormal );
-
-					//  Green LED Off
-					HAL_GPIO_WritePin ( LED_ON_A_GPIO_Port, LED_ON_A_Pin, GPIO_PIN_RESET ); //  Green LED
-
-					// Start RX with radio packet length
-					vRadio_StartRX (
-						pRadioConfiguration->Radio_ChannelNumber,
-						pRadioConfiguration->Radio_PacketLength );
-
-				}
-
-				bOldSOS_Key = bSOS_Key;
-			}
-#endif
-
-//			if( bPTTOnOff || bSOSOnOff )
 			if( GetKey(eKeyPtt) || GetKey(eKeySos) )
 			{
 				//========================================================================
@@ -927,15 +810,8 @@ void LoopProcRFM ( int nTick )
 						bufRFTx.hdr.nPktID		=	PktCall;
 					}
 
-#if 1
 					SendPacket( (uint8_t *)&bufRFTx,
 						pRadioConfiguration->Radio_PacketLength );
-#else
-					vRadio_StartTx_Variable_Packet (
-						pRadioConfiguration->Radio_ChannelNumber,
-						(uint8_t *)&bufRFTx,
-						pRadioConfiguration->Radio_PacketLength );
-#endif
 				}
 			}
 		}
@@ -996,163 +872,9 @@ void LoopProcRFM ( int nTick )
 	}
 	//========================================================================
 
-#if 0
-	bMain_IT_Status = bRadio_Check_Tx_RX();
-
-	switch ( bMain_IT_Status )
-	{
-	//========================================================================
-	//  Transmit
-	case SI446X_CMD_GET_INT_STATUS_REP_PH_PEND_PACKET_SENT_PEND_BIT:
-
-		HAL_GPIO_TogglePin ( LED_ST_GPIO_Port, LED_ST_Pin );
-//		HAL_GPIO_TogglePin ( LED_ON_B_GPIO_Port, LED_ON_B_Pin );
-
-		idx++;
-
-		if ( idx % 250 == 0 )
-		{
-			printf ( "T" );
-
-			//for ( i = 0; i < 64; i++ )	printf( "%02X ", bufRFTx[i] );
-			//printf( "\n" );
-		}
-		break;
-
-	//========================================================================
-	//  Receive
-	case SI446X_CMD_GET_INT_STATUS_REP_PH_PEND_PACKET_RX_PEND_BIT:
-
-		HAL_GPIO_TogglePin ( LED_ST_GPIO_Port, LED_ST_Pin );
-
-		//  Queue Buffer Put
-//		printf ( "P" );
-
-		RFMPkt	*pRFPkt = (RFMPkt *)&customRadioPacket[0];
-
-		if( GetDevID() == DevRF900T && pRFPkt->hdr.nPktID == PktCall )
-		{
-			//  송신기
-			uint16_t	 *pAudioBuf = (uint16_t*)pRFPkt->dat.data;
-
-			stampRx = nTick;
-			SetRFMMode( RFMModeRx );
-
-#if defined(USE_RFT_ONLY_RX_SPK_ON)
-			//  송신기 : 수신중인 경우 SPK ON
-			HAL_GPIO_WritePin( SPK_ON_GPIO_Port, SPK_ON_Pin, GPIO_PIN_SET );
-#endif
-
-			//  Red LED On
-			HAL_GPIO_WritePin ( LED_ON_B_GPIO_Port, LED_ON_B_Pin, GPIO_PIN_SET ); //  RED LED
-
-			//  통화 : 송신기 -> 송신기
-			qBufPut( &g_qBufAudioRx, (uint8_t*)pAudioBuf, ( I2S_DMA_LOOP_SIZE * 2 ) );
-		}
-		else if (	pRFPkt->hdr.addrSrc == DevRF900T
-					&& pRFPkt->hdr.addrDest == DevRF900M
-					&& pRFPkt->hdr.nPktID == PktPA
-				)
-		{
-			if ( GetDevID() == DevRF900M )
-			{
-				//  수신기
-				uint16_t	 *pAudioBuf = (uint16_t*)pRFPkt->dat.data;
-
-				//  방송 : 송신기 -> 수신기
-				qBufPut( &g_qBufAudioRx, (uint8_t*)pAudioBuf, ( I2S_DMA_LOOP_SIZE * 2 ) );
-
-				// 조명 On
-				HAL_GPIO_WritePin ( LIGHT_ON_GPIO_Port, LIGHT_ON_Pin, GPIO_PIN_SET );
-
-				stampRx = nTick;
-				SetRFMMode( RFMModeRx );
-
-				//  수신기 Spk Relay On
-				HAL_GPIO_WritePin( AUDIO_ON_GPIO_Port, AUDIO_ON_Pin, GPIO_PIN_SET );
-			}
-			else
-			{
-				//========================================================================
-				uint16_t	 *pAudioBuf = (uint16_t*)pRFPkt->dat.data;
-
-#if defined(USE_RFT_ONLY_RX_SPK_ON)
-				//  송신기 : 수신중인 경우 SPK ON
-				HAL_GPIO_WritePin( SPK_ON_GPIO_Port, SPK_ON_Pin, GPIO_PIN_SET );
-#endif
-
-				//  방송 : 송신기 -> 수신기
-				qBufPut( &g_qBufAudioRx, (uint8_t*)pAudioBuf, ( I2S_DMA_LOOP_SIZE * 2 ) );
-				//========================================================================
-
-				//  송신기
-				stampRx = nTick;
-				SetRFMMode( RFMModeRx );
-
-				//  Red LED On
-				HAL_GPIO_WritePin ( LED_ON_B_GPIO_Port, LED_ON_B_Pin, GPIO_PIN_SET ); //  RED LED
-			}
-		}
-
-		if ( GetDbgLevel() > 0 )
-		{
-			for ( i = 0; i < 64; i++ )	printf( "%02X ", customRadioPacket[i] );
-			printf( "\n" );
-		}
-
-		//========================================================================
-		//  Status Data
-		if ( pRFPkt->hdr.nPktID == PktStat )
-		{
-			//	상태정보 수신.
-			printf ( "[Stat] Car:%d\n", pRFPkt->dat.stat.nCarNo );
-		}
-
-		if ( GetDevID() == DevRF900M )
-		{
-			//  수신기 조명제어.
-
-			if ( pRFPkt->hdr.nPktID == PktLightOff )
-			{
-				// 조명 Off 명령 수신시.
-				HAL_GPIO_WritePin ( LIGHT_ON_GPIO_Port, LIGHT_ON_Pin, GPIO_PIN_RESET );
-			}
-			else if ( pRFPkt->hdr.nPktID == PktLightOn )
-			{
-				// 조명 Off 명령 수신시.
-				HAL_GPIO_WritePin ( LIGHT_ON_GPIO_Port, LIGHT_ON_Pin, GPIO_PIN_SET );
-			}
-		}
-
-		idx++;
-
-		if ( idx % 250 == 0 )
-		{
-			//  1초간격
-			printf ( "R" );
-			//for ( i = 0; i < 64; i++ )	printf( "%02X ", customRadioPacket[i] );
-			//printf( "\n" );
-		}
-
-		if ( GetRFMMode() != RFMModeTx )
-		{
-			//  송신모드가 아닌경우 수신 Start
-			// Start RX with radio packet length
-			vRadio_StartRX (
-				pRadioConfiguration->Radio_ChannelNumber,
-				pRadioConfiguration->Radio_PacketLength );
-		}
-
-		break;
-
-	default:
-		break;
-	}
-#endif
-
 	//========================================================================
 	//	수신중 해제
-	if( nTick - stampRx > 500 && GetRFMMode() == RFMModeRx )
+	if( nTick - nRxStamp > 500 && GetRFMMode() == RFMModeRx )
 	{
 		// Rx 패킷이 500 ms 없을 경우 수신모드 해제
 		SetRFMMode( RFMModeNormal );
