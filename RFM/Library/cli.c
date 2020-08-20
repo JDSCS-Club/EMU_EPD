@@ -71,7 +71,8 @@
 #if			defined(USE_BOOTLOADER)
 #define		PROMPT_STRING	"bootloader> "
 #else	//	LED
-#define		PROMPT_STRING	"STM> "
+//#define		PROMPT_STRING	"STM> "
+#define		PROMPT_STRING	"RFM> "
 #endif
 
 #define		CLEAR_VT_SCREEN()	printf("\033[2J")
