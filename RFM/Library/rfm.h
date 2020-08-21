@@ -49,7 +49,8 @@ enum eRFMConfig
 {
 	DefaultSpkVol	=	1,
 	MaxSpkVol		=	3,			//	볼륨 최대값.
-	MaxTrainSet		=	10,			//	10편성.
+	MaxTrainSet		=	10,			//	100 ~ 109 편성 ( 10개 편성 )
+	MaxCarNo		=	12,			//	1 ~ 10호차 / 11(수신기#1) / 12(수신기#2)
 };
 
 extern int		g_nSpkLevel;		//  Default (2) - 0(Mute) / 1 / 2(Normal) / 3

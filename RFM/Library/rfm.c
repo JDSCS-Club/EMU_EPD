@@ -425,7 +425,7 @@ int cmd_car     ( int argc, char * argv[] )
         break;
     }
 
-    if ( nCar < 0 || 10 <= nCar )  nCar = 0;
+    if ( nCar < 0 || MaxCarNo < nCar )  nCar = 0;
 
     printf( "%s(%d) - Car No : %d\n", __func__, __LINE__, nCar );
 
