@@ -276,8 +276,8 @@ void si446x_set_property( U8 GROUP, U8 NUM_PROPS, U8 START_PROP, ... )
 #ifdef __C51__  //  Keil Compiler
         Pro2Cmd[cmdIndex] = va_arg (argList, U8);
 #else
-        //¡®char¡¯ is promoted to ¡®int¡¯ when passed through ¡®...¡¯
-        //  gcc : °¡º¯ÀÎÀÚ´Â char -> int·Î È®ÀåµÊ.
+        //â€˜charâ€™ is promoted to â€˜intâ€™ when passed through â€˜...â€™
+        //  gcc : ê°€ë³€ì¸ìëŠ” char -> intë¡œ í™•ì¥ë¨.
         Pro2Cmd[cmdIndex] = va_arg ( argList, int );
 #endif
         cmdIndex++;

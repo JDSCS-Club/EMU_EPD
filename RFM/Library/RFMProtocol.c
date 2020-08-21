@@ -69,8 +69,12 @@ int		GetStatus				( void )
 void _MakePktHdr	( RFMPkt *pPkt, int addrSrc, int addrDest, int nLen, int nPktID )
 //========================================================================
 {
+#if	defined(USE_HOPPING)
+
+#else
 	pPkt->hdr.addrSrc		=	addrSrc;		//	Src Address
 	pPkt->hdr.addrDest		=	addrDest;		//	Broadcast
+#endif
 	pPkt->hdr.nLen			=	nLen;			//	Length
 	pPkt->hdr.nPktID		=	nPktID;			//	Status
 }

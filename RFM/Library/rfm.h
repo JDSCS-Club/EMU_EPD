@@ -93,6 +93,7 @@ void	PrintVerInfo	( void );
 //========================================================================
 //	Command
 
+int 	cmd_ts      	( int argc, char * argv[] );
 int		cmd_ch			( int argc, char * argv[] );
 int		cmd_car			( int argc, char * argv[] );
 int		cmd_info		( int argc, char * argv[] );

@@ -42,7 +42,8 @@ void radio_hal_AssertShutdown(void)
 	HAL_GPIO_WritePin(GPIOC, GPIO_PIN_3|GPIO_PIN_5, GPIO_PIN_SET);
 	/*/
 //	HAL_GPIO_WritePin(GPIOC, GPIO_PIN_5, GPIO_PIN_SET);
-  HAL_GPIO_WritePin(PWR_RF_GPIO_Port, PWR_RF_Pin, GPIO_PIN_SET);
+	HAL_GPIO_WritePin(PWR_RF_GPIO_Port, PWR_RF_Pin, GPIO_PIN_RESET);
+//  HAL_GPIO_WritePin(PWR_RF_GPIO_Port, PWR_RF_Pin, GPIO_PIN_SET);
   HAL_Delay(1);
   HAL_GPIO_WritePin(TRN_RST_GPIO_Port,TRN_RST_Pin,GPIO_PIN_SET);
 	//	*/
@@ -54,6 +55,7 @@ void radio_hal_DeassertShutdown(void)
 	/*
 	HAL_GPIO_WritePin(GPIOC, GPIO_PIN_3|GPIO_PIN_5, GPIO_PIN_RESET);
 	/*/
+	HAL_GPIO_WritePin(PWR_RF_GPIO_Port, PWR_RF_Pin, GPIO_PIN_SET);
 //	HAL_GPIO_WritePin(GPIOC, GPIO_PIN_5, GPIO_PIN_RESET);
   HAL_GPIO_WritePin(TRN_RST_GPIO_Port,TRN_RST_Pin,GPIO_PIN_RESET);
 	//	*/

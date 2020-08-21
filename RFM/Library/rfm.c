@@ -118,7 +118,9 @@ int		GetTrainSetIdx	( void )
     }
 
     at24_HAL_ReadBytes( &hi2c1, 0xA0, 0x10, (uint8_t *)&idxTrainSet, 1 );
-    printf( "%s(%d) - %d\n", __func__, __LINE__, idxTrainSet );
+
+    if ( GetDbgLevel() > 0 )
+    	printf( "%s(%d) - %d\n", __func__, __LINE__, idxTrainSet );
 
     return idxTrainSet;
 }
@@ -134,7 +136,8 @@ void	SetTrainSetIdx	( int idxTrainSet )
         return ;
     }
 
-    printf( "%s(%d) - %d\n", __func__, __LINE__, idxTrainSet );
+    if ( GetDbgLevel() > 0 )
+    	printf( "%s(%d) - %d\n", __func__, __LINE__, idxTrainSet );
     at24_HAL_WriteBytes( &hi2c1, 0xA0, 0x10, (uint8_t *)&idxTrainSet, 1 );
 }
 
@@ -153,7 +156,9 @@ int		GetCarNo		( void )
     }
 
     at24_HAL_ReadBytes( &hi2c1, 0xA0, 0x0E, (uint8_t *)&nCarNo, 1 );
-    printf( "%s(%d) - %d\n", __func__, __LINE__, nCarNo );
+
+    if ( GetDbgLevel() > 0 )
+    	printf( "%s(%d) - %d\n", __func__, __LINE__, nCarNo );
 
     return nCarNo;
 }
@@ -169,7 +174,9 @@ void	SetCarNo		( int nCarNo )
         return ;
     }
 
-    printf( "%s(%d) - %d\n", __func__, __LINE__, nCarNo );
+	if ( GetDbgLevel() > 0 )
+    	printf( "%s(%d) - %d\n", __func__, __LINE__, nCarNo );
+
     at24_HAL_WriteBytes( &hi2c1, 0xA0, 0x0E, (uint8_t *)&nCarNo, 1 );
 }
 
@@ -360,6 +367,27 @@ void PrintVerInfo( void )
 
 #include "menu.h"      //  g_cntTrainSet
 
+
+//========================================================================
+int cmd_ts      ( int argc, char * argv[] )
+//========================================================================
+{
+    //	ts [train set] ( 0 ~ 9 )
+    int 		nTrainSet = 0;
+
+    switch ( argc )
+    {
+    case 2:		sscanf( argv[1], "%d", &nTrainSet );	        //	cmd [channel]
+        break;
+    }
+
+    if ( nTrainSet < 0 || MaxTrainSet <= nTrainSet )  nTrainSet = 0;
+
+   	printf( "%s(%d) - Train Set : %d\n", __func__, __LINE__, nTrainSet + 100 );
+
+    SetTrainSetIdx( nTrainSet );
+}
+
 //========================================================================
 int cmd_ch      ( int argc, char * argv[] )
 //========================================================================
@@ -376,7 +404,8 @@ int cmd_ch      ( int argc, char * argv[] )
 
     if ( nCh < 0 || MaxTrainSet <= nCh )  nCh = 0;
 
-    printf( "%s(%d) - Channel : %d\n", __func__, __LINE__, nCh );
+    if ( GetDbgLevel() > 0 )
+    	printf( "%s(%d) - Channel : %d\n", __func__, __LINE__, nCh );
 
     SetTrainSetIdx( nCh );
 }
@@ -438,6 +467,7 @@ int cmd_rfstat    ( int argc, char * argv[] )
 #if defined( USE_AUDIO_INTERPOL_COMPRESS )	//	보간압축사용.
 
 //#define	AUDIO_COMPR_RATE	8	//	Audio 압축율.
+//#define	AUDIO_COMPR_RATE	6	//	Audio 압축율.
 #define	AUDIO_COMPR_RATE	4	//	Audio 압축율.
 //#define	AUDIO_COMPR_RATE	2	//	Audio 압축율.
 //#define	AUDIO_COMPR_RATE	1	//	Audio 압축율.
@@ -469,7 +499,6 @@ void RFM_I2SEx_TxRxCpltCallback( I2S_HandleTypeDef *hi2s )
 	{
 #if defined( USE_AUDIO_INTERPOL_COMPRESS )	//	보간압축사용.
 
-		//*
 		pAudioTx = &bufAudioDec[FRAME_ENC_SIZE * idx];
 		pAudioRx = &bufAudioEnc[FRAME_ENC_SIZE * (( idx + 1 ) % 2)];
 
@@ -481,10 +510,6 @@ void RFM_I2SEx_TxRxCpltCallback( I2S_HandleTypeDef *hi2s )
 		pAudioRx = &bufAudioEnc[FRAME_ENC_SIZE * idx];
 		idx = ( idx + 1 ) % 2;
 		pAudioTx = &bufAudioDec[FRAME_ENC_SIZE * idx];
-		/*/
-		memcpy( bufAudioDec, bufAudioEnc, FRAME_ENC_SIZE * 2);
-		HAL_I2SEx_TransmitReceive_DMA( &hi2s3, bufAudioDec, bufAudioEnc, FRAME_ENC_SIZE ); // 32byte
-		//	*/
 
 #else	//	defined( USE_AUDIO_INTERPOL_COMPRESS )	//	보간압축사용.
 
@@ -564,6 +589,7 @@ void RFM_I2SEx_TxRxCpltCallback( I2S_HandleTypeDef *hi2s )
 #if defined( USE_AUDIO_INTERPOL_COMPRESS )	//	보간압축사용.
 
 				int dtVal;	//	sample 보간.
+				static int16_t nlastSample = 0;
 
 				//	Decoding : 2 KHz -> 8 KHz
 				int i;
@@ -571,9 +597,17 @@ void RFM_I2SEx_TxRxCpltCallback( I2S_HandleTypeDef *hi2s )
 				{
 					if ( i % AUDIO_COMPR_RATE == 0 )
 					{
-						pAudioTx[ i ] = t_audio_buff[i / AUDIO_COMPR_RATE];
-						if( i == ( FRAME_ENC_SIZE - 1) ) dtVal = 0;		//	Last Sample
-						else dtVal = (t_audio_buff[(i / AUDIO_COMPR_RATE) + 1] - pAudioTx[ i ]) / AUDIO_COMPR_RATE;
+						if ( i == 0 )
+						{
+							pAudioTx[ i ] = nlastSample;	//	t_audio_buff[i / AUDIO_COMPR_RATE];
+						}
+						else
+						{
+							pAudioTx[ i ] = t_audio_buff[i / AUDIO_COMPR_RATE - 1];
+						}
+						dtVal = (t_audio_buff[(i / AUDIO_COMPR_RATE)] - pAudioTx[ i ]) / AUDIO_COMPR_RATE;
+
+						if( (i + AUDIO_COMPR_RATE) == FRAME_ENC_SIZE ) nlastSample = t_audio_buff[(i / AUDIO_COMPR_RATE)];		//	Last Sample
 					}
 					else
 					{
@@ -792,6 +826,11 @@ int InitRFM( void )
 	//========================================================================
 	//	Drivers/radio
 	vRadio_Init ();
+
+	//========================================================================
+	vRadio_Init ();		//	FIXME : 일부 송신기가 2회 초기화를 해야 초기화되는 경우가 있음.
+	//========================================================================
+
 	si446x_part_info ();
 
 	printf ( "=========================\n" );
@@ -996,6 +1035,10 @@ void LoopProcRFM ( int nTick )
 			//  Standby LED Toggle
 			HAL_GPIO_TogglePin( STANDBY_GPIO_Port, STANDBY_Pin );
 		}
+
+		//========================================================================
+		RF_Ping();	//	상태정보전송.
+		//========================================================================
 
 		s_nTickStandby = nTick;
 	}

@@ -23,6 +23,7 @@
 //==========================================================================
 //	Define
 
+//#define		USE_HOPPING		1	//	Hopping
 
 //==========================================================================
 #pragma pack(1)		//	Byte Align : 1 Byte
@@ -56,10 +57,16 @@
 
 	2. ID Flag
 		- 각 장치별 ID부여 ( #0 ~ #9호차 수신기 / 송신기 #10, #11 )
+//		|-------------------------------------------------------------|
+//		|  4 Byte |            Header 4 Byte           | Data 56 Byte |
+//		|-------------------------------------------------------------|
+//		| ID Flag | Src Addr | Dest Addr | Len | PktID |    Data      |
+//		|-------------------------------------------------------------|
+
 		|-------------------------------------------------------------|
-		|  4 Byte |            Header 4 Byte           | Data 56 Byte |
+		|  2 Byte | Header 2 Byte   |        Data 56 Byte             |
 		|-------------------------------------------------------------|
-		| ID Flag | Src Addr | Dest Addr | Len | PktID |    Data      |
+		| ID Flag |  Len  |  PktID  |            Data                 |
 		|-------------------------------------------------------------|
 
 	2-1. ID Flag
@@ -142,11 +149,11 @@ typedef struct _RFMPktHdr
 {
 	union
 	{
-		uint32_t		nSeq;			//	Pkt Sequence Number
-		uint32_t		nIDFlag;		//	Pkt ID Flag
+		uint16_t		nSeq;			//	Pkt Sequence Number
+		uint16_t		nIDFlag;		//	Pkt ID Flag
 	} hop;
-	uint8_t		addrSrc;		//	Src Address
-	uint8_t		addrDest;		//	Dest Address
+//	uint8_t		addrSrc;		//	Src Address
+//	uint8_t		addrDest;		//	Dest Address
 	uint8_t		nLen;
 	uint8_t		nPktID;
 } RFMPktHdr;
