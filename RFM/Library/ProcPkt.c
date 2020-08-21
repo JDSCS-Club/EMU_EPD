@@ -181,9 +181,9 @@ void CallbackRecvPacket( const char *pData, int nSize )
 	//  Queue Buffer Put
 //		printf ( "P" );
 
-	RFMPkt	*pRFPkt = (RFMPkt *)pData;
+	const RFMPkt	*pRFPkt = (const RFMPkt *)pData;
 
-	if( GetDevID() == DevRF900T && pRFPkt->hdr.nPktID == PktCall )
+	if( GetDevID() == DevRF900T && pRFPkt->hdr.nPktCmd == PktCall )
 	{
 		//  송신기
 		uint16_t	 *pAudioBuf = (uint16_t*)pRFPkt->dat.data;
@@ -204,9 +204,13 @@ void CallbackRecvPacket( const char *pData, int nSize )
 		qBufPut( &g_qBufAudioRx, (uint8_t*)pAudioBuf, ( I2S_DMA_LOOP_SIZE * 2 ) );
 	}
 	else if (
-				pRFPkt->hdr.addrSrc == DevRF900T
+			pRFPkt->hdr.nPktCmd == PktPA
+#if defined(USE_HOPPING)
+
+#else
+				&& pRFPkt->hdr.addrSrc == DevRF900T
 				&& pRFPkt->hdr.addrDest == DevRF900M
-				&& pRFPkt->hdr.nPktID == PktPA
+#endif
 			  )
 	{
 		if ( GetDevID() == DevRF900M )
@@ -252,7 +256,7 @@ void CallbackRecvPacket( const char *pData, int nSize )
 
 	//========================================================================
 	//  Status Data
-	if ( pRFPkt->hdr.nPktID == PktStat )
+	if ( pRFPkt->hdr.nPktCmd == PktStat )
 	{
 		//	상태정보 수신.
 		printf ( "[Stat] Car:%d\n", pRFPkt->dat.stat.nCarNo );
@@ -262,12 +266,12 @@ void CallbackRecvPacket( const char *pData, int nSize )
 	{
 		//  수신기 조명제어.
 
-		if ( pRFPkt->hdr.nPktID == PktLightOff )
+		if ( pRFPkt->hdr.nPktCmd == PktLightOff )
 		{
 			// 조명 Off 명령 수신시.
 			HAL_GPIO_WritePin ( LIGHT_ON_GPIO_Port, LIGHT_ON_Pin, GPIO_PIN_RESET );
 		}
-		else if ( pRFPkt->hdr.nPktID == PktLightOn )
+		else if ( pRFPkt->hdr.nPktCmd == PktLightOn )
 		{
 			// 조명 Off 명령 수신시.
 			HAL_GPIO_WritePin ( LIGHT_ON_GPIO_Port, LIGHT_ON_Pin, GPIO_PIN_SET );

@@ -23,7 +23,7 @@
 //==========================================================================
 //	Define
 
-//#define		USE_HOPPING		1	//	Hopping
+#define		USE_HOPPING		1	//	Hopping
 
 //==========================================================================
 #pragma pack(1)		//	Byte Align : 1 Byte
@@ -142,20 +142,15 @@ enum eStartStop
 
 #if defined(USE_HOPPING)
 
-#define		RFPktHdrLen		8
-#define		RFPktDataLen	56
+#define		RFPktHdrLen		4
+#define		RFPktDataLen	58
 
 typedef struct _RFMPktHdr
 {
-	union
-	{
-		uint16_t		nSeq;			//	Pkt Sequence Number
-		uint16_t		nIDFlag;		//	Pkt ID Flag
-	} hop;
-//	uint8_t		addrSrc;		//	Src Address
-//	uint8_t		addrDest;		//	Dest Address
+//	uint16_t		nSeq;			//	Pkt Sequence Number
+	uint16_t	nIDFlag;		//	Device ID Flag
 	uint8_t		nLen;
-	uint8_t		nPktID;
+	uint8_t		nPktCmd;
 } RFMPktHdr;
 
 #else	//	Non - Hopping
@@ -169,7 +164,7 @@ typedef struct _RFMPktHdr
 	uint8_t		addrSrc;		//	Src Address
 	uint8_t		addrDest;		//	Dest Address
 	uint8_t		nLen;
-	uint8_t		nPktID;
+	uint8_t		nPktCmd;
 } RFMPktHdr;
 
 //==========================================================================

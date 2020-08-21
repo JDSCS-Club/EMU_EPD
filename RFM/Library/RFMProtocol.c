@@ -66,7 +66,7 @@ int		GetStatus				( void )
 //==========================================================================
 
 //========================================================================
-void _MakePktHdr	( RFMPkt *pPkt, int addrSrc, int addrDest, int nLen, int nPktID )
+void _MakePktHdr	( RFMPkt *pPkt, int addrSrc, int addrDest, int nLen, int nPktCmd )
 //========================================================================
 {
 #if	defined(USE_HOPPING)
@@ -76,7 +76,7 @@ void _MakePktHdr	( RFMPkt *pPkt, int addrSrc, int addrDest, int nLen, int nPktID
 	pPkt->hdr.addrDest		=	addrDest;		//	Broadcast
 #endif
 	pPkt->hdr.nLen			=	nLen;			//	Length
-	pPkt->hdr.nPktID		=	nPktID;			//	Status
+	pPkt->hdr.nPktCmd		=	nPktCmd;		//	Status
 }
 
 
@@ -111,10 +111,14 @@ void SendStat( void )
 
 	//========================================================================
 	//	Send RF
+#if 1
+	SendPacket( (U8 *)&stPkt, (U8)sizeof( RFMPktHdr ) + sizeof( RFMPktStat ) );
 
+#else
 	vRadio_StartTx_Variable_Packet( (unsigned char)pRadioConfiguration->Radio_ChannelNumber, \
 									(unsigned char *)&stPkt, \
 									pRadioConfiguration->Radio_PacketLength );
+#endif
 	//64 );
 //		(unsigned char)(sizeof( RFMPktHdr ) + sizeof(RFMPktStat)) );
 
@@ -215,10 +219,14 @@ void SendLight( int nOnOff )
 
 	//========================================================================
 	//	Send RF
+#if 1
+	SendPacket( (U8 *)&stPkt, (U8)sizeof( RFMPktHdr ) + sizeof( RFMPktLight ) );
+#else
 
 	vRadio_StartTx_Variable_Packet ( (U8)pRadioConfiguration->Radio_ChannelNumber,
 		(U8 *)&stPkt,
 		(U8)sizeof( RFMPktHdr ) + sizeof( RFMPktLight ) );// pRadioConfiguration->Radio_PacketLength );
+#endif
 
 	//========================================================================
 }
@@ -234,11 +242,14 @@ void SendLightOn( void )
 
 	_MakePktHdr( &stPkt, GetDevID(), DevRF900M, sizeof( RFMPktLight ), PktLightOn );
 
+#if 1
+	SendPacket( (U8 *)&stPkt, (U8)sizeof( RFMPktHdr ) + sizeof( RFMPktLight ) );
+#else
 	vRadio_StartTx_Variable_Packet ( (U8)pRadioConfiguration->Radio_ChannelNumber,
 		(U8 *)&stPkt,
 //		(U8)sizeof( RFMPktHdr ) + sizeof( RFMPktLight ) );// 
 		pRadioConfiguration->Radio_PacketLength );
-
+#endif
 }
 
 //==========================================================================
@@ -251,10 +262,14 @@ void SendLightOff( void )
 
 	_MakePktHdr( &stPkt, GetDevID(), DevRF900M, sizeof( RFMPktLight ), PktLightOff );
 
+#if 1
+	SendPacket( (U8 *)&stPkt, (U8)sizeof( RFMPktHdr ) + sizeof( RFMPktLight ) );
+#else
 	vRadio_StartTx_Variable_Packet ( (U8)pRadioConfiguration->Radio_ChannelNumber,
 		(U8 *)&stPkt,
 //		(U8)sizeof( RFMPktHdr ) + sizeof( RFMPktLight ) );// 
 		pRadioConfiguration->Radio_PacketLength );
+#endif
 }
 
 //==========================================================================
@@ -409,12 +424,18 @@ void ProcessPkt			( const uint8_t *pbuf, int length )
 	//	Packet Parsing
 	if ( GetDbgLevel() > 0 )
 	{
-		printf( "%s(%d) - Src Addr( 0x%02X ) / Dest Addr( 0x%02X ) / Len ( %d ) / PktID ( %d )\n", __func__, __LINE__,
-			pHdr->addrSrc, pHdr->addrDest, pHdr->nLen, pHdr->nPktID
+#if defined(USE_HOPPING)
+		printf( "%s(%d) - ID( 0x%02X ) / Len ( %d ) / PktCmd ( %d )\n", __func__, __LINE__,
+			pHdr->nIDFlag, pHdr->nLen, pHdr->nPktCmd
 		);
+#else
+		printf( "%s(%d) - Src Addr( 0x%02X ) / Dest Addr( 0x%02X ) / Len ( %d ) / PktCmd ( %d )\n", __func__, __LINE__,
+			pHdr->addrSrc, pHdr->addrDest, pHdr->nLen, pHdr->nPktCmd
+		);
+#endif
 	}
 
-	switch ( pHdr->nPktID )
+	switch ( pHdr->nPktCmd )
 	{
 	case PktStat:		ProcPktStat			( pPkt );		break;
 	case PktPA:			ProcPktPA			( pPkt );		break;
@@ -423,7 +444,7 @@ void ProcessPkt			( const uint8_t *pbuf, int length )
 	case PktAudioPA:	ProcPktAudioPA		( pPkt );		break;
 	case PktAudioCall:	ProcPktAudioCall	( pPkt );		break;
 	default:
-		printf( "%s(%d) - Invalid Value(%d)\n", __func__, __LINE__, pHdr->nPktID );
+		printf( "%s(%d) - Invalid Value(%d)\n", __func__, __LINE__, pHdr->nPktCmd );
 		break;
 	}
 }

@@ -918,6 +918,9 @@ void LoopProcRFM ( int nTick )
 					//		printf ( "G" );
 					qBufGet( &g_qBufAudioTx, (uint8_t*)bufRFTx.dat.data, ( I2S_DMA_LOOP_SIZE * 2 ) );
 
+#if defined(USE_HOPPING)
+
+#else
 					//  송신기 -> 수신기
 					bufRFTx.hdr.addrSrc = GetDevID();		//  Src : 송신기 DevRF900T
 
@@ -925,14 +928,16 @@ void LoopProcRFM ( int nTick )
 					{
 						//  송신기 -> 수신기
 						bufRFTx.hdr.addrDest	=	DevRF900M;		 //  Dest : 수신기
-						bufRFTx.hdr.nPktID		=	PktPA;
 					}
 					else
 					{
 						//  송신기 -> 송신기
 						bufRFTx.hdr.addrDest	=	DevRF900T;		 //  Dest : 수신기
-						bufRFTx.hdr.nPktID		=	PktCall;
 					}
+#endif
+
+					if( GetKey(eKeyPtt) )	bufRFTx.hdr.nPktCmd = PktPA;	//  송신기 -> 수신기
+					else					bufRFTx.hdr.nPktCmd = PktCall;	//  송신기 -> 송신기
 
 					SendPacket( (uint8_t *)&bufRFTx,
 						pRadioConfiguration->Radio_PacketLength );
