@@ -57,6 +57,7 @@ extern int		g_nSpkLevel;		//  Default (2) - 0(Mute) / 1 / 2(Normal) / 3
 
 extern int		g_idxTrainSet;		//  Train Set Index
 
+
 //========================================================================
 int		GetRFMMode		( void );
 void	SetRFMMode		( int nRFMMode );

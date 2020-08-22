@@ -39,9 +39,14 @@ SEGMENT_VARIABLE(bMain_IT_Status, U8, SEG_XDATA);
 
 int nTxPkt = 0;
 int nRxPkt = 0;
+int nHopPkt = 0;		//	Hopping Packet Count
+int nDropPkt = 0;		//	Drop Packet Count ( 처리된 Packet을 다시 받는 경우. )
 
 int nTxStamp = 0;
 int nRxStamp = 0;
+
+uint16_t	g_flagRspID 	=	0x00;				//  범위 안의 Device ID Flag ( 0 ~ 15 bit )
+uint8_t	 	g_nPktSeq 		=	0x00;				//  Packet Sequence
 
 
 /*------------------------------------------------------------------------*/
@@ -177,11 +182,47 @@ int	InitProcPkt ( void )
 void CallbackRecvPacket( const char *pData, int nSize )
 //========================================================================
 {
-#if 1
+	const RFMPkt	*pRFPkt = (const RFMPkt *)pData;
+
+#if defined(USE_HOPPING)
+
+	//========================================================================
+	//	Packet Filtering
+	//		- Pkt 처리 여부 확인.
+	if ( pRFPkt->hdr.nSeq != 0 && pRFPkt->hdr.nSeq == g_nPktSeq )
+	{
+		//	이미 처리된 Packet Skip.
+		nDropPkt++;
+		return ;
+	}
+
+	//========================================================================
+	//	Hopping
+	if ( pRFPkt->hdr.nSeq != 0 && pRFPkt->hdr.nIDFlag != 0 &&
+		((~pRFPkt->hdr.nIDFlag) & g_flagRspID != 0 ) )
+	{
+		//	전송 범위 밖의 Device가 수신된 경우.
+		//	Rsp Flag 설정 후에 전송.
+		nHopPkt++;
+		char buf[64];
+		memcpy( buf, pData, 64 );
+		RFMPkt	*pSendPkt = (RFMPkt *)buf;
+		pSendPkt->hdr.nIDFlag |= g_flagRspID;
+
+		SendPacket( buf, nSize );
+		//
+	}
+
+	g_nPktSeq = pRFPkt->hdr.nSeq;	//	Packet Seq 갱신.
+
+	//	Device ID Flag 확인.
+
+#endif	//	defined(USE_HOPPING)
+
+
 	//  Queue Buffer Put
 //		printf ( "P" );
 
-	const RFMPkt	*pRFPkt = (const RFMPkt *)pData;
 
 	if( GetDevID() == DevRF900T && pRFPkt->hdr.nPktCmd == PktCall )
 	{
@@ -258,8 +299,15 @@ void CallbackRecvPacket( const char *pData, int nSize )
 	//  Status Data
 	if ( pRFPkt->hdr.nPktCmd == PktStat )
 	{
+		int nRspID = pRFPkt->dat.stat.nCarNo;
 		//	상태정보 수신.
-		printf ( "[Stat] Car:%d\n", pRFPkt->dat.stat.nCarNo );
+//		printf ( "[Stat] Car:%d\n", pRFPkt->dat.stat.nCarNo );
+
+		if( nRspID < 16 )
+		{
+			//	장치 응답 Flag 설정.
+			g_flagRspID	|= ( 0x1 << nRspID );
+		}
 	}
 
 	if ( GetDevID() == DevRF900M )
@@ -277,9 +325,6 @@ void CallbackRecvPacket( const char *pData, int nSize )
 			HAL_GPIO_WritePin ( LIGHT_ON_GPIO_Port, LIGHT_ON_Pin, GPIO_PIN_SET );
 		}
 	}
-
-#endif
-
 }
 
 /**
@@ -415,7 +460,8 @@ void LoopProcPkt( int nTick )
 	{
 		//	1 sec
 
-		printf("%s : Tx(%d) / Rx(%d)\n",__func__, nTxPkt, nRxPkt);
+		printf("%s : Tx(%d) / Rx(%d) / Hop(%d) / Drop(%d) / RspID( 0x%04X )\n",__func__,
+				nTxPkt, nRxPkt, nHopPkt, nDropPkt, g_flagRspID );
 
 		s_oldTick = nTick;
 	}

@@ -87,6 +87,7 @@ void radio_SPI_ReadWrite(U8 byteCount, U8* wdata, U8* rdata)
 {
   HAL_StatusTypeDef status;
 
+#if defined(USE_SPI_DMA)
   status = HAL_SPI_TransmitReceive_DMA(&hspi1, wdata, rdata, byteCount);
   if(status != HAL_OK)
   {
@@ -94,6 +95,11 @@ void radio_SPI_ReadWrite(U8 byteCount, U8* wdata, U8* rdata)
   }
 
   while (HAL_SPI_GetState(&hspi1) != HAL_SPI_STATE_READY){}
+#else
+
+	HAL_SPI_TransmitReceive(&hspi1, wdata, rdata, byteCount,HAL_MAX_DELAY);
+
+#endif
   
 }
 
@@ -112,6 +118,7 @@ U8 SpiReadWrite( U8 byteToWrite )
 
 	HAL_StatusTypeDef status;
 
+#if defined(USE_SPI_DMA)
 	status = HAL_SPI_TransmitReceive_DMA(&hspi1, wdata, rdata, byteCount);
 	if(status != HAL_OK)
 	{
@@ -119,6 +126,11 @@ U8 SpiReadWrite( U8 byteToWrite )
 	}
 
 	while (HAL_SPI_GetState(&hspi1) != HAL_SPI_STATE_READY){}
+#else
+
+	HAL_SPI_TransmitReceive(&hspi1, wdata, rdata, byteCount,HAL_MAX_DELAY);
+
+#endif
 
 	return rdata[0];
 }
@@ -135,6 +147,7 @@ U8 *SpiWriteData( U16 byteCount, U8 *byteToWrite )
 
 	HAL_StatusTypeDef status;
 
+#if defined(USE_SPI_DMA)
 	status = HAL_SPI_TransmitReceive_DMA(&hspi1, wdata, rdata, byteCount);
 	if(status != HAL_OK)
 	{
@@ -142,6 +155,11 @@ U8 *SpiWriteData( U16 byteCount, U8 *byteToWrite )
 	}
 
 	while (HAL_SPI_GetState(&hspi1) != HAL_SPI_STATE_READY){}
+#else
+
+	HAL_SPI_TransmitReceive(&hspi1, wdata, rdata, byteCount,HAL_MAX_DELAY);
+
+#endif
 
 	return byteToWrite;
 }
@@ -157,6 +175,7 @@ U8 *SpiReadData( U16 byteCount, U8 *byteToWrite )
 
 	HAL_StatusTypeDef status;
 
+#if defined(USE_SPI_DMA)
 	status = HAL_SPI_TransmitReceive_DMA(&hspi1, wdata, rdata, byteCount);
 	if(status != HAL_OK)
 	{
@@ -164,6 +183,11 @@ U8 *SpiReadData( U16 byteCount, U8 *byteToWrite )
 	}
 
 	while (HAL_SPI_GetState(&hspi1) != HAL_SPI_STATE_READY){}
+#else
+
+	HAL_SPI_TransmitReceive(&hspi1, wdata, rdata, byteCount,HAL_MAX_DELAY);
+
+#endif
 
 	return byteToWrite;
 }

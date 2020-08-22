@@ -46,7 +46,7 @@ int		g_nDevID		=	DevNone;			//  Device ID ( 1 : RF900M / 2 : RF900T )
 
 int		g_idxTrainSet	=	0;	  				//  Train Set Index
 
-int	 	g_nSpkLevel		=	DefaultSpkVol;	//  Default (1) - 0(Mute) / 1 / 2(Normal) / 3
+int	 	g_nSpkLevel		=	DefaultSpkVol;		//  Default (1) - 0(Mute) / 1 / 2(Normal) / 3
 
 int	 	g_nRFMMode 		=	RFMModeNormal;		//  eRFMMode
 
@@ -707,6 +707,10 @@ int InitRFM( void )
 		//  Radio Channel 설정.
 		pRadioConfiguration->Radio_ChannelNumber = g_idxTrainSet;
 	}
+
+	//========================================================================
+	//	Car Number 설정.
+	g_flagRspID |= (0x1 << GetCarNo());		//	자신의 ID Flag 설정.
 
 	//========================================================================
 	//	Codec MAX9860ETG+

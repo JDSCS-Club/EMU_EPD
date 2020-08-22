@@ -71,11 +71,26 @@ void _MakePktHdr	( RFMPkt *pPkt, int addrSrc, int addrDest, int nLen, int nPktCm
 {
 #if	defined(USE_HOPPING)
 
+
+	if ( nPktCmd == PktStat )
+	{
+		//	상태정보의 경우 Seq / ID : 0x00
+		pPkt->hdr.nSeq			=	0x00;		//	Sequence
+		pPkt->hdr.nIDFlag		=	0x00;		//	ID Flag
+	}
+	else
+	{
+		g_nPktSeq++;
+		if ( g_nPktSeq == 0 )	g_nPktSeq++;
+		pPkt->hdr.nSeq			=	g_nPktSeq;			//
+		pPkt->hdr.nIDFlag		=	g_flagRspID;		//
+	}
+
 #else
 	pPkt->hdr.addrSrc		=	addrSrc;		//	Src Address
 	pPkt->hdr.addrDest		=	addrDest;		//	Broadcast
-#endif
 	pPkt->hdr.nLen			=	nLen;			//	Length
+#endif
 	pPkt->hdr.nPktCmd		=	nPktCmd;		//	Status
 }
 
@@ -425,8 +440,8 @@ void ProcessPkt			( const uint8_t *pbuf, int length )
 	if ( GetDbgLevel() > 0 )
 	{
 #if defined(USE_HOPPING)
-		printf( "%s(%d) - ID( 0x%02X ) / Len ( %d ) / PktCmd ( %d )\n", __func__, __LINE__,
-			pHdr->nIDFlag, pHdr->nLen, pHdr->nPktCmd
+		printf( "%s(%d) - ID( 0x%02X ) / Seq ( %d ) / PktCmd ( %d )\n", __func__, __LINE__,
+			pHdr->nIDFlag, pHdr->nSeq, pHdr->nPktCmd
 		);
 #else
 		printf( "%s(%d) - Src Addr( 0x%02X ) / Dest Addr( 0x%02X ) / Len ( %d ) / PktCmd ( %d )\n", __func__, __LINE__,

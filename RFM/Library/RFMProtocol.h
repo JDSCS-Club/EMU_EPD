@@ -66,7 +66,8 @@
 		|-------------------------------------------------------------|
 		|  2 Byte | Header 2 Byte   |        Data 56 Byte             |
 		|-------------------------------------------------------------|
-		| ID Flag |  Len  |  PktID  |            Data                 |
+//		| ID Flag |  Len  |  PktID  |            Data                 |
+		| ID Flag |  Seq  |  PktID  |            Data                 |
 		|-------------------------------------------------------------|
 
 	2-1. ID Flag
@@ -147,10 +148,9 @@ enum eStartStop
 
 typedef struct _RFMPktHdr
 {
-//	uint16_t		nSeq;			//	Pkt Sequence Number
-	uint16_t	nIDFlag;		//	Device ID Flag
-	uint8_t		nLen;
-	uint8_t		nPktCmd;
+	uint16_t	nIDFlag;		//	Device ID Flag		( 0(Stat) : Hopping X )
+	uint8_t		nSeq;			//	Pkt Sequence Number ( 0(Stat) : Hopping X / 1 ~ 255 : Hopping)
+	uint8_t		nPktCmd;		//	Command에 따라 Data Length 구분.
 } RFMPktHdr;
 
 #else	//	Non - Hopping

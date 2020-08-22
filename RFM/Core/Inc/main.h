@@ -85,6 +85,11 @@ I2C_HandleTypeDef hi2c3;		//	I2C3 - LCD I/F
 #define DIRECT_RX 1
 #endif
 
+//========================================================================
+//#define	USE_SPI_DMA		1		//	SPI DMA 사용.
+//	DMA방식 사용시 SPI Error발생하는 경우 있음 : SpiReadWrite(118) Error (1)!!
+//========================================================================
+
 /* USER CODE END EM */
 
 void HAL_TIM_MspPostInit(TIM_HandleTypeDef *htim);
