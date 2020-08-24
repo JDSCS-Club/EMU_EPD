@@ -149,6 +149,10 @@ user_command_t	user_command_table[] = {
 		"rfstat	-	RF Tx / Rx Information",
 		(char *)0,
 		cmd_rfstat},
+	{"rspid",
+		"rspid	-	Manual Set Resp ID",
+		"rspid	-	rspid [id] [set/clear]",
+		cmd_rspid},
 #endif	//	defined(RFM_H)
 
 #if defined(USE_ENV_TEST)

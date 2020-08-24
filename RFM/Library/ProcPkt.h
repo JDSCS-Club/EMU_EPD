@@ -25,6 +25,7 @@ extern int nTxStamp;	//	Tx Tick Stamp
 extern int nRxStamp;	//	Rx Tick Stamp
 
 
+extern int			g_bSetRspIDManual;	//  RspID Flag 수동설정. ( 디버깅용 )
 extern uint16_t	 	g_flagRspID;		//  범위 안의 Device ID Flag ( 0 ~ 15 bit )
 extern uint8_t	 	g_nPktSeq;			//  Packet Sequence
 

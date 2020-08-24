@@ -45,6 +45,10 @@ int nDropPkt = 0;		//	Drop Packet Count ( 처리된 Packet을 다시 받는 경�
 int nTxStamp = 0;
 int nRxStamp = 0;
 
+//========================================================================
+int			g_bSetRspIDManual	=	0;				//  RspID Flag 수동설정. ( 디버깅용 )
+//========================================================================
+
 uint16_t	g_flagRspID 	=	0x00;				//  범위 안의 Device ID Flag ( 0 ~ 15 bit )
 uint8_t	 	g_nPktSeq 		=	0x00;				//  Packet Sequence
 
@@ -307,6 +311,7 @@ void CallbackRecvPacket( const char *pData, int nSize )
 		if( nRspID < 16
 			&& ( pStat->nDevID == DevRF900M || pStat->nDevID == DevRF900T )
 			&& pStat->nMagicNum == 0xAA55
+			&& g_bSetRspIDManual == 0		//	수동설정모드가 아닌경우.
 			)
 		{
 			//	장치 응답 Flag 설정.

@@ -458,6 +458,47 @@ int cmd_rfstat    ( int argc, char * argv[] )
 
 
 //========================================================================
+int cmd_rspid     ( int argc, char * argv[] )
+//========================================================================
+{
+    //	rspid [Car No] [0/1]
+    int 		nID 	= 0;
+    int 		nSet 	= 0;
+
+    switch ( argc )
+    {
+    case 3:		sscanf( argv[2], "%d", &nSet );	        //	Set
+    case 2:		sscanf( argv[1], "%d", &nID );	        //	ID
+//	case 2:		sText = argv[1];						//	sscanf( argv[1], "%s", sText );		//	cmd [Text]
+        break;
+    }
+
+    if ( nID < 0 || MaxCarNo < nID )
+    {
+    	printf("%s(%d) - return\n", __func__, __LINE__);
+    	return ;
+    }
+
+    //	ID Flag Manual 설정.
+    g_bSetRspIDManual = 1;
+
+    if ( nSet )
+    {
+    	//	Set ID Flag
+    	g_flagRspID |= ( 0x1 << nID );
+    }
+    else
+    {
+    	//	Clear ID Flag
+    	g_flagRspID &= ~( 0x1 << nID );
+    }
+
+    printf( "%s(%d) - ID Flag : 0x%04X\n", __func__, __LINE__, g_flagRspID );
+}
+
+
+
+//========================================================================
 //		RFM I2S Callback
 //========================================================================
 
