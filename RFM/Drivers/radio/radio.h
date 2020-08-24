@@ -51,6 +51,9 @@ extern SEGMENT_VARIABLE(customRadioPacket[RADIO_MAX_PACKET_LENGTH], U8, SEG_XDAT
 /*! Si446x configuration array */
 extern const SEGMENT_VARIABLE(Radio_Configuration_Data_Array[], U8, SEG_CODE);
 
+extern U8	*g_pRadioRxPkt;
+
+
 /*****************************************************************************
  *  Global Function Declarations
  *****************************************************************************/

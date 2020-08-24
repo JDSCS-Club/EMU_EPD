@@ -39,8 +39,12 @@ SEGMENT_VARIABLE(bMain_IT_Status, U8, SEG_XDATA);
 
 int nTxPkt = 0;
 int nRxPkt = 0;
+
 int nHopPkt = 0;		//	Hopping Packet Count
 int nDropPkt = 0;		//	Drop Packet Count ( 처리된 Packet을 다시 받는 경우. )
+
+int nRxErr = 0;			//	Error Packet Count
+int nCrcErr = 0;
 
 int nTxStamp = 0;
 int nRxStamp = 0;
@@ -350,6 +354,9 @@ void LoopProcPkt( int nTick )
 
 #if defined( USE_IEEE802_15_4G )
 
+#if OLD
+
+
 	switch (bMain_IT_Status)
 	{
 	case SI446X_CMD_GET_INT_STATUS_REP_PH_PEND_PACKET_SENT_PEND_BIT:
@@ -404,6 +411,69 @@ void LoopProcPkt( int nTick )
 	default:
 		break;
 	} /* switch */
+
+#else
+
+	if( bMain_IT_Status & SI446X_CMD_GET_INT_STATUS_REP_PH_PEND_PACKET_RX_PEND_BIT )
+	{
+		HAL_GPIO_TogglePin ( LED_ST_GPIO_Port, LED_ST_Pin );
+
+		// PHR was put in the RX FIFO in an LSB order, Payload in an MSB order. Store both in MSB in customRadioPacket[]
+		g_pRadioRxPkt[0u] = bBitOrderReverse(g_pRadioRxPkt[0u]);
+		g_pRadioRxPkt[1u] = bBitOrderReverse(g_pRadioRxPkt[1u]);
+
+		nRxPkt++;
+		nRxStamp = HAL_GetTick();
+
+		Dump("Rx", g_pRadioRxPkt, 0x40);
+		if ( nRxPkt % 250 == 0 )
+		{
+			printf ( "R" );
+		}
+
+//		CallbackRecvPacket( customRadioPacket, 0x40 );
+		CallbackRecvPacket( &g_pRadioRxPkt[2], (0x40 - 2) );
+
+//		// Configure PKT_CONFIG1 for RX
+//		si446x_set_property(SI446X_PROP_GRP_ID_PKT, 1, SI446X_PROP_GRP_INDEX_PKT_CONFIG1, bPktConfig1ForRx);
+//		// Start RX with Packet handler settings
+//		vRadio_StartRX(pRadioConfiguration->Radio_ChannelNumber,
+//			pRadioConfiguration->Radio_PacketLength);
+	}
+
+	if( bMain_IT_Status & SI446X_CMD_GET_INT_STATUS_REP_PH_PEND_PACKET_SENT_PEND_BIT )
+	{
+//		// Configure PKT_CONFIG1 for RX
+//		si446x_set_property(SI446X_PROP_GRP_ID_PKT, 1, SI446X_PROP_GRP_INDEX_PKT_CONFIG1, bPktConfig1ForRx);
+//		// Start RX with Packet handler settings
+//		vRadio_StartRX(pRadioConfiguration->Radio_ChannelNumber,
+//			pRadioConfiguration->Radio_PacketLength);
+
+		HAL_GPIO_TogglePin ( LED_ST_GPIO_Port, LED_ST_Pin );
+
+		nTxPkt++;
+		nTxStamp = HAL_GetTick();
+
+		// Custom message sent successfully
+		if ( nTxPkt % 250 == 0 )
+		{
+			printf ( "T" );
+		}
+	}
+
+//	if	(	bMain_IT_Status &
+//			( SI446X_CMD_GET_INT_STATUS_REP_PH_PEND_PACKET_RX_PEND_BIT | SI446X_CMD_GET_INT_STATUS_REP_PH_PEND_PACKET_SENT_PEND_BIT )
+//			)
+//	{
+//		// Configure PKT_CONFIG1 for RX
+//		si446x_set_property(SI446X_PROP_GRP_ID_PKT, 1, SI446X_PROP_GRP_INDEX_PKT_CONFIG1, bPktConfig1ForRx);
+//		// Start RX with Packet handler settings
+//		vRadio_StartRX(pRadioConfiguration->Radio_ChannelNumber,
+//			pRadioConfiguration->Radio_PacketLength);
+//	}
+
+#endif
+
 
 #else
 
@@ -469,8 +539,8 @@ void LoopProcPkt( int nTick )
 	{
 		//	1 sec
 
-		printf("%s : Tx(%d) / Rx(%d) / Hop(%d) / Drop(%d) / RspID( 0x%04X )\n",__func__,
-				nTxPkt, nRxPkt, nHopPkt, nDropPkt, g_flagRspID );
+		printf("PKT : Tx(%d) / Rx(%d) / Hop(%d) / Drop(%d) / RspID( 0x%04X ) / RxErr(%d) / Crc(%d)\n", //__func__,
+				nTxPkt, nRxPkt, nHopPkt, nDropPkt, g_flagRspID, nRxErr, nCrcErr );
 
 		s_oldTick = nTick;
 	}

@@ -25,6 +25,8 @@
 
 #include "radio_hal.h"			//	RF_NIRQ
 
+#include "ProcPkt.h"			//	nRxErr / nCrcErr
+
 /*****************************************************************************
  *  Local Macros & Definitions
  *****************************************************************************/
@@ -45,7 +47,12 @@ SEGMENT_VARIABLE_SEGMENT_POINTER(pRadioConfiguration, tRadioConfiguration, SEG_C
 		&RadioConfiguration;
 
 
-SEGMENT_VARIABLE(customRadioPacket[RADIO_MAX_PACKET_LENGTH], U8, SEG_XDATA);
+//SEGMENT_VARIABLE(customRadioPacket[RADIO_MAX_PACKET_LENGTH], U8, SEG_XDATA);
+
+U8	*g_pRadioRxPkt;
+U8	g_RadioRxPkt[2][RADIO_MAX_PACKET_LENGTH];
+
+extern U8 bPktConfig1ForRx;
 
 /*****************************************************************************
  *  Local Function Declarations
@@ -115,6 +122,9 @@ void vRadio_Init(void)
  */
 U8 bRadio_Check_Tx_RX(void)
 {
+	int ret = 0;
+	static int s_idxRxPkt = 0;
+
 	if (RF_NIRQ == FALSE)
 	{
 		//	  printf("!\n");
@@ -131,13 +141,33 @@ U8 bRadio_Check_Tx_RX(void)
 
 			/* State change to */
 			si446x_change_state(SI446X_CMD_CHANGE_STATE_ARG_NEXT_STATE1_NEW_STATE_ENUM_RX);
+
+			nRxErr++;
+		}
+
+		if (Si446xCmd.GET_INT_STATUS.PH_PEND & SI446X_CMD_GET_INT_STATUS_REP_PH_STATUS_CRC_ERROR_BIT)
+		{
+			/* Reset FIFO */
+			si446x_fifo_info(SI446X_CMD_FIFO_INFO_ARG_FIFO_RX_BIT);
+
+			nCrcErr++;
 		}
 
 		if(Si446xCmd.GET_INT_STATUS.PH_PEND & SI446X_CMD_GET_INT_STATUS_REP_PH_PEND_PACKET_SENT_PEND_BIT)
 		{
 			//        printf("tx\n");
 			//        printf("\n[tx]");
+			// Configure PKT_CONFIG1 for RX
+			si446x_set_property(SI446X_PROP_GRP_ID_PKT, 1, SI446X_PROP_GRP_INDEX_PKT_CONFIG1, bPktConfig1ForRx);
+			// Start RX with Packet handler settings
+			vRadio_StartRX(pRadioConfiguration->Radio_ChannelNumber,
+				pRadioConfiguration->Radio_PacketLength);
+
+#if OLD
 			return SI446X_CMD_GET_INT_STATUS_REP_PH_PEND_PACKET_SENT_PEND_BIT;
+#else
+			ret |= SI446X_CMD_GET_INT_STATUS_REP_PH_PEND_PACKET_SENT_PEND_BIT;
+#endif
 		}
 
 		if(Si446xCmd.GET_INT_STATUS.PH_PEND & SI446X_CMD_GET_INT_STATUS_REP_PH_PEND_PACKET_RX_PEND_BIT)
@@ -152,21 +182,32 @@ U8 bRadio_Check_Tx_RX(void)
             si446x_fifo_info ( 0x00 );
 #endif
 
-			si446x_read_rx_fifo(Si446xCmd.FIFO_INFO.RX_FIFO_COUNT, &customRadioPacket[0]);
+//			si446x_read_rx_fifo(Si446xCmd.FIFO_INFO.RX_FIFO_COUNT, &customRadioPacket[0]);
+        	s_idxRxPkt = ( s_idxRxPkt + 1 )%2;
+        	g_pRadioRxPkt = &g_RadioRxPkt[s_idxRxPkt][0];
+			si446x_read_rx_fifo(Si446xCmd.FIFO_INFO.RX_FIFO_COUNT, g_pRadioRxPkt);
 
 			//      printf("rx");
+			// Configure PKT_CONFIG1 for RX
+			si446x_set_property(SI446X_PROP_GRP_ID_PKT, 1, SI446X_PROP_GRP_INDEX_PKT_CONFIG1, bPktConfig1ForRx);
+			// Start RX with Packet handler settings
+			vRadio_StartRX(pRadioConfiguration->Radio_ChannelNumber,
+				pRadioConfiguration->Radio_PacketLength);
 
+#if OLD
 			return SI446X_CMD_GET_INT_STATUS_REP_PH_PEND_PACKET_RX_PEND_BIT;
+#else
+			ret |= SI446X_CMD_GET_INT_STATUS_REP_PH_PEND_PACKET_RX_PEND_BIT;
+#endif
 		}
 
-		if (Si446xCmd.GET_INT_STATUS.PH_PEND & SI446X_CMD_GET_INT_STATUS_REP_PH_STATUS_CRC_ERROR_BIT)
-		{
-			/* Reset FIFO */
-			si446x_fifo_info(SI446X_CMD_FIFO_INFO_ARG_FIFO_RX_BIT);
-		}
 	}
 
+#if OLD
 	return 0;
+#else
+	return ret;
+#endif
 }
 
 
