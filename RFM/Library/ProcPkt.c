@@ -199,7 +199,7 @@ void CallbackRecvPacket( const char *pData, int nSize )
 	//========================================================================
 	//	Hopping
 	if ( pRFPkt->hdr.nSeq != 0 && pRFPkt->hdr.nIDFlag != 0 &&
-		((~pRFPkt->hdr.nIDFlag) & g_flagRspID != 0 ) )
+		(((~pRFPkt->hdr.nIDFlag) & g_flagRspID) != 0 ) )
 	{
 		//	전송 범위 밖의 Device가 수신된 경우.
 		//	Rsp Flag 설정 후에 전송.
