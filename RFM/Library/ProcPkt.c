@@ -300,10 +300,14 @@ void CallbackRecvPacket( const char *pData, int nSize )
 	if ( pRFPkt->hdr.nPktCmd == PktStat )
 	{
 		int nRspID = pRFPkt->dat.stat.nCarNo;
+		RFMPktStat *pStat = &pRFPkt->dat.stat;
 		//	상태정보 수신.
 //		printf ( "[Stat] Car:%d\n", pRFPkt->dat.stat.nCarNo );
 
-		if( nRspID < 16 )
+		if( nRspID < 16
+			&& ( pStat->nDevID == DevRF900M || pStat->nDevID == DevRF900T )
+			&& pStat->nMagicNum == 0xAA55
+			)
 		{
 			//	장치 응답 Flag 설정.
 			g_flagRspID	|= ( 0x1 << nRspID );

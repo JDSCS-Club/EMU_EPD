@@ -177,7 +177,10 @@ typedef struct _RFMPktStat
 	//--------------------------------------------------------------------------
 	uint8_t		nStat;			//	Device Status. ( eStatus )
 	uint8_t		nDevID;			//	Device ID
-	uint8_t		nSpare2[2];		//	Spare
+
+//	uint8_t		nSpare2[2];		//	Spare
+	uint16_t	nMagicNum;		//	0xAA55
+
 	uint32_t	upTime;			//	Device Uptime
 	//--------------------------------------------------------------------------
 	uint16_t	nFrequncy;		//	Frequency	-	주파수

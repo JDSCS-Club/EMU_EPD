@@ -124,7 +124,10 @@ void SendStat( void )
 	pStat->ver_main		=	1;
 	pStat->ver_sub		=	0;
 
+	pStat->nMagicNum	=	0xAA55;		//	패킷 요류검출용.
+
 	pStat->nCarNo		=	GetCarNo();
+	pStat->nDevID		=	GetDevID();
 
 	//========================================================================
 	//	Send RF
