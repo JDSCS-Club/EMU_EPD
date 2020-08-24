@@ -158,10 +158,17 @@ U8 bRadio_Check_Tx_RX(void)
 			//        printf("tx\n");
 			//        printf("\n[tx]");
 			// Configure PKT_CONFIG1 for RX
+#if defined(USE_IEEE802_15_4G)
 			si446x_set_property(SI446X_PROP_GRP_ID_PKT, 1, SI446X_PROP_GRP_INDEX_PKT_CONFIG1, bPktConfig1ForRx);
 			// Start RX with Packet handler settings
 			vRadio_StartRX(pRadioConfiguration->Radio_ChannelNumber,
 				pRadioConfiguration->Radio_PacketLength);
+#else
+			vRadio_StartRX (
+				pRadioConfiguration->Radio_ChannelNumber,
+				pRadioConfiguration->Radio_PacketLength );
+
+#endif
 
 #if OLD
 			return SI446X_CMD_GET_INT_STATUS_REP_PH_PEND_PACKET_SENT_PEND_BIT;
@@ -189,10 +196,16 @@ U8 bRadio_Check_Tx_RX(void)
 
 			//      printf("rx");
 			// Configure PKT_CONFIG1 for RX
+#if defined(USE_IEEE802_15_4G)
 			si446x_set_property(SI446X_PROP_GRP_ID_PKT, 1, SI446X_PROP_GRP_INDEX_PKT_CONFIG1, bPktConfig1ForRx);
 			// Start RX with Packet handler settings
 			vRadio_StartRX(pRadioConfiguration->Radio_ChannelNumber,
 				pRadioConfiguration->Radio_PacketLength);
+#else
+			vRadio_StartRX (
+				pRadioConfiguration->Radio_ChannelNumber,
+				pRadioConfiguration->Radio_PacketLength );
+#endif
 
 #if OLD
 			return SI446X_CMD_GET_INT_STATUS_REP_PH_PEND_PACKET_RX_PEND_BIT;

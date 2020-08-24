@@ -477,6 +477,9 @@ void LoopProcPkt( int nTick )
 
 #else
 
+
+#if OLD
+
 	switch ( bMain_IT_Status )
 	{
 	//========================================================================
@@ -528,6 +531,40 @@ void LoopProcPkt( int nTick )
 	default:
 		break;
 	}
+
+#else
+
+	if( bMain_IT_Status & SI446X_CMD_GET_INT_STATUS_REP_PH_PEND_PACKET_RX_PEND_BIT )
+	{
+		HAL_GPIO_TogglePin ( LED_ST_GPIO_Port, LED_ST_Pin );
+
+		nRxPkt++;
+		nRxStamp = HAL_GetTick();
+
+		Dump("Rx", g_pRadioRxPkt, 0x40);
+		if ( nRxPkt % 250 == 0 )
+		{
+			printf ( "R" );
+		}
+
+		CallbackRecvPacket( g_pRadioRxPkt, 0x40 );
+	}
+
+	if( bMain_IT_Status & SI446X_CMD_GET_INT_STATUS_REP_PH_PEND_PACKET_SENT_PEND_BIT )
+	{
+		HAL_GPIO_TogglePin ( LED_ST_GPIO_Port, LED_ST_Pin );
+
+		nTxPkt++;
+		nTxStamp = HAL_GetTick();
+
+		// Custom message sent successfully
+		if ( nTxPkt % 250 == 0 )
+		{
+			printf ( "T" );
+		}
+	}
+
+#endif
 
 
 #endif
