@@ -71,7 +71,6 @@ void _MakePktHdr	( RFMPkt *pPkt, int addrSrc, int addrDest, int nLen, int nPktCm
 {
 #if	defined(USE_HOPPING)
 
-
 	if ( nPktCmd == PktStat )
 	{
 		//	상태정보의 경우 Seq / ID : 0x00
@@ -87,10 +86,13 @@ void _MakePktHdr	( RFMPkt *pPkt, int addrSrc, int addrDest, int nLen, int nPktCm
 	}
 
 #else
+
 	pPkt->hdr.addrSrc		=	addrSrc;		//	Src Address
 	pPkt->hdr.addrDest		=	addrDest;		//	Broadcast
 	pPkt->hdr.nLen			=	nLen;			//	Length
+
 #endif
+
 	pPkt->hdr.nPktCmd		=	nPktCmd;		//	Status
 }
 

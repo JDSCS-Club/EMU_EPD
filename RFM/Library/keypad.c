@@ -32,13 +32,13 @@
 //========================================================================
 // Function
 
-static int s_btnStat[9] = { 1, };	//	Default ( 1 - pull-up )
+static int s_btnStat[9] = { 0, };	//	Default ( 1 - pull-up )
 
 //========================================================================
 int	GetKey( int eKey )
 //========================================================================
 {
-	return !(s_btnStat[eKey]);	//	Pull-up ( Active Low )
+	return (s_btnStat[eKey]);
 }
 
 
@@ -46,15 +46,18 @@ int	GetKey( int eKey )
 void GetKeyStat( int *btnStat )
 //========================================================================
 {
-	btnStat[0] = HAL_GPIO_ReadPin( DOME1_GPIO_Port, DOME1_Pin );
-	btnStat[1] = HAL_GPIO_ReadPin( DOME2_GPIO_Port, DOME2_Pin );
-	btnStat[2] = HAL_GPIO_ReadPin( DOME3_GPIO_Port, DOME3_Pin );
-	btnStat[3] = HAL_GPIO_ReadPin( DOME4_GPIO_Port, DOME4_Pin );
-	btnStat[4] = HAL_GPIO_ReadPin( DOME5_GPIO_Port, DOME5_Pin );
-	btnStat[5] = HAL_GPIO_ReadPin( DOME6_GPIO_Port, DOME6_Pin );
-	btnStat[6] = HAL_GPIO_ReadPin( PTT_KEY_GPIO_Port, PTT_KEY_Pin );
-	btnStat[7] = HAL_GPIO_ReadPin( SOS_KEY_GPIO_Port, SOS_KEY_Pin );
-	btnStat[8] = HAL_GPIO_ReadPin( ON_OFF_KEY_GPIO_Port, ON_OFF_KEY_Pin );
+	//	Pull-Up ( Active Low )
+	btnStat[0] = !( HAL_GPIO_ReadPin( DOME1_GPIO_Port, DOME1_Pin ) );
+	btnStat[1] = !( HAL_GPIO_ReadPin( DOME2_GPIO_Port, DOME2_Pin ) );
+	btnStat[2] = !( HAL_GPIO_ReadPin( DOME3_GPIO_Port, DOME3_Pin ) );
+	btnStat[3] = !( HAL_GPIO_ReadPin( DOME4_GPIO_Port, DOME4_Pin ) );
+	btnStat[4] = !( HAL_GPIO_ReadPin( DOME5_GPIO_Port, DOME5_Pin ) );
+	btnStat[5] = !( HAL_GPIO_ReadPin( DOME6_GPIO_Port, DOME6_Pin ) );
+	btnStat[6] = !( HAL_GPIO_ReadPin( PTT_KEY_GPIO_Port, PTT_KEY_Pin ) );
+	btnStat[7] = !( HAL_GPIO_ReadPin( SOS_KEY_GPIO_Port, SOS_KEY_Pin ) );
+
+	//	Pull-Down ( Active High )
+	btnStat[8] = ( HAL_GPIO_ReadPin( ON_OFF_KEY_GPIO_Port, ON_OFF_KEY_Pin ) );
 }
 
 #include <string.h>		//	memcmp()
@@ -77,16 +80,23 @@ void LoopProcKey ( uint32_t tickCurr )
 		if ( memcmp( s_btnStat, btnStat, sizeof( btnStat ) ) != 0 )
 		{
 			//	Key Value Changed.
+//			int i;
+//			printf("[s_btnStat] ");
+//			for( i = 0; i < 9; i++ ) printf("%d ", s_btnStat[i]);
+//			printf("\n");
+//			printf("[btnStat] ");
+//			for( i = 0; i < 9; i++ ) printf("%d ", btnStat[i]);
+//			printf("\n");
 
-			if ( s_btnStat[0] != btnStat[0] )	KeyMenu		( !btnStat[0] );	//	DOME1
-			if ( s_btnStat[1] != btnStat[1] )	KeyUp		( !btnStat[1] );	//	DOME2
-			if ( s_btnStat[2] != btnStat[2] )	KeyOK		( !btnStat[2] );	//	DOME3
-			if ( s_btnStat[3] != btnStat[3] )	KeyLight	( !btnStat[3] );	//	DOME4
-			if ( s_btnStat[4] != btnStat[4] )	KeyDown		( !btnStat[4] );	//	DOME5
-			if ( s_btnStat[5] != btnStat[5] )	KeyVol		( !btnStat[5] );	//	DOME6
-			if ( s_btnStat[6] != btnStat[6] )	KeyPtt		( !btnStat[6] );	//	PTT
-			if ( s_btnStat[7] != btnStat[7] )	KeySos		( !btnStat[7] );	//	SOS
-			if ( s_btnStat[8] != btnStat[8] )	KeyPwrOnOff	( !btnStat[8] );	//	ON/OFF
+			if ( s_btnStat[0] != btnStat[0] )	KeyMenu		( btnStat[0] );	//	DOME1
+			if ( s_btnStat[1] != btnStat[1] )	KeyUp		( btnStat[1] );	//	DOME2
+			if ( s_btnStat[2] != btnStat[2] )	KeyOK		( btnStat[2] );	//	DOME3
+			if ( s_btnStat[3] != btnStat[3] )	KeyLight	( btnStat[3] );	//	DOME4
+			if ( s_btnStat[4] != btnStat[4] )	KeyDown		( btnStat[4] );	//	DOME5
+			if ( s_btnStat[5] != btnStat[5] )	KeyVol		( btnStat[5] );	//	DOME6
+			if ( s_btnStat[6] != btnStat[6] )	KeyPtt		( btnStat[6] );	//	PTT
+			if ( s_btnStat[7] != btnStat[7] )	KeySos		( btnStat[7] );	//	SOS
+			if ( s_btnStat[8] != btnStat[8] )	KeyPwrOnOff	( btnStat[8] );	//	ON/OFF
 
 			//	값 저장.
 			memcpy( s_btnStat, btnStat, sizeof( btnStat ) );
@@ -112,7 +122,7 @@ void KeyMenu( int bValue )
 {
 	//========================================================================
 	//	bValue : 0(Up) / 1(Down)
-	printf( "%s(%d)\n", __func__, __LINE__ );
+	printf( "%s(%d) - %d\n", __func__, __LINE__, bValue );
 
 	if ( bValue )
 	{
@@ -127,7 +137,7 @@ void KeyOK( int bValue )
 {
 	//========================================================================
 	//	bValue : 0(Up) / 1(Down)
-	printf( "%s(%d)\n", __func__, __LINE__ );
+	printf( "%s(%d) - %d\n", __func__, __LINE__, bValue );
 
 	if ( bValue )
 	{
@@ -142,7 +152,7 @@ void KeyLight( int bValue )
 {
 	//========================================================================
 	//	bValue : 0(Up) / 1(Down)
-	printf( "%s(%d)\n", __func__, __LINE__ );
+	printf( "%s(%d) - %d\n", __func__, __LINE__, bValue );
 
 	//========================================================================
 	//	Light On/Off Toggle
@@ -177,7 +187,7 @@ void KeyUp( int bValue )
 {
 	//========================================================================
 	//	bValue : 0(Up) / 1(Down)
-	printf( "%s(%d)\n", __func__, __LINE__ );
+	printf( "%s(%d) - %d\n", __func__, __LINE__, bValue );
 
 	if( bValue )
 	{
@@ -191,7 +201,7 @@ void KeyDown( int bValue )
 {
 	//========================================================================
 	//	bValue : 0(Up) / 1(Down)
-	printf( "%s(%d)\n", __func__, __LINE__ );
+	printf( "%s(%d) - %d\n", __func__, __LINE__, bValue );
 
 	if( bValue )
 	{
@@ -205,7 +215,7 @@ void KeyVol( int bValue )
 {
 	//========================================================================
 	//	bValue : 0(Up) / 1(Down)
-	printf( "%s(%d)\n", __func__, __LINE__ );
+	printf( "%s(%d) - %d\n", __func__, __LINE__, bValue );
 
 	if( bValue )
 	{
@@ -248,7 +258,7 @@ void KeyPtt( int bValue )
 {
 	//========================================================================
 	//	bValue : 0(Up) / 1(Down)
-	printf( "%s(%d)\n", __func__, __LINE__ );
+	printf( "%s(%d) - %d\n", __func__, __LINE__, bValue );
 
 	//	송신기 -> 송신기
 
@@ -297,7 +307,7 @@ void KeySos( int bValue )
 //========================================================================
 {
 	//	bValue : 0(Up) / 1(Down)
-	printf( "%s(%d)\n", __func__, __LINE__ );
+	printf( "%s(%d) - %d\n", __func__, __LINE__, bValue );
 
 	//	송신기 -> 수신기
 
@@ -331,15 +341,24 @@ void	KeyPwrOnOff		( int bValue )
 //========================================================================
 {
 	//	bValue : 0(Up) / 1(Down)
-	printf( "%s(%d)\n", __func__, __LINE__ );
+	printf( "%s(%d) - %d\n", __func__, __LINE__, bValue );
 
+	static int bPowerOn = 0;
 
 	if ( bValue )
 	{
-		//========================================================================
-		//	Power Off
+		bPowerOn = 1;
+	}
+	else
+	{
+		if( bPowerOn )
+		{
+			//========================================================================
+			//	Power Off
+			printf( "%s(%d) - Power Off\n", __func__, __LINE__  );
 
-		HAL_GPIO_WritePin( ON_OFF_EN_GPIO_Port, ON_OFF_EN_Pin, GPIO_PIN_RESET );
+			HAL_GPIO_WritePin( ON_OFF_EN_GPIO_Port, ON_OFF_EN_Pin, GPIO_PIN_RESET );
+		}
 	}
 }
 
