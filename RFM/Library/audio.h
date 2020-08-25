@@ -52,7 +52,6 @@ enum eAudioMode
 
 extern int16_t sine_table[];
 extern uint16_t null_table[];
-extern uint16_t nAudioTable;
 
 extern QBuf_t	g_qBufAudioRx;		//	Audio Queue Buffer	( RF Rx Buffer )
 extern QBuf_t	g_qBufAudioTx;		//	Audio Queue Buffer	( RF Tx Buffer )
@@ -74,13 +73,13 @@ extern int16_t	r_audio_buff[];
 //	AudioXXXX - I2S 제어
 
 void	AudioInit				( void );
-void	AudioTxSine				( void );
+void	AudioSine				( void );
 void	AudioStop				( void );
-void	AudioTxStop				( void );
-
-void	AudioRxTxLoop			( void );
 
 void	SetCallbackI2STxRxCplt	( void ( *pCallbackTxRxCplt )( I2S_HandleTypeDef *hi2s ) );
+
+void 	AudioSine_I2SEx_TxRxCpltCallback( I2S_HandleTypeDef *hi2s );
+void 	AudioLoopback_I2SEx_TxRxCpltCallback( I2S_HandleTypeDef *hi2s );
 
 //========================================================================
 enum eAudioIC
@@ -114,8 +113,6 @@ int		AudioLoopbackDMACompress( void );
 void	LoopProcAudio			( void );
 
 void	AudioSpkVol				( int nSpkVol );
-
-//void	QPutAudioStream			( char *sBuf, int nSize );
 
 //========================================================================
 //	Command Function

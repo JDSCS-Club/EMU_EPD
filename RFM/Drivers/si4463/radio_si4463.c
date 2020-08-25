@@ -293,9 +293,6 @@ void		RF_RecvData				( char *sBuf, int nSize )
 	if ( nSize > APP_PACKET_LEN ) nSize = APP_PACKET_LEN;
 
 //	SI4463_Transmit( &si4463, sBuf, nSize );
-
-	//	Audio Buffer Copy
-//	QPutAudioStream( sBuf, nSize );
 }
 
 //========================================================================

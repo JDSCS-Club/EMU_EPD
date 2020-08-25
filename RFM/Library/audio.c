@@ -110,8 +110,6 @@ uint16_t speex_sine_table[160]; 	//	256 * 5 = 160 * 8
 
 uint16_t null_table[256] = { 0, };
 
-uint16_t nAudioTable = 0;
-
 //uint16_t bufAudio[I2S_DMA_LOOP_SIZE * I2S_DMA_LOOP_QCNT] = { 0, };	//	512
 	//	[ Frame1 | Frame2 ]
 volatile uint16_t bufAudio[FRAME_SIZE * 2] = { 0, };	//	512
@@ -141,9 +139,6 @@ void AudioInit( void )
 //DEL	printf( "%s(%d)\n", __func__, __LINE__ );
 
 	//	pAudioTable = sine_table;
-//	nAudioTable = 0;
-	nAudioTable = 2;	//	Loopback
-
 	//========================================================================
 	//	Init RF Audio Rx Buffer
 	qBufInit( &g_qBufAudioRx, (uint8_t *)g_bufAudioRx, ( I2S_DMA_LOOP_SIZE * 2 ) * I2S_DMA_LOOP_QCNT );
@@ -197,12 +192,11 @@ void AudioInit( void )
 }
 
 //========================================================================
-void AudioTxSine( void )
+void AudioSine( void )
 //========================================================================
 {
-	nAudioTable = 0;
-
-	HAL_I2SEx_TransmitReceive_DMA( &hi2s3, (uint16_t*)sine_table, (uint16_t*)bufAudio, 256 );
+	SetCallbackI2STxRxCplt( AudioSine_I2SEx_TxRxCpltCallback );
+	HAL_I2SEx_TransmitReceive_DMA( &hi2s3, (uint16_t*)bufAudio, (uint16_t*)&bufAudio[FRAME_SIZE], FRAME_SIZE );
 }
 
 
@@ -210,34 +204,9 @@ void AudioTxSine( void )
 void AudioStop( void )
 //========================================================================
 {
-	nAudioTable = 1;
-	//	pAudioTable = null_table;
-	HAL_I2SEx_TransmitReceive_DMA( &hi2s3, (uint16_t*)null_table, (uint16_t*)bufAudio, 256 );
-
 	SetCallbackI2STxRxCplt( NULL );
+	HAL_I2SEx_TransmitReceive_DMA( &hi2s3, (uint16_t*)null_table, (uint16_t*)bufAudio, 256 );
 }
-
-//========================================================================
-void AudioRxTxLoop( void )
-//========================================================================
-{
-//	g_bModeAudioRF = 0;
-//	g_eAudioMode |= ( eAModLoopbackDMA );
-//	g_eAudioMode &= ~( eAModRFTx | eAModRFRx );
-
-	nAudioTable = 2;
-	//	pAudioTable = sine_table;
-	HAL_I2SEx_TransmitReceive_DMA( &hi2s3, (uint16_t*)bufAudio, (uint16_t*)&bufAudio[I2S_DMA_LOOP_SIZE], I2S_DMA_LOOP_SIZE );
-}
-
-//========================================================================
-void AudioTxStop( void )
-//========================================================================
-{
-	nAudioTable = 3;
-	//	pAudioTable = null_table;
-}
-
 
 void ( *pCallback_I2SEx_TxRxCpltCallback )( I2S_HandleTypeDef *hi2s ) = NULL;
 
@@ -527,8 +496,9 @@ void AudioSine_I2SEx_TxRxCpltCallback( I2S_HandleTypeDef *hi2s )
 	//	pAudioTable = sine_table;
 //	memcpy( &bufAudio[0], &bufAudio[FRAME_SIZE], FRAME_SIZE );
 
-#if 1
+#if 0
 
+	//	Speex Sine
 	static int idx = 0;
 
 	HAL_I2SEx_TransmitReceive_DMA( 	&hi2s3,
@@ -544,7 +514,7 @@ void AudioSine_I2SEx_TxRxCpltCallback( I2S_HandleTypeDef *hi2s )
 	HAL_I2SEx_TransmitReceive_DMA( 	&hi2s3,
 									(uint16_t*)&sine_table[0],			//	Audio Tx
 									(uint16_t*)&bufAudio[FRAME_SIZE],
-									256
+									FRAME_SIZE
 									);
 
 #endif
@@ -713,7 +683,6 @@ void	AudioSpkVol	    ( int nSpkVol )
         switch ( nSpkVol )
         {
         case 0:
-
             WriteI2CCodec( 0x09, 0xBA );	//  Mute ( 0xBC )
 //            WriteI2CCodec( 0x0B, 0x00 );	//  00 ( 0 dB )
             break;
@@ -737,49 +706,41 @@ void	AudioSpkVol	    ( int nSpkVol )
 
 }
 
-
-////========================================================================
-//void	QPutAudioStream( char * sBuf, int nSize )
-////========================================================================
-//{
-//	//	RF Data로 부터 수신된 Audio Stream
-//
-//	//	RF Data Recv -> Audio Out
-//	if ( g_eAudioMode & eAModRFRx )
-//	{
-//		//	Audio Buffer Put
-//		qBufPut( &g_qBufAudioRx, (uint8_t *)sBuf, nSize );
-//	}
-//}
-
-
 //========================================================================
 int cmd_audio( int argc, char *argv[] )
 //========================================================================
 {
-	//	audio [ loop / null / sine / spk / mute ] [0/1 - spk relay]
+	//	audio [ loop / null / sine / spk / mute / vol ] [0/1 - spk relay]
 	if ( argc < 2 )
 	{
 		printf( "%s(%d) - return\n", __func__, __LINE__ );
 		return 0;
 	}
 
+	char	*sCmd;
+	int		nVal;
+
+	switch ( argc )
+	{
+	case 3:		sscanf( argv[2], "%d", &nVal );		//	Value
+	case 2:		sCmd = argv[1];						//	Command
+//	case 2:		sText = argv[1];					//	sscanf( argv[1], "%s", sText );		//	cmd [Text]
+		break;
+	}
+
 	if ( strcmp( argv[1], "spk" ) == 0 )
 	{
-		if ( argc >= 3 )
+		if ( nVal == 1 )	//	strcmp( argv[2], "1" ) == 0 )
 		{
-			if ( strcmp( argv[2], "1" ) == 0 )
-			{
-				//	Spk On
-				printf( "%s(%d) - Spk Relay : On\n", __func__, __LINE__ );
-				HAL_GPIO_WritePin( SPK_ON_GPIO_Port, SPK_ON_Pin, GPIO_PIN_SET );
-			}
-			else if ( strcmp( argv[2], "0" ) == 0 )
-			{
-				//	Spk On
-				printf( "%s(%d) - Spk Relay : Off\n", __func__, __LINE__ );
-				HAL_GPIO_WritePin( SPK_ON_GPIO_Port, SPK_ON_Pin, GPIO_PIN_RESET );
-			}
+			//	Spk On
+			printf( "%s(%d) - Spk Relay : On\n", __func__, __LINE__ );
+			HAL_GPIO_WritePin( SPK_ON_GPIO_Port, SPK_ON_Pin, GPIO_PIN_SET );
+		}
+		else	//	if ( strcmp( argv[2], "0" ) == 0 )
+		{
+			//	Spk On
+			printf( "%s(%d) - Spk Relay : Off\n", __func__, __LINE__ );
+			HAL_GPIO_WritePin( SPK_ON_GPIO_Port, SPK_ON_Pin, GPIO_PIN_RESET );
 		}
 	}
 	else if ( strcmp( argv[1], "loop" ) == 0 )
@@ -787,26 +748,16 @@ int cmd_audio( int argc, char *argv[] )
 		//	Audio Loop Test
 		printf( "%s(%d) - loop\n", __func__, __LINE__ );
 
-		AudioRxTxLoop();
+		AudioLoopbackDMA();
 
 		//	Spk On
 		HAL_GPIO_WritePin( SPK_ON_GPIO_Port, SPK_ON_Pin, GPIO_PIN_SET );
-	}
-	else if ( strcmp( argv[1], "null" ) == 0 )
-	{
-		//	Audio Output Null
-		printf( "%s(%d) - null\n", __func__, __LINE__ );
-
-//		//	Spk Off
-//		HAL_GPIO_WritePin( SPK_ON_GPIO_Port, SPK_ON_Pin, GPIO_PIN_RESET );
-
-		AudioTxNull();
 	}
 	else if ( strcmp( argv[1], "sine" ) == 0 )
 	{
 		//	Audio Output Sine Wave
 		printf( "%s(%d) - sine\n", __func__, __LINE__ );
-		AudioTxSine();
+		AudioSine();
 
 //		//	Spk On
 //		HAL_GPIO_WritePin( SPK_ON_GPIO_Port, SPK_ON_Pin, GPIO_PIN_SET );
@@ -816,7 +767,27 @@ int cmd_audio( int argc, char *argv[] )
 		//	Audio Loop Test
 		printf( "%s(%d) - %s\n", __func__, __LINE__, argv[1] );
 
-		AudioTxStop();
+//		//	Spk Off
+//		HAL_GPIO_WritePin( SPK_ON_GPIO_Port, SPK_ON_Pin, GPIO_PIN_RESET );
+
+		AudioStop();
+	}
+	else if ( strcmp( argv[1], "vol" ) == 0 )
+	{
+		switch( nVal )
+		{
+	    case 0:		WriteI2CCodec( 0x09, 0xBA );	break;	//  Mute ( 0xBC )
+	    case 1:		WriteI2CCodec( 0x09, 0x36 );	break;	// ( -24 )
+	    case 2:		WriteI2CCodec( 0x09, 0x30 );	break;	// ( -21 )
+	    case 3:		WriteI2CCodec( 0x09, 0x2A );	break;	// ( -18 )
+	    case 4:		WriteI2CCodec( 0x09, 0x1E );	break;	// ( -12 )
+	    case 5:		WriteI2CCodec( 0x09, 0x18 );	break;	// ( -9 )
+	    case 6:		WriteI2CCodec( 0x09, 0x12 );	break;	// ( -6 )
+	    case 7:		WriteI2CCodec( 0x09, 0x0C );	break;	// ( -3 )
+        case 8:		WriteI2CCodec( 0x09, 0x06 );	break;	// ( 0 dB ) DAC adjustment, this would require testing and/or a better understanding of the overall system
+        case 9:		WriteI2CCodec( 0x09, 0x00 );	break;	// ( +3 )
+        default:	break;
+		}
 	}
 	else
 	{
@@ -857,12 +828,6 @@ int cmd_codec( int argc, char *argv[] )
 		//	Audio Init
 		printf( "%s(%d) - init\n", __func__, __LINE__ );
 
-		AudioTxStop();
-		HAL_Delay( 500 );
-
-		InitCodecXE3005();
-		HAL_Delay( 500 );
-
 		AudioInit();
 	}
 	else if ( strcmp( argv[1], "mute" ) == 0 )
@@ -870,14 +835,14 @@ int cmd_codec( int argc, char *argv[] )
 		//	Audio Output Sine Wave
 		printf( "%s(%d) - %s(%d)\n", __func__, __LINE__, argv[1], bOnOff );
 
-		CodecMuteDAC( bOnOff );
+//		CodecMuteDAC( bOnOff );
 	}
 	else if ( strcmp( argv[1], "loop" ) == 0 )
 	{
 		//	Audio Codec Loopback
 		printf( "%s(%d) - %s(%d)\n", __func__, __LINE__, argv[1], bOnOff );
 
-		CodecLoopback( bOnOff );
+//		CodecLoopback( bOnOff );
 	}
 	else
 	{

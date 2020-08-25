@@ -230,7 +230,7 @@ int cmd_diag_proc_Audio( char *cmd )
 	switch ( sel )
 	{
 #if 0
-		case '1':	AudioTxSine();							break;
+		case '1':	AudioSine();							break;
 		case '2':	AudioTxNull();							break;
 		case '3':	AudioTxStop();							break;
 		case '4':	AudioLoopback();						break;
@@ -469,7 +469,7 @@ int	cmd_test4( int argc, char *argv[] )
 #if defined(_WIN32)
 #else
 
-	AudioTxSine();
+	AudioSine();
 
 #endif
 

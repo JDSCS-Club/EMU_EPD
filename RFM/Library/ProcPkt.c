@@ -56,6 +56,7 @@ int			g_bSetRspIDManual	=	0;				//  RspID Flag 수동설정. ( 디버깅용 )
 uint16_t	g_flagRspID 	=	0x00;				//  범위 안의 Device ID Flag ( 0 ~ 15 bit )
 uint8_t	 	g_nPktSeq 		=	0x00;				//  Packet Sequence
 
+static int	s_bShowPkt		=	1;
 
 /*------------------------------------------------------------------------*/
 /*                              Defines                                   */
@@ -570,9 +571,11 @@ void LoopProcPkt( int nTick )
 #endif
 
 #if defined(USE_SHOW_PKT)
+
 	static int s_oldTick = 0;
 
-	if( ( nTick - s_oldTick ) >= 1000 )
+	if ( s_bShowPkt != 0 &&
+		( nTick - s_oldTick ) >= 1000 )
 	{
 		//	1 sec
 
@@ -672,3 +675,22 @@ int SendPacket( const char *sBuf, int nSize )
 #endif
 }
 
+
+//========================================================================
+int cmd_pktmon      ( int argc, char * argv[] )
+//========================================================================
+{
+	//	bEnable ( 1 / 0 )
+	int bEnable = 0;
+
+	switch ( argc )
+	{
+	case 2:		sscanf( argv[1], "%d", &bEnable );	//	cmd [Enable]
+//	case 2:		sText = argv[1];					//	sscanf( argv[1], "%s", sText );		//	cmd [Text]
+		break;
+	}
+
+	printf( "%s(%d) - En(%d)\n", __func__, __LINE__, bEnable );
+
+	s_bShowPkt = bEnable;
+}

@@ -58,6 +58,10 @@
 
 #include "diag.h"
 
+#include "audio.h"			//	cmd_audio() / cmd_codec()
+
+#include "ProcPkt.h"		//	cmd_showpkt()
+
 //#if defined(_WIN32)
 //#else
 //
@@ -163,6 +167,24 @@ user_command_t	user_command_table[] = {
 
 #endif	//	defined(USE_ENV_TEST)
 
+#if defined( AUDIO_H )
+	{"audio",
+		"audio	-	audio command",
+		"audio [loop/null/sine/spk [0/1] / mute [0/1] ]",
+		cmd_audio},
+	{"codec",
+		"codec	-	codec command",
+		"codec [init/loop/mute [0/1] ]",
+		cmd_codec},
+#endif
+
+#if defined( PROC_PKT_H )
+	{"mon",
+		"mon	-	show packet monitoring",
+		"mon [0/1]",
+		cmd_pktmon},
+#endif
+
 #if 0
 
 	{"test",
@@ -197,14 +219,6 @@ user_command_t	user_command_table[] = {
 		"i2cget	-	I2C Read",
 		"i2cget	I2CBUS CHIP-ADDRESS [DATA-ADDRESS [MODE]]",
 		cmd_md},
-	{"audio",
-		"audio	-	audio command",
-		"audio [loop/null/sine/spk [0/1] / mute [0/1] ]",
-		cmd_audio},
-	{"codec",
-		"codec	-	codec command",
-		"codec [init/loop/mute [0/1] ]",
-		cmd_codec},
 	{"rftx",
 		"rftx	-	RF Tx Test",
 		"rftx [start/1/stop/0]",

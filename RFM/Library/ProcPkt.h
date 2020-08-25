@@ -56,6 +56,8 @@ void 	CallbackRecvPacket	( const char *pData, int nSize );
 //	Demo Example
 void	TestProcPkt	( void );
 
+int 	cmd_pktmon	( int argc, char * argv[] );
+
 //========================================================================
 #endif
 //========================================================================
