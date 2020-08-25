@@ -527,9 +527,11 @@ static int bRxBuffering = 1;	//  Rx Buffering. ( Packet 4 ~ Packet 0)
 void RFM_I2SEx_TxRxCpltCallback( I2S_HandleTypeDef *hi2s )
 //========================================================================
 {
+//#if defined( USE_AUDIO_INTERPOL_COMPRESS )	//	보간압축사용.
 	static int idx = 0;
 	int16_t		*pAudioTx;
 	int16_t		*pAudioRx;
+//#endif
 
 	if ( GetDevID() == DevRF900M && bRxBuffering == 1 )
 	{
@@ -554,7 +556,17 @@ void RFM_I2SEx_TxRxCpltCallback( I2S_HandleTypeDef *hi2s )
 
 #else	//	defined( USE_AUDIO_INTERPOL_COMPRESS )	//	보간압축사용.
 
-		HAL_I2SEx_TransmitReceive_DMA( &hi2s3, t_audio_buff, r_audio_buff, I2S_DMA_LOOP_SIZE ); // 32byte
+		pAudioTx = &t_audio_buff[I2S_DMA_LOOP_SIZE * idx];
+		pAudioRx = &r_audio_buff[I2S_DMA_LOOP_SIZE * (( idx + 1 ) % 2)];
+
+		HAL_I2SEx_TransmitReceive_DMA( 	&hi2s3,
+										pAudioTx,
+										pAudioRx,
+										I2S_DMA_LOOP_SIZE ); // 32byte
+
+		pAudioRx = &r_audio_buff[I2S_DMA_LOOP_SIZE * idx];
+		idx = ( idx + 1 ) % 2;
+		pAudioTx = &t_audio_buff[I2S_DMA_LOOP_SIZE * idx];
 
 #endif
 	}
@@ -581,11 +593,15 @@ void RFM_I2SEx_TxRxCpltCallback( I2S_HandleTypeDef *hi2s )
 				r_audio_buff[ i ] = pAudioRx[ i * AUDIO_COMPR_RATE ];
 			}
 
-#endif	//	defined( USE_AUDIO_INTERPOL_COMPRESS )	//	보간압축사용.
+			qBufPut( &g_qBufAudioTx, (uint8_t *)r_audio_buff, ( I2S_DMA_LOOP_SIZE * 2 ) );
+
+#else	//	defined( USE_AUDIO_INTERPOL_COMPRESS )	//	보간압축사용.
 			//========================================================================
 
 			//	Queue Put
-			qBufPut( &g_qBufAudioTx, (uint8_t *)r_audio_buff, ( I2S_DMA_LOOP_SIZE * 2 ) );
+			qBufPut( &g_qBufAudioTx, (uint8_t *)pAudioRx, ( I2S_DMA_LOOP_SIZE * 2 ) );
+
+#endif
 		}
 
 		/*
@@ -599,7 +615,7 @@ void RFM_I2SEx_TxRxCpltCallback( I2S_HandleTypeDef *hi2s )
 #if defined( USE_AUDIO_INTERPOL_COMPRESS )	//	보간압축사용.
 		memset( pAudioTx, 0, FRAME_ENC_SIZE * 2 );	//	Tx
 #else
-		memset( t_audio_buff, 0, I2S_DMA_LOOP_SIZE * 2 );
+		memset( pAudioTx, 0, I2S_DMA_LOOP_SIZE * 2 );
 #endif
 
 		//========================================================================
@@ -625,9 +641,9 @@ void RFM_I2SEx_TxRxCpltCallback( I2S_HandleTypeDef *hi2s )
 				//	printf ( "G" );
 				//  Queue Audio Data
 
-				qBufGet( &g_qBufAudioRx, (uint8_t*)t_audio_buff, ( I2S_DMA_LOOP_SIZE * 2 ) );
-
 #if defined( USE_AUDIO_INTERPOL_COMPRESS )	//	보간압축사용.
+
+				qBufGet( &g_qBufAudioRx, (uint8_t*)t_audio_buff, ( I2S_DMA_LOOP_SIZE * 2 ) );
 
 				int dtVal;	//	sample 보간.
 				static int16_t nlastSample = 0;
@@ -658,7 +674,11 @@ void RFM_I2SEx_TxRxCpltCallback( I2S_HandleTypeDef *hi2s )
 			//		outBuf[ i ] = bufAudioDec[i / AUDIO_COMPR_RATE];
 				}
 
-#endif	//	defined( USE_AUDIO_INTERPOL_COMPRESS )	//	보간압축사용.
+#else	//	defined( USE_AUDIO_INTERPOL_COMPRESS )	//	보간압축사용.
+
+				qBufGet( &g_qBufAudioRx, (uint8_t*)pAudioTx, ( I2S_DMA_LOOP_SIZE * 2 ) );
+
+#endif
 			}
 			else
 			{
@@ -706,8 +726,9 @@ void RFM_I2SEx_TxRxCpltCallback( I2S_HandleTypeDef *hi2s )
 				bRxBuffering = 1;
 			}
 		}
-	}
 
+		//========================================================================
+	}
 }
 
 
