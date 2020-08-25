@@ -57,7 +57,7 @@
 // Command:                  RF_GPIO_PIN_CFG
 // Description:              Configures the GPIO pins.
 */
-#define RF_GPIO_PIN_CFG 0x13, 0x00, 0x00, 0x60, 0x61, 0x00, 0x00, 0x00
+#define RF_GPIO_PIN_CFG 0x13, 0x00, 0x00, 0x61, 0x60, 0x00, 0x00, 0x00
 
 /*
 // Set properties:           RF_GLOBAL_XO_TUNE_2
@@ -183,7 +183,7 @@
 //   PKT_CONFIG1 - General configuration bits for transmission or reception of a packet.
 //   PKT_CONFIG2 - General packet configuration bits.
 */
-#define RF_PKT_WHT_POLY_7_0_6 0x11, 0x12, 0x06, 0x02, 0x08, 0x01, 0x0F, 0x07, 0x82, 0x80
+#define RF_PKT_WHT_POLY_7_0_6 0x11, 0x12, 0x06, 0x02, 0x08, 0x01, 0x0F, 0x07, 0x83, 0x80
 
 /*
 // Set properties:           RF_PKT_CONFIG2_12

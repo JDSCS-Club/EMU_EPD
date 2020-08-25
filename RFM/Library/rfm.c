@@ -527,11 +527,9 @@ static int bRxBuffering = 1;	//  Rx Buffering. ( Packet 4 ~ Packet 0)
 void RFM_I2SEx_TxRxCpltCallback( I2S_HandleTypeDef *hi2s )
 //========================================================================
 {
-//#if defined( USE_AUDIO_INTERPOL_COMPRESS )	//	보간압축사용.
 	static int idx = 0;
 	int16_t		*pAudioTx;
 	int16_t		*pAudioRx;
-//#endif
 
 	if ( GetDevID() == DevRF900M && bRxBuffering == 1 )
 	{
@@ -597,10 +595,8 @@ void RFM_I2SEx_TxRxCpltCallback( I2S_HandleTypeDef *hi2s )
 
 #else	//	defined( USE_AUDIO_INTERPOL_COMPRESS )	//	보간압축사용.
 			//========================================================================
-
 			//	Queue Put
 			qBufPut( &g_qBufAudioTx, (uint8_t *)pAudioRx, ( I2S_DMA_LOOP_SIZE * 2 ) );
-
 #endif
 		}
 

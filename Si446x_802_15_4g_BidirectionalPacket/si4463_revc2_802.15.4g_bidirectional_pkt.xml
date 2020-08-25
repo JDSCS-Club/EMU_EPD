@@ -412,13 +412,13 @@
           <Checked>True</Checked>
         </DataItem>
         <DataItem Type="System.Windows.Forms.ComboBox" Name="cbbGpio2">
-          <SelectedIndex>TX_STATE</SelectedIndex>
+          <SelectedIndex>RX_STATE</SelectedIndex>
         </DataItem>
         <DataItem Type="System.Windows.Forms.CheckBox" Name="chbGpio3Pullup">
           <Checked>True</Checked>
         </DataItem>
         <DataItem Type="System.Windows.Forms.ComboBox" Name="cbbGpio3">
-          <SelectedIndex>RX_STATE</SelectedIndex>
+          <SelectedIndex>TX_STATE</SelectedIndex>
         </DataItem>
         <DataItem Type="System.Windows.Forms.CheckBox" Name="chbNirqPullup">
           <Checked>False</Checked>

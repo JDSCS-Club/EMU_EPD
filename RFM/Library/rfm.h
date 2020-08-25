@@ -31,7 +31,7 @@
 
 #define		USE_RFT_ONLY_RX_SPK_ON			1		//	송신기 수신중일때 만 Spk On.
 
-//#define		USE_AUDIO_INTERPOL_COMPRESS		1		//	보간압축사용.
+#define		USE_AUDIO_INTERPOL_COMPRESS		1		//	보간압축사용.
 
 #define		USE_SEND_STATUS					1		//	상태정보 전송 사용.
 
