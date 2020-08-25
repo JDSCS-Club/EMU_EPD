@@ -569,7 +569,7 @@ void LoopProcPkt( int nTick )
 
 #endif
 
-#if 1
+#if defined(USE_SHOW_PKT)
 	static int s_oldTick = 0;
 
 	if( ( nTick - s_oldTick ) >= 1000 )

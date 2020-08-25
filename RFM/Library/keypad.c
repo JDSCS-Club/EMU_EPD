@@ -257,6 +257,16 @@ void KeyPtt( int bValue )
 //========================================================================
 {
 	//========================================================================
+#if defined( USE_TEST_PTT_AUDIO_LOOP )
+
+	//	Audio Loopback Test
+	KeyTestLoopback( bValue );
+
+	return ;
+#endif
+	//========================================================================
+
+	//========================================================================
 	//	bValue : 0(Up) / 1(Down)
 	printf( "%s(%d) - %d\n", __func__, __LINE__, bValue );
 
@@ -373,7 +383,7 @@ void	KeyPwrOnOff		( int bValue )
 void	KeyTestLoopback( int bValue )
 {
 
-#if 0
+#if 1
 
 	//	Speex Loopback Test
 	//	Audio Loopback Proc
@@ -382,24 +392,24 @@ void	KeyTestLoopback( int bValue )
 	{
 		//	송신중
 		LCDSetCursor( 10, 13 );
-		LCDPrintf( "Audio Speex" );
+		LCDPrintf( "Audio Loop" );
 
 		//	Spk On
-		LCDSpeaker( 1 );
+//		LCDSpeaker( 1 );
+//		LCDSpeaker( 1 );
 
 		HAL_GPIO_WritePin( SPK_ON_GPIO_Port, SPK_ON_Pin, GPIO_PIN_SET );
 
 		//	Codec Loopback On
 //		AudioRxTxLoop();
-//		AudioLoopbackDMA();
+		AudioLoopbackDMA();
 
 		//	Codec Loopback On
 //		AudioPlayDMASine();
 
 //DEL		AudioLoopbackDMASpeex();
 		//	-> Speex는 성능문제로 사용 X
-
-		AudioLoopbackDMACompress();
+//		AudioLoopbackDMACompress();
 	}
 	else
 	{
@@ -408,7 +418,7 @@ void	KeyTestLoopback( int bValue )
 		LCDPrintf( "편성 : 100" );
 
 		//	Spk Off
-		LCDSpeaker( 0 );
+//		LCDSpeaker( 0 );
 
 		HAL_GPIO_WritePin( SPK_ON_GPIO_Port, SPK_ON_Pin, GPIO_PIN_RESET );
 

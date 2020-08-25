@@ -507,9 +507,9 @@ int cmd_rspid     ( int argc, char * argv[] )
 //	interpolation compress ( 보간압축 )
 #if defined( USE_AUDIO_INTERPOL_COMPRESS )	//	보간압축사용.
 
-#define	AUDIO_COMPR_RATE	8	//	Audio 압축율.
+//#define	AUDIO_COMPR_RATE	8	//	Audio 압축율.
 //#define	AUDIO_COMPR_RATE	6	//	Audio 압축율.
-//#define	AUDIO_COMPR_RATE	4	//	Audio 압축율.
+#define	AUDIO_COMPR_RATE	4	//	Audio 압축율.
 //#define	AUDIO_COMPR_RATE	2	//	Audio 압축율.
 //#define	AUDIO_COMPR_RATE	1	//	Audio 압축율.
 
@@ -1097,9 +1097,11 @@ void LoopProcRFM ( int nTick )
 			HAL_GPIO_TogglePin( STANDBY_GPIO_Port, STANDBY_Pin );
 		}
 
+#if defined(USE_SEND_STATUS)	//	상태 정보 전송.
 		//========================================================================
 		RF_Ping();	//	상태정보전송.
 		//========================================================================
+#endif
 
 		s_nTickStandby = nTick;
 	}

@@ -433,12 +433,10 @@ int	AudioLoopbackDMA( void )
 {
 	printf( "%s(%d)\n", __func__, __LINE__ );
 
-//	AudioRxTxLoop();
-
 	SetCallbackI2STxRxCplt( Default_I2SEx_TxRxCpltCallback );
 
 	//	Speex ( 1 frame ) : 160 sample ( 320 bytes ) / 20 msec
-	HAL_I2SEx_TransmitReceive_DMA( &hi2s3, (uint16_t*)bufAudio, (uint16_t*)&bufAudio[FRAME_SIZE], FRAME_SIZE );
+	HAL_I2SEx_TransmitReceive_DMA( &hi2s3, (uint16_t*)bufAudio, (uint16_t*)&bufAudio[FRAME_SIZE], I2S_DMA_LOOP_SIZE );
 
 	return 0;
 }
