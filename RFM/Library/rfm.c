@@ -319,6 +319,9 @@ void RF_RxTx_Mode()
 void	RFM_Spk			( int bOnOff )		//	1(On) / 0(Off)
 //========================================================================
 {
+	if( GetDbgLevel() > 0 )
+		printf("%s(%d) - %d\n", __func__, __LINE__, bOnOff);
+
     if ( bOnOff )
     {
         //  Spk Relay On
@@ -531,12 +534,6 @@ void RFM_I2SEx_TxRxCpltCallback( I2S_HandleTypeDef *hi2s )
 	int16_t		*pAudioTx;
 	int16_t		*pAudioRx;
 
-	if ( GetDevID() == DevRF900M && bRxBuffering == 1 )
-	{
-		//========================================================================
-		//  수신기 & 버퍼링중. -> Skip
-	}
-	else
 	{
 #if defined( USE_AUDIO_INTERPOL_COMPRESS )	//	보간압축사용.
 
@@ -569,7 +566,6 @@ void RFM_I2SEx_TxRxCpltCallback( I2S_HandleTypeDef *hi2s )
 #endif
 	}
 
-	if ( GetDevID() == DevRF900T )
 	{
 		//========================================================================
 		//  송신기.
@@ -685,46 +681,7 @@ void RFM_I2SEx_TxRxCpltCallback( I2S_HandleTypeDef *hi2s )
 		}
 		//  */
 	}
-	else
-	{
-		//========================================================================
-		//  수신기.
 
-		memset( t_audio_buff, 0, I2S_DMA_LOOP_SIZE * 2 );
-		//  Rx Buffering ( Packet Count : 0 ~ 4 )
-		//  RF-Rx -> t_audio_buff
-		if ( bRxBuffering )
-		{
-			//  Buffering
-			if ( qBufCnt( &g_qBufAudioRx ) > ( ( I2S_DMA_LOOP_SIZE * 2 ) * 3 ) )
-			{
-				//  패킷이 4개 이상인경우 버퍼링 종료.
-				bRxBuffering = 0;
-
-				printf ( "E" );	 //  버퍼링종료
-			}
-		}
-
-		if ( bRxBuffering == 0 )
-		{
-			//  Rx Audio Out
-			if ( qBufCnt( &g_qBufAudioRx ) >= ( I2S_DMA_LOOP_SIZE * 2 ) )
-			{
-				//	printf ( "G" );
-				//  Queue Audio Data
-				qBufGet( &g_qBufAudioRx, (uint8_t *)t_audio_buff, ( I2S_DMA_LOOP_SIZE * 2 ) );
-			}
-			else
-			{
-				printf ( "B" );	 //  버퍼링시작
-
-				//  Data
-				bRxBuffering = 1;
-			}
-		}
-
-		//========================================================================
-	}
 }
 
 
@@ -1011,7 +968,6 @@ void LoopProcRFM ( int nTick )
 					else					bufRFTx.hdr.nPktCmd = PktCall;	//  송신기 -> 송신기
 #endif
 
-
 					SendPacket( (uint8_t *)&bufRFTx,
 						pRadioConfiguration->Radio_PacketLength );
 				}
@@ -1046,13 +1002,6 @@ void LoopProcRFM ( int nTick )
 		//========================================================================
 		//  수신기.
 		//  Buffering
-		if ( bRxBuffering == 1 &&
-			qBufCnt( &g_qBufAudioRx ) > ( ( I2S_DMA_LOOP_SIZE * 2 ) * 2 ) )
-		{
-			//  버퍼링 완료시점.
-			//	  I2S 구동 재계.
-			HAL_I2SEx_TxRxCpltCallback( &hi2s3 );
-		}
 
 		//========================================================================
 		//	RSSI 수신감도 체크.
@@ -1119,7 +1068,7 @@ void LoopProcRFM ( int nTick )
 
 		if ( GetRFMMode() == RFMModeNormal )
 		{
-			RF_Ping();	//	상태정보전송.
+		    SendStat();		//	상태정보전송.
 		}
 		//========================================================================
 #endif

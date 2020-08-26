@@ -131,14 +131,7 @@ void SendStat( void )
 
 	//========================================================================
 	//	Send RF
-#if 1
 	SendPacket( (U8 *)&stPkt, (U8)sizeof( RFMPktHdr ) + sizeof( RFMPktStat ) );
-
-#else
-	vRadio_StartTx_Variable_Packet( (unsigned char)pRadioConfiguration->Radio_ChannelNumber, \
-									(unsigned char *)&stPkt, \
-									pRadioConfiguration->Radio_PacketLength );
-#endif
 	//64 );
 //		(unsigned char)(sizeof( RFMPktHdr ) + sizeof(RFMPktStat)) );
 
@@ -169,14 +162,7 @@ void SendPA( int nStartStop )
 	//========================================================================
 	//	Send RF
 
-#if 1
 	SendPacket( (U8 *)&stPkt, (U8)sizeof( RFMPktHdr ) + sizeof( RFMPktPACall ) );
-
-#else
-	vRadio_StartTx_Variable_Packet ( (U8)pRadioConfiguration->Radio_ChannelNumber,
-		(U8 *)&stPkt,
-		(U8)sizeof( RFMPktHdr ) + sizeof( RFMPktPACall ) );// pRadioConfiguration->Radio_PacketLength );
-#endif
 
 	//========================================================================
 }
@@ -205,13 +191,7 @@ void SendCall( int nStartStop )
 	//========================================================================
 	//	Send RF
 
-#if 1
 	SendPacket( (U8 *)&stPkt, (U8)sizeof( RFMPktHdr ) + sizeof( RFMPktPACall ) );
-#else
-	vRadio_StartTx_Variable_Packet ( (U8)pRadioConfiguration->Radio_ChannelNumber,
-		(U8 *)&stPkt,
-		(U8)(sizeof( RFMPktHdr ) + sizeof( RFMPktPACall )) );// pRadioConfiguration->Radio_PacketLength );
-#endif
 
 	//========================================================================
 }
@@ -239,14 +219,7 @@ void SendLight( int nOnOff )
 
 	//========================================================================
 	//	Send RF
-#if 1
 	SendPacket( (U8 *)&stPkt, (U8)sizeof( RFMPktHdr ) + sizeof( RFMPktLight ) );
-#else
-
-	vRadio_StartTx_Variable_Packet ( (U8)pRadioConfiguration->Radio_ChannelNumber,
-		(U8 *)&stPkt,
-		(U8)sizeof( RFMPktHdr ) + sizeof( RFMPktLight ) );// pRadioConfiguration->Radio_PacketLength );
-#endif
 
 	//========================================================================
 }
@@ -262,14 +235,7 @@ void SendLightOn( void )
 
 	_MakePktHdr( &stPkt, GetDevID(), DevRF900M, sizeof( RFMPktLight ), PktLightOn );
 
-#if 1
 	SendPacket( (U8 *)&stPkt, (U8)sizeof( RFMPktHdr ) + sizeof( RFMPktLight ) );
-#else
-	vRadio_StartTx_Variable_Packet ( (U8)pRadioConfiguration->Radio_ChannelNumber,
-		(U8 *)&stPkt,
-//		(U8)sizeof( RFMPktHdr ) + sizeof( RFMPktLight ) );// 
-		pRadioConfiguration->Radio_PacketLength );
-#endif
 }
 
 //==========================================================================
@@ -282,14 +248,7 @@ void SendLightOff( void )
 
 	_MakePktHdr( &stPkt, GetDevID(), DevRF900M, sizeof( RFMPktLight ), PktLightOff );
 
-#if 1
 	SendPacket( (U8 *)&stPkt, (U8)sizeof( RFMPktHdr ) + sizeof( RFMPktLight ) );
-#else
-	vRadio_StartTx_Variable_Packet ( (U8)pRadioConfiguration->Radio_ChannelNumber,
-		(U8 *)&stPkt,
-//		(U8)sizeof( RFMPktHdr ) + sizeof( RFMPktLight ) );// 
-		pRadioConfiguration->Radio_PacketLength );
-#endif
 }
 
 //==========================================================================

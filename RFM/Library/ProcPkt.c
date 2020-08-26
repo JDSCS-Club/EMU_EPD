@@ -233,9 +233,12 @@ void CallbackRecvPacket( const char *pData, int nSize )
 //		printf ( "P" );
 
 
-	if( GetDevID() == DevRF900T && pRFPkt->hdr.nPktCmd == PktCall )
+	if	( 	pRFPkt->hdr.nPktCmd == PktCall
+			&& GetDevID() == DevRF900T
+		)
 	{
-		//  송신기
+		//========================================================================
+		//  통화 ( SOS )
 		uint16_t	 *pAudioBuf = (uint16_t*)pRFPkt->dat.data;
 
 //		stampRx = nTick;
@@ -263,6 +266,8 @@ void CallbackRecvPacket( const char *pData, int nSize )
 #endif
 			  )
 	{
+		//========================================================================
+		//  방송 ( PTT )
 		if ( GetDevID() == DevRF900M )
 		{
 			//  수신기
@@ -277,6 +282,7 @@ void CallbackRecvPacket( const char *pData, int nSize )
 //			stampRx = nTick;
 			SetRFMMode( RFMModeRx );
 
+			RFM_Spk(1);
 			//  수신기 Spk Relay On
 			HAL_GPIO_WritePin( AUDIO_ON_GPIO_Port, AUDIO_ON_Pin, GPIO_PIN_SET );
 		}
@@ -303,10 +309,9 @@ void CallbackRecvPacket( const char *pData, int nSize )
 			HAL_GPIO_WritePin ( LED_ON_B_GPIO_Port, LED_ON_B_Pin, GPIO_PIN_SET ); //  RED LED
 		}
 	}
-
 	//========================================================================
 	//  Status Data
-	if ( pRFPkt->hdr.nPktCmd == PktStat )
+	else if ( pRFPkt->hdr.nPktCmd == PktStat )
 	{
 		int nRspID = pRFPkt->dat.stat.nCarNo;
 		RFMPktStat *pStat = &pRFPkt->dat.stat;
