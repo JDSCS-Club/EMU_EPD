@@ -247,6 +247,42 @@ void vRadio_StartRX(U8 channel, U8 packetLenght )
 			SI446X_CMD_START_RX_ARG_NEXT_STATE3_RXINVALID_STATE_ENUM_RX );
 }
 
+
+U8 get_CCA(void)
+{
+	//	Get Clear Channel Assessment
+	U8 tmp[10];
+	int8_t value;
+
+	si446x_get_modem_status(0xff);
+	//	*(int8_t *)value = (Si446xCmd.GET_MODEM_STATUS.CURR_RSSI/2)-0x40-70;
+
+	//	printf("CCA(%d)\n", value);
+
+	//	printf("CCA(%d,%d)",
+	//			Si446xCmd.GET_MODEM_STATUS.CURR_RSSI,
+	//			Si446xCmd.GET_MODEM_STATUS.LATCH_RSSI
+	//			);
+
+	//	return 0;
+	//	if(tmp[3] > 0xa0)
+//	if(Si446xCmd.GET_MODEM_STATUS.CURR_RSSI < 0xa0)
+	if(Si446xCmd.GET_MODEM_STATUS.CURR_RSSI < 0x80)
+	{
+		//		printk(KERN_ALERT "rssi: %d\n", tmp[3]);
+		//	Clear Channel
+		return 1;
+	}
+	else
+	{
+		//	Busy Channel
+		return 0;
+	}
+
+	//	return tmp[3] > 0xa0 ? 1 : 0;
+	//	return gpio_get_value(GPIO0)>0 ? 1 : 0;
+}
+
 /*!
  *  Set Radio to TX mode, variable packet length.
  *
@@ -269,42 +305,20 @@ void vRadio_StartTx_Variable_Packet(U8 channel, U8 *pioRadioPacket, U8 length)
 	/* Fill the TX fifo with datas */
 	si446x_write_tx_fifo(length, pioRadioPacket);
 
+	//	CCA ( Clear Channel Assessment )
+	//	Wait CCA
+	while (!get_CCA())
+	{
+		//			ndelay(1000);
+		//			tx_approved = 0;
+		//			add_timer(&tx_withdraw_timer);
+		//			wait_event_interruptible(wait_withdraw, tx_approved);
+		HAL_Delay(1);
+		//		goto again;
+	}
+
 	/* Start sending packet, channel 0, START immediately */
 	si446x_start_tx(channel, 0x80, length);
-}
-
-U8 get_CCA(void)
-{
-	//	Get Clear Channel Assessment
-	U8 tmp[10];
-	int8_t value;
-
-	si446x_get_modem_status(0xff);
-	//	*(int8_t *)value = (Si446xCmd.GET_MODEM_STATUS.CURR_RSSI/2)-0x40-70;
-
-	//	printf("CCA(%d)\n", value);
-
-	//	printf("CCA(%d,%d)",
-	//			Si446xCmd.GET_MODEM_STATUS.CURR_RSSI,
-	//			Si446xCmd.GET_MODEM_STATUS.LATCH_RSSI
-	//			);
-
-	//	return 0;
-	//	if(tmp[3] > 0xa0)
-	if(Si446xCmd.GET_MODEM_STATUS.CURR_RSSI < 0xa0)
-	{
-		//		printk(KERN_ALERT "rssi: %d\n", tmp[3]);
-		//	Clear Channel
-		return 1;
-	}
-	else
-	{
-		//	Busy Channel
-		return 0;
-	}
-
-	//	return tmp[3] > 0xa0 ? 1 : 0;
-	//	return gpio_get_value(GPIO0)>0 ? 1 : 0;
 }
 
 /*!
