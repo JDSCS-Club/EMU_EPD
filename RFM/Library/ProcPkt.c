@@ -325,7 +325,7 @@ void CallbackRecvPacket( const char *pData, int nSize )
 			)
 		{
 			//	장치 응답 Flag 설정.
-			g_flagRspID	|= ( 0x1 << nRspID );
+			SetStat( nRspID );		//	상태정보 설정.
 		}
 	}
 

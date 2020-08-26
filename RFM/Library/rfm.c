@@ -45,6 +45,7 @@
 int		g_nDevID		=	DevNone;			//  Device ID ( 1 : RF900M / 2 : RF900T )
 
 int		g_idxTrainSet	=	0;	  				//  Train Set Index
+int		g_nCarNo		=	0;	  				//  Car Number
 
 int	 	g_nSpkLevel		=	DefaultSpkVol;		//  Default (1) - 0(Mute) / 1 / 2(Normal) / 3
 
@@ -143,7 +144,7 @@ void	SetTrainSetIdx	( int idxTrainSet )
 
 
 //========================================================================
-int		GetCarNo		( void )
+int		LoadCarNo		( void )
 //========================================================================
 {
     uint8_t     nCarNo = 0;
@@ -160,7 +161,25 @@ int		GetCarNo		( void )
     if ( GetDbgLevel() > 0 )
     	printf( "%s(%d) - %d\n", __func__, __LINE__, nCarNo );
 
+    g_nCarNo = nCarNo;
+
     return nCarNo;
+}
+
+//========================================================================
+int		GetCarNo		( void )
+//========================================================================
+{
+	static int s_bOnce = 0;
+
+	if ( s_bOnce == 0 )
+	{
+		//	초기로딩시 I2C에서 Load
+		g_nCarNo = LoadCarNo();
+		s_bOnce = 1;
+	}
+
+	return g_nCarNo;
 }
 
 //========================================================================
@@ -176,6 +195,8 @@ void	SetCarNo		( int nCarNo )
 
 	if ( GetDbgLevel() > 0 )
     	printf( "%s(%d) - %d\n", __func__, __LINE__, nCarNo );
+
+	g_nCarNo = nCarNo;
 
     at24_HAL_WriteBytes( &hi2c1, 0xA0, 0x0E, (uint8_t *)&nCarNo, 1 );
 }
@@ -1069,11 +1090,50 @@ void LoopProcRFM ( int nTick )
 		if ( GetRFMMode() == RFMModeNormal )
 		{
 		    SendStat();		//	상태정보전송.
+
+		    //	Reflash Status
+		    UpdateStat( nTick );	//	상태정보 갱신.
 		}
 		//========================================================================
 #endif
 
 		s_nTickStandby = nTick;
+	}
+}
+
+int	stampStat[16] = { 0, };		//	Time Stamp Status
+
+//========================================================================
+void SetStat( int nRspID )
+//========================================================================
+{
+	//	상태정보 저장.
+	//	상태정보 수신 시간 저장.
+
+	//	장치 응답 Flag 설정.
+	g_flagRspID	|= ( 0x1 << nRspID );
+
+	//	TimeStamp 저장.
+	stampStat[nRspID] = HAL_GetTick();
+}
+
+//========================================================================
+void UpdateStat( int nTick )
+//========================================================================
+{
+	//	상태정보 갱신.
+	//	Timeout 초과 상태정보 Disable
+
+	int idx;
+
+	for( idx = 0; idx < 16; idx++ )
+	{
+		if ( GetCarNo() == idx ) continue;
+
+		if ( ( nTick - stampStat[idx] ) > TIMEOUT_RECV_STATUS * 1000 )
+		{
+			g_flagRspID &= ~( 0x1 << idx );
+		}
 	}
 }
 

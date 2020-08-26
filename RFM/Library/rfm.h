@@ -68,6 +68,7 @@ void	SetTrainSetIdx	( int idxTrainSet );
 
 int		GetCarNo		( void );
 void	SetCarNo		( int nCarNo );
+int		LoadCarNo		( void );			//	I2C에서 Loading
 
 int		GetSpkVol	    ( void );
 void	SetSpkVol	    ( int nSpkVol );
