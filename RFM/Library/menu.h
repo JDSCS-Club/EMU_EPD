@@ -43,6 +43,8 @@ void 	ProcMenuMain		( int idxItem );	//	Main
 void	ProcMenuTrainSet	( int idxItem );	//	TrainSet
 void 	ProcMenuLightCtrl	( int idxItem );	//	LightCtrl
 
+void 	ProcMenuDiag		( int idxItem );	//	Diag
+
 //========================================================================
 
 void	ProcLightOn		( void );

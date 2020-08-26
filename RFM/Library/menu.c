@@ -67,6 +67,21 @@ Menu_t	g_MenuTrainSet = {
 	ProcMenuTrainSet		//	Callback Function
 };
 
+#if defined(USE_RFT_MENU_DIAG)
+char *_sDiagList[] = {
+	" AudioLoop:Off",	//  Loopback Off
+	" AudioLoop:On",	//  Loopback On
+	" AudioSine:On",	//  Sine Wave On
+};
+
+Menu_t	g_MenuDiagList = {
+	_sDiagList,
+	sizeof(_sDiagList)/sizeof(char *),		//	Item Count
+	0,						// 	curr Idx
+	ProcMenuDiag		//	Callback Function
+};
+#endif	//	defined(USE_RFT_MENU_DIAG)
+
 //========================================================================
 //	Main Menu
 
@@ -74,6 +89,9 @@ char *_sMainMenu[] = {
 	"1. 조명제어",
 	"2. S/W 버전",
 	"3. 편성설정",
+#if defined(USE_RFT_MENU_DIAG)
+	"4. 진    단",
+#endif	//	defined(USE_RFT_MENU_DIAG)
 };
 
 Menu_t	g_MenuMain = {
@@ -294,6 +312,17 @@ void 	ProcMenuMain( int idxItem )
 
 		UpdateLCDMenu();
 		break;
+#if defined(USE_RFT_MENU_DIAG)
+
+	case 3:		 //  진단
+
+		SetActiveMenu( &g_MenuDiagList );
+		GetActiveMenu()->currIdx = 0;	//	메뉴 Index초기화.
+
+		UpdateLCDMenu();
+		break;
+
+#endif
 
 #if defined(USE_ENV_TEST)
 	case 3:		 //  RF 출력
@@ -338,6 +367,57 @@ void 	ProcMenuLightCtrl( int idxItem )
 
 	//  Rx모드
 	RF_Rx_Mode();
+}
+
+
+//========================================================================
+void 	ProcMenuDiag( int idxItem )
+//========================================================================
+{
+	LCDMenuUpDown( 0 );
+
+//	" AudioLoop:Off",	//  Loopback Off
+//	" AudioLoop:On",	//  Loopback On
+//	" AudioSine:On",	//  Sine Wave On
+
+	switch( idxItem )
+	{
+	case 0:	//	Audio Loopback Off
+		HAL_GPIO_WritePin( SPK_ON_GPIO_Port, SPK_ON_Pin, GPIO_PIN_RESET );
+
+		//	Codec Loopback Off
+		AudioStop();
+
+		break;
+
+	case 1:	//	Audio Loopback On
+		printf( "%s(%d) - sine\n", __func__, __LINE__ );
+		LCDPrintf( "Audio Loop" );
+
+		HAL_GPIO_WritePin( SPK_ON_GPIO_Port, SPK_ON_Pin, GPIO_PIN_SET );
+
+		AudioLoopbackDMA();
+		break;
+
+	case 2:	//	Audio Sine Wave On
+		printf( "%s(%d) - sine\n", __func__, __LINE__ );
+		LCDPrintf( "Audio Sine" );
+
+		HAL_GPIO_WritePin( SPK_ON_GPIO_Port, SPK_ON_Pin, GPIO_PIN_SET );
+
+		AudioPlayDMASine();
+		break;
+
+	default:
+		printf("%s(%d) - invalid menu(%d)\n", __func__, __LINE__, idxItem);
+		break;
+	}
+
+	//  1초후 Main화면 갱신.
+//	HAL_Delay( 1000 );
+//	UpdateLCDMain();
+
+//	SetActiveMenu( NULL );
 }
 
 //========================================================================

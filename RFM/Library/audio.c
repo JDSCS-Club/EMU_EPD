@@ -191,13 +191,13 @@ void AudioInit( void )
 	//========================================================================
 }
 
-//========================================================================
-void AudioSine( void )
-//========================================================================
-{
-	SetCallbackI2STxRxCplt( AudioSine_I2SEx_TxRxCpltCallback );
-	HAL_I2SEx_TransmitReceive_DMA( &hi2s3, (uint16_t*)bufAudio, (uint16_t*)&bufAudio[FRAME_SIZE], FRAME_SIZE );
-}
+////========================================================================
+//void AudioSine( void )
+////========================================================================
+//{
+//	SetCallbackI2STxRxCplt( AudioSine_I2SEx_TxRxCpltCallback );
+//	HAL_I2SEx_TransmitReceive_DMA( &hi2s3, (uint16_t*)bufAudio, (uint16_t*)&bufAudio[FRAME_SIZE], FRAME_SIZE );
+//}
 
 
 //========================================================================
@@ -757,7 +757,7 @@ int cmd_audio( int argc, char *argv[] )
 	{
 		//	Audio Output Sine Wave
 		printf( "%s(%d) - sine\n", __func__, __LINE__ );
-		AudioSine();
+		AudioPlayDMASine();
 
 //		//	Spk On
 //		HAL_GPIO_WritePin( SPK_ON_GPIO_Port, SPK_ON_Pin, GPIO_PIN_SET );

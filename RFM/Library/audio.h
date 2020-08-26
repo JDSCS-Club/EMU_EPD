@@ -73,7 +73,7 @@ extern int16_t	r_audio_buff[];
 //	AudioXXXX - I2S 제어
 
 void	AudioInit				( void );
-void	AudioSine				( void );
+//void	AudioSine				( void );
 void	AudioStop				( void );
 
 void	SetCallbackI2STxRxCplt	( void ( *pCallbackTxRxCplt )( I2S_HandleTypeDef *hi2s ) );
@@ -109,6 +109,8 @@ void	InitCodecMAX9860	( void );
 int		AudioLoopbackDMA		( void );
 int 	AudioLoopbackDMASpeex	( void );
 int		AudioLoopbackDMACompress( void );
+
+int		AudioPlayDMASine		( void );
 
 void	LoopProcAudio			( void );
 

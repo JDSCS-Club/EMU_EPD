@@ -35,6 +35,8 @@
 
 //#define		USE_IEEE802_15_4G	1		//	radio_config_802_15_4g.h 사용.
 
+#define		USE_RFT_MENU_DIAG				1		//	송신기 진단 메뉴 사용.
+
 
 //========================================================================
 #endif	//	RFM_CONFIG_H
