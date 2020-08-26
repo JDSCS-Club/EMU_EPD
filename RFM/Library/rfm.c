@@ -90,7 +90,7 @@ void	SetRFMMode	( int nRFMMode )
 		{
 		case RFMModeNormal:		printf("Normal");	break;
 		case RFMModeTx:			printf("Tx");		break;
-		case RFMModeRx:			printf("Tx");		break;
+		case RFMModeRx:			printf("Rx");		break;
 		default:				printf("N/A");		break;
 		}
 		printf("(%d)\n", nRFMMode);
