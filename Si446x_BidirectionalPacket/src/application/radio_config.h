@@ -20,7 +20,7 @@
 // INPUT DATA
 /*
 // Crys_freq(Hz): 30000000    Crys_tol(ppm): 20    IF_mode: 2    High_perf_Ch_Fil: 1    OSRtune: 0    Ch_Fil_Bw_AFC: 0    ANT_DIV: 0    PM_pattern: 0    
-// MOD_type: 5    Rsymb(sps): 500000    Fdev(Hz): 50000    RXBW(Hz): 150000    Manchester: 0    AFC_en: 0    Rsymb_error: 0.0    Chip-Version: 2    
+// MOD_type: 5    Rsymb(sps): 500000    Fdev(Hz): 50000    RXBW(Hz): 150000    Manchester: 0    AFC_en: 1    Rsymb_error: 0.0    Chip-Version: 2    
 // RF Freq.(MHz): 915    API_TC: 29    fhst: 250000    inputBW: 0    BERT: 0    RAW_dout: 0    D_source: 0    Hi_pfm_div: 1    
 // API_ARR_Det_en: 0    Fdev_error: 0    API_ETSI: 0    
 // 
@@ -57,7 +57,7 @@
 // Command:                  RF_GPIO_PIN_CFG
 // Description:              Configures the GPIO pins.
 */
-#define RF_GPIO_PIN_CFG 0x13, 0x00, 0x00, 0x61, 0x60, 0x00, 0x00, 0x00
+#define RF_GPIO_PIN_CFG 0x13, 0x00, 0x1B, 0x21, 0x20, 0x00, 0x00, 0x00
 
 /*
 // Set properties:           RF_GLOBAL_XO_TUNE_2
@@ -106,7 +106,7 @@
 //   FRR_CTL_C_MODE - Fast Response Register C Configuration.
 //   FRR_CTL_D_MODE - Fast Response Register D Configuration.
 */
-#define RF_FRR_CTL_A_MODE_4 0x11, 0x02, 0x04, 0x00, 0x00, 0x00, 0x00, 0x00
+#define RF_FRR_CTL_A_MODE_4 0x11, 0x02, 0x04, 0x00, 0x07, 0x0A, 0x00, 0x00
 
 /*
 // Set properties:           RF_PREAMBLE_TX_LENGTH_9
@@ -348,7 +348,7 @@
 //   MODEM_AFC_LIMITER_0 - Set the AFC limiter value.
 //   MODEM_AFC_MISC - Specifies miscellaneous AFC control bits.
 */
-#define RF_MODEM_AFC_LIMITER_1_3 0x11, 0x20, 0x03, 0x30, 0x01, 0x52, 0xA0
+#define RF_MODEM_AFC_LIMITER_1_3 0x11, 0x20, 0x03, 0x30, 0x01, 0x52, 0xE0
 
 /*
 // Set properties:           RF_MODEM_AGC_CONTROL_1
@@ -401,7 +401,7 @@
 //   MODEM_RSSI_CONTROL2 - RSSI Jump Detection control.
 //   MODEM_RSSI_COMP - RSSI compensation value.
 */
-#define RF_MODEM_RAW_CONTROL_10 0x11, 0x20, 0x0A, 0x45, 0x03, 0x00, 0xD0, 0x01, 0x00, 0xA0, 0x08, 0x21, 0x18, 0x40
+#define RF_MODEM_RAW_CONTROL_10 0x11, 0x20, 0x0A, 0x45, 0x03, 0x00, 0xD0, 0x02, 0x00, 0xA0, 0x08, 0x21, 0x18, 0x40
 
 /*
 // Set properties:           RF_MODEM_RAW_SEARCH2_2
