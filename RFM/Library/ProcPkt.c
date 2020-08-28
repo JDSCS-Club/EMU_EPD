@@ -198,7 +198,11 @@ void CallbackRecvPacket( const char *pData, int nSize )
 	//========================================================================
 	//	Packet Filtering
 	//		- Pkt 처리 여부 확인.
-	if ( pRFPkt->hdr.nSeq != 0 && pRFPkt->hdr.nSeq == g_nPktSeq )
+	if	(	pRFPkt->hdr.nSeq != 0 &&
+			(	pRFPkt->hdr.nSeq == g_nPktSeq		//	Seq가 같은 Packet 수신시 Drop
+				|| GetRFMMode() == RFMModeTx		//	송신모드에서는 Packet Drop
+			)
+		)
 	{
 		//	이미 처리된 Packet Skip.
 		nDropPkt++;
