@@ -327,6 +327,8 @@ void KeySos( int bValue )
 		LCDSetCursor( 20, 13 );
 		LCDPrintf( "통화중..." );
 
+		SetRFMMode( RFMModeTx );
+
 		//	통화 - 시작
 		SendCall( 1 );		//	SendRF - Send Call ( 송신기 -> 송신기 )
 	}
@@ -335,6 +337,8 @@ void KeySos( int bValue )
 		//    편성 : 100
 		LCDSetCursor( 20, 13 );
 		LCDPrintf( "편성 : 100" );
+
+		SetRFMMode( RFMModeNormal );
 
 		//	통화 - 종료
 		SendCall( 0 );		//	SendRF - Send Call ( 송신기 -> 송신기 )

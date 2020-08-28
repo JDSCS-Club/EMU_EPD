@@ -99,6 +99,12 @@ void	SetRFMMode	( int nRFMMode )
 		printf("(%d)\n", nRFMMode);
 	}
 
+	if ( g_nRFMMode != nRFMMode && nRFMMode == RFMModeNormal )
+	{
+		//	타 모드에서 Normal 모드로 변경시 상태정보 ID Flag값 유지.
+		ReflashStat();
+	}
+
 	g_nRFMMode = nRFMMode;
 }
 
@@ -1142,11 +1148,37 @@ void UpdateStat( int nTick )
 
 	for( idx = 0; idx < 16; idx++ )
 	{
-		if ( GetCarNo() == idx ) continue;
+		if ( GetCarNo() == idx )
+		{
+			//	자신의 ID Skip
+			continue;
+		}
 
 		if ( ( nTick - stampStat[idx] ) > TIMEOUT_RECV_STATUS * 1000 )
 		{
 			g_flagRspID &= ~( 0x1 << idx );
+		}
+	}
+}
+
+
+//========================================================================
+void ReflashStat( void )
+//========================================================================
+{
+	//	상태정보 시간 갱신.
+	//	-> 상태정보 시간 최신값으로 유지.
+	//	-> 방송/통화 중 상태정보 전송을 하지 않기 때문에 방송통화 이후에 상태정보가 Reset되는 현상 방지.
+
+	int nStamp = HAL_GetTick();
+
+	int idx;
+
+	for( idx = 0; idx < 16; idx++ )
+	{
+		if( g_flagRspID & ( 0x1 << idx ) )
+		{
+			stampStat[idx] = nStamp;
 		}
 	}
 }
