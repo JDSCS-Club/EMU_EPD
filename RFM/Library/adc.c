@@ -129,11 +129,6 @@ void LoopProcAdc( int nTick )
 		if ( GetRFMMode() == RFMModeNormal )
 		{
 			Adc_Power();
-
-	#if defined(USE_RSSI)
-			//	RSSI Ping
-			RF_RSSI();	//	주기적으로 상태정보 전송.
-	#endif	//	defined(USE_RSSI)
 		}
 
 		oldTick = nTick;

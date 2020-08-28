@@ -114,7 +114,7 @@ U16 wPayloadLenghtFromPhr(U8* pbPhrMsb);
 void Dump( const char *sTitle, const char *sBuf, int nSize )
 //========================================================================
 {
-	if ( GetDbgLevel() == 0 )	return;
+	if ( GetDbgLevel() < 2 )	return;
 
 	printf( "%s : ", sTitle );
 

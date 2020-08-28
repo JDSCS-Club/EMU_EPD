@@ -53,6 +53,7 @@ extern int		g_nSpkLevel;		//  Default (2) - 0(Mute) / 1 / 2(Normal) / 3
 
 extern int		g_idxTrainSet;		//  Train Set Index
 
+extern int		g_offsetCA;			//	충돌회피 Offset ( msec )
 
 //========================================================================
 int		GetRFMMode		( void );

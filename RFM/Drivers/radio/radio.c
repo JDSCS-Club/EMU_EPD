@@ -10,6 +10,8 @@
 #include "si446x_defs.h"        //  U8, U16, ...
 #include "si446x_api_lib.h"     //  SI446X_SUCCESS
 
+#include "main.h"				//	GPIO1_Pin
+
 #include "radio.h"				//	tRadioConfiguration
 
 #if defined(USE_IEEE802_15_4G)
@@ -194,6 +196,13 @@ U8 bRadio_Check_Tx_RX(void)
         	g_pRadioRxPkt = &g_RadioRxPkt[s_idxRxPkt][0];
 			si446x_read_rx_fifo(Si446xCmd.FIFO_INFO.RX_FIFO_COUNT, g_pRadioRxPkt);
 
+			//========================================================================
+			si446x_frr_b_read(1);
+
+			if( GetDbgLevel() > 2 )
+				printf("Latch RSSI : %02d\n",Si446xCmd.FRR_B_READ.FRR_B_VALUE);
+			//========================================================================
+
 			//      printf("rx");
 			// Configure PKT_CONFIG1 for RX
 #if defined(USE_IEEE802_15_4G)
@@ -250,6 +259,15 @@ void vRadio_StartRX(U8 channel, U8 packetLenght )
 
 U8 get_CCA(void)
 {
+#if 1
+	//	CCA - GPIO1 ( CCA )
+
+	//	Si4463 - GPIO1 ( 0 : Clear / 1 : Busy )
+
+	return !( HAL_GPIO_ReadPin( GPIO1_GPIO_Port, GPIO1_Pin ) );
+
+#else
+
 	//	Get Clear Channel Assessment
 	U8 tmp[10];
 	int8_t value;
@@ -267,7 +285,12 @@ U8 get_CCA(void)
 	//	return 0;
 	//	if(tmp[3] > 0xa0)
 //	if(Si446xCmd.GET_MODEM_STATUS.CURR_RSSI < 0xa0)
-	if(Si446xCmd.GET_MODEM_STATUS.CURR_RSSI < 0x80)
+//	if(Si446xCmd.GET_MODEM_STATUS.CURR_RSSI < 0x80)
+//	if(Si446xCmd.GET_MODEM_STATUS.CURR_RSSI < 0x40)
+//	if(Si446xCmd.GET_MODEM_STATUS.CURR_RSSI < 0x10)
+//	if(Si446xCmd.GET_MODEM_STATUS.CURR_RSSI < 0x08)
+	if(Si446xCmd.GET_MODEM_STATUS.CURR_RSSI < 0x06)
+//	if(Si446xCmd.GET_MODEM_STATUS.CURR_RSSI < 0x04)
 	{
 		//		printk(KERN_ALERT "rssi: %d\n", tmp[3]);
 		//	Clear Channel
@@ -275,12 +298,14 @@ U8 get_CCA(void)
 	}
 	else
 	{
+		printf("C");
 		//	Busy Channel
 		return 0;
 	}
 
 	//	return tmp[3] > 0xa0 ? 1 : 0;
 	//	return gpio_get_value(GPIO0)>0 ? 1 : 0;
+#endif
 }
 
 /*!

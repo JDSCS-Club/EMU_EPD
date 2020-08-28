@@ -51,6 +51,8 @@ int	 	g_nSpkLevel		=	DefaultSpkVol;		//  Default (1) - 0(Mute) / 1 / 2(Normal) /
 
 int	 	g_nRFMMode 		=	RFMModeNormal;		//  eRFMMode
 
+int		g_offsetCA		=	0;					//	충돌회피 Offset ( msec ) ( 0 ~ 1000 )
+
 //========================================================================
 
 //========================================================================
@@ -84,7 +86,7 @@ int		GetRFMMode	( void )
 void	SetRFMMode	( int nRFMMode )
 //========================================================================
 {
-	if( GetDbgLevel() > 0 )
+	if( GetDbgLevel() > 1 )
 	{
 		printf( "%s : ", __func__ );
 		switch( nRFMMode )
@@ -273,33 +275,34 @@ void RF_RSSI( void )
 //========================================================================
 {
     //  Send RF Ping Packet.
-    RF_Ping();
+//    RF_Ping();
 //
 //    return;
 //
-//    //  Get Modem Status.
-//    si446x_get_modem_status_fast_clear_read();
-//
-//    if ( GetDbgLevel() > 0 )
-//    {
-//        printf( "%s(%d) - ant1:%d / ant2:%d / curr:%d / latch:%d\n", __func__, __LINE__,
-//                Si446xCmd.GET_MODEM_STATUS.ANT1_RSSI,
-//                Si446xCmd.GET_MODEM_STATUS.ANT2_RSSI,
-//                Si446xCmd.GET_MODEM_STATUS.CURR_RSSI,
-//                Si446xCmd.GET_MODEM_STATUS.LATCH_RSSI
-//        );
-//    }
-//
-//    uint16_t rssi;
-//
-//    rssi = Si446xCmd.GET_MODEM_STATUS.LATCH_RSSI;
-//
-//    if ( rssi > 200 )                        LCDRSSI( 5 );  //  RSSI 5
-//    else if ( 160 < rssi && rssi <= 200 )    LCDRSSI( 4 );  //  RSSI 4
-//    else if ( 130 < rssi && rssi <= 160 )    LCDRSSI( 3 );  //  RSSI 3
-//    else if ( 100 < rssi && rssi <= 130 )    LCDRSSI( 2 );  //  RSSI 2
-//    else if ( 85 < rssi && rssi <= 100 )     LCDRSSI( 1 );  //  RSSI 1
-//    else if ( rssi <= 85 )                   LCDRSSI( 0 );  //  RSSI 0
+    //  Get Modem Status.
+    si446x_get_modem_status_fast_clear_read();
+//	si446x_get_modem_status(0xff);
+
+    if ( GetDbgLevel() > 0 )
+    {
+        printf( "%s(%d) - ant1:%d / ant2:%d / curr:%d / latch:%d\n", __func__, __LINE__,
+                Si446xCmd.GET_MODEM_STATUS.ANT1_RSSI,
+                Si446xCmd.GET_MODEM_STATUS.ANT2_RSSI,
+                Si446xCmd.GET_MODEM_STATUS.CURR_RSSI,
+                Si446xCmd.GET_MODEM_STATUS.LATCH_RSSI
+        );
+    }
+
+    uint16_t rssi;
+
+    rssi = Si446xCmd.GET_MODEM_STATUS.LATCH_RSSI;
+
+    if ( rssi > 200 )                        LCDRSSI( 5 );  //  RSSI 5
+    else if ( 160 < rssi && rssi <= 200 )    LCDRSSI( 4 );  //  RSSI 4
+    else if ( 130 < rssi && rssi <= 160 )    LCDRSSI( 3 );  //  RSSI 3
+    else if ( 100 < rssi && rssi <= 130 )    LCDRSSI( 2 );  //  RSSI 2
+    else if ( 85 < rssi && rssi <= 100 )     LCDRSSI( 1 );  //  RSSI 1
+    else if ( rssi <= 85 )                   LCDRSSI( 0 );  //  RSSI 0
 }
 
 
@@ -340,7 +343,7 @@ void RF_RxTx_Mode()
 void	RFM_Spk			( int bOnOff )		//	1(On) / 0(Off)
 //========================================================================
 {
-	if( GetDbgLevel() > 0 )
+	if( GetDbgLevel() > 1 )
 		printf("%s(%d) - %d\n", __func__, __LINE__, bOnOff);
 
     if ( bOnOff )
@@ -884,6 +887,21 @@ int InitRFM( void )
 
 #endif
 
+	//========================================================================
+	//	Random seed 설정.
+	//	편성 & 호차 & TickCount로 설정.
+
+	srand( HAL_GetTick() * 100 + GetTrainSetIdx() * 10 + GetCarNo() );
+
+	//	Set Offset
+	g_offsetCA = rand() % 1000;
+	printf( "%s(%d) - offsetCA( %d )\n", __func__, __LINE__, g_offsetCA );
+
+	//	초기 시작 Delay
+	HAL_Delay(g_offsetCA);
+
+	//========================================================================
+
 }
 
 //========================================================================
@@ -1018,31 +1036,6 @@ void LoopProcRFM ( int nTick )
 			nOldRFMMode = nRFMMode;
 		}
 	}
-	else
-	{
-		//========================================================================
-		//  수신기.
-		//  Buffering
-
-		//========================================================================
-		//	RSSI 수신감도 체크.
-		static int oldTick = 0;
-
-		if ( nTick - oldTick > 1000 )
-		{
-			//  Period : 1 sec
-			if ( GetRFMMode() == RFMModeNormal )
-			{
-#if defined(USE_RSSI)
-				//	RSSI Ping
-				RF_RSSI();	//	주기적으로 상태정보 전송.
-#endif	//	defined(USE_RSSI)
-			}
-
-			oldTick = nTick;
-		}
-	}
-	//========================================================================
 
 	//========================================================================
 	//	수신중 해제
@@ -1096,8 +1089,24 @@ void LoopProcRFM ( int nTick )
 		}
 		//========================================================================
 #endif
-
 		s_nTickStandby = nTick;
+	}
+
+	//========================================================================
+	//	RSSI 수신감도 체크.
+	static int oldTickRSSI = 0;
+
+	if ( nTick - oldTickRSSI > 100 )
+	{
+		//  Period : 1 sec
+//		if ( GetRFMMode() == RFMModeNormal )
+		{
+#if defined(USE_RSSI)
+			RF_RSSI();	//	주기적으로 상태정보 전송.
+#endif	//	defined(USE_RSSI)
+		}
+
+		oldTickRSSI = nTick;
 	}
 }
 
@@ -1123,6 +1132,11 @@ void UpdateStat( int nTick )
 {
 	//	상태정보 갱신.
 	//	Timeout 초과 상태정보 Disable
+	if( g_bSetRspIDManual )
+	{
+		//	수동설정모드인 경우 return
+		return ;
+	}
 
 	int idx;
 
