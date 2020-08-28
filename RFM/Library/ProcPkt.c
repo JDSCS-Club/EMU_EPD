@@ -240,28 +240,36 @@ void CallbackRecvPacket( const char *pData, int nSize )
 //		printf ( "P" );
 
 
-	if	( 	pRFPkt->hdr.nPktCmd == PktCall
-			&& GetDevID() == DevRF900T
-		)
+	if	( 	pRFPkt->hdr.nPktCmd == PktCall	)
 	{
-		//========================================================================
-		//  통화 ( SOS )
-		uint16_t	 *pAudioBuf = (uint16_t*)pRFPkt->dat.data;
+		if( GetDevID() == DevRF900T )
+		{
+			//	송신기
 
-//		stampRx = nTick;
-		SetRFMMode( RFMModeRx );
+			//========================================================================
+			//  통화 ( SOS )
+			uint16_t	 *pAudioBuf = (uint16_t*)pRFPkt->dat.data;
 
-#if defined(USE_RFT_ONLY_RX_SPK_ON)
-		//  송신기 : 수신중인 경우 SPK ON
-//		HAL_GPIO_WritePin( SPK_ON_GPIO_Port, SPK_ON_Pin, GPIO_PIN_SET );
-		RFM_Spk(1);
-#endif
+			SetRFMMode( RFMModeRx );
 
-		//  Red LED On
-		HAL_GPIO_WritePin ( LED_ON_B_GPIO_Port, LED_ON_B_Pin, GPIO_PIN_SET ); //  RED LED
+	#if defined(USE_RFT_ONLY_RX_SPK_ON)
+			//  송신기 : 수신중인 경우 SPK ON
+	//		HAL_GPIO_WritePin( SPK_ON_GPIO_Port, SPK_ON_Pin, GPIO_PIN_SET );
+			RFM_Spk(1);
+	#endif
 
-		//  통화 : 송신기 -> 송신기
-		qBufPut( &g_qBufAudioRx, (uint8_t*)pAudioBuf, ( I2S_DMA_LOOP_SIZE * 2 ) );
+			//  Red LED On
+			HAL_GPIO_WritePin ( LED_ON_B_GPIO_Port, LED_ON_B_Pin, GPIO_PIN_SET ); //  RED LED
+
+			//  통화 : 송신기 -> 송신기
+			qBufPut( &g_qBufAudioRx, (uint8_t*)pAudioBuf, ( I2S_DMA_LOOP_SIZE * 2 ) );
+		}
+		else if ( GetDevID() == DevRF900M )
+		{
+			//	수신기
+
+			SetRFMMode( RFMModeRx );
+		}
 	}
 	else if (
 			pRFPkt->hdr.nPktCmd == PktPA
@@ -286,7 +294,6 @@ void CallbackRecvPacket( const char *pData, int nSize )
 			// 조명 On
 			HAL_GPIO_WritePin ( LIGHT_ON_GPIO_Port, LIGHT_ON_Pin, GPIO_PIN_SET );
 
-//			stampRx = nTick;
 			SetRFMMode( RFMModeRx );
 
 			RFM_Spk(1);
@@ -309,7 +316,6 @@ void CallbackRecvPacket( const char *pData, int nSize )
 			//========================================================================
 
 			//  송신기
-//			stampRx = nTick;
 			SetRFMMode( RFMModeRx );
 
 			//  Red LED On
