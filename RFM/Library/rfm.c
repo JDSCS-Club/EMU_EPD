@@ -834,6 +834,10 @@ int InitRFM( void )
 		//  LCD : Spk Icon
 		LCDSpeaker( g_nSpkLevel );		//  Spk Icon : Spk On
 		//========================================================================
+#if defined(USE_AUDIO_INTERPOL_COMPRESS)
+		//	보간압축 사용시 음량 Level 조절.
+		WriteI2CCodec( 0x0B, 0x60 );	//  10 ( +18 dB )
+#endif
 	}
 	else
 	{
@@ -842,8 +846,16 @@ int InitRFM( void )
 		SetDevID( DevRF900M );	 //  수신기.
 
 		//  수신기 스피커 레벨 변경.
+#if defined(USE_AUDIO_INTERPOL_COMPRESS)
+		//	보간압축 사용시 음량 Level 조절.
+//		WriteI2CCodec( 0x09, 0x06 );	//  0x12 ( 0 )
+		WriteI2CCodec( 0x09, 0x00 );	//  0x00 ( +3 )
+		WriteI2CCodec( 0x0B, 0x60 );	//  10 ( +18 dB )
+
+#else
 		WriteI2CCodec( 0x09, 0x12 );	//  0x12 ( -6 )
 //		WriteI2CCodec( 0x09, 0x1A );	//  0x1A ( -10 )
+#endif
 	}
 	//========================================================================
 
