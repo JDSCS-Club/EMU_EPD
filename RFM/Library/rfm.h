@@ -55,6 +55,8 @@ extern int		g_idxTrainSet;		//  Train Set Index
 
 extern int		g_offsetCA;			//	충돌회피 Offset ( msec )
 
+extern int		g_nStampCallPa;		//	방송/통화 Stamp
+
 //========================================================================
 int		GetRFMMode		( void );
 void	SetRFMMode		( int nRFMMode );

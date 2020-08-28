@@ -53,6 +53,8 @@ int	 	g_nRFMMode 		=	RFMModeNormal;		//  eRFMMode
 
 int		g_offsetCA		=	0;					//	충돌회피 Offset ( msec ) ( 0 ~ 1000 )
 
+int		g_nStampCallPa	=	0;					//	방송/통화 Stamp
+
 //========================================================================
 
 //========================================================================
@@ -1041,11 +1043,18 @@ void LoopProcRFM ( int nTick )
 
 			nOldRFMMode = nRFMMode;
 		}
+
+		//========================================================================
+		//	상태정보 모니터링중 - 상태정보값 갱신.
+		if( GetRFMMode() == RFMModeNormal )
+		{
+			UpdateLCDMonitor( nTick );		//	LCD : 모니터링 상태 Update
+		}
 	}
 
 	//========================================================================
 	//	수신중 해제
-	if( nTick - nRxStamp > 500 && GetRFMMode() == RFMModeRx )
+	if ( nTick - g_nStampCallPa > TIMEOUT_RXSTAT && GetRFMMode() == RFMModeRx )
 	{
 		// Rx 패킷이 500 ms 없을 경우 수신모드 해제
 		SetRFMMode( RFMModeNormal );

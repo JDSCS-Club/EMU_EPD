@@ -32,6 +32,10 @@
 #define		USE_HOPPING						1		//	Hopping
 
 //========================================================================
+//	방송/통화
+#define		TIMEOUT_RXSTAT					1000		//	1 sec ( 1000 msec )
+
+//========================================================================
 //	상태정보 송/수신
 #define		USE_SEND_STATUS					1		//	상태정보 전송 사용.
 #define		TIMEOUT_RECV_STATUS				4		//	상태정보 수신 Timeout. ( seconds )
@@ -51,6 +55,8 @@
 #define		USE_RFT_MENU_DIAG				1		//	송신기 진단 메뉴 사용.
 
 #define		USE_RFT_MENU_TRAINSET			1		//	송신기 편성설정.
+
+#define		USE_RFT_MENU_STAT				1		//	상태정보 현시 메뉴 사용.
 
 //========================================================================
 //	시험용 설정

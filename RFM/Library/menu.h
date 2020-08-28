@@ -50,12 +50,15 @@ void 	ProcMenuDiag		( int idxItem );	//	Diag
 void	ProcLightOn		( void );
 void	ProcLightOff	( void );
 void	ProcDispVer		( void );
+void	ProcDispStat 	( void );
 
 //========================================================================
 //	Menu LCD Disp
 
-void    UpdateLCDMain	( void );
-void    UpdateLCDMenu	( void );
+void    UpdateLCDMain		( void );
+void    UpdateLCDMenu		( void );
+
+void	UpdateLCDMonitor	( int nTick );		//	LCD : 모니터링 상태 Update
 
 //========================================================================
 //	Menu Key Proc

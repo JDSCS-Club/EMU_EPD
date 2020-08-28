@@ -270,6 +270,9 @@ void CallbackRecvPacket( const char *pData, int nSize )
 
 			SetRFMMode( RFMModeRx );
 		}
+
+		g_nStampCallPa = HAL_GetTick();		//	방송/통화 Stamp
+
 	}
 	else if (
 			pRFPkt->hdr.nPktCmd == PktPA
@@ -321,6 +324,7 @@ void CallbackRecvPacket( const char *pData, int nSize )
 			//  Red LED On
 			HAL_GPIO_WritePin ( LED_ON_B_GPIO_Port, LED_ON_B_Pin, GPIO_PIN_SET ); //  RED LED
 		}
+		g_nStampCallPa = HAL_GetTick();		//	방송/통화 Stamp
 	}
 	//========================================================================
 	//  Status Data

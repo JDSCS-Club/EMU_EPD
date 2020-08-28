@@ -28,6 +28,8 @@
 
 #include "radio.h"					//	pRadioConfiguration
 
+#include "ProcPkt.h"				//	g_flagRspID
+
 
 //========================================================================
 //	Menu LightCtrl
@@ -92,6 +94,9 @@ char *_sMainMenu[] = {
 #if defined(USE_RFT_MENU_DIAG)
 	"4. 진    단",
 #endif	//	defined(USE_RFT_MENU_DIAG)
+#if defined(USE_RFT_MENU_STAT)
+	"5. 상태정보",
+#endif	//	defined(USE_RFT_MENU_STAT)
 };
 
 Menu_t	g_MenuMain = {
@@ -106,6 +111,8 @@ Menu_t	g_MenuMain = {
 //========================================================================
 Menu_t	*g_pActiveMenu	=	NULL;
 //========================================================================
+
+static int _bEnDispStat = 0;
 
 //========================================================================
 void	SetActiveMenu( Menu_t *pActiveMenu )
@@ -165,6 +172,27 @@ void	UpdateLCDMenu( void )
 
 	LCDSetCursor( 20, 13 );
 	LCDPrintf( sMenu[*pIdxMenu] );
+}
+
+//========================================================================
+void	UpdateLCDMonitor( int nTick )
+//========================================================================
+{
+	static int oldTick = 0;
+
+	if ( nTick - oldTick > 1000 )
+	{
+		if( _bEnDispStat )
+		{
+			//	상태정보 현시.
+			LCDSetCursor( 5, 13 );
+
+			char sBuf[100];
+			sprintf(sBuf, "Stat : 0x%04X", g_flagRspID );
+			LCDPrintf( sBuf );
+		}
+		oldTick = nTick;
+	}
 }
 
 
@@ -262,6 +290,15 @@ void	ProcDispVer ( void )
 }
 
 //========================================================================
+void	ProcDispStat ( void )
+//========================================================================
+{
+	//========================================================================
+	//	Display Status Enable
+	_bEnDispStat		=	1;
+}
+
+//========================================================================
 void	ProcMenuTrainSet( int idxItem  )
 //========================================================================
 {
@@ -312,6 +349,7 @@ void 	ProcMenuMain( int idxItem )
 
 		UpdateLCDMenu();
 		break;
+
 #if defined(USE_RFT_MENU_DIAG)
 
 	case 3:		 //  진단
@@ -320,6 +358,18 @@ void 	ProcMenuMain( int idxItem )
 		GetActiveMenu()->currIdx = 0;	//	메뉴 Index초기화.
 
 		UpdateLCDMenu();
+		break;
+
+#endif
+
+
+#if defined(USE_RFT_MENU_STAT)
+
+	case 4:		 //  상태정보.
+
+		SetActiveMenu( NULL );
+
+		ProcDispStat();			//	상태정보 표출.
 		break;
 
 #endif
@@ -430,6 +480,10 @@ void	ProcBtnOK( void )
 		//========================================================================
 		//  편성 : XXX
 		UpdateLCDMain();
+
+		//========================================================================
+		//	Display Status Disable
+		_bEnDispStat		=	0;
 
 		return;
 	}
