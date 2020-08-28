@@ -207,8 +207,11 @@ void CallbackRecvPacket( const char *pData, int nSize )
 
 	//========================================================================
 	//	Hopping
+	uint16_t flagID = g_flagRspID &	(~(0x1 << GetCarNo()));		//	자신의 ID Flag를 제외한 값.
+
 	if ( pRFPkt->hdr.nSeq != 0 && pRFPkt->hdr.nIDFlag != 0 &&
-		(((~pRFPkt->hdr.nIDFlag) & g_flagRspID) != 0 ) )
+		( ( (~pRFPkt->hdr.nIDFlag) & flagID ) != 0 )
+		)
 	{
 		//	전송 범위 밖의 Device가 수신된 경우.
 		//	Rsp Flag 설정 후에 전송.
@@ -222,7 +225,11 @@ void CallbackRecvPacket( const char *pData, int nSize )
 		//
 	}
 
-	g_nPktSeq = pRFPkt->hdr.nSeq;	//	Packet Seq 갱신.
+	if ( pRFPkt->hdr.nSeq != 0 )
+	{
+		//	Seq No. 가 0이 아닌경우 Seq 갱신.
+		g_nPktSeq = pRFPkt->hdr.nSeq;	//	Packet Seq 갱신.
+	}
 
 	//	Device ID Flag 확인.
 
