@@ -87,7 +87,7 @@
             <Checked>True</Checked>
           </DataItem>
           <DataItem Type="System.Windows.Forms.NumericUpDown" Name="nudRssiThreshold">
-            <Value>160</Value>
+            <Value>80</Value>
           </DataItem>
         </pnlRssiControl>
         <grbHighPerformance Type="System.Windows.Forms.GroupBox">
