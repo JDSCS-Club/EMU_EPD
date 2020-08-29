@@ -56,7 +56,7 @@
     <tbpRfParameters Type="System.Windows.Forms.TabPage">
       <grbRfParameters Type="System.Windows.Forms.GroupBox">
         <DataItem Type="System.Windows.Forms.ComboBox" Name="cbbModulationType">
-          <SelectedIndex>4</SelectedIndex>
+          <SelectedIndex>2</SelectedIndex>
         </DataItem>
         <DataItem Type="System.Windows.Forms.NumericUpDown" Name="nudDataRate">
           <Value>500</Value>
@@ -64,20 +64,11 @@
         <DataItem Type="System.Windows.Forms.NumericUpDown" Name="nudDeviation">
           <Value>50</Value>
         </DataItem>
-        <DataItem Type="System.Windows.Forms.NumericUpDown" Name="nudDeviationError">
-          <Value>0</Value>
-        </DataItem>
-        <DataItem Type="System.Windows.Forms.NumericUpDown" Name="nudDeviationErrorNegative">
-          <Value>0</Value>
-        </DataItem>
         <DataItem Type="System.Windows.Forms.CheckBox" Name="chbManualRxBandwidth">
           <Checked>False</Checked>
         </DataItem>
         <DataItem Type="NewWDS.Applications.App_Common.CustomContols.NumericUpDownExtended" Name="nudBandwidth">
           <Value>150</Value>
-        </DataItem>
-        <DataItem Type="System.Windows.Forms.ComboBox" Name="cbb4GfskMap">
-          <SelectedIndex>7</SelectedIndex>
         </DataItem>
         <DataItem Type="System.Windows.Forms.ComboBox" Name="cbbIfMode">
           <SelectedIndex>0</SelectedIndex>
@@ -123,9 +114,6 @@
           <Checked>False</Checked>
         </DataItem>
         <DataItem Type="System.Windows.Forms.CheckBox" Name="chbEnablePllAFC">
-          <Checked>True</Checked>
-        </DataItem>
-        <DataItem Type="System.Windows.Forms.CheckBox" Name="chbEnableAdaptiveChannelFilterBandwidth">
           <Checked>False</Checked>
         </DataItem>
       </grbRfParameters>
@@ -133,7 +121,7 @@
     <tbpPacketHandler Type="System.Windows.Forms.TabPage">
       <pccPacketHandlerConfigurator Type="NewWDS.PacketConfigControl">
         <DataItem Type="System.Windows.Forms.ComboBox" Name="cbbPacketStructure">
-          <SelectedIndex>0</SelectedIndex>
+          <SelectedIndex>2</SelectedIndex>
         </DataItem>
         <tabGeneralConfig Type="System.Windows.Forms.TabControl">
           <tbpGeneralPacketConfig Type="System.Windows.Forms.TabPage">
@@ -165,10 +153,29 @@
             </DataItem>
             <grbCrcPolynomial Type="System.Windows.Forms.GroupBox">
               <DataItem Type="System.Windows.Forms.ComboBox" Name="cbbCrcPolynomial">
-                <SelectedIndex>7</SelectedIndex>
+                <SelectedIndex>4</SelectedIndex>
               </DataItem>
             </grbCrcPolynomial>
           </tbpGeneralCrcConfig>
+          <tbpGeneralDataWhiteningConfiguration Type="System.Windows.Forms.TabPage">
+            <DataItem Type="System.Windows.Forms.ComboBox" Name="cbbDataWhiteningPolynomial">
+              <SelectedIndex>0</SelectedIndex>
+            </DataItem>
+            <DataItem Type="System.Windows.Forms.MaskedTextBox" Name="mtbDataWhiteningSeed">
+              <Text>FF FF</Text>
+            </DataItem>
+            <DataItem Type="System.Windows.Forms.NumericUpDown" Name="nudOutputBitNumber">
+              <Value>0</Value>
+            </DataItem>
+            <grbPnDirection Type="System.Windows.Forms.GroupBox">
+              <DataItem Type="System.Windows.Forms.RadioButton" Name="rdbPnDirectionForward">
+                <Checked>False</Checked>
+              </DataItem>
+              <DataItem Type="System.Windows.Forms.RadioButton" Name="rdbPnDirectionReversed">
+                <Checked>True</Checked>
+              </DataItem>
+            </grbPnDirection>
+          </tbpGeneralDataWhiteningConfiguration>
           <tbpGeneralFieldConfig Type="System.Windows.Forms.TabPage">
             <grbDataBitOrder Type="System.Windows.Forms.GroupBox">
               <DataItem Type="System.Windows.Forms.RadioButton" Name="rdbDataLsbFirst">
@@ -207,9 +214,6 @@
             </DataItem>
             <DataItem Type="System.Windows.Forms.CheckBox" Name="chbRxChainOnAfterRx">
               <Checked>False</Checked>
-            </DataItem>
-            <DataItem Type="System.Windows.Forms.CheckBox" Name="chbModem4Gfsk">
-              <Checked>True</Checked>
             </DataItem>
           </tbpGeneralFieldConfig>
         </tabGeneralConfig>
@@ -263,9 +267,6 @@
               <DataItem Type="System.Windows.Forms.CheckBox" Name="chbSyncWordManchesterEncoded">
                 <Checked>False</Checked>
               </DataItem>
-              <DataItem Type="System.Windows.Forms.CheckBox" Name="chbSyncWord4GfskModulated">
-                <Checked>True</Checked>
-              </DataItem>
               <DataItem Type="System.Windows.Forms.CheckBox" Name="chbSkipSyncWordTimeout">
                 <Checked>False</Checked>
               </DataItem>
@@ -304,9 +305,6 @@
               <DataItem Type="System.Windows.Forms.CheckBox" Name="chbField5ManchesterEncoding">
                 <Checked>False</Checked>
               </DataItem>
-              <DataItem Type="System.Windows.Forms.CheckBox" Name="chbField54GfskModulated">
-                <Checked>True</Checked>
-              </DataItem>
             </grbField5>
           </tbpField5>
           <tbpField4 Type="System.Windows.Forms.TabPage">
@@ -341,9 +339,6 @@
               </DataItem>
               <DataItem Type="System.Windows.Forms.CheckBox" Name="chbField4ManchesterEncoding">
                 <Checked>False</Checked>
-              </DataItem>
-              <DataItem Type="System.Windows.Forms.CheckBox" Name="chbField44GfskModulated">
-                <Checked>True</Checked>
               </DataItem>
             </grbField4>
           </tbpField4>
@@ -380,9 +375,6 @@
               <DataItem Type="System.Windows.Forms.CheckBox" Name="chbField3ManchesterEncoding">
                 <Checked>False</Checked>
               </DataItem>
-              <DataItem Type="System.Windows.Forms.CheckBox" Name="chbField34GfskModulated">
-                <Checked>True</Checked>
-              </DataItem>
             </grbField3>
           </tbpField3>
           <tbpField2 Type="System.Windows.Forms.TabPage">
@@ -399,7 +391,7 @@
                 </DataItem>
                 <pnlInput Type="System.Windows.Forms.Panel">
                   <DataItem Type="System.Windows.Forms.MaskedTextBox" Name="mtbInput">
-                    <Text>02 00 6A C5 C5 C5 C5 C5 C5 C5 C5 C5 C5 C5 C5 C5 C5 C5 C5 C5 C5 C5 C5 C5 C5 C5 C5 C5 C5 C5 C5 C5 C5 C5 C5 C5 C5 C5 C5 C5 C5 C5 C5 C5 C5 C5 C5 C5 C5 C5 C5 C5 C5 C5 C5 C5 C5 C5 C5 C5 C5 C5</Text>
+                    <Text>02 00 6A C5 C5 C5 C5</Text>
                   </DataItem>
                 </pnlInput>
               </haiField2Content>
@@ -417,9 +409,6 @@
               </DataItem>
               <DataItem Type="System.Windows.Forms.CheckBox" Name="chbField2ManchesterEncoding">
                 <Checked>False</Checked>
-              </DataItem>
-              <DataItem Type="System.Windows.Forms.CheckBox" Name="chbField24GfskModulated">
-                <Checked>True</Checked>
               </DataItem>
             </grbField2>
           </tbpField2>
@@ -442,22 +431,19 @@
                 </pnlInput>
               </haiField1Content>
               <DataItem Type="System.Windows.Forms.CheckBox" Name="chbField1EnableCRC">
-                <Checked>False</Checked>
+                <Checked>True</Checked>
               </DataItem>
               <DataItem Type="System.Windows.Forms.CheckBox" Name="chbField1CheckCRC">
-                <Checked>False</Checked>
+                <Checked>True</Checked>
               </DataItem>
               <DataItem Type="System.Windows.Forms.CheckBox" Name="chbField1TransmitCRC">
-                <Checked>False</Checked>
+                <Checked>True</Checked>
               </DataItem>
               <DataItem Type="System.Windows.Forms.CheckBox" Name="chbField1DataWhitening">
                 <Checked>True</Checked>
               </DataItem>
               <DataItem Type="System.Windows.Forms.CheckBox" Name="chbField1ManchesterEncoding">
                 <Checked>False</Checked>
-              </DataItem>
-              <DataItem Type="System.Windows.Forms.CheckBox" Name="chbField14GfskModulated">
-                <Checked>True</Checked>
               </DataItem>
             </grbField1>
           </tbpField1>
