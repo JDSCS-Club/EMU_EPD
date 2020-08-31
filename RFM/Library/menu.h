@@ -32,9 +32,12 @@ typedef struct _Menu
 	void		(*cbFunc)( int idxItem );	//	Callback Func
 } Menu_t;
 
-extern Menu_t	g_MenuMain;			//	Main Menu
-extern Menu_t	g_MenuLightCtrl;	//	Light Ctrl
-extern Menu_t	g_MenuTrainSet;		//	TrainSet
+extern Menu_t	g_MenuMain;					//	Main Menu
+extern Menu_t	g_MenuLightCtrl;			//	Light Ctrl
+extern Menu_t	g_MenuTrainSet;				//	TrainSet
+
+extern char 	_sVerList[16][20];			//	Version Info
+
 
 //========================================================================
 //	Menu Procedure
@@ -44,6 +47,7 @@ void	ProcMenuTrainSet	( int idxItem );	//	TrainSet
 void 	ProcMenuLightCtrl	( int idxItem );	//	LightCtrl
 
 void 	ProcMenuDiag		( int idxItem );	//	Diag
+void	ProcMenuVer			( int idxItem );	//	Menu Version
 
 //========================================================================
 

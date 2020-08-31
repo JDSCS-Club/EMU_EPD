@@ -69,6 +69,9 @@ Menu_t	g_MenuTrainSet = {
 	ProcMenuTrainSet		//	Callback Function
 };
 
+//========================================================================
+//	Menu Diag
+
 #if defined(USE_RFT_MENU_DIAG)
 char *_sDiagList[] = {
 	" AudioLoop:Off",	//  Loopback Off
@@ -83,6 +86,50 @@ Menu_t	g_MenuDiagList = {
 	ProcMenuDiag		//	Callback Function
 };
 #endif	//	defined(USE_RFT_MENU_DIAG)
+
+//========================================================================
+//	Main Version Info
+
+#if defined(USE_RFT_MENU_DEV_VER)
+
+char _sVerList[16][20] = {
+	"RFM v----",		//  Self Device Version
+//	"01:v1.1.X.X",
+	"01:    --- ",	//	"01:v1.1.X.X",
+	"02:    --- ",	//
+	"03:    --- ",	//
+	"04:    --- ",	//
+	"05:    --- ",	//
+	"06:    --- ",	//
+	"07:    --- ",	//
+	"08:    --- ",	//
+	"09:    --- ",	//
+	"10:    --- ",	//
+	"11:    --- ",	//
+	"12:    --- ",	//
+	"13:    --- ",	//
+	"14:    --- ",	//
+	"15:    --- ",	//
+};
+
+char *_psVerList[] = {
+	_sVerList[0],	_sVerList[1],	_sVerList[2],	_sVerList[3],
+	_sVerList[4],	_sVerList[5],	_sVerList[6],	_sVerList[7],
+	_sVerList[8],	_sVerList[9],	_sVerList[10],	_sVerList[11],
+	_sVerList[12],	_sVerList[13],	_sVerList[14],	_sVerList[15],
+};
+
+
+Menu_t	g_MenuVerList = {
+	_psVerList,
+	sizeof(_psVerList)/sizeof(char *),		//	Item Count
+	0,						// 	curr Idx
+	ProcMenuVer				//	Callback Function
+};
+
+#endif	//	defined(USE_RFT_MENU_DEV_VER)
+//========================================================================
+
 
 //========================================================================
 //	Main Menu
@@ -105,7 +152,6 @@ Menu_t	g_MenuMain = {
 	0,					// 	curr Idx
 	ProcMenuMain		//	Callback Function
 };
-
 
 
 //========================================================================
@@ -318,6 +364,20 @@ void	ProcMenuTrainSet( int idxItem  )
 	SetActiveMenu( NULL );
 }
 
+
+//========================================================================
+void	ProcMenuVer( int idxItem  )
+//========================================================================
+{
+	//	Upgrade Ok / Cancel
+
+	//  메뉴 Exit
+	SetActiveMenu( NULL );
+
+	//	메인화면 갱신.
+	UpdateLCDMain();
+}
+
 //========================================================================
 void 	ProcMenuMain( int idxItem )
 //========================================================================
@@ -336,9 +396,17 @@ void 	ProcMenuMain( int idxItem )
 
 	case 1:		 //  S/W 버전
 		//  메뉴 Exit
-		SetActiveMenu( NULL );
+
+#if defined(USE_RFT_MENU_DEV_VER)
+		SetActiveMenu( &g_MenuVerList );	//	버전 List 현시.
+		GetActiveMenu()->currIdx = 0;		//	메뉴 Index초기화.
 
 		ProcDispVer();
+//		UpdateLCDMenu();
+#else
+		SetActiveMenu( NULL );
+		ProcDispVer();
+#endif
 
 		break;
 

@@ -347,6 +347,8 @@ void CallbackRecvPacket( const char *pData, int nSize )
 		{
 			//	장치 응답 Flag 설정.
 			SetStat( nRspID );		//	상태정보 설정.
+
+			UpdateStat( pStat );	//	상태정보 Update. ( 버전정보 갱신 등 )
 		}
 	}
 

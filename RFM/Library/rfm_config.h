@@ -58,6 +58,8 @@
 
 #define		USE_RFT_MENU_STAT				1		//	상태정보 현시 메뉴 사용.
 
+#define		USE_RFT_MENU_DEV_VER			1		//	장치 버전정보.
+
 //========================================================================
 //	시험용 설정
 //#define		USE_TEST_PTT_AUDIO_LOOP			1		//	Test PTT Key Audio Loopback

@@ -106,7 +106,7 @@ void	SetRFMMode	( int nRFMMode )
 	if ( g_nRFMMode != nRFMMode && nRFMMode == RFMModeNormal )
 	{
 		//	타 모드에서 Normal 모드로 변경시 상태정보 ID Flag값 유지.
-		ReflashStat();
+		ReloadStampStat();
 	}
 
 	g_nRFMMode = nRFMMode;
@@ -1117,7 +1117,7 @@ void LoopProcRFM ( int nTick )
 		    SendStat();		//	상태정보전송.
 
 		    //	Reflash Status
-		    UpdateStat( nTick );	//	상태정보 갱신.
+		    ReflashStat( nTick );	//	상태정보 갱신.
 		}
 		//========================================================================
 #endif
@@ -1142,6 +1142,26 @@ void LoopProcRFM ( int nTick )
 	}
 }
 
+//========================================================================
+void UpdateStat( RFMPktStat *pStat )
+//========================================================================
+{
+	//	버전정보 갱신.
+	if ( pStat == NULL ) return ;
+
+	if ( 0 < pStat->nCarNo && pStat->nCarNo <= MaxCarNo )
+	{
+		//	버전정보 갱신.
+		int idx = pStat->nCarNo;
+		sprintf(_sVerList[idx], "%02d:v%d.%d.%d.%d", idx,
+				pStat->ver_main,
+				pStat->ver_sub,
+				pStat->ver_det,
+				pStat->ver_build
+				);
+	}
+}
+
 int	stampStat[16] = { 0, };		//	Time Stamp Status
 
 //========================================================================
@@ -1159,7 +1179,7 @@ void SetStat( int nRspID )
 }
 
 //========================================================================
-void UpdateStat( int nTick )
+void ReflashStat( int nTick )
 //========================================================================
 {
 	//	상태정보 갱신.
@@ -1189,7 +1209,7 @@ void UpdateStat( int nTick )
 
 
 //========================================================================
-void ReflashStat( void )
+void ReloadStampStat( void )
 //========================================================================
 {
 	//	상태정보 시간 갱신.
