@@ -178,27 +178,35 @@ typedef struct _RFMPktHdr
 typedef struct _RFMPktStat
 {
 	//--------------------------------------------------------------------------
+	//	TEXT 0
 	uint8_t		nStat;			//	Device Status. ( eStatus )
 	uint8_t		nDevID;			//	Device ID
 
 //	uint8_t		nSpare2[2];		//	Spare
 	uint16_t	nMagicNum;		//	0xAA55
-
-	uint32_t	upTime;			//	Device Uptime
 	//--------------------------------------------------------------------------
+	//	TEXT 4
+	uint32_t	upTime;			//	Device Uptime ( msec )
+	//--------------------------------------------------------------------------
+	//	TEXT 8
 	uint16_t	nFrequncy;		//	Frequency	-	주파수
 	uint8_t		nCh;			//	Channel		-	채널
-	uint8_t		nSpare7[1];		//	Spare
+	uint8_t		nSpare11[1];	//	Spare
 	//--------------------------------------------------------------------------
+	//	TEXT 12
 	uint8_t		nTrainNo;		//	편성번호.
 	uint8_t		nCarNo;			//	열차번호.
-	uint8_t		nSpare5[2];		//	Spare
-	//--------------------------------------------------------------------------
 	uint8_t		ver_main;		//	Version Info
-	uint8_t		ver_sub;		//	
+	uint8_t		ver_sub;		//
+	//--------------------------------------------------------------------------
+	//	TEXT 16
 	uint16_t	ver_det;		//	
 	uint16_t	ver_build;		//	
 	//--------------------------------------------------------------------------
+	//	TEXT 20
+	uint16_t	rspID;			//	응답 ID
+	uint8_t		nSpare22[2];	//	Spare
+
 } RFMPktStat;
 
 

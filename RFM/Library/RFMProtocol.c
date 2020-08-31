@@ -30,6 +30,8 @@
 
 #include "ProcPkt.h"			//	SendPacekt()
 
+#include "version.h"			//	Version Info
+
 //==========================================================================
 //	Define
 
@@ -121,13 +123,19 @@ void SendStat( void )
 
 	//========================================================================
 	//	Status Data
-	pStat->ver_main		=	1;
-	pStat->ver_sub		=	0;
+	pStat->ver_main		=	APP_MAIN_VER;		//	1;
+	pStat->ver_sub		=	APP_SUB_VER;		//	0;
+	pStat->ver_det		=	APP_DETAIL_VER;		//	0;
+	pStat->ver_build	=	APP_BUILD_VER;		//	0;
 
-	pStat->nMagicNum	=	0xAA55;		//	패킷 요류검출용.
+	pStat->nMagicNum	=	0xAA55;				//	패킷 요류검출용.
 
 	pStat->nCarNo		=	GetCarNo();
 	pStat->nDevID		=	GetDevID();
+
+	pStat->upTime		=	HAL_GetTick();
+
+	pStat->rspID		=	g_flagRspID;		//	Rsp ID Flag
 
 	//========================================================================
 	//	Send RF
