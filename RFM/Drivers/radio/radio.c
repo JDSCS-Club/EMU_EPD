@@ -29,6 +29,8 @@
 
 #include "ProcPkt.h"			//	nRxErr / nCrcErr
 
+#include "rfm.h"				//	g_nRSSI
+
 /*****************************************************************************
  *  Local Macros & Definitions
  *****************************************************************************/
@@ -198,6 +200,8 @@ U8 bRadio_Check_Tx_RX(void)
 
 			//========================================================================
 			si446x_frr_b_read(1);
+
+			g_nRSSI = Si446xCmd.FRR_B_READ.FRR_B_VALUE;		//	RSSI Value
 
 			if( GetDbgLevel() > 2 )
 				printf("Latch RSSI : %02d\n",Si446xCmd.FRR_B_READ.FRR_B_VALUE);

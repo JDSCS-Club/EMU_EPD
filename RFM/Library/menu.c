@@ -188,7 +188,7 @@ void	UpdateLCDMonitor( int nTick )
 			LCDSetCursor( 5, 13 );
 
 			char sBuf[100];
-			sprintf(sBuf, "Stat : 0x%04X", g_flagRspID );
+			sprintf(sBuf, "Stat:%04X / %02d", g_flagRspID, g_nRSSI );
 			LCDPrintf( sBuf );
 		}
 		oldTick = nTick;
