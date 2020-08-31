@@ -970,6 +970,9 @@ int RFM_main( void )
 
 		//	Loop Proc Packet : RF Packet
 		LoopProcPkt( nTick );
+
+		//	Loop Proc Main Watchdog Count Reload
+		LoopProcMain( nTick );
 	}
 }
 
