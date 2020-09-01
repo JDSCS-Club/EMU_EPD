@@ -57,6 +57,10 @@ int		g_nStampCallPa	=	0;					//	방송/통화 Stamp
 
 int		g_nRSSI			=	0;					//	RSSI Value
 
+#if defined(USE_HOP_MANUAL)
+int		g_nManHopping	=	0;					//	On(1) / Off(2) / Unused(0 : Other)
+#endif	//	defined(USE_HOP_MANUAL)
+
 //========================================================================
 
 //========================================================================
@@ -154,6 +158,48 @@ void	SetTrainSetIdx	( int idxTrainSet )
     at24_HAL_WriteBytes( &hi2c1, 0xA0, 0x10, (uint8_t *)&idxTrainSet, 1 );
 }
 
+#if defined(USE_HOP_MANUAL)
+
+//========================================================================
+int		GetManHop	( void )
+//========================================================================
+{
+    uint8_t     nManHop = 0;
+
+    if ( HAL_OK != HAL_I2C_IsDeviceReady( &hi2c1, (uint16_t)( 0x50 << 1 ), 2, 2 ) )
+    {
+        printf( "%s(%d) - EEPROM Error\n", __func__, __LINE__ );
+
+        return -1;
+    }
+
+    at24_HAL_ReadBytes( &hi2c1, 0xA0, 0x0D, (uint8_t *)&nManHop, 1 );
+
+    if ( nManHop > 2 || nManHop < 0 ) nManHop = 0;
+
+    if ( GetDbgLevel() > 0 )
+    	printf( "%s(%d) - %d\n", __func__, __LINE__, nManHop );
+
+    return nManHop;
+}
+
+//========================================================================
+void	SetManHop	( int nManHop )
+//========================================================================
+{
+    if ( HAL_OK != HAL_I2C_IsDeviceReady( &hi2c1, (uint16_t)( 0x50 << 1 ), 2, 2 ) )
+    {
+        printf( "%s(%d) - EEPROM Error\n", __func__, __LINE__ );
+
+        return ;
+    }
+
+    if ( GetDbgLevel() > 0 )
+    	printf( "%s(%d) - %d\n", __func__, __LINE__, nManHop );
+    at24_HAL_WriteBytes( &hi2c1, 0xA0, 0x0D, (uint8_t *)&nManHop, 1 );
+}
+
+#endif	//	defined(USE_HOP_MANUAL)
 
 //========================================================================
 int		LoadCarNo		( void )
@@ -467,6 +513,29 @@ int cmd_car     ( int argc, char * argv[] )
     printf( "%s(%d) - Car No : %d\n", __func__, __LINE__, nCar );
 
     SetCarNo( nCar );
+}
+
+
+//========================================================================
+int cmd_hop     ( int argc, char * argv[] )
+//========================================================================
+{
+    //	car [Car No] ( 0 ~ 9 )
+    int 		nManHop = 0;
+
+    switch ( argc )
+    {
+    case 2:		sscanf( argv[1], "%d", &nManHop );	        //	cmd [Car No]
+//	case 2:		sText = argv[1];						//	sscanf( argv[1], "%s", sText );		//	cmd [Text]
+        break;
+    }
+
+//  g_nManHopping;		//	On(1) / Off(2) / Unused(0 : Other)
+    if ( nManHop < 0 || 2 < nManHop )  nManHop = 0;
+
+    printf( "%s(%d) - Manual Hop : %d\n", __func__, __LINE__, nManHop );
+
+    SetManHop( nManHop );
 }
 
 
@@ -840,6 +909,12 @@ int InitRFM( void )
 		//	보간압축 사용시 음량 Level 조절.
 		WriteI2CCodec( 0x0B, 0x60 );	//  10 ( +18 dB )
 #endif
+
+#if defined(USE_HOP_MANUAL)
+		//	g_nManHopping;		//	On(1) / Off(2) / Unused(0 : Other)
+		g_nManHopping	=	2;	//	Hopping Diable
+#endif	//	defined(USE_HOP_MANUAL)
+
 	}
 	else
 	{
@@ -862,6 +937,14 @@ int InitRFM( void )
 
 		//		WriteI2CCodec( 0x09, 0x1A );	//  0x1A ( -10 )
 //#endif
+
+#if defined(USE_HOP_MANUAL)
+		//	g_nManHopping;		//	On(1) / Off(2) / Unused(0 : Other)
+		g_nManHopping	=	GetManHop();	//	Hopping Diable
+
+		printf("%s(%d) - Man Hopping ( %d )\n", __func__, __LINE__, g_nManHopping );
+#endif	//	defined(USE_HOP_MANUAL)
+
 	}
 	//========================================================================
 

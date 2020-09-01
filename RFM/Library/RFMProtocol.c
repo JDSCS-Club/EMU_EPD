@@ -32,6 +32,8 @@
 
 #include "version.h"			//	Version Info
 
+#include "rfm.h"				//	g_nManHopping
+
 //==========================================================================
 //	Define
 
@@ -136,6 +138,8 @@ void SendStat( void )
 	pStat->upTime		=	HAL_GetTick();
 
 	pStat->rspID		=	g_flagRspID;		//	Rsp ID Flag
+
+	pStat->nManHop		=	g_nManHopping;		//	Manual Hopping Setting
 
 	//========================================================================
 	//	Send RF

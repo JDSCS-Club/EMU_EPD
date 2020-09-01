@@ -117,8 +117,16 @@ user_command_t	user_command_table[] = {
 		(char *)0,
 		cmd_reset,},
 
-#if		defined(USE_BOOTLOADER)
-#else
+#if defined(USE_HOP_MANUAL)
+
+#endif	//	defined(USE_HOP_MANUAL)
+
+#if defined(USE_HOP_MANUAL)
+	{"hop",
+		"hop		-	hopping",
+		"hop -	hop [ 0:default / 1:On / 2:Off ]",
+		cmd_hop},
+#endif	//	 defined(USE_HOP_MANUAL)
 
 #if defined(_DIAG_H_)
 	{"diag",
@@ -241,7 +249,6 @@ user_command_t	user_command_table[] = {
 
 #endif
 
-#endif
 /*
 	{"ts",
 		"ts       - display task status",

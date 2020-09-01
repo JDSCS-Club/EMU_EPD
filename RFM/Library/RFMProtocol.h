@@ -205,7 +205,8 @@ typedef struct _RFMPktStat
 	//--------------------------------------------------------------------------
 	//	TEXT 20
 	uint16_t	rspID;			//	응답 ID
-	uint8_t		nSpare22[2];	//	Spare
+	uint8_t		nManHop;		//	Manual Hopping 설정. ( 0:Default / 1:On / 2: Off )
+	uint8_t		nSpare22[1];	//	Spare
 
 } RFMPktStat;
 

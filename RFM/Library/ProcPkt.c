@@ -213,9 +213,17 @@ void CallbackRecvPacket( const char *pData, int nSize )
 	//	Hopping
 	uint16_t flagID = g_flagRspID &	(~(0x1 << GetCarNo()));		//	자신의 ID Flag를 제외한 값.
 
-	if ( pRFPkt->hdr.nSeq != 0 && pRFPkt->hdr.nIDFlag != 0 &&
-		( ( (~pRFPkt->hdr.nIDFlag) & flagID ) != 0 )
+#if defined(USE_HOP_MANUAL)
+	if ( ( pRFPkt->hdr.nSeq != 0 && pRFPkt->hdr.nIDFlag != 0 )
+			&& ( ( ( (g_nManHopping == 0) && (((~pRFPkt->hdr.nIDFlag)&flagID) != 0) )	//	Default
+				|| ( g_nManHopping == 1 ) )		//	Hopping On
+				&& !( g_nManHopping == 2 ) )	//	Hopping Off
 		)
+#else
+	if ( pRFPkt->hdr.nSeq != 0 && pRFPkt->hdr.nIDFlag != 0
+			&& ( ( (~pRFPkt->hdr.nIDFlag) & flagID ) != 0 )
+		)
+#endif
 	{
 		//	전송 범위 밖의 Device가 수신된 경우.
 		//	Rsp Flag 설정 후에 전송.

@@ -60,6 +60,10 @@ extern int		g_nStampCallPa;		//	방송/통화 Stamp
 
 extern int		g_nRSSI;			//	RSSI Value
 
+#if defined(USE_HOP_MANUAL)
+extern int		g_nManHopping;		//	On(1) / Off(2) / Unused(0 : Other)
+#endif	//	defined(USE_HOP_MANUAL)
+
 //========================================================================
 int		GetRFMMode		( void );
 void	SetRFMMode		( int nRFMMode );
@@ -78,6 +82,11 @@ int		LoadCarNo		( void );			//	I2C에서 Loading
 
 int		GetSpkVol	    ( void );
 void	SetSpkVol	    ( int nSpkVol );
+
+#if defined(USE_HOP_MANUAL)
+int		GetManHop	( void );
+void	SetManHop	( int nManHop );
+#endif	//	defined(USE_HOP_MANUAL)
 
 
 //========================================================================
@@ -104,6 +113,8 @@ int		cmd_car			( int argc, char * argv[] );
 int		cmd_info		( int argc, char * argv[] );
 int 	cmd_rfstat		( int argc, char * argv[] );
 int		cmd_rspid		( int argc, char * argv[] );
+
+int		cmd_hop			( int argc, char * argv[] );	//	Hopping
 
 #if defined(USE_ENV_TEST)
 

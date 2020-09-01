@@ -31,6 +31,8 @@
 //	패킷 설정.
 #define		USE_HOPPING						1		//	Hopping
 
+#define		USE_HOP_MANUAL					1		//	수동 중계 설정.
+
 //========================================================================
 //	방송/통화
 #define		TIMEOUT_RXSTAT					1000		//	1 sec ( 1000 msec )
