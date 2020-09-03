@@ -36,6 +36,13 @@ extern int			g_bSetRspIDManual;	//  RspID Flag 수동설정. ( 디버깅용 )
 extern uint16_t	 	g_flagRspID;		//  범위 안의 Device ID Flag ( 0 ~ 15 bit )
 extern uint8_t	 	g_nPktSeq;			//  Packet Sequence
 
+#if defined(USE_RFT_TX_MULTI_SEND)
+
+extern int		_nSendAgain;	//	송신기 송신완료후 CH+1에 한번더 송신.
+extern char 	_bufSend[64];
+
+#endif
+
 
 //========================================================================
 //	Dump Function

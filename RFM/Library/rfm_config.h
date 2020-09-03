@@ -52,6 +52,8 @@
 //	송신기
 #define		USE_RFT_ONLY_RX_SPK_ON			1		//	송신기 수신중일때 만 Spk On.
 
+#define		USE_RFT_TX_MULTI_SEND			1		//	방송 송신기 2개 주파수로 송신.
+
 //========================================================================
 //	송신기 메뉴
 #define		USE_RFT_MENU_DIAG				1		//	송신기 진단 메뉴 사용.

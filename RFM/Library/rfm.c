@@ -802,30 +802,6 @@ int InitRFM( void )
 	I2C_BusScan( &hi2c1 );
 	I2C_BusScan( &hi2c3 );
 
-	if ( HAL_OK == HAL_I2C_IsDeviceReady( &hi2c1, (uint16_t)( 0x50 << 1 ), 2, 2 ) )
-	{
-		printf( "%s(%d) - EEPROM OK\n", __func__, __LINE__ );
-		TestEEPROM( &hi2c1 ); //  Test EEPROM
-
-		//========================================================================
-		//  Read TrainSet
-		uint8_t	 idxTrainSet;
-		idxTrainSet = GetTrainSetIdx();
-
-		if ( idxTrainSet < 0 || idxTrainSet >= MaxTrainSet )
-		{
-			idxTrainSet = 0;
-
-			SetTrainSetIdx( idxTrainSet );
-		}
-
-		g_idxTrainSet = idxTrainSet;
-
-		//========================================================================
-		//  Radio Channel 설정.
-		pRadioConfiguration->Radio_ChannelNumber = g_idxTrainSet;
-	}
-
 	//========================================================================
 	//	Car Number 설정.
 	g_flagRspID |= (0x1 << GetCarNo());		//	자신의 ID Flag 설정.
@@ -995,6 +971,34 @@ int InitRFM( void )
 	printf ( "-------------------------\n" );
 
 #endif
+
+	//========================================================================
+	//	Radio 초기화 이후 채널 설정해줌.
+	if ( HAL_OK == HAL_I2C_IsDeviceReady( &hi2c1, (uint16_t)( 0x50 << 1 ), 2, 2 ) )
+	{
+		printf( "%s(%d) - EEPROM OK\n", __func__, __LINE__ );
+		TestEEPROM( &hi2c1 ); //  Test EEPROM
+
+		//========================================================================
+		//  Read TrainSet
+		uint8_t	 idxTrainSet;
+		idxTrainSet = GetTrainSetIdx();
+
+		if ( idxTrainSet < 0 || idxTrainSet >= MaxTrainSet )
+		{
+			idxTrainSet = 0;
+
+			SetTrainSetIdx( idxTrainSet );
+		}
+
+		g_idxTrainSet = idxTrainSet;
+
+		//========================================================================
+		//  Radio Channel 설정.
+		pRadioConfiguration->Radio_ChannelNumber = g_idxTrainSet;
+		printf("%s(%d) - Radio Ch(%d) / g_idxTrainSet(%d)\n", __func__, __LINE__,
+				pRadioConfiguration->Radio_ChannelNumber, g_idxTrainSet );
+	}
 
 	//========================================================================
 	//	Random seed 설정.
@@ -1240,12 +1244,20 @@ void UpdateStat( RFMPktStat *pStat )
 	{
 		//	버전정보 갱신.
 		int idx = pStat->nCarNo;
+
+#if defined(USE_HOP_MANUAL)
+		sprintf(_sVerList[idx], "%02d:v%d/hop(%d)", idx,
+				pStat->ver_build,
+				pStat->nManHop
+				);
+#else
 		sprintf(_sVerList[idx], "%02d:v%d.%d.%d.%d", idx,
 				pStat->ver_main,
 				pStat->ver_sub,
 				pStat->ver_det,
 				pStat->ver_build
 				);
+#endif
 	}
 }
 

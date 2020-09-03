@@ -42,7 +42,7 @@
 const SEGMENT_VARIABLE(Radio_Configuration_Data_Array[], U8, SEG_CODE) = \
 		RADIO_CONFIGURATION_DATA_ARRAY;
 
-const SEGMENT_VARIABLE(RadioConfiguration, tRadioConfiguration, SEG_CODE) = \
+SEGMENT_VARIABLE(RadioConfiguration, tRadioConfiguration, SEG_CODE) = \
 		RADIO_CONFIGURATION_DATA;
 
 //const SEGMENT_VARIABLE_SEGMENT_POINTER(pRadioConfiguration, tRadioConfiguration, SEG_CODE, SEG_CODE) = \
@@ -168,9 +168,38 @@ U8 bRadio_Check_Tx_RX(void)
 			vRadio_StartRX(pRadioConfiguration->Radio_ChannelNumber,
 				pRadioConfiguration->Radio_PacketLength);
 #else
+
+#if defined(USE_RFT_TX_MULTI_SEND)
+	if( GetDevID() == DevRF900T && _nSendAgain == 1 )
+	{
+		//	송신기.
+		_nSendAgain = 0;
+//DEL		memcpy( _bufSend, sBuf[0], pRadioConfiguration->Radio_PacketLength );
+
+		//	송신기. 주파수 2개로 송신.
+		//	2 24칸
+		//		1, 3, 5		-	CH#1
+		//		  2, 4, 6	-	CH#2
+		vRadio_StartTx_Variable_Packet (
+			g_idxTrainSet + 1,	//	pRadioConfiguration->Radio_ChannelNumber + 1,
+			_bufSend,
+			pRadioConfiguration->Radio_PacketLength );
+	}
+	else
+	{
+		//	수신기
+		vRadio_StartRX (
+			g_idxTrainSet,	//	pRadioConfiguration->Radio_ChannelNumber,
+			pRadioConfiguration->Radio_PacketLength );
+	}
+
+#else	// defined(USE_RFT_TX_MULTI_SEND)
+
 			vRadio_StartRX (
-				pRadioConfiguration->Radio_ChannelNumber,
+				g_idxTrainSet,	//	pRadioConfiguration->Radio_ChannelNumber,
 				pRadioConfiguration->Radio_PacketLength );
+
+#endif
 
 #endif
 
@@ -216,7 +245,7 @@ U8 bRadio_Check_Tx_RX(void)
 				pRadioConfiguration->Radio_PacketLength);
 #else
 			vRadio_StartRX (
-				pRadioConfiguration->Radio_ChannelNumber,
+				g_idxTrainSet,	//				pRadioConfiguration->Radio_ChannelNumber,
 				pRadioConfiguration->Radio_PacketLength );
 #endif
 

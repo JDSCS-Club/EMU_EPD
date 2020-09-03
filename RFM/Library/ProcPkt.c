@@ -106,6 +106,14 @@ U8 bBitOrderReverse(U8 bByteToReverse);
 // Extracts PHY payload length from PHR
 U16 wPayloadLenghtFromPhr(U8* pbPhrMsb);
 
+#if defined(USE_RFT_TX_MULTI_SEND)
+
+int		_nSendAgain	=	0;	//	송신기 송신완료후 CH+1에 한번더 송신.
+char 	_bufSend[64];
+
+#endif
+
+
 /*------------------------------------------------------------------------*/
 /*                          Function implementations                      */
 /*------------------------------------------------------------------------*/
@@ -179,7 +187,7 @@ int	InitProcPkt ( void )
 
 	//  RF 수신 Start
 	vRadio_StartRX(
-		pRadioConfiguration->Radio_ChannelNumber,
+		g_idxTrainSet,	//		pRadioConfiguration->Radio_ChannelNumber,
 		pRadioConfiguration->Radio_PacketLength );
 
 #endif
@@ -214,7 +222,8 @@ void CallbackRecvPacket( const char *pData, int nSize )
 	uint16_t flagID = g_flagRspID &	(~(0x1 << GetCarNo()));		//	자신의 ID Flag를 제외한 값.
 
 #if defined(USE_HOP_MANUAL)
-	if ( ( pRFPkt->hdr.nSeq != 0 && pRFPkt->hdr.nIDFlag != 0 )
+	if ( ( pRFPkt->hdr.nSeq != 0 && pRFPkt->hdr.nIDFlag != 0
+				&& (GetDevID() == DevRF900M) )		//	수신기만 중계함.
 			&& ( ( ( (g_nManHopping == 0) && (((~pRFPkt->hdr.nIDFlag)&flagID) != 0) )	//	Default
 				|| ( g_nManHopping == 1 ) )		//	Hopping On
 				&& !( g_nManHopping == 2 ) )	//	Hopping Off
@@ -702,9 +711,17 @@ int SendPacket( const char *sBuf, int nSize )
 	Dump("Tx", sBuf, 0x40);
 
 	vRadio_StartTx_Variable_Packet (
-		pRadioConfiguration->Radio_ChannelNumber,
+		g_idxTrainSet,	//		pRadioConfiguration->Radio_ChannelNumber,
 		&sBuf[0],
 		pRadioConfiguration->Radio_PacketLength );
+
+#if defined(USE_RFT_TX_MULTI_SEND)
+	if( GetDevID() == DevRF900T && _nSendAgain == 0)
+	{
+		_nSendAgain = 1;
+		memcpy( _bufSend, &sBuf[0], pRadioConfiguration->Radio_PacketLength );
+	}
+#endif	// defined(USE_RFT_TX_MULTI_SEND)
 
 	return TRUE;
 

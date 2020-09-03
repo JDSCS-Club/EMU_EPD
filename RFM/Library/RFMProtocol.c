@@ -86,7 +86,20 @@ void _MakePktHdr	( RFMPkt *pPkt, int addrSrc, int addrDest, int nLen, int nPktCm
 		g_nPktSeq++;
 		if ( g_nPktSeq == 0 )	g_nPktSeq++;
 		pPkt->hdr.nSeq			=	g_nPktSeq;			//
-		pPkt->hdr.nIDFlag		=	g_flagRspID;		//
+
+		if ( GetDevID() == DevRF900T )
+		{
+			//	송신기.
+			//		송신기의 송/수신반경과 수신기의 송/수신반경의 차이로 
+			//		송신기가 상태정보를 수신후에 수신기에 송신을 할때 범위에 도달하지 못하는 경우가 있으므로, 
+			//		수신기에서 중계를 할 수 있도록 송신기 ID만 설정하여 송신함.
+			pPkt->hdr.nIDFlag		=	(0x1 << GetCarNo());	//	송신기는 자신의 ID만 Set하여 전송.
+		}
+		else
+		{
+			//	수신기.
+			pPkt->hdr.nIDFlag		=	g_flagRspID;		//
+		}
 	}
 
 #else
