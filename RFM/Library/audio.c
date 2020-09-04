@@ -46,12 +46,20 @@
 
 #include "audio.h"
 
+#if defined(USE_AUDIO_SPEEX_CODEC)
 
 #include "codec.h"
 //#ifdef HAVE_CONFIG_H
 //#include "config.h"
 //#endif
+
 #include <speex/speex.h>
+
+#else	//	defined(USE_AUDIO_SPEEX_CODEC)
+
+#define FRAME_SIZE 160
+
+#endif
 
 //========================================================================
 // Define
@@ -148,7 +156,9 @@ void AudioInit( void )
 
 	//========================================================================
 	//	Speex Codec
+#if defined(USE_AUDIO_SPEEX_CODEC)
 	Speex_Init();
+#endif	//	defined(USE_AUDIO_SPEEX_CODEC)
 
 	//========================================================================
 	//	Speex Encoding -> Decoding
@@ -165,7 +175,7 @@ void AudioInit( void )
 
 	tick_start = HAL_GetTick();
 
-#if 1
+#if defined(USE_AUDIO_SPEEX_CODEC)
 	//========================================================================
 	//	Encoding
 
@@ -182,7 +192,7 @@ void AudioInit( void )
 	speex_bits_read_from(&bits, (char *)out_bytes, ENCODED_FRAME_SIZE);
 	/* Decode the data */
 	speex_decode_int(dec_state, &bits, &speex_sine_table[0] );
-#endif
+#endif	//	defined(USE_AUDIO_SPEEX_CODEC)
 
 	tick_end = HAL_GetTick();
 

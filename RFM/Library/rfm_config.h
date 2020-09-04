@@ -23,6 +23,8 @@
 //	Audio 압축관련.
 #define		USE_AUDIO_INTERPOL_COMPRESS		1		//	보간압축사용.
 
+//#define		USE_AUDIO_SPEEX_CODEC			1		//	Speex Audio Codec 사용.
+
 //========================================================================
 //	RF 설정.
 //#define		USE_IEEE802_15_4G				1		//	radio_config_802_15_4g.h 사용.
