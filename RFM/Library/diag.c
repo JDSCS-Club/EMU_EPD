@@ -69,10 +69,6 @@
 #define		GOTO_VT_XY()		printf("\033[1;1H")
 #define		BUFSIZE	512
 
-#if	defined(USE_BOOTLOADER)
-uint8_t	dbuf[MAX_Y][MAX_X_BYTE];		//	bootloader에서는 dbuf를 사용하지 않음.
-#endif
-
 unsigned char *	mem_addr;
 int				dumpsize = 0x100;	//, data_option = 2;
 int				debug_level = 0;
@@ -734,26 +730,6 @@ int		cmd_rfwds_debug	( int argc, char *argv[] )
 	
 	return 0;
 }
-
-
-#if	defined(USE_BOOTLOADER)
-////========================================================================
-//int cmd_test3(int argc, char *argv[])
-////========================================================================
-//{
-//	return 0;
-//}
-//
-////========================================================================
-//int cmd_test4(int argc, char *argv[])
-////========================================================================
-//{
-//	return 0;
-//}
-
-#else		//		Application
-
-#endif
 
 
 //========================================================================

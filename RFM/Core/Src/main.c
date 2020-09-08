@@ -71,8 +71,6 @@ TIM_HandleTypeDef htim3;
 UART_HandleTypeDef huart1;
 UART_HandleTypeDef huart2;
 
-PCD_HandleTypeDef hpcd_USB_OTG_FS;
-
 /* USER CODE BEGIN PV */
 
 /* USER CODE END PV */
@@ -90,7 +88,6 @@ static void MX_I2S3_Init(void);
 static void MX_TIM3_Init(void);
 static void MX_ADC1_Init(void);
 static void MX_I2C3_Init(void);
-static void MX_USB_OTG_FS_PCD_Init(void);
 static void MX_IWDG_Init(void);
 /* USER CODE BEGIN PFP */
 
@@ -148,6 +145,15 @@ void LoopProcMain( int nTick )
 {
 	//	Watchdog Reload
 	__HAL_IWDG_RELOAD_COUNTER(&hiwdg);
+
+	static int s_nTick = 0;
+
+	if ( ( nTick - s_nTick ) >= 1000 )
+	{
+		char *sTest = "USB Serial Test\n";
+		CDC_Transmit_FS(sTest, strlen(sTest) + 1);
+		s_nTick = nTick;
+	}
 }
 
 /* USER CODE END 0 */
@@ -190,8 +196,8 @@ int main(void)
   MX_TIM3_Init();
   MX_ADC1_Init();
   MX_I2C3_Init();
-  MX_USB_OTG_FS_PCD_Init();
   MX_IWDG_Init();
+  MX_USB_DEVICE_Init();
   /* USER CODE BEGIN 2 */
 
 	//========================================================================
@@ -780,41 +786,6 @@ static void MX_USART2_UART_Init(void)
 }
 
 /**
-  * @brief USB_OTG_FS Initialization Function
-  * @param None
-  * @retval None
-  */
-static void MX_USB_OTG_FS_PCD_Init(void)
-{
-
-  /* USER CODE BEGIN USB_OTG_FS_Init 0 */
-
-  /* USER CODE END USB_OTG_FS_Init 0 */
-
-  /* USER CODE BEGIN USB_OTG_FS_Init 1 */
-
-  /* USER CODE END USB_OTG_FS_Init 1 */
-  hpcd_USB_OTG_FS.Instance = USB_OTG_FS;
-  hpcd_USB_OTG_FS.Init.dev_endpoints = 4;
-  hpcd_USB_OTG_FS.Init.speed = PCD_SPEED_FULL;
-  hpcd_USB_OTG_FS.Init.dma_enable = DISABLE;
-  hpcd_USB_OTG_FS.Init.phy_itface = PCD_PHY_EMBEDDED;
-  hpcd_USB_OTG_FS.Init.Sof_enable = DISABLE;
-  hpcd_USB_OTG_FS.Init.low_power_enable = DISABLE;
-  hpcd_USB_OTG_FS.Init.lpm_enable = DISABLE;
-  hpcd_USB_OTG_FS.Init.vbus_sensing_enable = DISABLE;
-  hpcd_USB_OTG_FS.Init.use_dedicated_ep1 = DISABLE;
-  if (HAL_PCD_Init(&hpcd_USB_OTG_FS) != HAL_OK)
-  {
-    Error_Handler();
-  }
-  /* USER CODE BEGIN USB_OTG_FS_Init 2 */
-
-  /* USER CODE END USB_OTG_FS_Init 2 */
-
-}
-
-/**
   * Enable DMA controller clock
   */
 static void MX_DMA_Init(void)
@@ -865,10 +836,10 @@ static void MX_GPIO_Init(void)
                           |GPIO_PIN_11|GPIO_PIN_12|GPIO_PIN_13|GPIO_PIN_14, GPIO_PIN_RESET);
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(SPI_CSN_GPIO_Port, SPI_CSN_Pin, GPIO_PIN_SET);
+  HAL_GPIO_WritePin(GPIOC, USB_ID_Pin|TRN_RST_Pin, GPIO_PIN_RESET);
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(TRN_RST_GPIO_Port, TRN_RST_Pin, GPIO_PIN_RESET);
+  HAL_GPIO_WritePin(SPI_CSN_GPIO_Port, SPI_CSN_Pin, GPIO_PIN_SET);
 
   /*Configure GPIO pin Output Level */
   HAL_GPIO_WritePin(GPIOB, RX_EN_Pin|RF_TX_Pin|RF_RX_Pin|LED_ON_A_Pin
@@ -900,11 +871,18 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   HAL_GPIO_Init(GPIOE, &GPIO_InitStruct);
 
-  /*Configure GPIO pins : USB_ID_Pin BAT_CHRG_Pin */
-  GPIO_InitStruct.Pin = USB_ID_Pin|BAT_CHRG_Pin;
+  /*Configure GPIO pins : USB_ID_Pin TRN_RST_Pin */
+  GPIO_InitStruct.Pin = USB_ID_Pin|TRN_RST_Pin;
+  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+  HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
+
+  /*Configure GPIO pin : BAT_CHRG_Pin */
+  GPIO_InitStruct.Pin = BAT_CHRG_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
-  HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
+  HAL_GPIO_Init(BAT_CHRG_GPIO_Port, &GPIO_InitStruct);
 
   /*Configure GPIO pin : SPI_CSN_Pin */
   GPIO_InitStruct.Pin = SPI_CSN_Pin;
@@ -918,13 +896,6 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Mode = GPIO_MODE_IT_RISING_FALLING;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   HAL_GPIO_Init(RF_INT_GPIO_Port, &GPIO_InitStruct);
-
-  /*Configure GPIO pin : TRN_RST_Pin */
-  GPIO_InitStruct.Pin = TRN_RST_Pin;
-  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
-  GPIO_InitStruct.Pull = GPIO_NOPULL;
-  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
-  HAL_GPIO_Init(TRN_RST_GPIO_Port, &GPIO_InitStruct);
 
   /*Configure GPIO pins : RX_EN_Pin RF_TX_Pin RF_RX_Pin LED_ON_A_Pin
                            LED_ON_B_Pin FLASH_ON_Pin */
