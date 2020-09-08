@@ -150,7 +150,7 @@ void LoopProcMain( int nTick )
 
 	if ( ( nTick - s_nTick ) >= 1000 )
 	{
-		char *sTest = "USB Serial Test\n";
+		char *sTest = "USB Serial Test\n\r";
 		CDC_Transmit_FS(sTest, strlen(sTest) + 1);
 		s_nTick = nTick;
 	}
