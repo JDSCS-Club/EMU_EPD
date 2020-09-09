@@ -33,8 +33,18 @@ extern "C" {
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 
+//========================================================================
+#if	defined(USE_BOOTLOADER)
+//	Bootloader : Exclude Code
+#else	//	Application
+//========================================================================
+
 #include "compiler_defs.h"		//	U8,
 #include "si446x_defs.h"
+
+//========================================================================
+#endif	//	Application
+//========================================================================
 
 /* USER CODE END Includes */
 
@@ -46,14 +56,16 @@ extern "C" {
 /* Exported constants --------------------------------------------------------*/
 /* USER CODE BEGIN EC */
 
-ADC_HandleTypeDef hadc1;		//	ADC1 - ADC Battery
+extern ADC_HandleTypeDef hadc1;		//	ADC1 - ADC Battery
 
-SPI_HandleTypeDef hspi1;		//	SPI1 - RF SPI
+extern SPI_HandleTypeDef hspi1;		//	SPI1 - RF SPI
 
-I2C_HandleTypeDef hi2c1;		//	I2C1 - Audio Codec Control I/F
-I2S_HandleTypeDef hi2s3;		//	I2S3 - Audio Stream
+extern I2C_HandleTypeDef hi2c1;		//	I2C1 - Audio Codec Control I/F
+extern I2S_HandleTypeDef hi2s3;		//	I2S3 - Audio Stream
 
-I2C_HandleTypeDef hi2c3;		//	I2C3 - LCD I/F
+extern I2C_HandleTypeDef hi2c3;		//	I2C3 - LCD I/F
+
+extern UART_HandleTypeDef huart2;
 
 /* USER CODE END EC */
 

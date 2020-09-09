@@ -56,7 +56,12 @@
 /* USER CODE END 0 */
 
 /* External variables --------------------------------------------------------*/
+#if defined(USE_BOOTLOADER)
+ //	Bootloader : Exclude
+#else	//	Application
 extern PCD_HandleTypeDef hpcd_USB_OTG_FS;
+#endif	//	Application
+
 extern DMA_HandleTypeDef hdma_i2s3_ext_rx;
 extern DMA_HandleTypeDef hdma_spi3_tx;
 extern DMA_HandleTypeDef hdma_spi1_tx;
@@ -303,6 +308,7 @@ void DMA2_Stream3_IRQHandler(void)
   /* USER CODE END DMA2_Stream3_IRQn 1 */
 }
 
+
 /**
   * @brief This function handles USB On The Go FS global interrupt.
   */
@@ -310,12 +316,19 @@ void OTG_FS_IRQHandler(void)
 {
   /* USER CODE BEGIN OTG_FS_IRQn 0 */
 
+#if defined(USE_BOOTLOADER)
+ //	Bootloader : Exclude
+#else	//	Application
+
   /* USER CODE END OTG_FS_IRQn 0 */
   HAL_PCD_IRQHandler(&hpcd_USB_OTG_FS);
   /* USER CODE BEGIN OTG_FS_IRQn 1 */
 
+#endif	//	Application
+
   /* USER CODE END OTG_FS_IRQn 1 */
 }
+
 
 /* USER CODE BEGIN 1 */
 

@@ -30,9 +30,6 @@
 #include "typedef.h"	//	TRUE, FALSE, ...
 
 
-#include "Adafruit_SSD1306.h"   //  I2C LCD
-
-
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -96,6 +93,15 @@ static void MX_IWDG_Init(void);
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
 
+#if	defined(USE_BOOTLOADER)
+
+#include "bootloader.h"
+
+#else	//	defined(USE_BOOTLOADER)
+
+
+#include "Adafruit_SSD1306.h"   //  I2C LCD
+
 #include "radio_hal.h"			//	RF_NIRQ
 #include "si446x_api_lib.h"		//	si446x_part_info()
 
@@ -106,6 +112,7 @@ static void MX_IWDG_Init(void);
 #include "audio.h"				//	MAX9860
 
 #include "rfm.h"				//	SetDevID()
+
 
 //si4463 Interrupt
 
@@ -150,11 +157,13 @@ void LoopProcMain( int nTick )
 
 	if ( ( nTick - s_nTick ) >= 1000 )
 	{
-		char *sTest = "USB Serial Test\n\r";
+		char *sTest = "USB 가나다라\n\r";
 		CDC_Transmit_FS(sTest, strlen(sTest) + 1);
 		s_nTick = nTick;
 	}
 }
+
+#endif
 
 /* USER CODE END 0 */
 
@@ -182,6 +191,24 @@ int main(void)
 
   /* USER CODE BEGIN SysInit */
 
+#if	defined(USE_BOOTLOADER)
+
+  MX_GPIO_Init();
+  MX_DMA_Init();
+  MX_I2C1_Init();
+  MX_SPI1_Init();
+  MX_SPI2_Init();
+  MX_USART1_UART_Init();
+  MX_USART2_UART_Init();
+  MX_I2S3_Init();
+  MX_TIM3_Init();
+//  MX_ADC1_Init();
+  MX_I2C3_Init();
+  MX_IWDG_Init();
+//DEL  MX_USB_DEVICE_Init();
+
+#else	//	Application
+
   /* USER CODE END SysInit */
 
   /* Initialize all configured peripherals */
@@ -199,6 +226,8 @@ int main(void)
   MX_IWDG_Init();
   MX_USB_DEVICE_Init();
   /* USER CODE BEGIN 2 */
+
+#endif	//	Application
 
 	//========================================================================
 	//    Start PWM
@@ -220,7 +249,11 @@ int main(void)
 
 	printf( "%s(%d) - Start\n", __func__, __LINE__ );
 
-#if 1
+#if	defined(USE_BOOTLOADER)
+
+	BootLoaderTask();
+
+#else	//	RFM
 
 	//========================================================================
 	//    RFM Main Routine
@@ -228,104 +261,6 @@ int main(void)
 	RFM_main();
 
 	//========================================================================
-
-#else
-
-	//========================================================================
-	//	Codec MAX9860ETG+
-
-	if ( HAL_OK == HAL_I2C_IsDeviceReady( &hi2c1, (uint16_t)( 0x10 << 1 ), 2, 2 ) )
-	{
-		SetAudioIC( AudioMAX9860 );
-
-		//  Read Rev.
-		char buf[10];
-		int cntRetry;
-
-		cntRetry = 0;
-
-		memset( buf, 0, sizeof( buf ) );
-		while ( HAL_I2C_Mem_Read( &hi2c1, (uint16_t)( 0x10 << 1 ), (uint16_t)0xFF, I2C_MEMADD_SIZE_8BIT, buf, (uint16_t)1, 1000 ) != HAL_OK && cntRetry < 10 ) cntRetry++;
-
-		printf( "%s(%d) - Codec ( MAX9860ETG+ ) / Rev. 0x%02X\n", __func__, __LINE__, buf[0] );
-
-	    //========================================================================
-		//  Codec 초기화.
-		InitCodecMAX9860();
-
-	    //========================================================================
-		//	Audio Buffer 초기화.
-		AudioInit();
-
-	    //========================================================================
-	    //  Set Callback Function
-//	    SetCallbackI2STxRxCplt ( RF_PA_I2SEx_TxRxCpltCallback );
-
-	    //========================================================================
-	}
-
-	//========================================================================
-	//	OLED
-	if ( HAL_OK == HAL_I2C_IsDeviceReady( &hi2c3, (uint16_t)( SSD1306_I2C_ADDRESS ), 2, 2 ) )
-	{
-		//========================================================================
-		//    OLED가 연결되어있음.
-		SetDevID( DevRF900T );        //  송신기.
-
-		//    LCD Init
-		LCDInit();
-
-		LCDMenu();
-	}
-	else
-	{
-		//========================================================================
-		//    OLED가 없으면 -> 수신기
-		SetDevID( DevRF900M );        //  수신기.
-	}
-
-	//========================================================================
-	//	Radio Spi
-	RF_RxTx_Mode();
-
-#if 1
-	//	Driver #1	-	WDS
-
-	vRadio_Init();		//	Init Radio
-
-	si446x_part_info ();
-
-	printf ( "=========================\n" );
-	printf ( "%08x\n", Si446xCmd.PART_INFO.CHIPREV );
-	printf ( "%08x\n", Si446xCmd.PART_INFO.PART );
-	printf ( "%08x\n", Si446xCmd.PART_INFO.PBUILD );
-	printf ( "%08x\n", Si446xCmd.PART_INFO.ID );
-	printf ( "%08x\n", Si446xCmd.PART_INFO.CUSTOMER );
-	printf ( "%08x\n", Si446xCmd.PART_INFO.ROMID );
-	printf ( "-------------------------\n" );
-
-//	TestProcPkt();		//	RFM Main
-
-#else
-	//	Driver #2
-	//*
-	RF_Tx();	//	Tx Mode
-	/*/
-	RF_Rx();	//	Rx Mode
-	//	*/
-
-	RF_Init();
-
-	SI4463_Debug(1);
-
-	RF_PartInfo();
-
-	RF_FuncInfo();
-
-	SI4463_Test();
-#endif
-
-#endif
 
   /* USER CODE END 2 */
 
@@ -356,6 +291,10 @@ int main(void)
 	    nLedTick = nCurrTick;
 	}
   }
+
+#endif
+
+
   /* USER CODE END 3 */
 }
 

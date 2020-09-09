@@ -26,7 +26,7 @@
 
 #endif
 
-uint8_t Disp_Font;										// 1 = Á¤¸é 2 = Ãø¸é : k_font, ±× ¿Ü : k_font5
+uint8_t Disp_Font;										// 1 = ì •ë©´ 2 = ì¸¡ë©´ : k_font, ê·¸ ì™¸ : k_font5
 
 //----------------------------------------------------------------------------
 //
@@ -56,35 +56,35 @@ uint16_t PHan_CnvCodeWan2Johab(uint16_t WanCode)
 //
 //----------------------------------------------------------------------------
 /*----------------------------------------------------------------------*/
-/*	ÇÑ±Û ÀÏ¹İ ÆùÆ®(24x24)¸¦ bTemp1Font[72]¿¡ LOADÇÑ´Ù.					*/
+/*	í•œê¸€ ì¼ë°˜ í°íŠ¸(24x24)ë¥¼ bTemp1Font[72]ì— LOADí•œë‹¤.					*/
 /*----------------------------------------------------------------------*/
-uint16_t PHan_FontLoad( uint8_t *HanCode, PHAN_FONT_OBJ *FontPtr )   // ÇÑ±Û ÀÏ¹İ ÆùÆ® »ı¼º 
+uint16_t PHan_FontLoad( uint8_t *HanCode, PHAN_FONT_OBJ *FontPtr )   // í•œê¸€ ì¼ë°˜ í°íŠ¸ ìƒì„± 
 {
 
-	//static declaration Àº ¼Óµµ¸¦ ³ôÀÌ±â À§ÇÑ°ÍÀÓ.
+	//static declaration ì€ ì†ë„ë¥¼ ë†’ì´ê¸° ìœ„í•œê²ƒì„.
 	//uint16_t uChosung, uJoongsung, uJongsung, uChoType, uJooType,uJonType;
 
-	// ¹öÆÛ ÃÊ±âÈ­
+	// ë²„í¼ ì´ˆê¸°í™”
 	memset(FontPtr->FontBuffer, 0x00, 32);
 
 
 	FontPtr->Code_Type = PHAN_NULL_CODE;	
-	// ÇÑ±ÛÄÚµåÀÎÁö °¨º° 
+	// í•œê¸€ì½”ë“œì¸ì§€ ê°ë³„ 
 	// 
-	if( !HanCode[0] || HanCode[0] == 0x0A )   // ¹®ÀÚ¿­ ¸¶Áö¸·
+	if( !HanCode[0] || HanCode[0] == 0x0A )   // ë¬¸ìì—´ ë§ˆì§€ë§‰
 	{
 		FontPtr->Code_Type = PHAN_END_CODE;
 		FontPtr->Size_Char = 1;
 		return PHAN_END_CODE;
 	}
-	else if( HanCode[0] & 0x80 )              // ÇÑ±Û ÄÚµåÀÎ°æ¿ì 
+	else if( HanCode[0] & 0x80 )              // í•œê¸€ ì½”ë“œì¸ê²½ìš° 
 	{
 		FontPtr->Code_Type = PHAN_HANGUL_CODE;
 		FontPtr->Size_Char = 2;
 		PHan_HanFontLoad( HanCode, FontPtr );
 		return PHAN_HANGUL_CODE;
 	}
-	else                                      // ¿µ¹® ÄÚµå 
+	else                                      // ì˜ë¬¸ ì½”ë“œ 
 	{
 		FontPtr->Code_Type = PHAN_ENG_CODE;
 		FontPtr->Size_Char = 1;
@@ -103,30 +103,30 @@ uint16_t PHan_FontLoad( uint8_t *HanCode, PHAN_FONT_OBJ *FontPtr )   // ÇÑ±Û ÀÏ¹
 ////========================================================================
 //{
 //	const uint8_t  Num2[17] = { 0, 			99, 		98, 		97, 			96,  		2, 				11, 		12, 	    18, 		 19, 			23, 		28, 			34, 		39, 	  131, 			195,		10 };
-//	const uint8_t  *Str2[17] = { "  ¼ø È¯  ", "  ¼ø È¯  ", "  ¼ø È¯  ", "  È¸ ¼Û  ", " ½Ã¿îÀü ", "À»Áö·ÎÀÔ±¸", "  ¼º ¼ö  ", "°Ç´ëÀÔ±¸", "Á¾ÇÕ¿îµ¿Àå", "  »ï ¼º  ", "  ±³ ´ë  ", "¼­¿ï´ëÀÔ±¸", " ½Åµµ¸² ", "È«´ëÀÔ±¸", " ½Å¼³µ¿ ", " ±îÄ¡»ê " , "  ¶Ò ¼¶  " };
+//	const uint8_t  *Str2[17] = { "  ìˆœ í™˜  ", "  ìˆœ í™˜  ", "  ìˆœ í™˜  ", "  íšŒ ì†¡  ", " ì‹œìš´ì „ ", "ì„ì§€ë¡œì…êµ¬", "  ì„± ìˆ˜  ", "ê±´ëŒ€ì…êµ¬", "ì¢…í•©ìš´ë™ì¥", "  ì‚¼ ì„±  ", "  êµ ëŒ€  ", "ì„œìš¸ëŒ€ì…êµ¬", " ì‹ ë„ë¦¼ ", "í™ëŒ€ì…êµ¬", " ì‹ ì„¤ë™ ", " ê¹Œì¹˜ì‚° " , "  ëš ì„¬  " };
 //
 //	int Station_Index = 0;
 //	int idx;
 //
 //	for ( idx = 0; idx < 17; idx++ )
 //	{
-//		if ( Num2[idx] == StationCode ) { Station_Index = idx; break; }	// 	Last_Station = Á¾Âø¿ª
-////		if(Num2[lp] == Line_Number) { Station_Index = lp; break; }		 	// Line_Number = ³ë¼±¹øÈ£
+//		if ( Num2[idx] == StationCode ) { Station_Index = idx; break; }	// 	Last_Station = ì¢…ì°©ì—­
+////		if(Num2[lp] == Line_Number) { Station_Index = lp; break; }		 	// Line_Number = ë…¸ì„ ë²ˆí˜¸
 //	}
 //
 //	if ( Station_Index > 16 ) Station_Index = 16;
 //
 //	int Side_Font_Index = 0;
 //
-//	if ( Station_Index == 5 ) 			Side_Font_Index = 0;	// 	À»Áö·ÎÀÔ±¸
-//	else if ( Station_Index == 8 ) 		Side_Font_Index = 4;	// 	Á¾ÇÕ¿îµ¿Àå
-//	else if ( Station_Index == 11 )		Side_Font_Index = 8;	// 	¼­¿ï´ëÀÔ±¸
-//	else if ( ( Station_Index == 0 ) || ( Station_Index == 1 ) || ( Station_Index == 2 ) )Side_Font_Index = 12;// ¼øÈ¯
-//	else if ( ( Station_Index == 9 ) )	Side_Font_Index = 16;	// 	»ï¼º
-//	else if ( ( Station_Index == 10 ) )	Side_Font_Index = 20;	// 	±³´ë
-//	else if ( ( Station_Index == 6 ) )	Side_Font_Index = 24;	// 	¼º¼ö
-//	else if ( ( Station_Index == 16 ) )	Side_Font_Index = 28;	// 	¶Ò¼¶
-//	else if ( ( Station_Index == 3 ) )	Side_Font_Index = 32;	// 	È¸¼Û
+//	if ( Station_Index == 5 ) 			Side_Font_Index = 0;	// 	ì„ì§€ë¡œì…êµ¬
+//	else if ( Station_Index == 8 ) 		Side_Font_Index = 4;	// 	ì¢…í•©ìš´ë™ì¥
+//	else if ( Station_Index == 11 )		Side_Font_Index = 8;	// 	ì„œìš¸ëŒ€ì…êµ¬
+//	else if ( ( Station_Index == 0 ) || ( Station_Index == 1 ) || ( Station_Index == 2 ) )Side_Font_Index = 12;// ìˆœí™˜
+//	else if ( ( Station_Index == 9 ) )	Side_Font_Index = 16;	// 	ì‚¼ì„±
+//	else if ( ( Station_Index == 10 ) )	Side_Font_Index = 20;	// 	êµëŒ€
+//	else if ( ( Station_Index == 6 ) )	Side_Font_Index = 24;	// 	ì„±ìˆ˜
+//	else if ( ( Station_Index == 16 ) )	Side_Font_Index = 28;	// 	ëšì„¬
+//	else if ( ( Station_Index == 3 ) )	Side_Font_Index = 32;	// 	íšŒì†¡
 //
 //	return Side_Font_Index;
 //}
@@ -152,11 +152,11 @@ uint16_t PHan_FontLoad( uint8_t *HanCode, PHAN_FONT_OBJ *FontPtr )   // ÇÑ±Û ÀÏ¹
 //----------------------------------------------------------------------------
 //static uint16_t uChosung, uJoongsung, uJongsung, uChoType, uJooType,uJonType;
 
-//static declaration Àº ¼Óµµ¸¦ ³ôÀÌ±â À§ÇÑ°ÍÀÓ.
+//static declaration ì€ ì†ë„ë¥¼ ë†’ì´ê¸° ìœ„í•œê²ƒì„.
 static uint8_t _uChosung, _uJoongsung, _uJongsung;
 static uint8_t uChosung, uJoongsung, uJongsung;
 static uint8_t uChoType, uJooType, uJonType;
-void PHan_HanFontLoad( const uint8_t *HanCode, PHAN_FONT_OBJ *FontPtr )   /* ÇÑ±Û ÀÏ¹İ ÆùÆ® »ı¼º */
+void PHan_HanFontLoad( const uint8_t *HanCode, PHAN_FONT_OBJ *FontPtr )   /* í•œê¸€ ì¼ë°˜ í°íŠ¸ ìƒì„± */
 {
 	uint8_t i;
 	uint16_t wHanCode;
@@ -181,9 +181,9 @@ void PHan_HanFontLoad( const uint8_t *HanCode, PHAN_FONT_OBJ *FontPtr )   /* ÇÑ±
 	uJoongsung	=	JooIdxTbl[_uJoongsung];			//	Joongsung index
 	uJongsung	=	JonIdxTbl[_uJongsung];			//	Jongsung index
 
-	//decide a character type (¸î¹øÂ° ¹úÀ» »ç¿ëÇÒÁö °áÁ¤)
+	//decide a character type (ëª‡ë²ˆì§¸ ë²Œì„ ì‚¬ìš©í• ì§€ ê²°ì •)
 	uChoType = uJongsung ? ChoTypeCaseJongYes[uJoongsung] : ChoTypeCaseJongNo[uJoongsung];
-	//'¤¡'(1) ÀÌ³ª '¤»'(16) ÀÎ°æ¿ì´Â
+	//'ã„±'(1) ì´ë‚˜ 'ã…‹'(16) ì¸ê²½ìš°ëŠ”
 	uJooType	=	( ( uChosung == 0 || uChosung == 1 || uChosung == 16 ) ? 0 : 1 ) + ( uJongsung ? 2 : 0 );
 	uJonType	=	JonType[uJoongsung];
 
@@ -223,7 +223,7 @@ void PHan_EngFontLoad( const uint8_t *HanCode, PHAN_FONT_OBJ *FontPtr )
 
 	EngCode = *HanCode;
 
-	EngCode -= 0x20;  // FONT´Â ½ºÆäÀÌ½º ºÎÅÍ ½ÃÀÛÇÑ´Ù.
+	EngCode -= 0x20;  // FONTëŠ” ìŠ¤í˜ì´ìŠ¤ ë¶€í„° ì‹œì‘í•œë‹¤.
 
 	for ( i = 0 ; i < 16 ; i++ )
 	{
@@ -232,8 +232,8 @@ void PHan_EngFontLoad( const uint8_t *HanCode, PHAN_FONT_OBJ *FontPtr )
 }
 
 /*----------------------------------------------------------------------*/
-/*	bTemp1Font[72]¿¡ Á¶ÇÕÇÑ ÇÑ±Û ÀÏ¹İ ÆùÆ®¸¦							*/
-/*	Line Image Buffer·Î Àü¼ÛÇÑ´Ù.										*/
+/*	bTemp1Font[72]ì— ì¡°í•©í•œ í•œê¸€ ì¼ë°˜ í°íŠ¸ë¥¼							*/
+/*	Line Image Bufferë¡œ ì „ì†¡í•œë‹¤.										*/
 /*----------------------------------------------------------------------*/
 
 #if 0

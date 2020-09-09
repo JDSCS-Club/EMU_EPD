@@ -33,14 +33,14 @@ extern const uint8_t JooIdxTbl[];
 //JONGSUNG index table
 extern const uint8_t JonIdxTbl[];
 
-//---------------- ¹ú¼ö ÀÎµ¦½º TABLE --------------------
-//Áß¼º¿¡ µû¸¥ ÃÊ¼ºÁ¾·ù (¹ŞÄ§ÀÌ ¾ø´Â°æ¿ì)
+//---------------- ë²Œìˆ˜ ì¸ë±ìŠ¤ TABLE --------------------
+//ì¤‘ì„±ì— ë”°ë¥¸ ì´ˆì„±ì¢…ë¥˜ (ë°›ì¹¨ì´ ì—†ëŠ”ê²½ìš°)
 extern const uint8_t ChoTypeCaseJongNo[];
 
-//Áß¼º¿¡ µû¸¥ ÃÊ¼ºÁ¾·ù (¹ŞÄ§ÀÌ ÀÖ´Â°æ¿ì)
+//ì¤‘ì„±ì— ë”°ë¥¸ ì´ˆì„±ì¢…ë¥˜ (ë°›ì¹¨ì´ ìˆëŠ”ê²½ìš°)
 extern const uint8_t ChoTypeCaseJongYes[];
 
-//Áß¼º¿¡ µû¸¥ Á¾¼º Á¾·ù
+//ì¤‘ì„±ì— ë”°ë¥¸ ì¢…ì„± ì¢…ë¥˜
 extern const uint8_t JonType[];
 
 extern const uint16_t wWanToJohabTable[];
