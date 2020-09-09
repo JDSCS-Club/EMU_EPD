@@ -43,5 +43,18 @@ IMG_NAME=${APP_NAME}_${cdate}_v${ver}
 echo "./bin/${IMG_NAME}.hex"
 echo "./bin/${IMG_NAME}.bin"
 
-#cp -fr ./build/${APP_NAME}.bin ./bin/${IMG_NAME}.bin
-cp -fr ./build/${APP_NAME}.hex ./bin/${IMG_NAME}.hex
+cp -fr ./build/${APP_NAME}.bin ./bin/${IMG_NAME}.bin
+
+if [ $APP_NAME != "bootloader" ]; then
+
+################################################
+#	create bootapp.hex
+
+echo "bin/Boot${IMG_NAME}.hex"
+
+#	Del last line. ( .hex file )
+cat ./build/Bootloader.hex | sed '$d' > bin/Boot${IMG_NAME}.hex
+#	Append app.hex
+cat ./build/${APP_NAME}.hex >> bin/Boot${IMG_NAME}.hex
+
+fi
