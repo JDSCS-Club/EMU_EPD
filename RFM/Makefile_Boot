@@ -13,7 +13,7 @@
 ######################################
 # target
 ######################################
-TARGET = RFM
+TARGET = Bootloader
 
 
 ######################################
@@ -68,65 +68,7 @@ Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_uart.c \
 Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_pcd.c \
 Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_pcd_ex.c \
 Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_ll_usb.c \
-Middlewares/ST/STM32_USB_Device_Library/Class/CDC/Src/usbd_cdc.c \
-Middlewares/ST/STM32_USB_Device_Library/Core/Src/usbd_core.c \
-Middlewares/ST/STM32_USB_Device_Library/Core/Src/usbd_ctlreq.c \
-Middlewares/ST/STM32_USB_Device_Library/Core/Src/usbd_ioreq.c \
-USB_DEVICE/App/usb_device.c \
-USB_DEVICE/App/usbd_cdc_if.c \
-USB_DEVICE/App/usbd_desc.c \
-USB_DEVICE/Target/usbd_conf.c \
 Core/Src/system_stm32f4xx.c \
-Library/speex/STM32/libspeex/filters.c \
-Library/speex/STM32/libspeex/modes.c \
-Library/speex/STM32/libspeex/quant_lsp.c \
-Library/speex/STM32/libspeex/cb_search.c \
-Library/speex/STM32/libspeex/nb_celp.c \
-Library/speex/STM32/libspeex/vq.c \
-Library/speex/STM32/libspeex/ltp.c \
-Library/speex/libspeex/hexc_10_32_table.c \
-Library/speex/libspeex/lsp.c \
-Library/speex/libspeex/sb_celp.c \
-Library/speex/libspeex/hexc_table.c \
-Library/speex/libspeex/filterbank.c \
-Library/speex/libspeex/kiss_fft.c \
-Library/speex/libspeex/speex.c \
-Library/speex/libspeex/bits.c \
-Library/speex/libspeex/window.c \
-Library/speex/libspeex/high_lsp_tables.c \
-Library/speex/libspeex/exc_5_256_table.c \
-Library/speex/libspeex/exc_10_16_table.c \
-Library/speex/libspeex/lsp_tables_nb.c \
-Library/speex/libspeex/kiss_fftr.c \
-Library/speex/libspeex/resample.c \
-Library/speex/libspeex/exc_5_64_table.c \
-Library/speex/libspeex/smallft.c \
-Library/speex/libspeex/stereo.c \
-Library/speex/libspeex/vbr.c \
-Library/speex/libspeex/exc_20_32_table.c \
-Library/speex/libspeex/exc_10_32_table.c \
-Library/speex/libspeex/lpc.c \
-Library/speex/libspeex/preprocess.c \
-Library/speex/libspeex/modes_wb.c \
-Library/speex/libspeex/exc_8_128_table.c \
-Library/speex/libspeex/jitter.c \
-Library/speex/libspeex/gain_table.c \
-Library/speex/libspeex/gain_table_lbr.c \
-Library/speex/libspeex/mdf.c \
-Library/speex/libspeex/buffer.c \
-Library/speex/libspeex/speex_header.c \
-Library/speex/libspeex/speex_callbacks.c \
-Library/speex/vocoder.c \
-Library/speex/codec.c \
-Drivers/radio/radio.c \
-Drivers/radio/radio_comm.c \
-Drivers/radio/radio_hal.c \
-Drivers/si4463/radio_si4463.c \
-Drivers/si4463/si4463.c \
-Drivers/radio/Si446x/si446x_api_lib.c \
-Drivers/radio/Si446x/si446x_nirq.c \
-Drivers/display/fonts/PHan_Lib.c \
-Drivers/display/fonts/PHanFont.c \
 Library/adc.c \
 Library/audio.c \
 Library/QBuf.c \
@@ -141,6 +83,11 @@ Library/ProcPkt.c \
 Library/RFMProtocol.c \
 Library/diag.c \
 Library/version.c \
+Library/bootloader.c \
+Library/ymodem.c \
+Library/flash_if.c \
+Library/iap_common.c \
+Library/iap_menu.c \
 
 
 #Core/Src/syscalls.c \
@@ -207,6 +154,7 @@ C_DEFS =  \
 -DUSE_HAL_DRIVER \
 -DSTM32F407xx \
 -DHAVE_CONFIG_H \
+-DUSE_BOOTLOADER \
 
 
 # AS includes
@@ -256,7 +204,7 @@ CFLAGS += -MMD -MP -MF"$(@:%.o=%.d)"
 # LDFLAGS
 #######################################
 # link script
-LDSCRIPT = STM32F407VGTx_App_FLASH.ld
+LDSCRIPT = STM32F407VGTx_Boot_FLASH.ld
 
 # libraries
 LIBS = -lc -lm -lnosys -lstdc++
