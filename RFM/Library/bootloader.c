@@ -150,8 +150,8 @@ void BootLoaderTask(void)
 
 #endif
 
-	if	(	HAL_GPIO_ReadPin(GPIOA, GPIO_PIN_11) == 0	//	Test버튼 누른상태에서 Booting 시.
-			||	GetBootMode() == BModeBoot				//	Boot Mode로 진입 시.
+	if	(	GetBootMode() == BModeBoot				//	Boot Mode로 진입 시.
+			//|| HAL_GPIO_ReadPin(GPIOA, GPIO_PIN_11) == 0	//	Test버튼 누른상태에서 Booting 시.
 		)
 	{
 		//	reset 할 때 test 버튼 누를 시
