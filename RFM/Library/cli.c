@@ -64,13 +64,6 @@
 
 #include "bootloader.h"		//	cmd_stboot()
 
-//#if defined(_WIN32)
-//#else
-//
-//#include "radio_si4463.h"	//	RF_Init()
-//
-//#endif
-
 #define		NELEMENTS(array)	(sizeof(array) / sizeof((array)[0]))
 #define		MAX_COMMAND_LENGTH	64
 

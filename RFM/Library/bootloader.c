@@ -30,6 +30,8 @@
 
 #include "main.h"			//	huart2 / MX_IWDG_Disable()
 
+#include "Adafruit_SSD1306.h"       //  I2C LCD
+
 //	STM32F407 Embedded Bootloader ( AN2606 - P.29 )
 //#define BOOT_ROM_ADDRESS		(uint32_t)0x1FFF77DE
 
@@ -108,6 +110,46 @@ void JumpToSTBootloader(void)
   JumpToApplication();
 }
 
+//========================================================================
+void	DispDFUMode( void )
+//========================================================================
+{
+	if ( HAL_OK == HAL_I2C_IsDeviceReady( &hi2c3, (uint16_t)( SSD1306_I2C_ADDRESS ), 2, 2 ) )
+	{
+		//  화면 Clear
+		LCDClear();
+
+		LCDSetCursor( 0, 13 );
+//		LCDPrintf( "DFU Mode" );
+		LCDPrintf( "USB Upgrade Mode" );
+	}
+}
+
+//========================================================================
+int InitBoot( void )
+//========================================================================
+{
+	printf("%s(%d)\n", __func__, __LINE__);
+
+	I2C_BusScan( &hi2c3 );
+
+	//========================================================================
+	//	OLED
+	if ( HAL_OK == HAL_I2C_IsDeviceReady( &hi2c3, (uint16_t)( SSD1306_I2C_ADDRESS ), 2, 2 ) )
+	{
+		//========================================================================
+		//	OLED가 연결되어있음.
+		printf("%s(%d) - Init OLED\n", __func__, __LINE__);
+
+		//	LCD Init
+		LCDInit();
+		LCDClear();
+
+//		LCDDrawRect( 0, 0, 128, 32, 1 );
+//		HAL_Delay( 100 );
+	}
+	//========================================================================
+}
 
 //========================================================================
 void BootLoaderTask(void)
@@ -122,6 +164,10 @@ void BootLoaderTask(void)
 	uint32_t		flashAddr = 0x020000;
 
 	FLASH_EraseInitTypeDef flash1;
+
+	//========================================================================
+	InitBoot();
+	//========================================================================
 
 	HAL_Delay( 500 );
 
@@ -198,6 +244,9 @@ void BootLoaderTask(void)
 		//	Jump to Embedded Bootloader
 		//	DFU Mode
 		printf("STBootLoader Mode ( DFU Mode )\n");
+
+		DispDFUMode();
+
 		JumpToSTBootloader();
 		//========================================================================
 	}
@@ -392,6 +441,8 @@ int cmd_stboot(int argc, char *argv[])
 //========================================================================
 {
 	printf( "Jump To STM32 Bootloader\n" );
+
+	DispDFUMode();
 
 	JumpToSTBootloader();
 

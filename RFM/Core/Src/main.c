@@ -212,7 +212,7 @@ int main(void)
   MX_TIM3_Init();
 //  MX_ADC1_Init();
   MX_I2C3_Init();
-  MX_IWDG_Init();
+//  MX_IWDG_Init();
 //DEL  MX_USB_DEVICE_Init();
 
 #else	//	Application

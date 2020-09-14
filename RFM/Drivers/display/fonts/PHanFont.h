@@ -14,14 +14,6 @@
 #ifndef _PHANFONT_H_
 #define _PHANFONT_H_
 
-
-//#ifdef   PHANFONT_LOCAL
-//#define  EXT_PHANFONT_DEF 
-//#else
-//#define  EXT_PHANFONT_DEF     extern
-//#endif
-
-//#include "Define.h"
 #include <stdint.h>
 
 

@@ -59,8 +59,6 @@ class Adafruit_GFX {
       int16_t w, int16_t h, uint16_t color, uint16_t bg),
     drawXBitmap(int16_t x, int16_t y, const uint8_t *bitmap, 
       int16_t w, int16_t h, uint16_t color),
-    drawChar(int16_t x, int16_t y, unsigned char c, uint16_t color,
-      uint16_t bg, uint8_t size),
     setCursor(int16_t x, int16_t y),
     getCursor(int16_t *x, int16_t *y),
     setTextColor(uint16_t c),
@@ -69,11 +67,16 @@ class Adafruit_GFX {
     setTextWrap(bool w),
     setRotation(uint8_t r);
 
-#if ARDUINO >= 100
-  virtual size_t write(uint8_t);
-#else
-  virtual void   write(uint8_t);
-#endif
+//  void
+//  drawChar(int16_t x, int16_t y, unsigned char c, uint16_t color,
+//    uint16_t bg, uint8_t size),
+
+//
+//#if ARDUINO >= 100
+//  virtual size_t write(uint8_t);
+//#else
+//  virtual void   write(uint8_t);
+//#endif
 
   int16_t height(void) const;
   int16_t width(void) const;

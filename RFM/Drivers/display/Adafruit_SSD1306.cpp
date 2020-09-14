@@ -3,7 +3,7 @@
 #include <stdlib.h>
 #include "string.h"
 
-#include "glcdfont.h"
+//#include "glcdfont.h"
 
 #include "Adafruit_GFX.h"
 #include "Adafruit_SSD1306.h"
@@ -12,7 +12,9 @@
 
 #include "PHan_Lib.h"           //  PHan_HanFontLoad()
 
+#if defined(PHANFONT_LOCAL)		//	한글폰트 사용시. 문자코드 변환 사용.
 #include "unicode.h"            //  UTF8ToCP949()
+#endif	//	defined(PHANFONT_LOCAL)
 
 #if defined(_WIN32)
 
@@ -692,7 +694,6 @@ void Adafruit_SSD1306::memset(uint8_t buffer[], uint16_t start_address, uint16_t
   }
 }
 
-
 const int bitval_r[8 * 2] = {
     0x80,
     0x40,
@@ -724,7 +725,7 @@ void Adafruit_SSD1306::printf( const char* _format )
 
     PHAN_FONT_OBJ   FontPtr;    //  Font Render Buffer
 
-#if defined(_WIN32)
+#if defined(_WIN32) || !defined(PHANFONT_LOCAL)		//	문자코드 변환 사용 X
 
     const char *format;
     //	Windows에선 Multibyte문자열은 UTF-8파일이라도,
@@ -732,6 +733,7 @@ void Adafruit_SSD1306::printf( const char* _format )
     format = _format;
 #else
 
+    //	한글폰트 사용시. 문자코드 변환 사용.
     char format[128];
     memset( (uint8_t *)format, 0, 128 );
     UTF8ToCP949( _format, format );
