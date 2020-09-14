@@ -127,6 +127,7 @@ Drivers/radio/Si446x/si446x_api_lib.c \
 Drivers/radio/Si446x/si446x_nirq.c \
 Drivers/display/fonts/PHan_Lib.c \
 Drivers/display/fonts/PHanFont.c \
+Drivers/display/fonts/PHanFontEng.c \
 Library/adc.c \
 Library/audio.c \
 Library/QBuf.c \
