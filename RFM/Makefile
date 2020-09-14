@@ -141,6 +141,7 @@ Library/ProcPkt.c \
 Library/RFMProtocol.c \
 Library/diag.c \
 Library/version.c \
+Library/bootloader.c \
 
 
 #Core/Src/syscalls.c \
