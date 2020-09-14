@@ -22,14 +22,16 @@
 #include "stm32f4xx.h"
 
 #include "bootloader.h"
-//#include "spi.h"
 
 #include "iap_common.h"		//	IAP Common
 #include "iap_menu.h"		//	IAP ( In-Application Programming )
 
 #include "ymodem.h"			//	Y-Modem
 
-#include "main.h"			//	huart2
+#include "main.h"			//	huart2 / MX_IWDG_Disable()
+
+//	STM32F407 Embedded Bootloader ( AN2606 - P.29 )
+//#define BOOT_ROM_ADDRESS		(uint32_t)0x1FFF77DE
 
 #define APPLICATION_ADDRESS1   (uint32_t)0x08020000 
 
@@ -72,14 +74,50 @@ int GetBootMode( void )
 
 
 //========================================================================
+void JumpToSTBootloader(void)
+//========================================================================
+{
+  typedef  void (*pFunction)(void);
+  /* OK for L4 and F446 */
+#define SYS_MEM_ADDRESS     ((uint32_t)0x1FFF0000)
+
+  pFunction JumpToApplication;
+  uint32_t JumpAddress;
+
+  //========================================================================
+  //	Disable Watchdog
+  MX_IWDG_Disable();
+  //========================================================================
+
+  /* Disable all interrupts, clocks and PLLs */
+  HAL_RCC_DeInit();
+
+#ifdef STM32L476xx
+  /* Enable the SYSCFG APB Clock */
+  RCC->APB2ENR |= RCC_APB2ENR_SYSCFGEN;
+  /*  System Flash memory mapped at 0x00000000  */
+  __HAL_SYSCFG_REMAPMEMORY_SYSTEMFLASH();
+
+#endif
+
+  /* Jump to system memory */
+  JumpAddress = *(__IO uint32_t*) (SYS_MEM_ADDRESS + 4);
+  JumpToApplication = (pFunction) JumpAddress;
+  /* Initialize user application's Stack Pointer */
+  __set_MSP(*(__IO uint32_t*) SYS_MEM_ADDRESS);
+  JumpToApplication();
+}
+
+
+//========================================================================
 void BootLoaderTask(void)
 //========================================================================
 {
 	/* The parameters are not used. */
-	int	i, j, k;
-	int	fsize=0;
+	int		i, j, k;
+	int		fsize = 0;
 
-	int	readnum=0, rremain=0;
+	int		readnum = 0, rremain = 0;
 	unsigned char	adata[512];
 	uint32_t		flashAddr = 0x020000;
 
@@ -150,7 +188,20 @@ void BootLoaderTask(void)
 
 #endif
 
-	if	(	GetBootMode() == BModeBoot				//	Boot Mode로 진입 시.
+	if	(	//	DFU Mode ( Menu + OK + SOS 버튼을 누른상태에서 전원 On )
+			HAL_GPIO_ReadPin( DOME1_GPIO_Port, DOME1_Pin ) == 0			//	Menu
+			|| HAL_GPIO_ReadPin( DOME3_GPIO_Port, DOME3_Pin ) == 0		//	OK
+			|| HAL_GPIO_ReadPin( SOS_KEY_GPIO_Port, SOS_KEY_Pin ) == 0	//	SOS
+		)
+	{
+		//========================================================================
+		//	Jump to Embedded Bootloader
+		//	DFU Mode
+		printf("STBootLoader Mode ( DFU Mode )\n");
+		JumpToSTBootloader();
+		//========================================================================
+	}
+	else if	(	GetBootMode() == BModeBoot				//	Boot Mode로 진입 시.
 			//|| HAL_GPIO_ReadPin(GPIOA, GPIO_PIN_11) == 0	//	Test버튼 누른상태에서 Booting 시.
 		)
 	{
@@ -324,6 +375,7 @@ void BootLoaderTask(void)
 
 		/* Initialize user application's Stack Pointer */
 		__set_MSP(*(__IO uint32_t*) APPLICATION_ADDRESS1);
+
 		Jump_To_Application();
 	}
 
@@ -332,5 +384,17 @@ void BootLoaderTask(void)
 		//	while(1) - Task 종료시 Blocking 됨.
 		HAL_Delay( 1000 );
 	}
+}
+
+
+//========================================================================
+int cmd_stboot(int argc, char *argv[])
+//========================================================================
+{
+	printf( "Jump To STM32 Bootloader\n" );
+
+	JumpToSTBootloader();
+
+	return 0;
 }
 

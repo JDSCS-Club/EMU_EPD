@@ -11,11 +11,14 @@
 	1. 2019. 01.	: Created
 -------------------------------------------------------------------------------------------*/
 
-#ifndef	_BOOTLOADER_H_
+#ifndef	BOOTLOADER_H
+#define BOOTLOADER_H
 
 void BootLoaderTask (void );
 
 #define			BOOTLOADER_START_DELAY		3		//	3 Sec
+
+void JumpToSTBootloader(void);		//	STM32 Internal Bootloader
 
 enum eBootMode
 {
@@ -27,5 +30,9 @@ enum eBootMode
 void	SetBootMode	( int nMode );
 int		GetBootMode	( void );
 
-#endif	/* _BOOTLOADER_H_ */
+//========================================================================
+int 	cmd_stboot ( int argc, char *argv[] );
+//========================================================================
+
+#endif	/* BOOTLOADER_H */
 

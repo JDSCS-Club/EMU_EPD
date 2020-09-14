@@ -62,6 +62,8 @@
 
 #include "ProcPkt.h"		//	cmd_showpkt()
 
+#include "bootloader.h"		//	cmd_stboot()
+
 //#if defined(_WIN32)
 //#else
 //
@@ -184,6 +186,13 @@ user_command_t	user_command_table[] = {
 		"codec	-	codec command",
 		"codec [init/loop/mute [0/1] ]",
 		cmd_codec},
+#endif
+
+#if defined( BOOTLOADER_H )
+	{"stboot",
+		"stboot	- Enter STM32 Bootloader ( DFU Mode )",
+		(char *)0,
+		cmd_stboot},
 #endif
 
 #if defined( PROC_PKT_H )

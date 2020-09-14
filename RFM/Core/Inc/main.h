@@ -113,6 +113,8 @@ void Error_Handler(void);
 
 void LoopProcMain( int nTick );
 
+void MX_IWDG_Disable( void );
+
 /* USER CODE END EFP */
 
 /* Private defines -----------------------------------------------------------*/

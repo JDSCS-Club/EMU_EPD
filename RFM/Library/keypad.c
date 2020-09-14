@@ -47,12 +47,12 @@ void GetKeyStat( int *btnStat )
 //========================================================================
 {
 	//	Pull-Up ( Active Low )
-	btnStat[0] = !( HAL_GPIO_ReadPin( DOME1_GPIO_Port, DOME1_Pin ) );
-	btnStat[1] = !( HAL_GPIO_ReadPin( DOME2_GPIO_Port, DOME2_Pin ) );
-	btnStat[2] = !( HAL_GPIO_ReadPin( DOME3_GPIO_Port, DOME3_Pin ) );
-	btnStat[3] = !( HAL_GPIO_ReadPin( DOME4_GPIO_Port, DOME4_Pin ) );
-	btnStat[4] = !( HAL_GPIO_ReadPin( DOME5_GPIO_Port, DOME5_Pin ) );
-	btnStat[5] = !( HAL_GPIO_ReadPin( DOME6_GPIO_Port, DOME6_Pin ) );
+	btnStat[0] = !( HAL_GPIO_ReadPin( DOME1_GPIO_Port, DOME1_Pin ) );	//	Menu
+	btnStat[1] = !( HAL_GPIO_ReadPin( DOME2_GPIO_Port, DOME2_Pin ) );	//	Up
+	btnStat[2] = !( HAL_GPIO_ReadPin( DOME3_GPIO_Port, DOME3_Pin ) );	//	OK
+	btnStat[3] = !( HAL_GPIO_ReadPin( DOME4_GPIO_Port, DOME4_Pin ) );	//	Light
+	btnStat[4] = !( HAL_GPIO_ReadPin( DOME5_GPIO_Port, DOME5_Pin ) );	//	Down
+	btnStat[5] = !( HAL_GPIO_ReadPin( DOME6_GPIO_Port, DOME6_Pin ) );	//	Vol
 	btnStat[6] = !( HAL_GPIO_ReadPin( PTT_KEY_GPIO_Port, PTT_KEY_Pin ) );
 	btnStat[7] = !( HAL_GPIO_ReadPin( SOS_KEY_GPIO_Port, SOS_KEY_Pin ) );
 

@@ -165,6 +165,14 @@ void LoopProcMain( int nTick )
 
 #endif
 
+//========================================================================
+void MX_IWDG_Disable( void )
+//========================================================================
+{
+	IWDG_DISABLE_WRITE_ACCESS( &hiwdg );
+}
+
+
 /* USER CODE END 0 */
 
 /**
