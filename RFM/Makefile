@@ -76,6 +76,7 @@ USB_DEVICE/App/usb_device.c \
 USB_DEVICE/App/usbd_cdc_if.c \
 USB_DEVICE/App/usbd_desc.c \
 USB_DEVICE/Target/usbd_conf.c \
+Core/Src/syscalls.c \
 Core/Src/system_stm32f4xx.c \
 Library/speex/STM32/libspeex/filters.c \
 Library/speex/STM32/libspeex/modes.c \
@@ -143,9 +144,6 @@ Library/RFMProtocol.c \
 Library/diag.c \
 Library/version.c \
 Library/bootloader.c \
-
-
-#Core/Src/syscalls.c \
 
 # CPP sources
 CPP_SOURCES =  \

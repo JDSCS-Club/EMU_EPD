@@ -71,6 +71,7 @@ Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_ll_usb.c \
 Drivers/display/fonts/PHan_Lib.c \
 Drivers/display/fonts/PHanFont.c \
 Drivers/display/fonts/PHanFontEng.c \
+Core/Src/syscalls.c \
 Core/Src/system_stm32f4xx.c \
 Library/adc.c \
 Library/audio.c \
@@ -92,8 +93,6 @@ Library/flash_if.c \
 Library/iap_common.c \
 Library/iap_menu.c \
 
-
-#Core/Src/syscalls.c \
 
 # CPP sources
 CPP_SOURCES =  \
