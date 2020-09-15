@@ -838,6 +838,28 @@ int InitRFM( void )
 	}
 
 	//========================================================================
+	//	편성번호 Load
+	if ( HAL_OK == HAL_I2C_IsDeviceReady( &hi2c1, (uint16_t)( 0x50 << 1 ), 2, 2 ) )
+	{
+		printf( "%s(%d) - EEPROM OK\n", __func__, __LINE__ );
+		TestEEPROM( &hi2c1 ); //  Test EEPROM
+
+		//========================================================================
+		//  Read TrainSet
+		uint8_t	 idxTrainSet;
+		idxTrainSet = GetTrainSetIdx();
+
+		if ( idxTrainSet < 0 || idxTrainSet >= MaxTrainSet )
+		{
+			idxTrainSet = 0;
+
+			SetTrainSetIdx( idxTrainSet );
+		}
+
+		g_idxTrainSet = idxTrainSet;
+	}
+
+	//========================================================================
 	//	OLED
 	if ( HAL_OK == HAL_I2C_IsDeviceReady( &hi2c3, (uint16_t)( SSD1306_I2C_ADDRESS ), 2, 2 ) )
 	{
@@ -975,25 +997,7 @@ int InitRFM( void )
 
 	//========================================================================
 	//	Radio 초기화 이후 채널 설정해줌.
-	if ( HAL_OK == HAL_I2C_IsDeviceReady( &hi2c1, (uint16_t)( 0x50 << 1 ), 2, 2 ) )
 	{
-		printf( "%s(%d) - EEPROM OK\n", __func__, __LINE__ );
-		TestEEPROM( &hi2c1 ); //  Test EEPROM
-
-		//========================================================================
-		//  Read TrainSet
-		uint8_t	 idxTrainSet;
-		idxTrainSet = GetTrainSetIdx();
-
-		if ( idxTrainSet < 0 || idxTrainSet >= MaxTrainSet )
-		{
-			idxTrainSet = 0;
-
-			SetTrainSetIdx( idxTrainSet );
-		}
-
-		g_idxTrainSet = idxTrainSet;
-
 		//========================================================================
 		//  Radio Channel 설정.
 		pRadioConfiguration->Radio_ChannelNumber = g_idxTrainSet;
