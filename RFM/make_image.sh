@@ -29,21 +29,21 @@ ver=$ver_main.$ver_sub.$ver_det.$ver_build
 #echo $ver
 #echo $cdate
 
-TARGET_PATH=./bin
+TARGET_PATH=../bin
 WORK_PATH=`pwd`
 
 #echo $WORK_PATH
 
 ################################################
 #	Copy build/ -> bin/
-mkdir -p ./bin
+mkdir -p $(TARGET_PATH)
 
 IMG_NAME=${APP_NAME}_${cdate}_v${ver}
 
 echo "./bin/${IMG_NAME}.hex"
 echo "./bin/${IMG_NAME}.bin"
 
-cp -fr ./build/${APP_NAME}.bin ./bin/${IMG_NAME}.bin
+cp -fr ./build/${APP_NAME}.bin $(TARGET_PATH)/${IMG_NAME}.bin
 
 if [ $APP_NAME != "bootloader" ]; then
 
@@ -53,8 +53,8 @@ if [ $APP_NAME != "bootloader" ]; then
 echo "bin/Boot${IMG_NAME}.hex"
 
 #	Del last line. ( .hex file )
-cat ./build/Bootloader.hex | sed '$d' > bin/Boot${IMG_NAME}.hex
+cat ./build/Bootloader.hex | sed '$d' > $(TARGET_PATH)/Boot${IMG_NAME}.hex
 #	Append app.hex
-cat ./build/${APP_NAME}.hex >> bin/Boot${IMG_NAME}.hex
+cat ./build/${APP_NAME}.hex >> $(TARGET_PATH)/Boot${IMG_NAME}.hex
 
 fi
