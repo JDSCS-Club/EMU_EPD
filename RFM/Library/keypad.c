@@ -335,8 +335,9 @@ void KeySos( int bValue )
 	else
 	{
 		//    편성 : 100
-		LCDSetCursor( 20, 13 );
-		LCDPrintf( "편성 : 100" );
+		UpdateLCDMain();
+//		LCDSetCursor( 20, 13 );
+//		LCDPrintf( "편성 : 100" );
 
 		SetRFMMode( RFMModeNormal );
 
@@ -418,8 +419,9 @@ void	KeyTestLoopback( int bValue )
 	else
 	{
 		//    편성 : 100
-		LCDSetCursor( 20, 13 );
-		LCDPrintf( "편성 : 100" );
+		UpdateLCDMain();
+//		LCDSetCursor( 20, 13 );
+//		LCDPrintf( "편성 : 100" );
 
 		//	Spk Off
 //		LCDSpeaker( 0 );
