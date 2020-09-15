@@ -76,6 +76,8 @@
 
 #define		USE_RFT_MENU_DEV_VER			1		//	장치 버전정보.
 
+#define		USE_RFT_MENU_LOOP				1		//	송신기 메뉴 Up/Down Loop.
+
 //========================================================================
 //	시험용 설정
 //#define		USE_TEST_PTT_AUDIO_LOOP			1		//	Test PTT Key Audio Loopback

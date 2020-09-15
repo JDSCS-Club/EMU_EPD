@@ -211,10 +211,18 @@ void	UpdateLCDMenu( void )
 	//  Main화면 Clear
 	LCDClearMain();
 
+#if defined(USE_RFT_MENU_LOOP)
+
+	LCDMenuUpDown( 3 ); //  3. Up/Down
+
+#else
+
 	if ( 0 < *pIdxMenu && *pIdxMenu < *pCntMenu - 1 )	LCDMenuUpDown( 3 ); //  3. Up/Down
 	else if ( *pIdxMenu == 0 )							LCDMenuUpDown( 2 ); //  2. Down
 	else if ( *pIdxMenu == *pCntMenu - 1 )				LCDMenuUpDown( 1 ); //  1. Up
 	else												LCDMenuUpDown( 0 ); //  0. None
+
+#endif
 
 	LCDSetCursor( 20, 13 );
 	LCDPrintf( sMenu[*pIdxMenu] );
@@ -248,13 +256,25 @@ void	ProcBtnUp( void )
 {
 	if ( GetActiveMenu() == NULL ) return;
 
-	//	Menu
+	//	Menu : Up Key Press
+
 	g_pActiveMenu->currIdx--;
 
 	if ( g_pActiveMenu->currIdx < 0 )
 	{
+#if defined(USE_RFT_MENU_LOOP)
+
+		//	Menu Up/Down Loop
+		g_pActiveMenu->currIdx = g_pActiveMenu->cntItem  - 1;
+
+#else
+
+		//	Menu Up/Down Limit
 		g_pActiveMenu->currIdx = 0;
+
+#endif
 	}
+
 
 	UpdateLCDMenu();   //  메뉴화면 Update
 }
@@ -265,13 +285,22 @@ void	ProcBtnDown( void )
 {
 	if ( GetActiveMenu() == NULL ) return;
 
-	//	Menu
-
+	//	Menu : Down Key Press
 	g_pActiveMenu->currIdx++;
 
 	if ( g_pActiveMenu->currIdx >= g_pActiveMenu->cntItem )
 	{
+#if defined(USE_RFT_MENU_LOOP)
+
+		//	Menu Up/Down Loop
+		g_pActiveMenu->currIdx = 0;
+
+#else
+
+		//	Menu Up/Down Limit
 		g_pActiveMenu->currIdx = g_pActiveMenu->cntItem  - 1;
+
+#endif
 	}
 
 	UpdateLCDMenu();   //  메뉴화면 Update
@@ -309,9 +338,13 @@ void	ProcLightOn ( void )
 	LCDSetCursor( 20, 13 );
 	LCDPrintf( "[조명 점등]" );
 
-	SendLightOn();	 //  조명Off명령 전송.
-	SendLightOn();	 //  조명Off명령 전송.
-	SendLightOn();	 //  조명Off명령 전송.
+	SendLightOn();	 //  조명On 명령 전송.
+	HAL_Delay( 200 );
+	SendLightOn();	 //  조명On 명령 전송.
+	HAL_Delay( 200 );
+	SendLightOn();	 //  조명On 명령 전송.
+	HAL_Delay( 200 );
+	SendLightOn();	 //  조명On 명령 전송.
 }
 
 //========================================================================
@@ -321,9 +354,13 @@ void	ProcLightOff ( void )
 	LCDSetCursor( 20, 13 );
 	LCDPrintf( "[조명 소등]" );
 
-	SendLightOff();	 //  조명Off명령 전송.
-	SendLightOff();	 //  조명Off명령 전송.
-	SendLightOff();	 //  조명Off명령 전송.
+	SendLightOff();	 //  조명Off 명령 전송.
+	HAL_Delay( 200 );
+	SendLightOff();	 //  조명Off 명령 전송.
+	HAL_Delay( 200 );
+	SendLightOff();	 //  조명Off 명령 전송.
+	HAL_Delay( 200 );
+	SendLightOff();	 //  조명Off 명령 전송.
 }
 
 //========================================================================
