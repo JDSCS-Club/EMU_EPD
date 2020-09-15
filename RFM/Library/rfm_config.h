@@ -37,6 +37,14 @@
 
 #define		USE_HOP_MANUAL					1		//	수동 중계 설정.
 
+#if defined(USE_HOP_MANUAL)
+
+//g_nManHopping	=	0;			//	On(1) / Off(2) / Unused(0 : Other)
+#define		DEFAULT_HOP_MAN_VAL				2		//	Default - Off(2)
+
+#endif	//	defined(USE_HOP_MANUAL)
+
+
 //========================================================================
 //	방송/통화
 #define		TIMEOUT_RXSTAT					1000		//	1 sec ( 1000 msec )

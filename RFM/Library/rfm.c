@@ -175,7 +175,8 @@ int		GetManHop	( void )
 
     at24_HAL_ReadBytes( &hi2c1, 0xA0, 0x0D, (uint8_t *)&nManHop, 1 );
 
-    if ( nManHop > 2 || nManHop < 0 ) nManHop = 0;
+//    if ( nManHop > 2 || nManHop < 0 ) nManHop = 0;
+    if ( nManHop > 2 || nManHop < 0 ) nManHop = DEFAULT_HOP_MAN_VAL;	//	Default Hop Man
 
     if ( GetDbgLevel() > 0 )
     	printf( "%s(%d) - %d\n", __func__, __LINE__, nManHop );
