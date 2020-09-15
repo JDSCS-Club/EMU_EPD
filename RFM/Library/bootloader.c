@@ -30,6 +30,8 @@
 
 #include "main.h"			//	huart2 / MX_IWDG_Disable()
 
+#include "RFMProtocol.h"	//	DevRF900T / DevRF900M
+
 #include "Adafruit_SSD1306.h"       //  I2C LCD
 
 //	STM32F407 Embedded Bootloader ( AN2606 - P.29 )
@@ -74,6 +76,26 @@ int GetBootMode( void )
 	return g_nBootMode;
 }
 
+//========================================================================
+int		s_nDevID		=	DevNone;			//  Device ID ( 1 : RF900M / 2 : RF900T )
+//========================================================================
+
+//========================================================================
+int _GetDevID    ( void )
+//========================================================================
+{
+	return s_nDevID;
+}
+
+//========================================================================
+void _SetDevID    ( int nDevID )
+//========================================================================
+{
+	printf( "%s : %s(%d)\n", __func__,
+							( nDevID == DevRF900M )? "RFM":"RFT",
+							nDevID );
+	s_nDevID = nDevID;
+}
 
 //========================================================================
 void JumpToSTBootloader(void)
@@ -139,6 +161,8 @@ int InitBoot( void )
 	{
 		//========================================================================
 		//	OLED가 연결되어있음.
+		_SetDevID( DevRF900T );	 //  송신기.
+
 		printf("%s(%d) - Init OLED\n", __func__, __LINE__);
 
 		//	LCD Init
@@ -147,6 +171,12 @@ int InitBoot( void )
 
 //		LCDDrawRect( 0, 0, 128, 32, 1 );
 //		HAL_Delay( 100 );
+	}
+	else
+	{
+		//========================================================================
+		//	OLED가 없으면 -> 수신기
+		_SetDevID( DevRF900M );	 //  수신기.
 	}
 	//========================================================================
 }
@@ -235,9 +265,11 @@ void BootLoaderTask(void)
 #endif
 
 	if	(	//	DFU Mode ( Menu + OK + SOS 버튼을 누른상태에서 전원 On )
-			HAL_GPIO_ReadPin( DOME1_GPIO_Port, DOME1_Pin ) == 0			//	Menu
-			|| HAL_GPIO_ReadPin( DOME3_GPIO_Port, DOME3_Pin ) == 0		//	OK
-			|| HAL_GPIO_ReadPin( SOS_KEY_GPIO_Port, SOS_KEY_Pin ) == 0	//	SOS
+			(_GetDevID() == DevRF900T) &&
+				( 	HAL_GPIO_ReadPin( DOME1_GPIO_Port, DOME1_Pin ) == 0			//	Menu
+					|| HAL_GPIO_ReadPin( DOME3_GPIO_Port, DOME3_Pin ) == 0		//	OK
+					|| HAL_GPIO_ReadPin( SOS_KEY_GPIO_Port, SOS_KEY_Pin ) == 0	//	SOS
+					)
 		)
 	{
 		//========================================================================
