@@ -76,6 +76,7 @@ USB_DEVICE/App/usb_device.c \
 USB_DEVICE/App/usbd_cdc_if.c \
 USB_DEVICE/App/usbd_desc.c \
 USB_DEVICE/Target/usbd_conf.c \
+Core/Src/syscalls.c \
 Core/Src/system_stm32f4xx.c \
 Library/speex/STM32/libspeex/filters.c \
 Library/speex/STM32/libspeex/modes.c \
@@ -127,6 +128,7 @@ Drivers/radio/Si446x/si446x_api_lib.c \
 Drivers/radio/Si446x/si446x_nirq.c \
 Drivers/display/fonts/PHan_Lib.c \
 Drivers/display/fonts/PHanFont.c \
+Drivers/display/fonts/PHanFontEng.c \
 Library/adc.c \
 Library/audio.c \
 Library/QBuf.c \
@@ -142,9 +144,6 @@ Library/RFMProtocol.c \
 Library/diag.c \
 Library/version.c \
 Library/bootloader.c \
-
-
-#Core/Src/syscalls.c \
 
 # CPP sources
 CPP_SOURCES =  \
