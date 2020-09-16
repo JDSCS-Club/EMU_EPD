@@ -34,8 +34,8 @@
 
 enum eRFMMode
 {
-	RFMModeNormal	=	0,
-	RFMModeTx		=	1,
+	RFMModeNormal	=	0,	//	Rx/Tx
+	RFMModeTx		=	1,	//	Tx Only
 	RFMModeRx		=	2,
 };
 
