@@ -304,7 +304,7 @@ void BootLoaderTask(void)
 		//	App 영역 삭제
 
 		//*
-		FLASH_If_Erase( APPLICATION_ADDRESS );
+		FLASH_If_Erase( ADDR_FLASH_APP );
 		/*/
 		for ( int idxSector = FLASH_SECTOR_5; idxSector <= FLASH_SECTOR_11; idxSector++ )
 		{

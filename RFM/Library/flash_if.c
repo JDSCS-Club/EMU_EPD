@@ -63,7 +63,7 @@ uint32_t FLASH_If_Erase(uint32_t StartSector)
   FLASH_If_Init();
   
   /* Get the sector where start the user flash area */
-  UserStartSector = GetSector(APPLICATION_ADDRESS);
+  UserStartSector = GetSector(ADDR_FLASH_APP);
   
   pEraseInit.TypeErase = TYPEERASE_SECTORS;
   pEraseInit.Sector = UserStartSector;

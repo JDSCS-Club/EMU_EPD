@@ -134,7 +134,7 @@ int		GetTrainSetIdx	( void )
         return -1;
     }
 
-    at24_HAL_ReadBytes( &hi2c1, 0xA0, 0x10, (uint8_t *)&idxTrainSet, 1 );
+    M24_HAL_ReadBytes( &hi2c1, 0xA0, 0x10, (uint8_t *)&idxTrainSet, 1 );
 
     if ( GetDbgLevel() > 0 )
     	printf( "%s(%d) - %d\n", __func__, __LINE__, idxTrainSet );
@@ -155,7 +155,7 @@ void	SetTrainSetIdx	( int idxTrainSet )
 
     if ( GetDbgLevel() > 0 )
     	printf( "%s(%d) - %d\n", __func__, __LINE__, idxTrainSet );
-    at24_HAL_WriteBytes( &hi2c1, 0xA0, 0x10, (uint8_t *)&idxTrainSet, 1 );
+    M24_HAL_WriteBytes( &hi2c1, 0xA0, 0x10, (uint8_t *)&idxTrainSet, 1 );
 }
 
 #if defined(USE_HOP_MANUAL)
@@ -173,7 +173,7 @@ int		GetManHop	( void )
         return -1;
     }
 
-    at24_HAL_ReadBytes( &hi2c1, 0xA0, 0x0D, (uint8_t *)&nManHop, 1 );
+    M24_HAL_ReadBytes( &hi2c1, 0xA0, 0x0D, (uint8_t *)&nManHop, 1 );
 
 //    if ( nManHop > 2 || nManHop < 0 ) nManHop = 0;
     if ( nManHop > 2 || nManHop < 0 ) nManHop = DEFAULT_HOP_MAN_VAL;	//	Default Hop Man
@@ -197,7 +197,7 @@ void	SetManHop	( int nManHop )
 
     if ( GetDbgLevel() > 0 )
     	printf( "%s(%d) - %d\n", __func__, __LINE__, nManHop );
-    at24_HAL_WriteBytes( &hi2c1, 0xA0, 0x0D, (uint8_t *)&nManHop, 1 );
+    M24_HAL_WriteBytes( &hi2c1, 0xA0, 0x0D, (uint8_t *)&nManHop, 1 );
 }
 
 #endif	//	defined(USE_HOP_MANUAL)
@@ -215,7 +215,7 @@ int		LoadCarNo		( void )
         return -1;
     }
 
-    at24_HAL_ReadBytes( &hi2c1, 0xA0, 0x0E, (uint8_t *)&nCarNo, 1 );
+    M24_HAL_ReadBytes( &hi2c1, 0xA0, 0x0E, (uint8_t *)&nCarNo, 1 );
 
     if ( GetDbgLevel() > 0 )
     	printf( "%s(%d) - %d\n", __func__, __LINE__, nCarNo );
@@ -257,7 +257,7 @@ void	SetCarNo		( int nCarNo )
 
 	g_nCarNo = nCarNo;
 
-    at24_HAL_WriteBytes( &hi2c1, 0xA0, 0x0E, (uint8_t *)&nCarNo, 1 );
+    M24_HAL_WriteBytes( &hi2c1, 0xA0, 0x0E, (uint8_t *)&nCarNo, 1 );
 }
 
 //========================================================================
@@ -273,7 +273,7 @@ int		GetSpkVol	    ( void )
         return -1;
     }
 
-    at24_HAL_ReadBytes( &hi2c1, 0xA0, 0x0F, (uint8_t *)&nSpkVol, 1 );
+    M24_HAL_ReadBytes( &hi2c1, 0xA0, 0x0F, (uint8_t *)&nSpkVol, 1 );
     printf( "%s(%d) - %d\n", __func__, __LINE__, nSpkVol );
 
     return nSpkVol;
@@ -291,7 +291,7 @@ void	SetSpkVol	    ( int nSpkVol )
     }
 
     printf( "%s(%d) - %d\n", __func__, __LINE__, nSpkVol );
-    at24_HAL_WriteBytes( &hi2c1, 0xA0, 0x0F, (uint8_t *)&nSpkVol, 1 );
+    M24_HAL_WriteBytes( &hi2c1, 0xA0, 0x0F, (uint8_t *)&nSpkVol, 1 );
 
     //========================================================================
     //	Codec MAX9860ETG+

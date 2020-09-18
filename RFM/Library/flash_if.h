@@ -55,17 +55,31 @@ enum{
   FLASHIF_PROTECTION_RDPENABLED   = 0x4,
 };
 
+/* Define the address from where user application will be loaded.
+   Note: the 1st sector 0x08000000-0x08003FFF is reserved for the IAP code */
+
+//========================================================================
+//			FLASH Address Define
+//========================================================================
+#define ADDR_FLASH_BOOT		((uint32_t)0x08000000)	//	64 KB	| Bootloader Address
+#define ADDR_FLASH_CONF		((uint32_t)0x08010000)	//	64 KB	| Configuration Address
+#define ADDR_FLASH_APP		((uint32_t)0x08020000)	//	384 KB	| Application Address
+
+#define ADDR_FLASH_IMGBOOT	((uint32_t)0x08080000)	//	64 KB	| Boot Image
+#define ADDR_FLASH_RESV		((uint32_t)0x08080000)	//	64 KB	| Reserved
+#define ADDR_FLASH_IMGAPP	((uint32_t)0x080A0000)	//	384 KB	| App Image
+
+//========================================================================
+//			FLASH Size Define
+#define SIZE_FLASH_BOOT		(ADDR_FLASH_CONF - ADDR_FLASH_BOOT + 1)	//	Application Size
+#define SIZE_FLASH_APP		(ADDR_FLASH_IMGBOOT - ADDR_FLASH_APP + 1)	//	Application Size
+
+//========================================================================
+
 /* End of the Flash address */
 #define USER_FLASH_END_ADDRESS        0x080FFFFF
 /* Define the user application size */
-#define USER_FLASH_SIZE   (USER_FLASH_END_ADDRESS - APPLICATION_ADDRESS + 1)
-
-/* Define the address from where user application will be loaded.
-   Note: the 1st sector 0x08000000-0x08003FFF is reserved for the IAP code */
-//#define APPLICATION_ADDRESS   (uint32_t)0x08008000 
-#define APPLICATION_ADDRESS   (uint32_t)0x08020000      //  LED Application Address
-
-#define BOOTLOADER_ADDRESS   (uint32_t)0x08000000      //  LED Bootloader Address
+#define USER_FLASH_SIZE   (USER_FLASH_END_ADDRESS - ADDR_FLASH_APP + 1)
 
 /* Define bitmap representing user flash area that could be write protected (check restricted to pages 8-39). */
 #define FLASH_SECTOR_TO_BE_PROTECTED (OB_WRP_SECTOR_0 | OB_WRP_SECTOR_1 | OB_WRP_SECTOR_2 | OB_WRP_SECTOR_3 |\

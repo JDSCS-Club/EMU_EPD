@@ -29,7 +29,6 @@
 
 #include "typedef.h"	//	TRUE, FALSE, ...
 
-
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/

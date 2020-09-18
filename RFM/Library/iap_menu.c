@@ -106,7 +106,7 @@ void SerialUpload(void)
   if ( status == CRC16)
   {
     /* Transmit the flash image through ymodem protocol */
-    status = Ymodem_Transmit((uint8_t*)APPLICATION_ADDRESS, (const uint8_t*)"UploadedFlashImage.bin", USER_FLASH_SIZE);
+    status = Ymodem_Transmit((uint8_t*)ADDR_FLASH_APP, (const uint8_t*)"UploadedFlashImage.bin", USER_FLASH_SIZE);
 
     if (status != 0)
     {
@@ -178,7 +178,7 @@ void IAP_Menu(void)
     case '3' :
       printf((uint8_t *)"Start program execution......\r\n\n");
       /* execute the new program */
-      JumpAddress = *(__IO uint32_t*) (APPLICATION_ADDRESS + 4);
+      JumpAddress = *(__IO uint32_t*) (ADDR_FLASH_APP + 4);
       /* Jump to user application */
       JumpToApplication = (pFunction) JumpAddress;
 
@@ -190,9 +190,9 @@ void IAP_Menu(void)
 
       /* Initialize user application's Stack Pointer */
 #if defined( USE_YMODEM_EXT_FLASH )
-      __set_MSP( *( __IO uint32_t* ) BOOTLOADER_ADDRESS );
+      __set_MSP( *( __IO uint32_t* ) ADDR_FLASH_BOOT );
 #else
-      __set_MSP(*(__IO uint32_t*) APPLICATION_ADDRESS);
+      __set_MSP(*(__IO uint32_t*)ADDR_FLASH_APP);
 #endif
 
       JumpToApplication();

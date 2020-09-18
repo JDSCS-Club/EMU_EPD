@@ -58,6 +58,8 @@
 
 #include "diag.h"
 
+#include "i2c.h"			//	cmd_eepromRead() / cmd_eepromWrite()
+
 #include "audio.h"			//	cmd_audio() / cmd_codec()
 
 #include "ProcPkt.h"		//	cmd_showpkt()
@@ -161,6 +163,21 @@ user_command_t	user_command_table[] = {
 		"rspid	-	rspid [id] [set/clear]",
 		cmd_rspid},
 #endif	//	defined(RFM_H)
+
+#if defined(EEPROM_I2C_H)
+		{"eepw",
+			"eepw			-	write byte to address",
+			"eepw [addr] [data]",
+			cmd_eepromWrite,},
+		{"eepr",
+			"eepr			-	read byte from address",
+			"eepr [addr]",
+			cmd_eepromRead,},
+		{"eepdump",
+			"eepdump		-	eeprom dump",
+			"eepdump [addr] [size]",
+			cmd_eepromDump,},
+#endif	//	defined(EEPROM_I2C_H)
 
 #if defined(USE_ENV_TEST)
 	{"rftx",

@@ -283,6 +283,7 @@ void CallbackRecvPacket( const char *pData, int nSize )
 			HAL_GPIO_WritePin ( LED_ON_B_GPIO_Port, LED_ON_B_Pin, GPIO_PIN_SET ); //  RED LED
 
 			//  통화 : 송신기 -> 송신기
+
 			qBufPut( &g_qBufAudioRx, (uint8_t*)pAudioBuf, ( I2S_DMA_LOOP_SIZE * 2 ) );
 		}
 		else if ( GetDevID() == DevRF900M )

@@ -122,6 +122,8 @@ enum ePktID
 	PktLightOff		=	0x05,		//	조명제어. ( Off )
 	PktAudioPA		=	0x12,		//	Audio Stream. ( 방송 )
 	PktAudioCall	=	0x13,		//	Audio Stream. ( 통화 )
+	PktCmd			=	0x20,		//	Command
+	PktUpgr			=	0x40,		//	Upgrade
 };
 
 //==========================================================================
@@ -209,6 +211,19 @@ typedef struct _RFMPktStat
 	uint8_t		nSpare22[1];	//	Spare
 
 } RFMPktStat;
+
+//==========================================================================
+//	RFM Packet - Upgrade Data
+typedef struct _RFMPktUpgr
+{
+	//--------------------------------------------------------------------------
+	//	TEXT 0
+	int			startAddr;		//	Start Address
+	int			totPkt;			//	Total Packet
+	int			idxPkt;			//	Index Packet
+	int			nSize;			//	Data Size
+	char		data[50];		//	Binary Data
+} RFMPktUpgr;
 
 
 //==========================================================================

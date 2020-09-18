@@ -414,7 +414,7 @@ COM_StatusTypeDef Ymodem_Receive ( uint32_t *p_size )
 
 #else
 
-  flashdestination  =   APPLICATION_ADDRESS;
+  flashdestination  =   ADDR_FLASH_APP;
 
 #endif
 
@@ -564,7 +564,7 @@ COM_StatusTypeDef Ymodem_Receive ( uint32_t *p_size )
                     printf( "extern flash 0x%08x erase\n", flashAddr );
 #else
 
-                    FLASH_If_Erase( APPLICATION_ADDRESS );
+                    FLASH_If_Erase( ADDR_FLASH_APP );
 
 #endif // defined( USE_YMODEM_EXT_FLASH )
 

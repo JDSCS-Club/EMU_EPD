@@ -65,7 +65,14 @@ MEMORY
   CCMRAM    (xrw)    : ORIGIN = 0x10000000,   LENGTH = 64K
   RAM    (xrw)    : ORIGIN = 0x20000000,   LENGTH = 128K
 /*  FLASH    (rx)    : ORIGIN = 0x8000000,   LENGTH = 1024K */
-  FLASH    (rx)    : ORIGIN = 0x8020000,   LENGTH = 1024K - 128K
+/*  FLASH    (rx)    : ORIGIN = 0x8020000,   LENGTH = 1024K - 128K */
+/*	FLASH Total : 1024 KB ( 1 MB )
+ * 0x00000 : Boot		( 64 KB )
+ * 0x10000 : Config		( 64 KB )
+ * 0x20000 : App		( 384 KB )
+ * 0xA0000 : UpgrImg	( 512 KB )
+ */
+  FLASH    (rx)    : ORIGIN = 0x8020000,   LENGTH = 1024K - 128K - 512K
 }
 
 /* Sections */
