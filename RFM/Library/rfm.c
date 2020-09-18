@@ -119,7 +119,7 @@ void	SetRFMMode	( int nRFMMode )
 
 //========================================================================
 
-#include "i2c.h"    //  EEPROM
+#include "eeprom.h"    //  EEPROM
 
 //========================================================================
 int		GetTrainSetIdx	( void )

@@ -66,7 +66,7 @@ enum{
 #define ADDR_FLASH_APP		((uint32_t)0x08020000)	//	384 KB	| Application Address
 
 #define ADDR_FLASH_IMGBOOT	((uint32_t)0x08080000)	//	64 KB	| Boot Image
-#define ADDR_FLASH_RESV		((uint32_t)0x08080000)	//	64 KB	| Reserved
+#define ADDR_FLASH_RESV		((uint32_t)0x08090000)	//	64 KB	| Reserved
 #define ADDR_FLASH_IMGAPP	((uint32_t)0x080A0000)	//	384 KB	| App Image
 
 //========================================================================

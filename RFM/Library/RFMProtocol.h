@@ -114,7 +114,7 @@ enum eDevID
 enum ePktID
 {
 	PktNone			=	0x00,		//	None
-	PktStat			=	0x01,		//	상태정보.
+	PktStat			=	0x01,		//	상태정보. ( nIDFlag(0) / nSeq(0) )
 	PktPA			=	0x02,		//	방송. ( 송신기 -> 수신기 )
 	PktCall			=	0x03,		//	통화. ( 송신기 -> 송신기 )
 	PktLight		=	0x04,		//	조명제어. ( On/Off )
@@ -122,8 +122,9 @@ enum ePktID
 	PktLightOff		=	0x05,		//	조명제어. ( Off )
 	PktAudioPA		=	0x12,		//	Audio Stream. ( 방송 )
 	PktAudioCall	=	0x13,		//	Audio Stream. ( 통화 )
-	PktCmd			=	0x20,		//	Command
-	PktUpgr			=	0x40,		//	Upgrade
+
+	PktCmd			=	0x20,		//	Command ( nIDFlag(0) / nSeq(0) )
+	PktUpgr			=	0x40,		//	Upgrade ( nIDFlag(0) / nSeq(0) )
 };
 
 //==========================================================================
