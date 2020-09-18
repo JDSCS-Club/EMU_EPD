@@ -4,7 +4,7 @@
     <tbpFrequencyAndPower Type="System.Windows.Forms.TabPage">
       <grbFequencyControl Type="System.Windows.Forms.GroupBox">
         <DataItem Type="System.Windows.Forms.NumericUpDown" Name="nudChannelNumber">
-          <Value>10</Value>
+          <Value>64</Value>
         </DataItem>
         <DataItem Type="System.Windows.Forms.NumericUpDown" Name="nudCenterFrequency">
           <Value>915</Value>
@@ -121,7 +121,7 @@
     <tbpPacketHandler Type="System.Windows.Forms.TabPage">
       <pccPacketHandlerConfigurator Type="NewWDS.PacketConfigControl">
         <DataItem Type="System.Windows.Forms.ComboBox" Name="cbbPacketStructure">
-          <SelectedIndex>2</SelectedIndex>
+          <SelectedIndex>0</SelectedIndex>
         </DataItem>
         <tabGeneralConfig Type="System.Windows.Forms.TabControl">
           <tbpGeneralPacketConfig Type="System.Windows.Forms.TabPage">
