@@ -181,7 +181,7 @@ enum eStartStop
 #if defined(USE_HOPPING)
 
 #define		RFPktHdrLen		4
-#define		RFPktDataLen	58
+#define		RFPktDataLen	60
 
 typedef struct _RFMPktHdr
 {
@@ -193,7 +193,7 @@ typedef struct _RFMPktHdr
 #else	//	Non - Hopping
 
 #define		RFPktHdrLen		4
-#define		RFPktDataLen	58
+#define		RFPktDataLen	60
 
 //==========================================================================
 typedef struct _RFMPktHdr
@@ -245,16 +245,28 @@ typedef struct _RFMPktStat
 } RFMPktStat;
 
 //==========================================================================
-//	RFM Packet - Upgrade Data
-typedef struct _RFMPktUpgr
+//	RFM Packet - Command Data
+typedef struct _RFMPktCmd
 {
-	//--------------------------------------------------------------------------
-	//	TEXT 0
-	int			startAddr;		//	Start Address
-	int			totPkt;			//	Total Packet
-	int			idxPkt;			//	Index Packet
-	int			nSize;			//	Data Size
-	char		data[50];		//	Binary Data
+	//	RSSI
+	//		256	:
+
+	int8_t		nRSSIOver;		//	0 	| 일정수신감도 이상일때 수행.
+	int8_t		nSpare[3];		//	1	| Spare
+	char		sCmd[50];		//	10	| CLI String Command
+} RFMPktCmd;
+
+
+//==========================================================================
+//	RFM Packet - Upgrade Data ( 60 Byte )
+typedef struct _RFMPktUpgrData
+{
+	int32_t		baseAddr;		//	0	| Base Address ( 0x0000 ~ 0xFFFF )
+	int16_t		totPkt;			//	4	| Total Packet
+	int16_t		idxPkt;			//	6	| Index Packet
+	int8_t		nSize;			//	8	| Data Size ( 0 ~ 50 )
+	int8_t		nSpare;			//	9	| Spare
+	char		data[50];		//	10	| Binary Data
 } RFMPktUpgr;
 
 
