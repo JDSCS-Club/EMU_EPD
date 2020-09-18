@@ -58,7 +58,7 @@
 
 #include "diag.h"
 
-#include "i2c.h"			//	cmd_eepromRead() / cmd_eepromWrite()
+#include "eeprom.h"			//	cmd_eepromRead() / cmd_eepromWrite()
 
 #include "audio.h"			//	cmd_audio() / cmd_codec()
 

@@ -135,7 +135,7 @@ Library/QBuf.c \
 Library/serial.c \
 Library/unicode.c \
 Library/cli.c \
-Library/i2c.c \
+Library/eeprom.c \
 Library/rfm.c \
 Library/keypad.c \
 Library/menu.c \

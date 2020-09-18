@@ -32,7 +32,7 @@
 #include <string.h>
 #include <stdio.h>
 
-#include "i2c.h"
+#include "eeprom.h"		//	eeprom
 
 #include "main.h"		//	hi2c1
 
