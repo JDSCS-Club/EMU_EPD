@@ -115,8 +115,9 @@
 	*	채널 사용 정의.
 	*==========================================================================
 	* CH0 : 공통채널
-	* CH1 : Upgrade 전용 채널
-	* CH2 ~ 10 : Reserved
+	* CH1 : Upgrade 전용 채널 ( 수신기 - Target )
+	* CH2 : Upgrade 전용 채널 ( 송신기 - Origin )
+	* CH3 ~ 10 : Reserved
 	* CH11 : 1편성 ( 1,3,5호차 )
 	* CH12 : 1편성 ( 2,4,6호차 )
 	* CH13 : 2편성 ( 1,3,5호차 )
@@ -149,10 +150,9 @@ enum ePktID
 	PktPA			=	0x02,		//	방송. ( 송신기 -> 수신기 )
 	PktCall			=	0x03,		//	통화. ( 송신기 -> 송신기 )
 	PktLight		=	0x04,		//	조명제어. ( On/Off )
-	PktLightOn		=	PktLight,
-	PktLightOff		=	0x05,		//	조명제어. ( Off )
 
 	PktCmd			=	0x20,		//	Command ( nIDFlag(0) / nSeq(0) )
+	PktCmdRsp		=	0x21,		//	Cmd 처리결과 응답.
 	PktUpgr			=	0x40,		//	Upgrade ( nIDFlag(0) / nSeq(0) )
 };
 
@@ -205,6 +205,7 @@ typedef struct _RFMPktHdr
 //==========================================================================
 #endif
 
+
 //==========================================================================
 //	RFM Packet - Status Data
 typedef struct _RFMPktStat
@@ -247,7 +248,7 @@ typedef struct _RFMPktStat
 typedef struct _RFMPktCmd
 {
 	//	RSSI 수신감도 측정.
-	//		0.25 M : 247
+	//		0.25 M : 247 ~
 	//		0.50 M : 244
 	//		0.75 M : 230
 	//		1.00 M : 224
@@ -255,17 +256,17 @@ typedef struct _RFMPktCmd
 	//		1.50 M : 200 ~ 210
 	//		3.50 M : 193
 
-	int8_t		nRSSIOver;		//	0 	| 일정수신감도 이상일때 수행.
-	int8_t		nSpare[3];		//	1	| Spare
+	int8_t		nRSSIOver;		//	0 	| RSSI값 확인 후 해당 범위 내에 있는 경우 명령 동작.
+	int8_t		nRsp;			//	1	| 0:None / 1:처리결과 송신.
+	int8_t		nSpare[2];		//	2	| Spare
 	char		sCmd[50];		//	10	| CLI String Command
 } RFMPktCmd;
 
-
 //==========================================================================
 //	RFM Packet - Upgrade Data ( 60 Byte )
-typedef struct _RFMPktUpgrData
+typedef struct _RFMPktUpgr
 {
-	int32_t		baseAddr;		//	0	| Base Address ( 0x0000 ~ 0xFFFF )
+	int32_t		baseAddr;		//	0	| Base Address ( 0x08080000 ~ 0x080FFFFF )
 	int16_t		totPkt;			//	4	| Total Packet
 	int16_t		idxPkt;			//	6	| Index Packet
 	int8_t		nSize;			//	8	| Data Size ( 0 ~ 50 )
@@ -300,9 +301,11 @@ typedef struct _RFMPkt
 	union
 	{
 		uint8_t			data[RFPktDataLen];	//	Data
-		RFMPktStat		stat;				//	상태정보
-		RFMPktLight		light;				//	Light On/Off정보.
+		RFMPktStat		stat;				//	Status Info
+		RFMPktLight		light;				//	Light On/Off
 		RFMPktPACall	pacall;				//	PA/Call Start/Stop
+		RFMPktCmd		cmd;				//	Remote RF Command
+		RFMPktUpgr		upgr;				//	Upgrade Binary Data
 	} dat;
 } RFMPkt;
 
@@ -330,16 +333,24 @@ void	SendStat			( void );
 void	SendPA				( int nStartStop );
 void	SendCall			( int nStartStop );
 void	SendLight			( int nOnOff );
-
 void	SendLightOn			( void );		//	조명제어 조명 On
 void	SendLightOff		( void );		//	조명제어 조명 Off
 
+void	SendRFCmd			( char *sCmd, int nRSSI );	//	원격 Command 명령 전송.
+void	SendRFCmdReset		( void );		//	Reset 명령 전송.
+void	SendRFCmdDFUMode	( void );		//	DFU Mode 명령 전송.
+void	SendRFCmdUpgrade	( void );		//	Upgrade 명령 전송.
+
 //==========================================================================
 
-int		ProcPktStat			( const RFMPkt *pPkt );
-int		ProcPktPA			( const RFMPkt *pPkt );
-int		ProcPktCall			( const RFMPkt *pPkt );
-int		ProcPktLight		( const RFMPkt *pPkt );
+int		ProcPktStat			( const RFMPkt *pRFPkt );
+int		ProcPktPA			( const RFMPkt *pRFPkt );
+int		ProcPktCall			( const RFMPkt *pRFPkt );
+int		ProcPktLight		( const RFMPkt *pRFPkt );
+
+int		ProcPktCmd			( const RFMPkt *pRFPkt );
+int		ProcPktCmdRsp		( const RFMPkt *pRFPkt );
+int		ProcPktUpgr			( const RFMPkt *pRFPkt );
 
 //==========================================================================
 

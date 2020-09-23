@@ -130,9 +130,42 @@ Menu_t	g_MenuVerList = {
 #endif	//	defined(USE_RFT_MENU_DEV_VER)
 //========================================================================
 
+//========================================================================
+//	Menu Command
+
+#if defined(USE_RFT_MENU_CMD)
+char *_sCmdList[] = {
+	" Reset",		//  Reset
+	" DFU Mode",	//  DFU Mode
+	" Upgrade",		//  Upgrade
+};
+
+Menu_t	g_MenuCmdList = {
+	_sCmdList,
+	sizeof(_sCmdList)/sizeof(char *),		//	Item Count
+	0,						// 	curr Idx
+	ProcMenuCmd				//	Callback Function
+};
+#endif	//	defined(USE_RFT_MENU_CMD)
 
 //========================================================================
 //	Main Menu
+
+enum eMenuIdx
+{
+	eMenuIdxCtlLight = 0,	//	조명제어
+	eMenuIdxSWVer,			//	S/W버전
+	eMenuIdxTrainSet,		//	편성설정
+#if defined(USE_RFT_MENU_DIAG)
+	eMenuIdxDiag,			//	진단
+#endif
+#if defined(USE_RFT_MENU_STAT)
+	eMenuIdxStat,			//	상태정보
+#endif
+#if defined(USE_RFT_MENU_CMD)
+	eMenuIdxCmd,			//	명령전송
+#endif
+};
 
 char *_sMainMenu[] = {
 	"1. 조명제어",
@@ -144,7 +177,11 @@ char *_sMainMenu[] = {
 #if defined(USE_RFT_MENU_STAT)
 	"5. 상태정보",
 #endif	//	defined(USE_RFT_MENU_STAT)
+#if defined(USE_RFT_MENU_CMD)
+	"6. 명령전송",
+#endif	//	defined(USE_RFT_MENU_CMD)
 };
+
 
 Menu_t	g_MenuMain = {
 	_sMainMenu,
@@ -415,13 +452,36 @@ void	ProcMenuVer( int idxItem  )
 	UpdateLCDMain();
 }
 
+
+//========================================================================
+void	ProcMenuCmd( int idxItem  )
+//========================================================================
+{
+	LCDSetCursor( 20, 13 );
+	LCDPrintf( "[명령전송]" );
+
+	switch( idxItem )
+	{
+	case 0:		SendRFCmdReset();		break;		//	Reset 명령.
+	case 1:		SendRFCmdDFUMode();		break;		//	DFU Mode 명령.
+	case 2:		SendRFCmdUpgrade();		break;		//	Upgrade 명령.
+	}
+
+	//  1초후 Main화면 갱신.
+	HAL_Delay( 1000 );
+	UpdateLCDMain();
+
+	//  메뉴 Exit
+	SetActiveMenu( NULL );
+}
+
 //========================================================================
 void 	ProcMenuMain( int idxItem )
 //========================================================================
 {
 	switch ( idxItem )
 	{
-	case 0:		 //  조명제어
+	case eMenuIdxCtlLight:	//	0:		 //  조명제어
 		//	Menu
 
 		SetActiveMenu( &g_MenuLightCtrl );
@@ -431,7 +491,7 @@ void 	ProcMenuMain( int idxItem )
 
 		break;
 
-	case 1:		 //  S/W 버전
+	case eMenuIdxSWVer:		//	1:		 //  S/W 버전
 		//  메뉴 Exit
 
 #if defined(USE_RFT_MENU_DEV_VER)
@@ -447,7 +507,7 @@ void 	ProcMenuMain( int idxItem )
 
 		break;
 
-	case 2:		 //  편성설정.
+	case eMenuIdxTrainSet:	//	2:		 //  편성설정.
 
 		SetActiveMenu( &g_MenuTrainSet );
 		GetActiveMenu()->currIdx = g_idxTrainSet;	//	메뉴 Index초기화.
@@ -457,7 +517,7 @@ void 	ProcMenuMain( int idxItem )
 
 #if defined(USE_RFT_MENU_DIAG)
 
-	case 3:		 //  진단
+	case eMenuIdxDiag:		//	3:		 //  진단
 
 		SetActiveMenu( &g_MenuDiagList );
 		GetActiveMenu()->currIdx = 0;	//	메뉴 Index초기화.
@@ -465,19 +525,32 @@ void 	ProcMenuMain( int idxItem )
 		UpdateLCDMenu();
 		break;
 
-#endif
+#endif	//	defined(USE_RFT_MENU_DIAG)
 
 
 #if defined(USE_RFT_MENU_STAT)
 
-	case 4:		 //  상태정보.
+	case eMenuIdxStat:		//	4:		 //  상태정보.
 
 		SetActiveMenu( NULL );
 
 		ProcDispStat();			//	상태정보 표출.
 		break;
 
-#endif
+#endif	//	defined(USE_RFT_MENU_STAT)
+
+
+#if defined(USE_RFT_MENU_CMD)
+
+	case eMenuIdxCmd:		//	5:		 //  명령전송.
+
+		SetActiveMenu( &g_MenuCmdList );
+		GetActiveMenu()->currIdx = 0;	//	메뉴 Index초기화.
+
+		UpdateLCDMenu();
+		break;
+
+#endif	//	defined(USE_RFT_MENU_CMD)
 
 #if defined(USE_ENV_TEST)
 	case 3:		 //  RF 출력

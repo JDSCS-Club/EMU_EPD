@@ -79,6 +79,8 @@
 
 #define		USE_RFT_MENU_LOOP				1		//	송신기 메뉴 Up/Down Loop.
 
+#define		USE_RFT_MENU_CMD				1		//	송신기 Command 명령.
+
 //========================================================================
 //	시험용 설정
 //#define		USE_TEST_PTT_AUDIO_LOOP			1		//	Test PTT Key Audio Loopback

@@ -48,6 +48,7 @@ void 	ProcMenuLightCtrl	( int idxItem );	//	LightCtrl
 
 void 	ProcMenuDiag		( int idxItem );	//	Diag
 void	ProcMenuVer			( int idxItem );	//	Menu Version
+void	ProcMenuCmd			( int idxItem );	//	Command
 
 //========================================================================
 

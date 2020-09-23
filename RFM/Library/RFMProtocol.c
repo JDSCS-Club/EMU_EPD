@@ -75,7 +75,10 @@ void _MakePktHdr	( RFMPkt *pPkt, int addrSrc, int addrDest, int nLen, int nPktCm
 {
 #if	defined(USE_HOPPING)
 
-	if ( nPktCmd == PktStat )
+	if ( nPktCmd == PktStat
+		|| nPktCmd == PktCmd
+		|| nPktCmd == PktUpgr
+		)
 	{
 		//	상태정보의 경우 Seq / ID : 0x00
 		pPkt->hdr.nSeq			=	0x00;		//	Sequence
@@ -249,11 +252,11 @@ void SendLight( int nOnOff )
 	//========================================================================
 }
 
-
 //==========================================================================
 void SendLightOn( void )
 //==========================================================================
 {
+#if OLD
 	RFMPkt			stPkt;
 
 	memset( &stPkt, 0, sizeof( stPkt ) );
@@ -261,12 +264,16 @@ void SendLightOn( void )
 	_MakePktHdr( &stPkt, GetDevID(), DevRF900M, sizeof( RFMPktLight ), PktLightOn );
 
 	SendPacket( (U8 *)&stPkt, (U8)sizeof( RFMPktHdr ) + sizeof( RFMPktLight ) );
+#else
+	SendLight( 1 );		//	Light On
+#endif
 }
 
 //==========================================================================
 void SendLightOff( void )
 //==========================================================================
 {
+#if OLD
 	RFMPkt			stPkt;
 
 	memset( &stPkt, 0, sizeof( stPkt ) );
@@ -274,7 +281,67 @@ void SendLightOff( void )
 	_MakePktHdr( &stPkt, GetDevID(), DevRF900M, sizeof( RFMPktLight ), PktLightOff );
 
 	SendPacket( (U8 *)&stPkt, (U8)sizeof( RFMPktHdr ) + sizeof( RFMPktLight ) );
+#else
+	SendLight( 0 );		//	Light Off
+#endif
 }
+
+//==========================================================================
+void SendRFCmd( char *sCmd, int nRSSI )
+//==========================================================================
+{
+	printf( "%s(%d)\n", __func__, __LINE__ );
+
+	RFMPkt			stPkt;
+	memset( &stPkt, 0, sizeof( stPkt ) );
+//	pLight = (RFMPktLight *)&stPkt.dat.light;
+
+	//========================================================================
+	//	Packet Header
+	_MakePktHdr( &stPkt, GetDevID(), 0xFF, RFPktDataLen, PktCmd );
+
+	//========================================================================
+	//	Command
+	stPkt.dat.cmd.nRSSIOver = nRSSI;		//	명령 동작 RSSI 범위.
+	strcpy( stPkt.dat.cmd.sCmd, sCmd );		//	명령 전송.
+
+	//========================================================================
+	//	Send RF
+	SendPacket( (U8 *)&stPkt, (U8)sizeof( RFMPktHdr ) + RFPktDataLen );
+
+	//========================================================================
+}
+
+//==========================================================================
+void SendRFCmdReset( void )
+//==========================================================================
+{
+	printf( "%s(%d)\n", __func__, __LINE__ );
+	SendRFCmd( "reset", 190 );
+}
+
+
+//==========================================================================
+void SendRFCmdDFUMode( void )
+//==========================================================================
+{
+	printf( "%s(%d)\n", __func__, __LINE__ );
+	//==========================================================================
+	SendRFCmd( "stboot", 247 );	//	DFU모드의 경우 아주 근접(RSSI-247)하지 않으면 동작하지 않도록 한다!!!
+	//==========================================================================
+}
+
+//==========================================================================
+void SendRFCmdUpgrade( void )
+//==========================================================================
+{
+	printf( "%s(%d)\n", __func__, __LINE__ );
+	//==========================================================================
+	SendRFCmd( "upgrade", 200 );	//	DFU모드의 경우 근접(RSSI-200)하지 않으면 동작하지 않도록 한다!!!
+	//==========================================================================
+}
+
+
 
 //==========================================================================
 //		Process Packet
@@ -402,22 +469,80 @@ int	ProcPktLight		( const RFMPkt *pRFPkt )
 	if ( GetDbgLevel() > 0 )
 		printf( "%s(%d)\n", __func__, __LINE__ );
 
-	if ( GetDevID() == DevRF900M )
+	if ( GetDevID() == DevRF900M && pRFPkt->hdr.nPktCmd == PktLight )
 	{
 		//  수신기 조명제어.
-
-		if ( pRFPkt->hdr.nPktCmd == PktLightOff )
+		if ( pRFPkt->dat.light.nOnOff == 0 )
 		{
 			// 조명 Off 명령 수신시.
 			HAL_GPIO_WritePin ( LIGHT_ON_GPIO_Port, LIGHT_ON_Pin, GPIO_PIN_RESET );
 		}
-		else if ( pRFPkt->hdr.nPktCmd == PktLightOn )
+		else if ( pRFPkt->dat.light.nOnOff == 1 )
 		{
 			// 조명 On 명령 수신시.
 			HAL_GPIO_WritePin ( LIGHT_ON_GPIO_Port, LIGHT_ON_Pin, GPIO_PIN_SET );
 		}
 	}
 }
+
+
+//========================================================================
+int	ProcPktCmd			( const RFMPkt *pRFPkt )
+//========================================================================
+{
+	if ( GetDbgLevel() > 0 )
+		printf( "%s(%d)\n", __func__, __LINE__ );
+
+	//	RSSI Check
+
+	if ( g_nRSSI >= pRFPkt->dat.cmd.nRSSIOver )
+	{
+		if ( pRFPkt->dat.cmd.nRsp == 1 )
+		{
+			//	명령 처리 동작 결과 응답.
+
+			//	ToDo
+		}
+
+		//	RSSI값 확인 후 해당 범위 내에 있는 경우 명령 동작.
+		ProcessCommand(pRFPkt->dat.cmd.sCmd);
+	}
+}
+
+
+//========================================================================
+int	ProcPktCmdRsp		( const RFMPkt *pRFPkt )
+//========================================================================
+{
+	if ( GetDbgLevel() > 0 )
+		printf( "%s(%d)\n", __func__, __LINE__ );
+
+	//	Command 처리결과 응답.
+
+	//	ToDo
+}
+
+
+//========================================================================
+int	ProcPktUpgr			( const RFMPkt *pRFPkt )
+//========================================================================
+{
+	if ( GetDbgLevel() > 0 )
+		printf( "%s(%d)\n", __func__, __LINE__ );
+
+	//========================================================================
+	//	Data Flash영역에 Write
+	RFMPktUpgr	*pUpgr = &pRFPkt->dat.upgr;
+
+	if ( pUpgr->baseAddr < 0x08080000 || 0x080FFFFF < pUpgr->baseAddr )
+	{
+		printf("%s(%d) - Out Of Range - baseAddr(0x%08X)\n", __func__, __LINE__, pUpgr->baseAddr );
+		return 0;
+	}
+
+
+}
+
 
 #if OLD
 //========================================================================

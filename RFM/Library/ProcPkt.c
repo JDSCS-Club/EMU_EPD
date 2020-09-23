@@ -265,6 +265,8 @@ void CallbackRecvPacket( const char *pData, int nSize )
 	case PktPA:			ProcPktPA	( pRFPkt );		break;
 	case PktStat:		ProcPktStat	( pRFPkt );		break;
 	case PktLight:		ProcPktLight( pRFPkt );		break;
+	case PktCmd:		ProcPktCmd	( pRFPkt );		break;
+	case PktUpgr:		ProcPktUpgr	( pRFPkt );		break;
 	default:
 		printf( "%s(%d) - Invalid Value(%d)\n", __func__, __LINE__, pRFPkt->hdr.nPktCmd );
 		break;

@@ -432,13 +432,12 @@ int ProcessCommand( char *cmd )
 //========================================================================
 {
 	char	*argv[MAXP];
-	int	argc;
+	int		argc;
 	char	*p;
-	int	v = 0;
-	int	i;
+	int		v = 0;
+	int		i;
 	char	temp[80];
 	char	upstr[4] = { 0x1b, '[', 'A', 0 };
-//	extern	TickType_t	xTaskGetTickCount( void );
 
 	if ( strcmp( "!!", cmd ) == 0 || strcmp( cmd, upstr ) == 0 )
 	{
