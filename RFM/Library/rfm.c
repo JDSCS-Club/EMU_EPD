@@ -539,6 +539,15 @@ int cmd_hop     ( int argc, char * argv[] )
     SetManHop( nManHop );
 }
 
+//========================================================================
+int cmd_swinfo    ( int argc, char * argv[] )
+//========================================================================
+{
+
+    printf( "[S/W Info]\n" );
+    printf( " - Boot : %d Byte\n", FLASH_If_GetBootSize() );
+    printf( " - App : %d Byte\n", FLASH_If_GetAppSize() );
+}
 
 //========================================================================
 int cmd_info    ( int argc, char * argv[] )

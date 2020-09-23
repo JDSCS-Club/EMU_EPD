@@ -110,6 +110,7 @@ void	PrintVerInfo	( void );
 int 	cmd_ts      	( int argc, char * argv[] );
 int		cmd_ch			( int argc, char * argv[] );
 int		cmd_car			( int argc, char * argv[] );
+int 	cmd_swinfo    	( int argc, char * argv[] );
 int		cmd_info		( int argc, char * argv[] );
 int 	cmd_rfstat		( int argc, char * argv[] );
 int		cmd_rspid		( int argc, char * argv[] );

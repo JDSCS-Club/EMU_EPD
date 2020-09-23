@@ -253,6 +253,51 @@ HAL_StatusTypeDef FLASH_If_WriteProtectionConfig(uint32_t modifier)
   return result;
 }
 
+//========================================================================
+uint32_t	FLASH_If_FindLastData	( uint32_t baseAddr, uint32_t endAddr )
+//========================================================================
+{
+	//	해당영역의 마지막 Data를 찾는다.
+	//	Flash 영역 Binary Data Size 확인용.
+	printf( "%s(%d)\n", __func__, __LINE__ );
+
+	uint32_t findAddr;
+
+	int	nFound = 0;
+
+	for( findAddr = endAddr; findAddr > baseAddr; findAddr -= 4 )
+	{
+		if( *(__IO uint32_t*)findAddr != 0xFFFFFFFF )
+		{
+			//	Found Last Valid Data.
+			nFound = 1;
+			break;
+		}
+	}
+
+	if ( nFound == 0 )	return 0;		//	Not Found
+	else 				return (findAddr - baseAddr) + 4;
+}
+
+//========================================================================
+uint32_t	FLASH_If_GetBootSize	( void )
+//========================================================================
+{
+	printf( "%s(%d)\n", __func__, __LINE__ );
+
+	return FLASH_If_FindLastData( ADDR_FLASH_BOOT, (ADDR_FLASH_CONF - 4) );
+}
+
+//========================================================================
+uint32_t	FLASH_If_GetAppSize		( void )
+//========================================================================
+{
+	printf( "%s(%d)\n", __func__, __LINE__ );
+
+	return FLASH_If_FindLastData( ADDR_FLASH_APP, (ADDR_FLASH_IMGBOOT - 4) );
+}
+
+
 /**
   * @}
   */
