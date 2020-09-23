@@ -22,8 +22,6 @@
 
 #include "radio.h"				//	vRadio_StartTx_Variable_Packet()
 
-//#include "diag.h"				//	GetDbgLevel()
-
 #include "Adafruit_SSD1306.h"	//	LCDPrintf()
 
 #include "main.h"				//	FLASH_ON_Pin / GPIO_PIN_SET / ...
@@ -33,6 +31,8 @@
 #include "version.h"			//	Version Info
 
 #include "rfm.h"				//	g_nManHopping
+
+#include "audio.h"				//	I2S_DMA_LOOP_SIZE
 
 //==========================================================================
 //	Define
@@ -281,139 +281,145 @@ void SendLightOff( void )
 //==========================================================================
 
 //========================================================================
-int	ProcPktStat			( const RFMPkt *pPkt )
+int	ProcPktStat			( const RFMPkt *pRFPkt )
 //========================================================================
 {
 	if ( GetDbgLevel() > 0 )
 		printf( "%s(%d)\n", __func__, __LINE__ );
+
+	int nRspID = pRFPkt->dat.stat.nCarNo;
+	RFMPktStat *pStat = &pRFPkt->dat.stat;
+	//	상태정보 수신.
+//		printf ( "[Stat] Car:%d\n", pRFPkt->dat.stat.nCarNo );
+
+	if( nRspID < 16
+		&& ( pStat->nDevID == DevRF900M || pStat->nDevID == DevRF900T )
+		&& pStat->nMagicNum == 0xAA55
+		&& g_bSetRspIDManual == 0		//	수동설정모드가 아닌경우.
+		)
+	{
+		//	장치 응답 Flag 설정.
+		SetStat( nRspID );		//	상태정보 설정.
+
+		UpdateStat( pStat );	//	상태정보 Update. ( 버전정보 갱신 등 )
+	}
 }
 
 //========================================================================
-int	ProcPktPA			( const RFMPkt *pPkt )
+int	ProcPktPA			( const RFMPkt *pRFPkt )
 //========================================================================
 {
 	if ( GetDbgLevel() > 0 )
 		printf( "%s(%d)\n", __func__, __LINE__ );
 
 	//========================================================================
-	const RFMPktHdr		*pHdr = (const RFMPktHdr *)&pPkt->hdr;
-	const RFMPktPACall	*pPACall = (const RFMPktPACall *)&pPkt->dat.pacall;
-	//========================================================================
-
-	//========================================================================
-	//	Packet Parsing
-	if ( GetDbgLevel() > 0 )
+	//  방송 ( PTT )
+	if ( GetDevID() == DevRF900M )
 	{
-		printf( "%s(%d) - OnOff( %d )\n", __func__, __LINE__, pPACall->nStartStop );
-	}
+		//  수신기
+		uint16_t	 *pAudioBuf = (uint16_t*)pRFPkt->dat.data;
 
-	if ( pPACall->nStartStop )
-	{
-		//	수신중
-		LCDSetCursor( 20, 13 );
-		LCDPrintf( "수신중..." );
+		//  방송 : 송신기 -> 수신기
+		qBufPut( &g_qBufAudioRx, (uint8_t*)pAudioBuf, ( I2S_DMA_LOOP_SIZE * 2 ) );
+
+		// 조명 On
+		HAL_GPIO_WritePin ( LIGHT_ON_GPIO_Port, LIGHT_ON_Pin, GPIO_PIN_SET );
+
+		SetRFMMode( RFMModeRx );
+
+		RFM_Spk(1);
+		//  수신기 Spk Relay On
+		HAL_GPIO_WritePin( AUDIO_ON_GPIO_Port, AUDIO_ON_Pin, GPIO_PIN_SET );
 	}
 	else
 	{
-		//    편성 : 100
-		UpdateLCDMain();
-//		LCDSetCursor( 20, 13 );
-//		LCDPrintf( "편성 : 100" );
+		//========================================================================
+		uint16_t	 *pAudioBuf = (uint16_t*)pRFPkt->dat.data;
+
+#if defined(USE_RFT_ONLY_RX_SPK_ON)
+		//  송신기 : 수신중인 경우 SPK ON
+//			HAL_GPIO_WritePin( SPK_ON_GPIO_Port, SPK_ON_Pin, GPIO_PIN_SET );
+		RFM_Spk(1);
+#endif
+
+		//  방송 : 송신기 -> 수신기
+		qBufPut( &g_qBufAudioRx, (uint8_t*)pAudioBuf, ( I2S_DMA_LOOP_SIZE * 2 ) );
+		//========================================================================
+
+		//  송신기
+		SetRFMMode( RFMModeRx );
+
+		//  Red LED On
+		HAL_GPIO_WritePin ( LED_ON_B_GPIO_Port, LED_ON_B_Pin, GPIO_PIN_SET ); //  RED LED
 	}
+	g_nStampCallPa = HAL_GetTick();		//	방송/통화 Stamp
 }
 
 //========================================================================
-int	ProcPktCall			( const RFMPkt *pPkt )
+int	ProcPktCall			( const RFMPkt *pRFPkt )
 //========================================================================
 {
 	if ( GetDbgLevel() > 0 )
 		printf( "%s(%d)\n", __func__, __LINE__ );
 
-	//========================================================================
-	const RFMPktHdr		*pHdr = (const RFMPktHdr *)&pPkt->hdr;
-	const RFMPktPACall	*pPACall = (const RFMPktPACall *)&pPkt->dat.pacall;
-	//========================================================================
+	if( GetDevID() == DevRF900T )
+	{
+		//	송신기
 
-	//========================================================================
-	//	Packet Parsing
-	if ( GetDbgLevel() > 0 )
+		//========================================================================
+		//  통화 ( SOS )
+		uint16_t	 *pAudioBuf = (uint16_t*)pRFPkt->dat.data;
+
+		SetRFMMode( RFMModeRx );
+
+#if defined(USE_RFT_ONLY_RX_SPK_ON)
+		//  송신기 : 수신중인 경우 SPK ON
+//		HAL_GPIO_WritePin( SPK_ON_GPIO_Port, SPK_ON_Pin, GPIO_PIN_SET );
+		RFM_Spk(1);
+#endif
+
+		//  Red LED On
+		HAL_GPIO_WritePin ( LED_ON_B_GPIO_Port, LED_ON_B_Pin, GPIO_PIN_SET ); //  RED LED
+
+		//  통화 : 송신기 -> 송신기
+
+		qBufPut( &g_qBufAudioRx, (uint8_t*)pAudioBuf, ( I2S_DMA_LOOP_SIZE * 2 ) );
+	}
+	else if ( GetDevID() == DevRF900M )
 	{
-		printf( "%s(%d) - OnOff( %d )\n", __func__, __LINE__,
-			pPACall->nStartStop
-		);
+		//	수신기
+
+		SetRFMMode( RFMModeRx );
 	}
 
-	if ( pPACall->nStartStop )
-	{
-		//	수신중
-		LCDSetCursor( 20, 13 );
-		LCDPrintf( "수신중..." );
-	}
-	else
-	{
-		//    편성 : 100
-		UpdateLCDMain();
-//		LCDSetCursor( 20, 13 );
-//		LCDPrintf( "편성 : 100" );
-	}
+	g_nStampCallPa = HAL_GetTick();		//	방송/통화 Stamp
 }
 
 //========================================================================
-int	ProcPktLight		( const RFMPkt *pPkt )
+int	ProcPktLight		( const RFMPkt *pRFPkt )
 //========================================================================
 {
 	if ( GetDbgLevel() > 0 )
 		printf( "%s(%d)\n", __func__, __LINE__ );
 
-	//========================================================================
-	const RFMPktHdr		*pHdr	= (const RFMPktHdr *)&pPkt->hdr;
-	const RFMPktLight	*pLight = (const RFMPktLight *)&pPkt->dat.light;
-	//========================================================================
-
-	//========================================================================
-	//	Packet Parsing
-	if ( GetDbgLevel() > 0 )
+	if ( GetDevID() == DevRF900M )
 	{
-		printf( "%s(%d) - OnOff( %d )\n", __func__, __LINE__,
-			pLight->nOnOff
-		);
-	}
+		//  수신기 조명제어.
 
-	if ( pLight->nOnOff )
-	{
-		//	송신기 Flash - On
-		HAL_GPIO_WritePin( FLASH_ON_GPIO_Port, FLASH_ON_Pin, GPIO_PIN_SET );
-
-		//	수신기 Light(조명) - On
-		HAL_GPIO_WritePin( LIGHT_ON_GPIO_Port, LIGHT_ON_Pin, GPIO_PIN_SET );
-	}
-	else
-	{
-		//	송신기 Flash - Off
-		HAL_GPIO_WritePin( FLASH_ON_GPIO_Port, FLASH_ON_Pin, GPIO_PIN_RESET );
-
-		//	수신기 Light(조명) - Off
-		HAL_GPIO_WritePin( LIGHT_ON_GPIO_Port, LIGHT_ON_Pin, GPIO_PIN_RESET );
+		if ( pRFPkt->hdr.nPktCmd == PktLightOff )
+		{
+			// 조명 Off 명령 수신시.
+			HAL_GPIO_WritePin ( LIGHT_ON_GPIO_Port, LIGHT_ON_Pin, GPIO_PIN_RESET );
+		}
+		else if ( pRFPkt->hdr.nPktCmd == PktLightOn )
+		{
+			// 조명 On 명령 수신시.
+			HAL_GPIO_WritePin ( LIGHT_ON_GPIO_Port, LIGHT_ON_Pin, GPIO_PIN_SET );
+		}
 	}
 }
 
-//========================================================================
-int	ProcPktAudioPA		( const RFMPkt *pPkt )
-//========================================================================
-{
-	if ( GetDbgLevel() > 0 )
-		printf( "%s(%d)\n", __func__, __LINE__ );
-}
-
-//========================================================================
-int	ProcPktAudioCall	( const RFMPkt *pPkt )
-//========================================================================
-{
-	if ( GetDbgLevel() > 0 )
-		printf( "%s(%d)\n", __func__, __LINE__ );
-}
-
-
+#if OLD
 //========================================================================
 void ProcessPkt			( const uint8_t *pbuf, int length )
 //========================================================================
@@ -447,12 +453,11 @@ void ProcessPkt			( const uint8_t *pbuf, int length )
 	case PktPA:			ProcPktPA			( pPkt );		break;
 	case PktCall:		ProcPktCall			( pPkt );		break;
 	case PktLight:		ProcPktLight		( pPkt );		break;
-	case PktAudioPA:	ProcPktAudioPA		( pPkt );		break;
-	case PktAudioCall:	ProcPktAudioCall	( pPkt );		break;
 	default:
 		printf( "%s(%d) - Invalid Value(%d)\n", __func__, __LINE__, pHdr->nPktCmd );
 		break;
 	}
 }
 
+#endif
 

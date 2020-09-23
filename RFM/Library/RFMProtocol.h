@@ -151,8 +151,6 @@ enum ePktID
 	PktLight		=	0x04,		//	조명제어. ( On/Off )
 	PktLightOn		=	PktLight,
 	PktLightOff		=	0x05,		//	조명제어. ( Off )
-	PktAudioPA		=	0x12,		//	Audio Stream. ( 방송 )
-	PktAudioCall	=	0x13,		//	Audio Stream. ( 통화 )
 
 	PktCmd			=	0x20,		//	Command ( nIDFlag(0) / nSeq(0) )
 	PktUpgr			=	0x40,		//	Upgrade ( nIDFlag(0) / nSeq(0) )
@@ -248,8 +246,14 @@ typedef struct _RFMPktStat
 //	RFM Packet - Command Data
 typedef struct _RFMPktCmd
 {
-	//	RSSI
-	//		256	:
+	//	RSSI 수신감도 측정.
+	//		0.25 M : 247
+	//		0.50 M : 244
+	//		0.75 M : 230
+	//		1.00 M : 224
+	//		1.25 M : 221
+	//		1.50 M : 200 ~ 210
+	//		3.50 M : 193
 
 	int8_t		nRSSIOver;		//	0 	| 일정수신감도 이상일때 수행.
 	int8_t		nSpare[3];		//	1	| Spare
@@ -336,8 +340,6 @@ int		ProcPktStat			( const RFMPkt *pPkt );
 int		ProcPktPA			( const RFMPkt *pPkt );
 int		ProcPktCall			( const RFMPkt *pPkt );
 int		ProcPktLight		( const RFMPkt *pPkt );
-int		ProcPktAudioPA		( const RFMPkt *pPkt );
-int		ProcPktAudioCall	( const RFMPkt *pPkt );
 
 //==========================================================================
 

@@ -255,10 +255,22 @@ void CallbackRecvPacket( const char *pData, int nSize )
 	//	Device ID Flag 확인.
 
 #endif	//	defined(USE_HOPPING)
+	//========================================================================
 
+#if 1
 
-	//  Queue Buffer Put
-//		printf ( "P" );
+	switch ( pRFPkt->hdr.nPktCmd )
+	{
+	case PktCall:		ProcPktCall	( pRFPkt );		break;
+	case PktPA:			ProcPktPA	( pRFPkt );		break;
+	case PktStat:		ProcPktStat	( pRFPkt );		break;
+	case PktLight:		ProcPktLight( pRFPkt );		break;
+	default:
+		printf( "%s(%d) - Invalid Value(%d)\n", __func__, __LINE__, pRFPkt->hdr.nPktCmd );
+		break;
+	}
+
+#else
 
 
 	if	( 	pRFPkt->hdr.nPktCmd == PktCall	)
@@ -381,10 +393,13 @@ void CallbackRecvPacket( const char *pData, int nSize )
 		}
 		else if ( pRFPkt->hdr.nPktCmd == PktLightOn )
 		{
-			// 조명 Off 명령 수신시.
+			// 조명 On 명령 수신시.
 			HAL_GPIO_WritePin ( LIGHT_ON_GPIO_Port, LIGHT_ON_Pin, GPIO_PIN_SET );
 		}
 	}
+
+#endif
+
 }
 
 /**
