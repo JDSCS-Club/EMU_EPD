@@ -655,7 +655,9 @@ void LoopProcPkt( int nTick )
  *
  * @return  PHY payload lenght excluding FCS
  */
+//========================================================================
 U16 wPayloadLenghtFromPhr(U8* pbPhrMsb)
+//========================================================================
 {
 	SEGMENT_VARIABLE(wLength, U16, SEG_XDATA);
 	SEGMENT_VARIABLE(bPhrLsbUpperByte, U8, SEG_XDATA);
@@ -684,8 +686,9 @@ U16 wPayloadLenghtFromPhr(U8* pbPhrMsb)
  *
  * @return  Reversed byte.
  */
-
+//========================================================================
 U8 bBitOrderReverse(U8 bByteToReverse)
+//========================================================================
 {
 	bByteToReverse = (bByteToReverse & 0xF0) >> 4 | (bByteToReverse & 0x0F) << 4;
 	bByteToReverse = (bByteToReverse & 0xCC) >> 2 | (bByteToReverse & 0x33) << 2;

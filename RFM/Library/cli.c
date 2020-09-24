@@ -66,6 +66,8 @@
 
 #include "bootloader.h"		//	cmd_stboot()
 
+#include "upgrade.h"		//	cmd_upgrade()
+
 #define		NELEMENTS(array)	(sizeof(array) / sizeof((array)[0]))
 #define		MAX_COMMAND_LENGTH	64
 
@@ -207,6 +209,13 @@ user_command_t	user_command_table[] = {
 		"stboot	- Enter STM32 Bootloader ( DFU Mode )",
 		(char *)0,
 		cmd_stboot},
+#endif
+
+#if defined( UPGRADE_H )
+	{"upgrade",
+		"upgrade	- upgrade command",
+		(char *)0,
+		cmd_upgrade},
 #endif
 
 #if defined( PROC_PKT_H )

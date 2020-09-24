@@ -67,6 +67,8 @@ extern I2C_HandleTypeDef hi2c3;		//	I2C3 - LCD I/F
 
 extern UART_HandleTypeDef huart2;
 
+extern IWDG_HandleTypeDef hiwdg;	//	Watchdog
+
 /* USER CODE END EC */
 
 /* Exported macro ------------------------------------------------------------*/

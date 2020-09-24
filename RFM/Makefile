@@ -144,6 +144,7 @@ Library/RFMProtocol.c \
 Library/diag.c \
 Library/version.c \
 Library/bootloader.c \
+Library/upgrade.c \
 
 # CPP sources
 CPP_SOURCES =  \

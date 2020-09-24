@@ -335,10 +335,50 @@ void SendRFCmdDFUMode( void )
 void SendRFCmdUpgrade( void )
 //==========================================================================
 {
+	//==========================================================================
+	//	송신기에서 Upgrade 명령 전송.
+	//==========================================================================
+
 	printf( "%s(%d)\n", __func__, __LINE__ );
 	//==========================================================================
 	SendRFCmd( "upgrade", 200 );	//	DFU모드의 경우 근접(RSSI-200)하지 않으면 동작하지 않도록 한다!!!
 	//==========================================================================
+
+	//========================================================================
+	//	Upgrade Image 전송.
+	UpgrSendImageApp();
+
+	//========================================================================
+}
+
+//==========================================================================
+void	SendUpgrData		( uint32_t nAddrTarget, int nPktTot, int nPktIdx, uint8_t *sBuf, int nSize )	//	Send Upgrade Data
+//==========================================================================
+{
+	printf( "%s(%d)\n", __func__, __LINE__ );
+
+	RFMPkt			stPkt;
+	memset( &stPkt, 0, sizeof( stPkt ) );
+
+	//========================================================================
+	//	Packet Header
+	_MakePktHdr( &stPkt, GetDevID(), 0xFF, RFPktDataLen, PktUpgr );
+
+	//========================================================================
+	//	Packet Body
+	RFMPktUpgr	*pUpgr = (RFMPktUpgr *)&stPkt.dat.upgr;
+
+	pUpgr->baseAddr		=	nAddrTarget;
+	pUpgr->totPkt		=	nPktTot;
+	pUpgr->idxPkt		=	nPktIdx;
+	pUpgr->nSize		=	nSize;
+	memcpy( pUpgr->data, sBuf, nSize );
+
+	//========================================================================
+	//	Send RF
+	SendPacket( (U8 *)&stPkt, (U8)sizeof( RFMPktHdr ) + RFPktDataLen );
+
+	//========================================================================
 }
 
 
@@ -419,7 +459,7 @@ int	ProcPktPA			( const RFMPkt *pRFPkt )
 		//  Red LED On
 		HAL_GPIO_WritePin ( LED_ON_B_GPIO_Port, LED_ON_B_Pin, GPIO_PIN_SET ); //  RED LED
 	}
-	g_nStampCallPa = HAL_GetTick();		//	방송/통화 Stamp
+	g_nStampRxPkt = HAL_GetTick();		//	방송/통화 Stamp
 }
 
 //========================================================================
@@ -459,7 +499,7 @@ int	ProcPktCall			( const RFMPkt *pRFPkt )
 		SetRFMMode( RFMModeRx );
 	}
 
-	g_nStampCallPa = HAL_GetTick();		//	방송/통화 Stamp
+	g_nStampRxPkt = HAL_GetTick();		//	방송/통화 Stamp
 }
 
 //========================================================================
@@ -505,7 +545,7 @@ int	ProcPktCmd			( const RFMPkt *pRFPkt )
 		}
 
 		//	RSSI값 확인 후 해당 범위 내에 있는 경우 명령 동작.
-		ProcessCommand(pRFPkt->dat.cmd.sCmd);
+		ProcessCommand( pRFPkt->dat.cmd.sCmd );
 	}
 }
 
@@ -527,6 +567,10 @@ int	ProcPktCmdRsp		( const RFMPkt *pRFPkt )
 int	ProcPktUpgr			( const RFMPkt *pRFPkt )
 //========================================================================
 {
+	//========================================================================
+	//	Upgrade Flash Image
+	//========================================================================
+
 	if ( GetDbgLevel() > 0 )
 		printf( "%s(%d)\n", __func__, __LINE__ );
 
@@ -540,7 +584,48 @@ int	ProcPktUpgr			( const RFMPkt *pRFPkt )
 		return 0;
 	}
 
+	//========================================================================
+	//	RFM Packet
+//	RFMPktUpgr	*pUpgr = (RFMPktUpgr *)pRFPkt->dat.upgr;
+//	pUpgr->baseAddr		=	nAddrTarget;
+//	pUpgr->totPkt		=	nPktTot;
+//	pUpgr->idxPkt		=	nPktIdx;
+//	pUpgr->nSize		=	nSize;
+//	memcpy( pUpgr->data, sBuf, nSize );
 
+	//========================================================================
+	//	Write Upgrade Image Data
+
+	static int	s_rxPkt;
+
+	if ( pUpgr->idxPkt == 0 )
+	{
+		//	Start Uprade
+		printf("%s(%d) - Start Upgrade\n", __func__, __LINE__ );
+
+		s_rxPkt = 1;
+	}
+	else if ( pUpgr->idxPkt == ( pUpgr->totPkt - 1 ) )
+	{
+		//	End Upgrade
+		s_rxPkt++;
+
+		printf("%s(%d) - End Upgrade ( rxPkt : %d / totPkt : %d )", __func__, __LINE__,
+					s_rxPkt, pUpgr->totPkt );
+
+		//========================================================================
+		SetRFMMode( RFMModeNormal );	//	Normal 모드로 설정.
+		//========================================================================
+
+	}
+	else
+	{
+		s_rxPkt++;
+	}
+
+	g_nStampRxPkt = HAL_GetTick();		//	Rx Pkt Stamp
+
+	//========================================================================
 }
 
 

@@ -214,17 +214,18 @@ int     LCDInit             ( void );
 
 int     LCDCheck            ( void );
 
-void    LCDBattery          ( int nLevel ); //  0 ~ 6   ( Battery ) - 0:x / 6:√Ê¿¸¡ﬂ
-void    LCDRSSI             ( int nLevel ); //  0 ~ 5   ( RSSI(ºˆΩ≈∞®µµ) : Received Signal Strength Indicator )
+void    LCDBattery          ( int nLevel ); //  0 ~ 6   ( Battery ) - 0:x / 6:Ï∂©Ï†ÑÏ§ë
+void    LCDRSSI             ( int nLevel ); //  0 ~ 5   ( RSSI(ÏàòÏã†Í∞êÎèÑ) : Received Signal Strength Indicator )
 void    LCDLight            ( int bOnOff ); //  0(Off) / 1(On) ( Light On/Off )
 void    LCDSpeaker          ( int nLevel ); //  0(Off) / 1(On) ( Speaker On/Off )
 
 void    LCDMenu             ( void );       //  LCD Menu
 
-void    LCDMenuUpDown       ( int nUpDown ); //  0( Off ) / 1( °„Up ) / 2( °ÂDown ) / 3( °„Up/°ÂDown ) 
+void    LCDMenuUpDown       ( int nUpDown ); //  0( Off ) / 1( ‚ñ≤Up ) / 2( ‚ñºDown ) / 3( ‚ñ≤Up/‚ñºDown ) 
 
-void    LCDSetCursor        ( int x, int y );  //  Setting LCD Cursor
-void    LCDPrintf           ( char *str );  //  print LCD Display
+void    LCDSetCursor        ( int x, int y );  		//  Setting LCD Cursor
+void    LCDPrintf           ( char *str );  		//  print LCD Display
+void    LCDPrintfXY         ( int x, int y, char *str );  //  print LCD Display
 
 void    LCDClear            ( void );  //  Clear LCD Display
 void    LCDClearTitle       ( void );

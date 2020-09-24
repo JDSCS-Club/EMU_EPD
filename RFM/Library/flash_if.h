@@ -71,8 +71,10 @@ enum{
 
 //========================================================================
 //			FLASH Size Define
-#define SIZE_FLASH_BOOT		(ADDR_FLASH_CONF - ADDR_FLASH_BOOT + 1)	//	Application Size
+#define SIZE_FLASH_BOOT		(ADDR_FLASH_CONF - ADDR_FLASH_BOOT + 1)		//	Bootloader Size
 #define SIZE_FLASH_APP		(ADDR_FLASH_IMGBOOT - ADDR_FLASH_APP + 1)	//	Application Size
+
+#define SIZE_FLASH_BOOTAPP	(ADDR_FLASH_IMGBOOT - ADDR_FLASH_BOOT)		//	Boot + App Size
 
 //========================================================================
 

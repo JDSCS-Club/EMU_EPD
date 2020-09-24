@@ -217,15 +217,10 @@ void	UpdateLCDMain( void )
 {
 	char sBuf[30];
 
-	//  Main화면 Clear
-	LCDClearMain();
-
-	//	편성 : 100
-	LCDSetCursor( 20, 13 );
-
 	sprintf( sBuf, "편성 : %d", 100 + g_idxTrainSet );
+
 //	LCDPrintf( "편성 : 100" );
-	LCDPrintf( sBuf );
+	LCDPrintfXY( 20, 13, sBuf );
 }
 
 //========================================================================

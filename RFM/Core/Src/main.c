@@ -141,9 +141,7 @@ void HAL_GPIO_EXTI_Callback ( uint16_t GPIO_Pin )
     }
 }
 
-
 #include "radio_si4463.h"	//	si4463 driver
-
 
 //========================================================================
 void LoopProcMain( int nTick )
@@ -518,6 +516,10 @@ static void MX_IWDG_Init(void)
 {
 
   /* USER CODE BEGIN IWDG_Init 0 */
+
+	//	32 KHz
+	//	32 : 1 / 32000 X 32 X 4000 = 4 sec
+	//	256 : 1 / 32000 X 256 X 4000 = 32 sec
 
   /* USER CODE END IWDG_Init 0 */
 

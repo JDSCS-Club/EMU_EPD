@@ -56,7 +56,7 @@ extern int		g_idxTrainSet;		//  Train Set Index
 
 extern int		g_offsetCA;			//	충돌회피 Offset ( msec )
 
-extern int		g_nStampCallPa;		//	방송/통화 Stamp
+extern int		g_nStampRxPkt;		//	방송/통화 Stamp
 
 extern int		g_nRSSI;			//	RSSI Value
 
@@ -131,7 +131,6 @@ int		cmd_rftx		( int argc, char * argv[] );
 int		InitRFM			( void );
 int		RFM_main		( void );
 void	LoopProcRFM		( int nTick );
-
 
 //========================================================================
 #endif

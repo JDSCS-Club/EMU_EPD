@@ -47,13 +47,16 @@ int		g_nDevID		=	DevNone;			//  Device ID ( 1 : RF900M / 2 : RF900T )
 int		g_idxTrainSet	=	0;	  				//  Train Set Index
 int		g_nCarNo		=	0;	  				//  Car Number
 
+int		g_Channel		=	0;	  				//  Train Set Index
+
+
 int	 	g_nSpkLevel		=	DefaultSpkVol;		//  Default (1) - 0(Mute) / 1 / 2(Normal) / 3
 
 int	 	g_nRFMMode 		=	RFMModeNormal;		//  eRFMMode
 
 int		g_offsetCA		=	0;					//	충돌회피 Offset ( msec ) ( 0 ~ 1000 )
 
-int		g_nStampCallPa	=	0;					//	방송/통화 Stamp
+int		g_nStampRxPkt	=	0;					//	방송/통화 Stamp
 
 int		g_nRSSI			=	0;					//	RSSI Value
 
@@ -1176,7 +1179,7 @@ void LoopProcRFM ( int nTick )
 
 	//========================================================================
 	//	수신중 해제
-	if ( nTick - g_nStampCallPa > TIMEOUT_RXSTAT && GetRFMMode() == RFMModeRx )
+	if ( (nTick - g_nStampRxPkt) > TIMEOUT_RXSTAT && GetRFMMode() == RFMModeRx )
 	{
 		// Rx 패킷이 500 ms 없을 경우 수신모드 해제
 		SetRFMMode( RFMModeNormal );

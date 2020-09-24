@@ -341,6 +341,8 @@ void	SendRFCmdReset		( void );		//	Reset 명령 전송.
 void	SendRFCmdDFUMode	( void );		//	DFU Mode 명령 전송.
 void	SendRFCmdUpgrade	( void );		//	Upgrade 명령 전송.
 
+void	SendUpgrData		( uint32_t nAddrTarget, int nPktTot, int nPktIdx, uint8_t *sBuf, int nSize );	//	Send Upgrade Data
+
 //==========================================================================
 
 int		ProcPktStat			( const RFMPkt *pRFPkt );

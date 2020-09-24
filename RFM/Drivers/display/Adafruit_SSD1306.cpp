@@ -1062,11 +1062,26 @@ void LCDPrintf( char * str )
 
     display.getCursor( &x, &y );
 
+    //	글씨 출력 영역 Clear
     display.fillRect( x, 11, 128 - x, 21, 0 );    //  Clear
 
 //    display.setCursor( 28, 8 );
     display.printf( str );
     display.display();
+}
+
+//========================================================================
+void    LCDPrintfXY         ( int x, int y, char *str )  //  print LCD Display
+//========================================================================
+{
+    if ( g_bInitLCD == false ) return;
+
+	//  Main화면 Clear
+	LCDClearMain();
+
+    LCDSetCursor( x, y );
+
+    LCDPrintf( str );
 }
 
 //========================================================================
