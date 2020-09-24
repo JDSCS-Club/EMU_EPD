@@ -60,6 +60,43 @@ UART_HandleTypeDef *phuart2 = NULL;			//	RFM
 UART_HandleTypeDef *phuart3 = NULL;			//	RS485
 UART_HandleTypeDef *phuart5 = NULL;			//	RS485
 
+
+//=============================================================================
+void	rts_high		( UART_HandleTypeDef *_phuart )
+//=============================================================================
+{
+	HAL_HalfDuplex_EnableTransmitter( _phuart );	// disable receiver, enable transmitter
+
+	if ( _phuart->Instance == USART3 )
+	{
+		HAL_GPIO_WritePin( RE_GPIO_Port, RE_Pin, GPIO_PIN_SET );		//	RTS High
+	}
+
+	if ( _phuart->Instance == UART5 )
+	{
+		HAL_GPIO_WritePin( RE1_GPIO_Port, RE1_Pin, GPIO_PIN_SET );		//	RTS High
+	}
+}
+
+//=============================================================================
+void	rts_low			( UART_HandleTypeDef *_phuart )
+//=============================================================================
+{
+	if ( _phuart->Instance == USART3 )
+	{
+		HAL_GPIO_WritePin( RE_GPIO_Port, RE_Pin, GPIO_PIN_RESET );		//	RTS Low
+	}
+
+	if ( _phuart->Instance == UART5 )
+	{
+		HAL_GPIO_WritePin( RE1_GPIO_Port, RE1_Pin, GPIO_PIN_RESET );	//	RTS Low
+	}
+
+	HAL_HalfDuplex_EnableReceiver( _phuart );	// enable receiver, disable transmitter
+}
+
+
+
 //=============================================================================
 #if defined(_WIN32)
 //=============================================================================

@@ -46,6 +46,15 @@
 #define	RTS_LOW		GPIO_PIN_RESET
 #define	RTS_HIGH	GPIO_PIN_SET
 
+extern uint8_t		dataRx1[8];		//	UART1 - Console	- 115200
+extern uint8_t		dataRx2[8];		//	UART2 - RFM		- 115200
+extern uint8_t		dataRx3[8];		//	UART3 - RS485	- 38400
+extern uint8_t		dataRx5[8];		//	UART5 - RS485	- 38400
+
+
+void	rts_high		( UART_HandleTypeDef *_phuart );
+void	rts_low			( UART_HandleTypeDef *_phuart );
+
 int		input_check		( void );
 
 void	SerialInit		( UART_HandleTypeDef *_phuart1, UART_HandleTypeDef *_phuart2, UART_HandleTypeDef *_phuart3, UART_HandleTypeDef *_phuart5  );

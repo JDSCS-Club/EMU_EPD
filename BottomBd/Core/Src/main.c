@@ -136,6 +136,8 @@ int main(void)
 
   printf( "[%d] Start\n", HAL_GetTick() );    // xTaskGetTickCount() );
 
+  InitRS485();		//	Init RS485
+
   //	*/
 
   /* USER CODE END 2 */
