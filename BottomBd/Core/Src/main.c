@@ -121,9 +121,9 @@ int main(void)
 
   /*/
 
-  //	UART Queue ÃÊ±âÈ­.
+  //	UART Queue ì´ˆê¸°í™”.
   SerialInitQueue();
-  //	UART Interrupt ¼³Á¤.
+  //	UART Interrupt ì„¤ì •.
   SerialInit( &huart1, &huart2, &huart3 );
 
   setbuf ( stdout, NULL );		            //	1024 byte buffer clear

@@ -45,15 +45,17 @@
 
 #include "queueBuf.h"		//	Queue_t
 
-Queue_t		g_qUart1, g_qUart2, g_qUart3;
+Queue_t		g_qUart1, g_qUart2, g_qUart3, g_qUart5;
 
-uint8_t		dataRx1[8];		//	UART1 - Console
-uint8_t		dataRx2[8];		//	UART2 - RFM
-uint8_t		dataRx3[8];		//	UART3 - RS485
+uint8_t		dataRx1[8];		//	UART1 - Console	- 115200
+uint8_t		dataRx2[8];		//	UART2 - RFM		- 115200
+uint8_t		dataRx3[8];		//	UART3 - RS485	- 38400
+uint8_t		dataRx5[8];		//	UART5 - RS485	- 38400
 
 UART_HandleTypeDef *phuart1 = NULL;			//	Debug
-UART_HandleTypeDef *phuart2 = NULL;
-UART_HandleTypeDef *phuart3 = NULL;			//	Debug
+UART_HandleTypeDef *phuart2 = NULL;			//	RFM
+UART_HandleTypeDef *phuart3 = NULL;			//	RS485
+UART_HandleTypeDef *phuart5 = NULL;			//	RS485
 
 //=============================================================================
 #if defined(_WIN32)
@@ -100,7 +102,7 @@ PUTCHAR_PROTOTYPE
 
 	//========================================================================
 	//	RS232
-	/*
+	//*
 	if ( phuart1 )
 	{
 		HAL_UART_Transmit( phuart1, (uint8_t *)&ch, 1, 0xFFFF );
@@ -164,7 +166,7 @@ void HAL_UART_RxCpltCallback( UART_HandleTypeDef *huart )
 	}
 
 	//===========================================================================
-	//	RS232
+	//	RS232 - RFM
 	if ( huart->Instance == USART2 )
 	{
 		qput( &g_qUart2, dataRx2[0] );
@@ -179,6 +181,15 @@ void HAL_UART_RxCpltCallback( UART_HandleTypeDef *huart )
 		qput( &g_qUart3, dataRx3[0] );
 
 		HAL_UART_Receive_IT( huart, dataRx3, 1 );
+	}
+
+	//===========================================================================
+	//	RS485
+	if ( huart->Instance == UART5 )
+	{
+		qput( &g_qUart5, dataRx5[0] );
+
+		HAL_UART_Receive_IT( huart, dataRx5, 1 );
 	}
 
 	//===========================================================================
@@ -205,10 +216,13 @@ void SerialInitQueue( void )
 
 	//	RS485 Queue
 	init_queue( &g_qUart3 );
+
+	//	RS485 Queue
+	init_queue( &g_qUart5 );
 }
 
 //===========================================================================
-void SerialInit( UART_HandleTypeDef *_phuart1, UART_HandleTypeDef *_phuart2, UART_HandleTypeDef *_phuart3 )
+void SerialInit( UART_HandleTypeDef *_phuart1, UART_HandleTypeDef *_phuart2, UART_HandleTypeDef *_phuart3, UART_HandleTypeDef *_phuart5 )
 //===========================================================================
 {
 	SerialInitQueue();
@@ -218,6 +232,7 @@ void SerialInit( UART_HandleTypeDef *_phuart1, UART_HandleTypeDef *_phuart2, UAR
 	phuart1 = _phuart1;
 	phuart2 = _phuart2;
 	phuart3 = _phuart3;
+	phuart5 = _phuart5;
 
 	//===========================================================================
 
@@ -230,6 +245,8 @@ void SerialInit( UART_HandleTypeDef *_phuart1, UART_HandleTypeDef *_phuart2, UAR
 	if ( phuart2 )		HAL_UART_Receive_IT( phuart2, dataRx2, 1 );
 	//	UART RS485
 	if ( phuart3 )		HAL_UART_Receive_IT( phuart3, dataRx3, 1 );
+	//	UART RS485
+	if ( phuart5 )		HAL_UART_Receive_IT( phuart5, dataRx5, 1 );
 
 #endif
 }

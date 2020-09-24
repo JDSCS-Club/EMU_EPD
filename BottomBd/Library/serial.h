@@ -48,7 +48,7 @@
 
 int		input_check		( void );
 
-void	SerialInit		( UART_HandleTypeDef *_phuart1, UART_HandleTypeDef *_phuart2, UART_HandleTypeDef *_phuart3 );
+void	SerialInit		( UART_HandleTypeDef *_phuart1, UART_HandleTypeDef *_phuart2, UART_HandleTypeDef *_phuart3, UART_HandleTypeDef *_phuart5  );
 
 
 extern Queue_t			g_qUart1, g_qUart2, g_qUart3;
