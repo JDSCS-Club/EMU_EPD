@@ -28,7 +28,7 @@
 #include "stm32f4xx_hal.h"
 #elif defined(STM32F207xx)
 #include "stm32f2xx_hal.h"
-#elif defined(STM32F103xE)
+#elif defined(STM32F103xE)	//	STM32F103xC
 #include "stm32f1xx_hal.h"
 #endif
 
@@ -36,7 +36,7 @@
 #endif	//	stm32f207
 //=============================================================================
 
-#include "queueBuf.h"
+#include "QBuf.h"
 
 #define	RXFLAG_EMPTY	0
 #define	RXFLAG_XING		1

@@ -16,11 +16,12 @@
 #define QUEUE_BUF_H
 //========================================================================
 
+//#include "typedef.h"	//	uint8_t
 #include <stdint.h>		//	uint8_t
 
 typedef struct _Queue_t
 {
-#define QMAX 128
+#define QMAX 256
 
 	unsigned char queue[QMAX];
 

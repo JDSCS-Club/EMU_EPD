@@ -24,6 +24,9 @@
 /* USER CODE BEGIN Includes */
 #include "naranja_boron.h"
 #include "uart3.h"
+
+#include "cli.h"			//	CLI ( Command Line Interface )
+
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -124,7 +127,8 @@ int main(void)
   //	UART Queue 초기화.
   SerialInitQueue();
   //	UART Interrupt 설정.
-  SerialInit( &huart1, &huart2, &huart3 );
+//  SerialInit( &huart1, &huart2, &huart3, &huart5 );
+  SerialInit( &huart1, NULL, NULL, NULL );//&huart2, &huart3, &huart5 );
 
   setbuf ( stdout, NULL );		            //	1024 byte buffer clear
 //  setvbuf ( stdout, NULL, _IOLBF, NULL );	//	Line Buffer
@@ -138,20 +142,36 @@ int main(void)
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
+
+  int nTick;
+  static s_nTick;
+
   while (1)
   {
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
-	  processOverrideOn();
-	  processRfLed();
-	  processChargeLed();
-	  processLightLed();
-	  processAudioAmpProcess();
-	  processGetBatVol();
-	  processTestDebug();
-//	  Uart3_Process();
-	  HAL_Delay(1);
+	  	nTick = HAL_GetTick();
+
+		LoopProcCLI();
+
+		processOverrideOn();
+		processRfLed();
+		processChargeLed();
+		processLightLed();
+		processAudioAmpProcess();
+
+		processTestDebug();
+		//	  Uart3_Process();
+
+		if ( (nTick - s_nTick) >= 1000 )
+		{
+//			printf("[%d]\n", nTick);
+			s_nTick = nTick;
+			processGetBatVol();			//	ADC
+		}
+
+//		HAL_Delay(1);
   }
   /* USER CODE END 3 */
 }

@@ -35,7 +35,7 @@
 #include "stm32f4xx_hal.h"
 #elif defined(STM32F207xx)
 #include "stm32f2xx_hal.h"
-#elif defined(STM32F103xE)
+#elif defined(STM32F103xE)	//	STM32F103xC
 #include "stm32f1xx_hal.h"
 #endif
 
@@ -43,9 +43,12 @@
 #endif	//	stm32f207
 //=============================================================================
 
-#include "queueBuf.h"		//	Queue_t
+#include "QBuf.h"		//	Queue_t
 
-Queue_t		g_qUart1, g_qUart2, g_qUart3, g_qUart5;
+Queue_t		g_qUart1;
+Queue_t		g_qUart2;
+Queue_t		g_qUart3;
+Queue_t		g_qUart5;
 
 uint8_t		dataRx1[8];		//	UART1 - Console	- 115200
 uint8_t		dataRx2[8];		//	UART2 - RFM		- 115200
@@ -103,12 +106,12 @@ PUTCHAR_PROTOTYPE
 	//========================================================================
 	//	RS232
 	//*
-	if ( phuart1 )
+	if ( phuart2 )
 	{
-		HAL_UART_Transmit( phuart1, (uint8_t *)&ch, 1, 0xFFFF );
+		HAL_UART_Transmit( phuart2, (uint8_t *)&ch, 1, 0xFFFF );
 		if ( ch == '\n' )
 		{
-			HAL_UART_Transmit( phuart1, (uint8_t *)"\r", 1, 0xFFFF );
+			HAL_UART_Transmit( phuart2, (uint8_t *)"\r", 1, 0xFFFF );
 		}
 	}
 	//	*/
@@ -153,40 +156,38 @@ void HAL_UART_RxCpltCallback( UART_HandleTypeDef *huart )
 	//	인터럽트.
 
 	//===========================================================================
-	//	Debug Console
 	if ( huart->Instance == USART1 )
 	{
+		//	Debug Console
+
 		//	문자 Queue에 쌓기.
 		qput( &g_qUart1, dataRx1[0] );
 
 		//	입력내용 콘솔로 출력.
-//DEL		HAL_UART_Transmit( huart, (uint8_t *)&dataDbgTx[0], 1, 0xFFFF );
+//		HAL_UART_Transmit( huart, (uint8_t *)&dataRx1[0], 1, 0xFFFF );
 
 		HAL_UART_Receive_IT( huart, dataRx1, 1 );
 	}
-
 	//===========================================================================
-	//	RS232 - RFM
-	if ( huart->Instance == USART2 )
+	else if ( huart->Instance == USART2 )
 	{
+		//	RS232 - RFM
 		qput( &g_qUart2, dataRx2[0] );
 
 		HAL_UART_Receive_IT( huart, dataRx2, 1 );
 	}
-
 	//===========================================================================
-	//	RS485
-	if ( huart->Instance == USART3 )
+	else if ( huart->Instance == USART3 )
 	{
+		//	RS485
 		qput( &g_qUart3, dataRx3[0] );
 
 		HAL_UART_Receive_IT( huart, dataRx3, 1 );
 	}
-
 	//===========================================================================
-	//	RS485
-	if ( huart->Instance == UART5 )
+	else if ( huart->Instance == UART5 )
 	{
+		//	RS485
 		qput( &g_qUart5, dataRx5[0] );
 
 		HAL_UART_Receive_IT( huart, dataRx5, 1 );
