@@ -23,7 +23,6 @@
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include "naranja_boron.h"
-#include "uart3.h"
 
 #include "cli.h"			//	CLI ( Command Line Interface )
 

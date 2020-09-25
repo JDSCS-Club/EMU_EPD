@@ -24,7 +24,6 @@
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include "naranja_boron.h"
-#include "uart3.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -244,18 +243,6 @@ void TIM2_IRQHandler(void)
 	  u16AmpSettingTick--;
 	  if (u16AmpSettingTick == 0)
 		  bAmpSettingDetected = true;
-  }
-
-  if(g_Uart3CheckTick)
-  {
-	  g_Uart3CheckTick--;
-	  if (g_Uart3CheckTick == 0)
-	  {
-		g_bUart3Detected = false; // command  buffer recieve ok
-		g_Uart3Command.Index = 0; // reset index of command buffer
-		g_Uart3PosHeader = 0;
-		g_bUart3FindPacket = false;
-	  }
   }
   /* USER CODE END TIM2_IRQn 1 */
 }
