@@ -407,7 +407,7 @@ void	KeyTestLoopback( int bValue )
 
 		//	Codec Loopback On
 //		AudioRxTxLoop();
-		AudioLoopbackDMA();
+		AudioDMALoopback();
 
 		//	Codec Loopback On
 //		AudioPlayDMASine();

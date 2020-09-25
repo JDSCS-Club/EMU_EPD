@@ -37,6 +37,7 @@ enum eRFMMode
 	RFMModeNormal	=	0,	//	Rx/Tx
 	RFMModeTx		=	1,	//	Tx Only
 	RFMModeRx		=	2,
+	RFMModeOcc		=	3,	//	OCC Mode
 };
 
 //========================================================================

@@ -619,7 +619,7 @@ void 	ProcMenuDiag( int idxItem )
 
 		HAL_GPIO_WritePin( SPK_ON_GPIO_Port, SPK_ON_Pin, GPIO_PIN_SET );
 
-		AudioLoopbackDMA();
+		AudioDMALoopback();
 		break;
 
 	case 2:	//	Audio Sine Wave On

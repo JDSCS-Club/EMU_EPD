@@ -434,6 +434,7 @@ int	ProcPktPA			( const RFMPkt *pRFPkt )
 
 		SetRFMMode( RFMModeRx );
 
+		//	Codec Speaker On
 		RFM_Spk(1);
 		//  수신기 Spk Relay On
 		HAL_GPIO_WritePin( AUDIO_ON_GPIO_Port, AUDIO_ON_Pin, GPIO_PIN_SET );

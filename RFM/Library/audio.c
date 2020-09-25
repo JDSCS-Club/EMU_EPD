@@ -400,14 +400,13 @@ void Default_I2SEx_TxRxCpltCallback( I2S_HandleTypeDef *hi2s )
 	//	printf( "%s(%d)\n", __func__, __LINE__ );
 
 	//========================================================================
-	//	Speex Loopback
-	//	pAudioTable = sine_table;
+	//	Loopback
 	memcpy( &bufAudio[0], &bufAudio[I2S_DMA_LOOP_SIZE], I2S_DMA_LOOP_SIZE * 2 );
 	HAL_I2SEx_TransmitReceive_DMA( &hi2s3, (uint16_t*)bufAudio, (uint16_t*)&bufAudio[I2S_DMA_LOOP_SIZE], I2S_DMA_LOOP_SIZE );
 }
 
 //========================================================================
-int	AudioLoopbackDMA( void )
+int	AudioDMALoopback( void )
 //========================================================================
 {
 	printf( "%s(%d)\n", __func__, __LINE__ );
@@ -419,6 +418,23 @@ int	AudioLoopbackDMA( void )
 
 	return 0;
 }
+
+void 	RFM_I2SEx_TxRxCpltCallback( I2S_HandleTypeDef *hi2s );	//	rfm.c
+
+//========================================================================
+int	AudioDMARFM( void )
+//========================================================================
+{
+	printf( "%s(%d)\n", __func__, __LINE__ );
+
+	SetCallbackI2STxRxCplt( RFM_I2SEx_TxRxCpltCallback );
+
+	//	Speex ( 1 frame ) : 160 sample ( 320 bytes ) / 20 msec
+	HAL_I2SEx_TransmitReceive_DMA( &hi2s3, (uint16_t*)bufAudio, (uint16_t*)&bufAudio[FRAME_SIZE], I2S_DMA_LOOP_SIZE );
+
+	return 0;
+}
+
 
 //========================================================================
 void AudioSpeex_I2SEx_TxRxCpltCallback( I2S_HandleTypeDef *hi2s )
@@ -758,7 +774,7 @@ int cmd_audio( int argc, char *argv[] )
 		//	Audio Loop Test
 		printf( "%s(%d) - loop\n", __func__, __LINE__ );
 
-		AudioLoopbackDMA();
+		AudioDMALoopback();
 
 		//	Spk On
 		HAL_GPIO_WritePin( SPK_ON_GPIO_Port, SPK_ON_Pin, GPIO_PIN_SET );

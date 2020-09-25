@@ -610,10 +610,35 @@ int cmd_OccPa     ( int argc, char * argv[] )
     if ( nOnOff == 1 )
     {
     	printf("%s(%d) - Start\n", __func__, __LINE__ );
+
+    	//	OCC Mode
+    	SetRFMMode( RFMModeOcc );
+
+    	//	Audio Loopback On
+		AudioDMALoopback();
+
+		//	Spk On
+		HAL_GPIO_WritePin( SPK_ON_GPIO_Port, SPK_ON_Pin, GPIO_PIN_SET );
+
+		//  수신기 Spk Relay On
+		HAL_GPIO_WritePin( AUDIO_ON_GPIO_Port, AUDIO_ON_Pin, GPIO_PIN_SET );
     }
     else
     {
     	printf("%s(%d) - Stop\n", __func__, __LINE__ );
+
+    	//	Normal Mode
+    	SetRFMMode( RFMModeNormal );
+
+    	//	Audio Loopback Off
+    	AudioDMARFM();
+
+    	//	Spk Off.
+		HAL_GPIO_WritePin( SPK_ON_GPIO_Port, SPK_ON_Pin, GPIO_PIN_RESET );
+
+		//  수신기 Spk Relay Off
+		HAL_GPIO_WritePin( AUDIO_ON_GPIO_Port, AUDIO_ON_Pin, GPIO_PIN_RESET );
+
     }
 }
 
@@ -847,6 +872,7 @@ int InitRFM( void )
 		//========================================================================
 		//	I2S Callback 등록.
 		SetCallbackI2STxRxCplt( RFM_I2SEx_TxRxCpltCallback );
+//		HAL_I2SEx_TransmitReceive_DMA( &hi2s3, (uint16_t*)sine_table, (uint16_t*)bufAudio, 256 );
 
 		//========================================================================
 	}
@@ -1181,7 +1207,9 @@ void LoopProcRFM ( int nTick )
 
 	//========================================================================
 	//	수신중 해제
-	if ( (nTick - g_nStampRxPkt) > TIMEOUT_RXSTAT && GetRFMMode() == RFMModeRx )
+	if ( (nTick - g_nStampRxPkt) > TIMEOUT_RXSTAT && GetRFMMode() == RFMModeRx
+			&& ( GetRFMMode() != RFMModeOcc )		//	OCC Mode - Skip
+		)
 	{
 		// Rx 패킷이 500 ms 없을 경우 수신모드 해제
 		SetRFMMode( RFMModeNormal );

@@ -106,7 +106,9 @@ void	InitCodecMAX9860	( void );
 
 //========================================================================
 
-int		AudioLoopbackDMA		( void );
+int		AudioDMALoopback		( void );
+int		AudioDMARFM				( void );
+
 int 	AudioLoopbackDMASpeex	( void );
 int		AudioLoopbackDMACompress( void );
 
