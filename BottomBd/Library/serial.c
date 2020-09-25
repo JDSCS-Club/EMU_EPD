@@ -280,10 +280,9 @@ void checkSerial(UART_HandleTypeDef* uart)
 		char c;
 		HAL_UART_Receive_IT(uart, (uint8_t*)&c, 1);
 		printf("[ERR] UART overrun detected\n");
-		printf("UART 1 > err code : %x tStat: %x rStat: %x SR: %x DR %x \n", uart->ErrorCode, uart->gState, uart->RxState, uart->Instance->SR, uart->Instance->DR);
-		printf("UART 1 > BRR : %x CR1: %x CR2: %x CR3: %x GTPR %x \n", uart->Instance->BRR, uart->Instance->CR1, uart->Instance->CR2, uart->Instance->CR3, uart->Instance->GTPR);
-//		printf("UART 3 > err code : %x tStat: %x rStat: %x SR: %x DR %x \n", huart3.ErrorCode, huart3.gState, huart3.RxState, huart3.Instance->SR, huart1.Instance->DR);
-//		printf("UART 3 > BRR : %x CR1: %x CR2: %x CR3: %x GTPR %x \n", huart3.Instance->BRR, huart3.Instance->CR1, huart3.Instance->CR2, huart3.Instance->CR3, huart3.Instance->GTPR);
+		printf("UART Inst : 0x%08X\n", uart->Instance );
+		printf("UART > err code : %x tStat: %x rStat: %x SR: %x DR %x \n", uart->ErrorCode, uart->gState, uart->RxState, uart->Instance->SR, uart->Instance->DR);
+		printf("UART > BRR : %x CR1: %x CR2: %x CR3: %x GTPR %x \n", uart->Instance->BRR, uart->Instance->CR1, uart->Instance->CR2, uart->Instance->CR3, uart->Instance->GTPR);
 	}
 
 #endif
@@ -295,8 +294,6 @@ void checkSerial(UART_HandleTypeDef* uart)
 void SerialInitQueue( void )
 //===========================================================================
 {
-//	xDebugQueueRx = xQueueCreate( DEBUG_RX_QUEUE_SIZE, sizeof( char ) );
-
 	//	Debug Queue
 	init_queue( &g_qUart1 );
 
@@ -345,13 +342,5 @@ int input_check( void )
 //===========================================================================
 {
 	return qcount( &g_qUart1 );
-//	return (((rear+QMAX)-front) % QMAX);
-	/*
-	portBASE_TYPE xStatus;
-	uint8_t	c;
-
-	xStatus = xQueuePeek(xDebugQueueRx, &c, 0);
-	return xStatus;
-	*/
 }
 

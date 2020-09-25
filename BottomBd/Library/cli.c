@@ -18,7 +18,6 @@
 #include <string.h>
 #include <stdarg.h>
 
-
 //=============================================================================
 #if defined(_WIN32)
 //=============================================================================
@@ -56,14 +55,12 @@
 
 #include "occpa.h"			//	cmd_occ()
 
-
 #define		NELEMENTS(array)	(sizeof(array) / sizeof((array)[0]))
 #define		MAX_COMMAND_LENGTH	64
 
 #if			defined(USE_BOOTLOADER)
 #define		PROMPT_STRING	"bootloader> "
 #else	//	LED
-//#define		PROMPT_STRING	"STM> "
 #define		PROMPT_STRING	"RFB> "		//	RF - Board
 #endif
 
@@ -84,8 +81,8 @@ int			data_option = 1;
 user_command_t	user_command_table[] = {
 	/*
 	 * {"xxxx",		명령
-	 * 	abc		help string1
-	 * 	def		help string2
+	 * 	abc			help string1
+	 * 	def			help string2
 	 * 	func,},		실제 처리 함수
 	 */
 	{"help",
@@ -104,6 +101,10 @@ user_command_t	user_command_table[] = {
 		"reset		-	restart system",
 		(char *)0,
 		cmd_reset,},
+	{"rfm",
+		"rfm		-	To rfm command",
+		(char *)0,
+		cmd_rfm},
 
 #if defined(_RS485_H_)
 	{"sd",
@@ -678,6 +679,18 @@ int cmd_reset(int argc, char *argv[])
 //========================================================================
 {
   	NVIC_SystemReset();
+	return 0;
+}
+
+
+//========================================================================
+int cmd_rfm(int argc, char *argv[])
+//========================================================================
+{
+	//	RFM 명령 전송.
+	printf("%s(%d)\n", __func__, __LINE__ );
+
+
 	return 0;
 }
 

@@ -65,6 +65,9 @@ int cmd_reset	( int argc, char *argv[] );
 int cmd_uptime	( int argc, char *argv[] );
 int cmd_ver		( int argc, char *argv[] );
 
+int cmd_rfm		( int argc, char *argv[] );
+
+
 //========================================================================
 
 #endif	/* _CLI_H_ */
