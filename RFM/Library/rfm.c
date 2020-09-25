@@ -308,35 +308,10 @@ void	SetSpkVol	    ( int nSpkVol )
 
 
 //========================================================================
-void RF_Ping( void )
-//========================================================================
-{
-    //*
-
-    RF_Tx_Mode();
-
-    SendStat();     //  Send Status Data
-
-    RF_Rx_Mode();
-
-    /*/
-    //  Send RF Ping Packet.
-    for ( int i = 0; i < pRadioConfiguration->Radio_PacketLength; i++ )
-        customRadioPacket[i] = i;
-
-    vRadio_StartTx_Variable_Packet ( pRadioConfiguration->Radio_ChannelNumber,
-        &customRadioPacket[0],
-        3 );// pRadioConfiguration->Radio_PacketLength );
-    //  */
-}
-
-//========================================================================
 void RF_RSSI( void )
 //========================================================================
 {
     //  Send RF Ping Packet.
-//    RF_Ping();
-//
 //    return;
 //
     //  Get Modem Status.
@@ -364,8 +339,6 @@ void RF_RSSI( void )
     else if ( 85 < rssi && rssi <= 100 )     LCDRSSI( 1 );  //  RSSI 1
     else if ( rssi <= 85 )                   LCDRSSI( 0 );  //  RSSI 0
 }
-
-
 
 //========================================================================
 void RF_Tx_Mode()
@@ -613,6 +586,35 @@ int cmd_rspid     ( int argc, char * argv[] )
     }
 
     printf( "%s(%d) - ID Flag : 0x%04X\n", __func__, __LINE__, g_flagRspID );
+}
+
+
+//========================================================================
+int cmd_OccPa     ( int argc, char * argv[] )
+//========================================================================
+{
+	//========================================================================
+    //	occ [1(start)/0(stop)]
+
+	printf("%s(%d)\n", __func__, __LINE__ );
+
+	//	대승객방송 시작/종료
+    int 		nOnOff 	= 0;
+
+    switch ( argc )
+    {
+    case 2:		sscanf( argv[1], "%d", &nOnOff );	    //	On/Off
+        break;
+    }
+
+    if ( nOnOff == 1 )
+    {
+    	printf("%s(%d) - Start\n", __func__, __LINE__ );
+    }
+    else
+    {
+    	printf("%s(%d) - Stop\n", __func__, __LINE__ );
+    }
 }
 
 

@@ -168,6 +168,10 @@ user_command_t	user_command_table[] = {
 		"rspid	-	Manual Set Resp ID",
 		"rspid	-	rspid [id] [set/clear]",
 		cmd_rspid},
+	{"occ",
+		"occ		-	OCC PA Start/Stop",
+		"occ [1(Start)/0(Stop)]",
+		cmd_OccPa},
 #endif	//	defined(RFM_H)
 
 #if defined(EEPROM_I2C_H)
@@ -224,6 +228,7 @@ user_command_t	user_command_table[] = {
 		"mon [0/1]",
 		cmd_pktmon},
 #endif
+
 
 #if 0
 

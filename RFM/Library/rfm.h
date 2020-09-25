@@ -97,7 +97,6 @@ void	RF_Rx_Mode		( void );
 
 void	RFM_Spk			( int bOnOff );		//	1(On) / 0(Off)
 
-void	RF_Ping			( void );
 void	RF_RSSI			( void );
 
 //========================================================================
@@ -114,6 +113,8 @@ int 	cmd_swinfo    	( int argc, char * argv[] );
 int		cmd_info		( int argc, char * argv[] );
 int 	cmd_rfstat		( int argc, char * argv[] );
 int		cmd_rspid		( int argc, char * argv[] );
+
+int		cmd_OccPa		( int argc, char * argv[] );	//	대승객방송 시작/종료
 
 int		cmd_hop			( int argc, char * argv[] );	//	Hopping
 

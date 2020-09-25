@@ -43,20 +43,11 @@
 
 #include "QBuf.h"		//	Queue_t
 
-#define DEBUG_RX_QUEUE_SIZE	64
-
-//xQueueHandle xDebugQueueRx;
-//#define MAX_UART0_COUNT		15
-
 Queue_t		g_qDebug, g_qRS485;
 
 uint8_t		dataDbgTx[8];	//	console
 
 uint8_t		dataTx1[8];		//	UART1 - RS485
-
-uint8_t		bufDbgTx[DEBUG_RX_QUEUE_SIZE];	// console
-static int	cntDbgTx;						// console
-
 
 UART_HandleTypeDef *phuart1 = NULL;
 UART_HandleTypeDef *phuart2 = NULL;			//	Debug
