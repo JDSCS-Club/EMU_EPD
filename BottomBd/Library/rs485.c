@@ -140,28 +140,37 @@ int	SendRS485 ( char *bufTx, int nSize )
 }
 
 //========================================================================
-void SendSD( void )
+void SendSD( const FRAME_SDR *pSdr )
 //========================================================================
 {
 	FRAME_SD sdfrm;
 	memset( &sdfrm, 0, sizeof( sdfrm ) );
 
-	sdfrm.nSTX				=	0x02;			//	STX
-//	sdfrm.sd.nSD			=	0x41;			//	SD 설정기 Address
-//	sdfrm.sd.nLEDAddr		=	0x21;			//	LED 표시기 Address
-//	sdfrm.sd.nLEDID			=	getLedID();		//	( getCarNo() << 4 ) + getDispId();
-//	sdfrm.sd.bDLStatCode	=	0x01;			//	Bit 0 = Download Status Code
-//	sdfrm.sd.nAckCode		=	0x0A;			//	표시기 응답코드
-//	sdfrm.sd.bPtrnTest		=	0x00;			//	6	Pattern Test
-	sdfrm.nETX				=	0x03;			//	ETX
-	sdfrm.nBCC1				=	0x00;			//	BCC 1
-	sdfrm.nBCC2				=	0x00;			//	BCC 2
+
+	sdfrm.nSTX				=	0x02;					//	STX
+	sdfrm.sd.cSD			=	eSD;					//	SD
+
+	sdfrm.sd.c0x22			=	0x22;
+
+	sdfrm.sd.bOccPaStart	=	pSdr->sdr.bOccPaStart;
+	sdfrm.sd.bOccPaStop		=	pSdr->sdr.bOccPaStop;
+
+	sdfrm.sd.nWatchDog		=	pSdr->sdr.nWatchDog;
+
+	sdfrm.nETX				=	0x03;					//	ETX
+
+	uint16_t u16BCC = onBCCCheck( (char *)&sdfrm, sizeof(FRAME_SD) - 2 );
+
+	sdfrm.nBCC1				=	(u16BCC >> 8) & 0xFF;	//	BCC 1
+	sdfrm.nBCC2				=	(u16BCC & 0xFF);			//	BCC 2
 
 	SendRS485( &sdfrm, sizeof( FRAME_SD ) );
+
+	Dump( "Tx : ", &sdfrm, sizeof( FRAME_SD ) );
 }
 
 //========================================================================
-void ProcessFrameSD( const uint8_t *pbuf, int length )
+void ProcessFrameSD( const uint8_t *pBuf, int nLen )
 //========================================================================
 {
 	printf( "%s(%d)\n", __func__, __LINE__ );
@@ -169,51 +178,87 @@ void ProcessFrameSD( const uint8_t *pbuf, int length )
 	//	LED 상태정보 취합 후 Master 결정.
 	//	nLEDID값이 가장 낮은 LED가 Master.
 
-	const FRAME_SD	*pFrameSd = (const FRAME_SD *)pbuf;
+	const FRAME_SD	*pFrameSd = (const FRAME_SD *)pBuf;
 	const SD_t		*pSd = &pFrameSd->sd;
 }
 
 //========================================================================
-void ProcessFrameSDR( const uint8_t *pbuf, int length )
+void ProcessFrameSDR( const uint8_t *pBuf, int nLen )
 //========================================================================
 {
-//	printf( "%s(%d)\n", __func__, __LINE__ );
+	//========================================================================
+	//	SD 상태정보 응답.
+	SendSD( (FRAME_SDR *)pBuf );
 
-	const FRAME_SDR	*pFrameSdr = (const FRAME_SDR *)pbuf;
+	printf( "%s(%d)\n", __func__, __LINE__ );
+
+	static int s_bOccPaStart = 0;
+	static int s_bOccPaStop = 0;
+	static int s_bOccPaActive = 0;
+
+	//========================================================================
+	//	SDR 처리
+	const FRAME_SDR	*pFrameSdr = (const FRAME_SDR *)pBuf;
 	const SDR_t		*pSdr = &pFrameSdr->sdr;
+
+	printf("OCC PA : Start(%d) / Stop(%d) / Active(%d)\n",
+			pSdr->bOccPaStart,
+			pSdr->bOccPaStop,
+			pSdr->bOccPaActive
+			);
+
+	if ( s_bOccPaStart != pSdr->bOccPaStart )
+	{
+		if( pSdr->bOccPaStart )
+		{
+			printf("OCC PA Start\n");
+		}
+
+		s_bOccPaStart = pSdr->bOccPaStart;
+	}
+	if ( s_bOccPaStop != pSdr->bOccPaStop )
+	{
+		if( pSdr->bOccPaStop )
+		{
+			printf("OCC PA Stop\n");
+		}
+
+		s_bOccPaStop = pSdr->bOccPaStop;
+	}
+	if ( s_bOccPaActive != pSdr->bOccPaActive )
+	{
+		if( pSdr->bOccPaActive )
+		{
+			printf("OCC PA Active\n");
+		}
+
+		s_bOccPaActive = pSdr->bOccPaActive;
+	}
 
 
 	//========================================================================
-	//	SD 상태정보 응답.
-
-//	int nRespDelay;
-//
-//	if ( ( nRespDelay = _CalcRespDelay( pSdr->nID, getCarNo(), getDispId() ) ) != -1 )
-	{
-		//	15 : ID ( 0 ~ 5 ) 1초에 한번씩 상태요청 0호차, 1/2호차, 3/4호차, 5/6호차, 7/8호차, 9호차
-
-		//	LED 상태정보 응답.
-		SendSD();
-	}
 }
 
 //========================================================================
-void ProcessFrame( const uint8_t *pbuf, int length)
+void ProcessFrame( const uint8_t *pBuf, int nLen )
 //========================================================================
 {
-	if ( length == sizeof( FRAME_SDR ) )
+	FRAME_SDR	*pSdr	=	(FRAME_SDR *)pBuf;
+	FRAME_SD	*pSd	=	(FRAME_SD *)pBuf;
+
+	if ( nLen == sizeof( FRAME_SDR ) && pSdr->sdr.cSDR == eSDR )
 	{
 //		printf( "[%d] %s(%d) - SDR Recv ( %d )\n", HAL_GetTick(),  __func__, __LINE__, length );
-		ProcessFrameSDR( pbuf, length );
+		ProcessFrameSDR( pBuf, nLen );
 	}
-	else if ( length == sizeof( FRAME_SD ) )
+	else if ( nLen == sizeof( FRAME_SD ) && pSd->sd.cSD == eSD )
 	{
 //		printf( "[%d] %s(%d) - SD Recv ( %d )\n", HAL_GetTick(), __func__, __LINE__, length );
 //		ProcessFrameSD( pbuf, length );
 	}
 	else
 	{
-		printf( "%s(%d) - Invalid Data ( %d )\n", __func__, __LINE__, length );
+		printf( "%s(%d) - Invalid Data ( %d )\n", __func__, __LINE__, nLen );
 	}
 }
 
@@ -240,6 +285,18 @@ void InitRS485(void)
 
 	HAL_UART_Receive_IT(&huart3, dataRx3, 1);
 	HAL_UART_Receive_IT(&huart5, dataRx5, 1);
+}
+
+void Dump( char *sTitle, char *sBuf, int nSize )
+{
+	printf( "%s ", sTitle );
+
+	int idx;
+	for ( idx = 0; idx < nSize; idx++ )
+	{
+		printf( "%02X ", sBuf[idx] );
+	}
+	printf("\n");
 }
 
 //========================================================================
@@ -291,6 +348,8 @@ void LoopProcRS485(void)
 				//				printf( "found frame(%d)\n", length );
 				ProcessFrame(rxbuffer, length);
 
+				Dump( "Rx : ", rxbuffer, length );
+
 				length = 0;
 				nFlagRxState = FlagNone;
 			}
@@ -298,17 +357,18 @@ void LoopProcRS485(void)
 
 		if (length >= sizeof(FRAME_SDR))
 		{
-			printf("[%d] %s(%d) - Invalid packet(%d)\n", HAL_GetTick(), __func__, __LINE__, length);
-			printf("[ ");
-			for (idx = 0; idx < length; idx++)
-			{
-				printf("%02X ", rxbuffer[idx]);
-			}
-			printf("]\n");
+			printf( "[%d] %s(%d) - Invalid packet(%d)\n", HAL_GetTick(), __func__, __LINE__, length );
+
+			Dump( "Rx : ", rxbuffer, length );
+
+			//===========================================================================
+			init_queue(&g_qUart3);		//	Queue Clear
+			//===========================================================================
 
 			//	최대 패킷 사이즈보다 큰경우. -> Clear Buffer
 			length = 0;
 			nFlagRxState = FlagNone;
+
 		}
 	}	//while (qcount(&g_qRS485) > 0)
 
@@ -389,11 +449,13 @@ int cmd_sd(int argc, char *argv[])
 {
 	printf("%s(%d)\n", __func__, __LINE__ );
 
-	SendSD();
+	FRAME_SDR	sdr;
+	memset( &sdr, 0, sizeof(FRAME_SDR) );
+
+	SendSD( &sdr );
 
 	return 0;
 }
-
 
 
 //========================================================================

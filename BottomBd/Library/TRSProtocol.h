@@ -35,10 +35,8 @@ enum eRS485Def
 	eSTX		=	0x02,
 	eETX		=	0x03,
 
-	eSDR		=	0x40,
-	eSD			=	0x41,
-	eAddrLED	=	0x21,
-	eAddrCtrl	=	0x20,
+	eSDR		=	0x21,
+	eSD			=	0x31,
 
 	eACKCODE	=	0x0A,
 };

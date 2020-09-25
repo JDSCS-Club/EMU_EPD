@@ -43,8 +43,6 @@
 #include "stm32f2xx.h"
 #endif
 
-//#include "i2c.h"
-
 //=============================================================================
 #endif
 //=============================================================================
@@ -276,14 +274,6 @@ user_command_t	user_command_table[] = {
 #endif 	//	defined( _SPI_H_ )
 
 #endif
-
-/*
-	{"ts",
-		"ts       - display task status",
-		(char *)0,
-		cmd_ts,},
-
- */
 };
 
 char	old_cmd[MAX_COMMAND_LENGTH];

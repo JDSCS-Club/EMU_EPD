@@ -176,6 +176,8 @@ int main(void)
 			processGetBatVol();			//	ADC
 
 			//=============================================================================
+            checkSerial(&huart1);       //  Debug
+            checkSerial(&huart2);       //  RFM
             checkSerial(&huart3);       //  RS485 Line 체크.
             checkSerial(&huart5);       //  RS485 Line 체크.
             //=============================================================================
