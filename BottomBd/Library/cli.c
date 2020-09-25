@@ -53,20 +53,9 @@
 #include "serial.h"
 
 #include "version.h"		//	APP_VER / APP_BUILD_DATE
-//
-//#include "rfm.h"			//	cmd_ch()
-//
-//#include "diag.h"
-//
-//#include "eeprom.h"			//	cmd_eepromRead() / cmd_eepromWrite()
-//
-//#include "audio.h"			//	cmd_audio() / cmd_codec()
-//
-//#include "ProcPkt.h"		//	cmd_showpkt()
-//
-//#include "bootloader.h"		//	cmd_stboot()
-//
-//#include "upgrade.h"		//	cmd_upgrade()
+
+#include "rs485.h"			//	cmd_sd()
+
 
 #define		NELEMENTS(array)	(sizeof(array) / sizeof((array)[0]))
 #define		MAX_COMMAND_LENGTH	64
@@ -115,6 +104,13 @@ user_command_t	user_command_table[] = {
 		"reset		-	restart system",
 		(char *)0,
 		cmd_reset,},
+
+#if defined(_RS485_H_)
+	{"sd",
+		"sd		-	Send SD ( Status Data )",
+		(char *)0,
+		cmd_sd,},
+#endif
 
 #if defined(USE_HOP_MANUAL)
 

@@ -127,8 +127,9 @@ int main(void)
   //	UART Queue 초기화.
   SerialInitQueue();
   //	UART Interrupt 설정.
-//  SerialInit( &huart1, &huart2, &huart3, &huart5 );
-  SerialInit( &huart1, NULL, NULL, NULL );//&huart2, &huart3, &huart5 );
+  SerialInit( &huart1, &huart2, &huart3, &huart5 );
+//  SerialInit( &huart1, NULL, NULL, NULL );//&huart2, &huart3, &huart5 );
+  InitRS485();		//	Init RS485
 
   setbuf ( stdout, NULL );		            //	1024 byte buffer clear
 //  setvbuf ( stdout, NULL, _IOLBF, NULL );	//	Line Buffer
@@ -136,7 +137,6 @@ int main(void)
 
   printf( "[%d] Start\n", HAL_GetTick() );    // xTaskGetTickCount() );
 
-  InitRS485();		//	Init RS485
 
   //	*/
 
@@ -155,7 +155,10 @@ int main(void)
     /* USER CODE BEGIN 3 */
 	  	nTick = HAL_GetTick();
 
-		LoopProcCLI();
+		//=============================================================================
+		LoopProcCLI();		//	CLI ( Command Line Interface )
+		LoopProcRS485();	//	RS485
+		//=============================================================================
 
 		processOverrideOn();
 		processRfLed();

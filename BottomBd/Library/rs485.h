@@ -40,7 +40,7 @@ extern "C" {
 
 void	InitRS485			(void);
 
-void	LoopRS485			(void);
+void	LoopProcRS485			(void);
 
 
 void	vRs485Task			( void *pvParameters );
@@ -54,7 +54,7 @@ uint8_t	GetRspDevIdMin		( void );		//	응답 Device중 가장 낮은 ID return.
 
 void	SendSD				( void );       //  Send SD Data
 
-
+int 	cmd_sd				( int argc, char *argv[] );		//	Send SD
 
 //===========================================================================
 #if __cplusplus

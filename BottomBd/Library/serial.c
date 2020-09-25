@@ -7,10 +7,6 @@
 #include <stdarg.h>
 #include <stdint.h>
 
-//#include "main.h"
-
-/* USER CODE BEGIN 1 */
-
 #include "serial.h"
 
 //=============================================================================
@@ -142,7 +138,7 @@ PUTCHAR_PROTOTYPE
 
 	//========================================================================
 	//	RS232
-	//*
+	/*
 	if ( phuart2 )
 	{
 		HAL_UART_Transmit( phuart2, (uint8_t *)&ch, 1, 0xFFFF );
