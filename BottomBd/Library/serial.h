@@ -51,6 +51,11 @@ extern uint8_t		dataRx2[8];		//	UART2 - RFM		- 115200
 extern uint8_t		dataRx3[8];		//	UART3 - RS485	- 38400
 extern uint8_t		dataRx5[8];		//	UART5 - RS485	- 38400
 
+extern uint32_t		g_nStampRx1;		//	Last Data Recv TimeStamp
+extern uint32_t		g_nStampRx2;
+extern uint32_t		g_nStampRx3;
+extern uint32_t		g_nStampRx5;
+
 
 void	rts_high		( UART_HandleTypeDef *_phuart );
 void	rts_low			( UART_HandleTypeDef *_phuart );

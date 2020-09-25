@@ -146,8 +146,7 @@ void SendSD( const FRAME_SDR *pSdr )
 	FRAME_SD sdfrm;
 	memset( &sdfrm, 0, sizeof( sdfrm ) );
 
-
-	sdfrm.nSTX				=	0x02;					//	STX
+	sdfrm.nSTX				=	eSTX;	//	0x02;		//	STX
 	sdfrm.sd.cSD			=	eSD;					//	SD
 
 	sdfrm.sd.c0x22			=	0x22;
@@ -157,16 +156,25 @@ void SendSD( const FRAME_SDR *pSdr )
 
 	sdfrm.sd.nWatchDog		=	pSdr->sdr.nWatchDog;
 
-	sdfrm.nETX				=	0x03;					//	ETX
+	sdfrm.nETX				=	eETX;	//	0x03;		//	ETX
 
 	uint16_t u16BCC = onBCCCheck( (char *)&sdfrm, sizeof(FRAME_SD) - 2 );
 
 	sdfrm.nBCC1				=	(u16BCC >> 8) & 0xFF;	//	BCC 1
-	sdfrm.nBCC2				=	(u16BCC & 0xFF);			//	BCC 2
+	sdfrm.nBCC2				=	(u16BCC & 0xFF);		//	BCC 2
 
+	uint32_t nTxStart, nTxEnd;
+
+	nTxStart = HAL_GetTick();
 	SendRS485( &sdfrm, sizeof( FRAME_SD ) );
+	nTxEnd = HAL_GetTick();
+
+	Dump( "Rx : ", pSdr, sizeof( FRAME_SDR ) );
 
 	Dump( "Tx : ", &sdfrm, sizeof( FRAME_SD ) );
+
+	printf( "%s : Rx Last(%08d) / Tx Start(%08d) / Tx End(%08d) / delta(%08d)\n", __func__,
+			g_nStampRx3, nTxStart, nTxEnd, (nTxStart - g_nStampRx3) );
 }
 
 //========================================================================
@@ -287,9 +295,11 @@ void InitRS485(void)
 	HAL_UART_Receive_IT(&huart5, dataRx5, 1);
 }
 
+//========================================================================
 void Dump( char *sTitle, char *sBuf, int nSize )
+//========================================================================
 {
-	printf( "%s ", sTitle );
+	printf( "[%08d]%s ", HAL_GetTick(), sTitle );
 
 	int idx;
 	for ( idx = 0; idx < nSize; idx++ )
@@ -347,8 +357,6 @@ void LoopProcRS485(void)
 			{
 				//				printf( "found frame(%d)\n", length );
 				ProcessFrame(rxbuffer, length);
-
-				Dump( "Rx : ", rxbuffer, length );
 
 				length = 0;
 				nFlagRxState = FlagNone;

@@ -51,6 +51,11 @@ uint8_t		dataRx2[8];		//	UART2 - RFM		- 115200
 uint8_t		dataRx3[8];		//	UART3 - RS485	- 38400
 uint8_t		dataRx5[8];		//	UART5 - RS485	- 38400
 
+uint32_t	g_nStampRx1 = 0;		//	Last Data Recv TimeStamp
+uint32_t	g_nStampRx2 = 0;
+uint32_t	g_nStampRx3 = 0;
+uint32_t	g_nStampRx5 = 0;
+
 UART_HandleTypeDef *phuart1 = NULL;			//	Debug
 UART_HandleTypeDef *phuart2 = NULL;			//	RFM
 UART_HandleTypeDef *phuart3 = NULL;			//	RS485
@@ -192,6 +197,7 @@ void HAL_UART_RxCpltCallback( UART_HandleTypeDef *huart )
 	if ( huart->Instance == USART1 )
 	{
 		//	Debug Console
+		g_nStampRx1 = HAL_GetTick();
 
 		//	문자 Queue에 쌓기.
 		qput( &g_qUart1, dataRx1[0] );
@@ -205,6 +211,8 @@ void HAL_UART_RxCpltCallback( UART_HandleTypeDef *huart )
 	else if ( huart->Instance == USART2 )
 	{
 		//	RS232 - RFM
+		g_nStampRx2 = HAL_GetTick();
+
 		qput( &g_qUart2, dataRx2[0] );
 
 		HAL_UART_Receive_IT( huart, dataRx2, 1 );
@@ -213,6 +221,8 @@ void HAL_UART_RxCpltCallback( UART_HandleTypeDef *huart )
 	else if ( huart->Instance == USART3 )
 	{
 		//	RS485
+		g_nStampRx3 = HAL_GetTick();
+
 		qput( &g_qUart3, dataRx3[0] );
 
 		HAL_UART_Receive_IT( huart, dataRx3, 1 );
@@ -221,6 +231,8 @@ void HAL_UART_RxCpltCallback( UART_HandleTypeDef *huart )
 	else if ( huart->Instance == UART5 )
 	{
 		//	RS485
+		g_nStampRx5 = HAL_GetTick();
+
 		qput( &g_qUart5, dataRx5[0] );
 
 		HAL_UART_Receive_IT( huart, dataRx5, 1 );
