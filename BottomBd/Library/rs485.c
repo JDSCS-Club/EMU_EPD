@@ -56,6 +56,8 @@
 
 #include "TRSProtocol.h"		//	열차무선 Protocol
 
+#include "occpa.h"				//	OCC PA
+
 //========================================================================
 uint16_t onBCCCheck(unsigned char *payload, int crc_length)
 //========================================================================
@@ -220,6 +222,9 @@ void ProcessFrameSDR( const uint8_t *pBuf, int nLen )
 		if( pSdr->bOccPaStart )
 		{
 			printf("OCC PA Start\n");
+
+			//	OCC PA 시작명령. ( RFMBase -> RFM )
+			RFMOccPaStart();
 		}
 
 		s_bOccPaStart = pSdr->bOccPaStart;
@@ -229,6 +234,9 @@ void ProcessFrameSDR( const uint8_t *pBuf, int nLen )
 		if( pSdr->bOccPaStop )
 		{
 			printf("OCC PA Stop\n");
+
+			//	OCC PA 종료명령. ( RFMBase -> RFM )
+			RFMOccPaStop();
 		}
 
 		s_bOccPaStop = pSdr->bOccPaStop;

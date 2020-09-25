@@ -54,6 +54,8 @@
 
 #include "rs485.h"			//	cmd_sd()
 
+#include "occpa.h"			//	cmd_occ()
+
 
 #define		NELEMENTS(array)	(sizeof(array) / sizeof((array)[0]))
 #define		MAX_COMMAND_LENGTH	64
@@ -105,64 +107,17 @@ user_command_t	user_command_table[] = {
 
 #if defined(_RS485_H_)
 	{"sd",
-		"sd		-	Send SD ( Status Data )",
+		"sd			-	Send SD ( Status Data )",
 		(char *)0,
 		cmd_sd,},
 #endif
 
-#if defined(USE_HOP_MANUAL)
-
-#endif	//	defined(USE_HOP_MANUAL)
-
-#if defined(USE_HOP_MANUAL)
-	{"hop",
-		"hop		-	hopping",
-		"hop -	hop [ 0:default / 1:On / 2:Off ]",
-		cmd_hop},
-#endif	//	 defined(USE_HOP_MANUAL)
-
-#if defined(_DIAG_H_)
-	{"diag",
-		"diag		-	diagnostic test",
-		(char *)0,
-		cmd_diag,},
-#endif	//	defined(_DIAG_H_)
-
-//	{"debug",
-//		"debug		-	set debug level.",
-//		(char *)0,
-//		cmd_debug, },
-
-#if defined(RFM_H)
-	{"ch",
-		"ch		-	Setting Channel",
-		"ch -	ch [channel:0-9]",
-		cmd_ch},
-	{"ts",
-		"ts		-	Setting Train Set",
-		"ts -	ts [channel:0-9]",
-		cmd_ts},
-	{"car",
-		"car	-	Setting Car No.",
-		"car -	car [channel:0-9]",
-		cmd_car},
-	{"info",
-		"info	-	Display Information",
-		(char *)0,
-		cmd_info},
-	{"swinfo",
-		"info	-	Software Information",
-		(char *)0,
-		cmd_swinfo},
-	{"rfstat",
-		"rfstat	-	RF Tx / Rx Information",
-		(char *)0,
-		cmd_rfstat},
-	{"rspid",
-		"rspid	-	Manual Set Resp ID",
-		"rspid	-	rspid [id] [set/clear]",
-		cmd_rspid},
-#endif	//	defined(RFM_H)
+#if defined(OCC_PA_H)
+	{"occ",
+		"occ		-	OCC PA ( RFMBase -> RFM )",
+		"occ [1(Start)/0(Stop)]",
+		cmd_occ},
+#endif
 
 #if defined(EEPROM_I2C_H)
 		{"eepw",
@@ -179,101 +134,7 @@ user_command_t	user_command_table[] = {
 			cmd_eepromDump,},
 #endif	//	defined(EEPROM_I2C_H)
 
-#if defined(USE_ENV_TEST)
-	{"rftx",
-		"rftx	-	Loop RF Tx Data",
-		"rttx [1(On) / 0(Off)] [u(unmodulated)/m(modulated)] [ch:0~9] [power:0~127]",
-		cmd_rftx },
 
-#endif	//	defined(USE_ENV_TEST)
-
-#if defined( AUDIO_H )
-	{"audio",
-		"audio	-	audio command",
-		"audio [loop/null/sine/spk [0/1] / mute [0/1] ]",
-		cmd_audio},
-	{"codec",
-		"codec	-	codec command",
-		"codec [init/loop/mute [0/1] ]",
-		cmd_codec},
-#endif
-
-#if defined( BOOTLOADER_H )
-	{"stboot",
-		"stboot	- Enter STM32 Bootloader ( DFU Mode )",
-		(char *)0,
-		cmd_stboot},
-#endif
-
-#if defined( UPGRADE_H )
-	{"upgrade",
-		"upgrade	- upgrade command",
-		(char *)0,
-		cmd_upgrade},
-#endif
-
-#if defined( PROC_PKT_H )
-	{"mon",
-		"mon	-	show packet monitoring",
-		"mon [0/1]",
-		cmd_pktmon},
-#endif
-
-#if 0
-
-	{"test",
-		(char *)0,
-		(char *)0,
-		cmd_test,},
-	{"do",
-		"do			-	set do value",
-		(char *)0,
-		cmd_do,},
-	{"wr",
-		"wr			-	write byte to address",
-		"wr[.b|w|l] addr data",
-		cmd_wr,},
-	{"rd",
-		"rd			-	read byte from address",
-		"rd[.b|w|l] [-l] addr",
-		cmd_rd,},
-	{"md",
-		"md			-	memory dump",
-		"md[.b|w|l] [address] [count]",
-		cmd_md},
-	{"i2cdetect",
-		"i2cdetect	-	I2C detect",
-		"i2cdetect -l",
-		cmd_md},
-	{"i2cset",
-		"i2cset	-	I2C Write",
-		"i2cset	I2CBUS CHIP-ADDRESS DATA-ADDRESS [VALUE]",
-		cmd_md},
-	{"i2cget",
-		"i2cget	-	I2C Read",
-		"i2cget	I2CBUS CHIP-ADDRESS [DATA-ADDRESS [MODE]]",
-		cmd_md},
-	{"rftx",
-		"rftx	-	RF Tx Test",
-		"rftx [start/1/stop/0]",
-		cmd_rftx},
-
-#endif
-
-#if defined(_WIN32)
-
-	//	Windows
-
-#else	//	STM32
-
-#if defined( _SPI_H_ )
-	{"spi",
-		"spi -	SPI Read / Write",
-		"spi[.b|w|l] [wr/rd] [dev [data]]",
-		cmd_spi},
-#endif 	//	defined( _SPI_H_ )
-
-#endif
 };
 
 char	old_cmd[MAX_COMMAND_LENGTH];
