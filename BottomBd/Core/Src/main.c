@@ -171,6 +171,11 @@ int main(void)
 //			printf("[%d]\n", nTick);
 			s_nTick = nTick;
 			processGetBatVol();			//	ADC
+
+			//=============================================================================
+            checkSerial(&huart3);       //  RS485 Line 체크.
+            checkSerial(&huart5);       //  RS485 Line 체크.
+            //=============================================================================
 		}
 
 //		HAL_Delay(1);

@@ -55,12 +55,18 @@ extern uint8_t		dataRx5[8];		//	UART5 - RS485	- 38400
 void	rts_high		( UART_HandleTypeDef *_phuart );
 void	rts_low			( UART_HandleTypeDef *_phuart );
 
+void	resetSerial		( UART_HandleTypeDef* uart );
+void	checkSerial		( UART_HandleTypeDef* uart );
+
 int		input_check		( void );
 
 void	SerialInit		( UART_HandleTypeDef *_phuart1, UART_HandleTypeDef *_phuart2, UART_HandleTypeDef *_phuart3, UART_HandleTypeDef *_phuart5  );
 
+extern	Queue_t		g_qUart1;
+extern	Queue_t		g_qUart2;
+extern	Queue_t		g_qUart3;
+extern	Queue_t		g_qUart5;
 
-extern Queue_t			g_qUart1, g_qUart2, g_qUart3;
 
 
 #endif	/* _SERIAL_H_ */

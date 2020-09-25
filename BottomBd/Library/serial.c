@@ -239,6 +239,49 @@ void HAL_UART_RxCpltCallback( UART_HandleTypeDef *huart )
 //=============================================================================
 
 
+//=============================================================================
+void resetSerial(UART_HandleTypeDef* uart)
+//=============================================================================
+{
+	printf("%s(%d)\n", __FILE__, __LINE__);
+
+	if (HAL_UART_Init(uart) != HAL_OK)
+	{
+		//_Error_Handler(__FILE__, __LINE__);
+		printf("%s(%d)\n", __FILE__, __LINE__);
+	}
+}
+
+
+/* check overrun and recovery on uart */
+//	Add a comment to this line
+//=============================================================================
+void checkSerial(UART_HandleTypeDef* uart)
+//=============================================================================
+{
+
+#if defined(_WIN32)
+#else		//	STM32
+	if (__HAL_UART_GET_FLAG(uart, UART_FLAG_ORE))
+	{
+		if (HAL_UART_Init(uart) != HAL_OK)
+		{
+			//_Error_Handler(__FILE__, __LINE__);
+			printf("%s(%d)\n", __FILE__, __LINE__);
+		}
+		char c;
+		HAL_UART_Receive_IT(uart, (uint8_t*)&c, 1);
+		printf("[ERR] UART overrun detected\n");
+		printf("UART 1 > err code : %x tStat: %x rStat: %x SR: %x DR %x \n", uart->ErrorCode, uart->gState, uart->RxState, uart->Instance->SR, uart->Instance->DR);
+		printf("UART 1 > BRR : %x CR1: %x CR2: %x CR3: %x GTPR %x \n", uart->Instance->BRR, uart->Instance->CR1, uart->Instance->CR2, uart->Instance->CR3, uart->Instance->GTPR);
+//		printf("UART 3 > err code : %x tStat: %x rStat: %x SR: %x DR %x \n", huart3.ErrorCode, huart3.gState, huart3.RxState, huart3.Instance->SR, huart1.Instance->DR);
+//		printf("UART 3 > BRR : %x CR1: %x CR2: %x CR3: %x GTPR %x \n", huart3.Instance->BRR, huart3.Instance->CR1, huart3.Instance->CR2, huart3.Instance->CR3, huart3.Instance->GTPR);
+	}
+
+#endif
+}
+
+
 
 // ============================================================================
 void SerialInitQueue( void )

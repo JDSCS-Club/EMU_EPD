@@ -56,28 +56,6 @@
 
 #include "TRSProtocol.h"		//	열차무선 Protocol
 
-//int	adnum;
-//extern int	dflag;
-//extern int	pic_rcvflag;
-//extern int	iflag;
-//extern int	tvalue[2];
-////uint8_t	id_check, id_buffer[4];
-//uint8_t	sdr_buffer[40];
-//uint8_t	trigger;
-//uint8_t	tmp_trigger=0;
-//uint8_t	pic_addr;
-//uint8_t	led_addr;
-//uint8_t	door_dir;
-//uint8_t	repeat;
-//uint8_t	brightness;
-////RS485_SDR_TypeDef vSDR_PicBuffer;
-//extern FLASH_EraseInitTypeDef flash1;
-//extern int	debug_level;
-//
-//int	resettick;
-//int	diag_test_flag=0;
-//extern int	update_indx;
-
 //========================================================================
 uint16_t onBCCCheck(unsigned char *payload, int crc_length)
 //========================================================================
@@ -147,11 +125,11 @@ int	SendRS485 ( char *bufTx, int nSize )
 
 	//========================================================================
 	//	Send RS485
-	rts_high( &huart1 );
+	rts_high( &huart3 );
 
-	ret = HAL_UART_Transmit( &huart1, (uint8_t *)bufTx, nSize, 0xFFFF );
+	ret = HAL_UART_Transmit( &huart3, (uint8_t *)bufTx, nSize, 0xFFFF );
 
-	rts_low( &huart1 );
+	rts_low( &huart3 );
 	//========================================================================
 
 //=============================================================================
@@ -193,15 +171,6 @@ void ProcessFrameSD( const uint8_t *pbuf, int length )
 
 	const FRAME_SD	*pFrameSd = (const FRAME_SD *)pbuf;
 	const SD_t		*pSd = &pFrameSd->sd;
-
-//	printf( "%s(%d) - 0x%02X\n", __func__, __LINE__, pSd->nLEDID );
-
-	//	LED 상태정보 수신시 상태정보 수신 Count 증가.
-//	if ( s_rspLedID[pSd->nLEDID] < 230 )
-//	{
-//		s_rspLedID[pSd->nLEDID]++;
-//		printf( "%s(%d) - 0x%02X ( %d )\n", __func__, __LINE__, pSd->nLEDID, s_rspLedID[pSd->nLEDID] );
-//	}
 }
 
 //========================================================================
@@ -210,7 +179,7 @@ void ProcessFrameSDR( const uint8_t *pbuf, int length )
 {
 //	printf( "%s(%d)\n", __func__, __LINE__ );
 
-	const FRAME_SDR	*pFrameSdr = (const FRAME_SDR	*)pbuf;
+	const FRAME_SDR	*pFrameSdr = (const FRAME_SDR *)pbuf;
 	const SDR_t		*pSdr = &pFrameSdr->sdr;
 
 
@@ -227,18 +196,6 @@ void ProcessFrameSDR( const uint8_t *pbuf, int length )
 		SendSD();
 	}
 }
-
-
-///*
-// * 한번에 쭉 들어온 데이터로 부터
-// * PIC이 보낸 frame을 찾고, frame 단위로 처리를 한다.
-// */
-//int	success_num		=	0;
-//int	loopcnt			=	1;
-//int	total_block_num	=	0;
-//int	upgrade_error	=	0;
-//int	flash_error		=	0;
-//int	packet_num		=	0;
 
 //========================================================================
 void ProcessFrame( const uint8_t *pbuf, int length)
@@ -270,8 +227,7 @@ enum eRxState
 
 static uint32_t		length = 0;
 static uint8_t		rxbuffer[128];   //upgrade 수정
-//static int nFlagRxState = FlagNone;
-
+static int nFlagRxState = FlagNone;
 
 //========================================================================
 void InitRS485(void)
@@ -280,8 +236,10 @@ void InitRS485(void)
 	memset(rxbuffer, 0, sizeof(rxbuffer));
 
 	rts_low(&huart3);		//	Recv Mode
+	rts_low(&huart5);		//	Recv Mode
 
 	HAL_UART_Receive_IT(&huart3, dataRx3, 1);
+	HAL_UART_Receive_IT(&huart5, dataRx5, 1);
 }
 
 //========================================================================
@@ -289,166 +247,139 @@ void LoopRS485(void)
 //========================================================================
 {
 	int idx;
+
 	//=============================================================================
-#if defined(_WIN32)
-//=============================================================================
-//=============================================================================
-#else	//	stm32f207
-//=============================================================================
-//		IWDG->KR = 0xaaaa;//KR_KEY_ENABLE;
-//=============================================================================
-#endif	//	stm32f207
-//=============================================================================
-
-#if defined( USE_APP_RS485_INT )
-
-		//=============================================================================
-		//	
+	//
 	char	c;
 
-#if defined(DISABLE_RTOS_TASK)
+	while (qcount(&g_qUart3) > 0)
+	{
+		c = qget(&g_qUart3);
+		//		printf( "0x%02X ", c );
 
-	while (qcount(&g_qRS485) > 0)
-	{
-
-#else
-	while (!qcount(&g_qRS485))
-	{
-		//		osDelay(0);
-		taskYIELD();
-	}
-#endif
-	c = qget(&g_qRS485);
-	//		printf( "0x%02X ", c );
-
-			//=============================================================================
-			//	Check STX
-	if (c == eSTX && nFlagRxState == FlagNone)
-	{
-		//			printf( "[STX] " );
-		nFlagRxState = FlagFindSTX;
-		length = 0;
-	}
-	else if (c == eETX && nFlagRxState == FlagFindSTX &&
-		((length == (sizeof(FRAME_SDR) - 3)) ||	//	SDR ETX
-		(length == (sizeof(FRAME_SD) - 3))		//	SD ETX
-			)
-		)
-	{
-		//			printf( "[ETX] " );
-		nFlagRxState = FlagFindETX;
-	}
-
-	if (nFlagRxState == FlagFindSTX || nFlagRxState == FlagFindETX)
-	{
-		rxbuffer[length++] = c;		//	Buffering
-//			printf( "[%02X] ", c );
-	}
-
-	//	Check SDR / SD Frame
-	if (nFlagRxState == FlagFindETX)
-	{
-		//			printf( "length(%d)\n", length );
-		if (length == sizeof(FRAME_SDR) ||
-			length == sizeof(FRAME_SD))
+				//=============================================================================
+				//	Check STX
+		if (c == eSTX && nFlagRxState == FlagNone)
 		{
-			//				printf( "found frame(%d)\n", length );
-			ProcessFrame(rxbuffer, length);
+			//			printf( "[STX] " );
+			nFlagRxState = FlagFindSTX;
+			length = 0;
+		}
+		else if (c == eETX && nFlagRxState == FlagFindSTX &&
+			((length == (sizeof(FRAME_SDR) - 3)) ||	//	SDR ETX
+			(length == (sizeof(FRAME_SD) - 3))		//	SD ETX
+				)
+			)
+		{
+			//			printf( "[ETX] " );
+			nFlagRxState = FlagFindETX;
+		}
 
+		if (nFlagRxState == FlagFindSTX || nFlagRxState == FlagFindETX)
+		{
+			rxbuffer[length++] = c;		//	Buffering
+	//			printf( "[%02X] ", c );
+		}
+
+		//	Check SDR / SD Frame
+		if (nFlagRxState == FlagFindETX)
+		{
+			//			printf( "length(%d)\n", length );
+			if (length == sizeof(FRAME_SDR) ||
+				length == sizeof(FRAME_SD))
+			{
+				//				printf( "found frame(%d)\n", length );
+				ProcessFrame(rxbuffer, length);
+
+				length = 0;
+				nFlagRxState = FlagNone;
+			}
+		}
+
+		if (length >= sizeof(FRAME_SDR))
+		{
+			printf("[%d] %s(%d) - Invalid packet(%d)\n", HAL_GetTick(), __func__, __LINE__, length);
+			printf("[ ");
+			for (idx = 0; idx < length; idx++)
+			{
+				printf("%02X ", rxbuffer[idx]);
+			}
+			printf("]\n");
+
+			//	최대 패킷 사이즈보다 큰경우. -> Clear Buffer
 			length = 0;
 			nFlagRxState = FlagNone;
 		}
-	}
-
-	if (length >= sizeof(FRAME_SDR))
-	{
-		printf("[%d] %s(%d) - Invalid packet(%d)\n", HAL_GetTick(), __func__, __LINE__, length);
-		printf("[ ");
-		for (idx = 0; idx < length; idx++)
-		{
-			printf("%02X ", rxbuffer[idx]);
-		}
-		printf("]\n");
-
-		//	최대 패킷 사이즈보다 큰경우. -> Clear Buffer
-		length = 0;
-		nFlagRxState = FlagNone;
-	}
-
-#if defined(DISABLE_RTOS_TASK)
-
 	}	//while (qcount(&g_qRS485) > 0)
 
-#endif
-
-
-#else
-
-	char c;
-	char buf[50];
-	memset(buf, 0, sizeof(buf));
-	//	STX
-	HAL_StatusTypeDef status;
-	status = HAL_UART_Receive(&huart3, &c, 1, 2000);	// timeout);
-
-	if (status != HAL_OK)
-	{
-		printf(">%02X<", status);
-		if (status == HAL_BUSY || status == HAL_ERROR)
-		{
-			resetSerial(&huart3);
-		}
-//		continue;
-
-		return;
-	}
-
-	if (c != eSTX) return; //continue;
-	buf[0] = eSTX;
-	//	Addr
-
-	status = HAL_UART_Receive(&huart3, &c, 1, 2000);	// timeout);
-	if (status != HAL_OK)
-	{
-		printf(">%02X<", status);
-		if (status == HAL_BUSY || status == HAL_ERROR)
-		{
-			resetSerial(&huart3);
-		}
-		return; //continue;
-	}
-
-	if (c != 0x40) return; //continue;
-	buf[1] = 0x40;
-
-	//	Data
-	status = HAL_UART_Receive(&huart3, &buf[2], 26, 2000);	// timeout);
-
-	if (status != HAL_OK)
-	{
-		printf(">%02X<", status);
-		if (status == HAL_BUSY || status == HAL_ERROR)
-		{
-			resetSerial(&huart3);
-		}
-		return; //continue;
-	}
-	printf("[SDR] ");
-
-	printf("[ ");
-	for (idx = 0; idx < sizeof(FRAME_SDR); idx++)
-	{
-		printf("%02X ", buf[idx]);
-	}
-	printf("]\n");
-
-	//	check ETX
-	if (buf[25] == eETX)
-	{
-		ProcessFrame(buf, sizeof(FRAME_SDR));
-	}
-
-#endif
+//#else
+//
+//	char c;
+//	char buf[50];
+//	memset(buf, 0, sizeof(buf));
+//	//	STX
+//	HAL_StatusTypeDef status;
+//	status = HAL_UART_Receive(&huart3, &c, 1, 2000);	// timeout);
+//
+//	if (status != HAL_OK)
+//	{
+//		printf(">%02X<", status);
+//		if (status == HAL_BUSY || status == HAL_ERROR)
+//		{
+//			resetSerial(&huart3);
+//		}
+////		continue;
+//
+//		return;
+//	}
+//
+//	if (c != eSTX) return; //continue;
+//	buf[0] = eSTX;
+//	//	Addr
+//
+//	status = HAL_UART_Receive(&huart3, &c, 1, 2000);	// timeout);
+//	if (status != HAL_OK)
+//	{
+//		printf(">%02X<", status);
+//		if (status == HAL_BUSY || status == HAL_ERROR)
+//		{
+//			resetSerial(&huart3);
+//		}
+//		return; //continue;
+//	}
+//
+//	if (c != 0x40) return; //continue;
+//	buf[1] = 0x40;
+//
+//	//	Data
+//	status = HAL_UART_Receive(&huart3, &buf[2], 26, 2000);	// timeout);
+//
+//	if (status != HAL_OK)
+//	{
+//		printf(">%02X<", status);
+//		if (status == HAL_BUSY || status == HAL_ERROR)
+//		{
+//			resetSerial(&huart3);
+//		}
+//		return; //continue;
+//	}
+//	printf("[SDR] ");
+//
+//	printf("[ ");
+//	for (idx = 0; idx < sizeof(FRAME_SDR); idx++)
+//	{
+//		printf("%02X ", buf[idx]);
+//	}
+//	printf("]\n");
+//
+//	//	check ETX
+//	if (buf[25] == eETX)
+//	{
+//		ProcessFrame(buf, sizeof(FRAME_SDR));
+//	}
+//
+//#endif
+//
 }
 
 
