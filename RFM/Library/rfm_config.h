@@ -40,8 +40,8 @@
 #if defined(USE_HOP_MANUAL)
 
 //g_nManHopping	=	0;			//	On(1) / Off(2) / Unused(0 : Other)
-//#define		DEFAULT_HOP_MAN_VAL				2		//	Default - Off(2)
-#define		DEFAULT_HOP_MAN_VAL				0		//	Default - Off(2)
+#define		DEFAULT_HOP_MAN_VAL				2		//	Default - Off(2)
+//#define		DEFAULT_HOP_MAN_VAL				0		//	Default - Off(2)
 
 #endif	//	defined(USE_HOP_MANUAL)
 
