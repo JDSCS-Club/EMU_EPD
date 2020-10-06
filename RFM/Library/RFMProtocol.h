@@ -173,6 +173,14 @@ enum eStartStop
 	PACallStop		=	0x00,		//	Stop
 };
 
+enum eDevFlag
+{
+	DevFlagNone			=	0x00,		//	Normal
+#if defined(USE_STAT_LIGHT)
+	DevFlagLight		=	0x01,       //  점등/소등 상태.
+#endif
+};
+
 //==========================================================================
 //	RFM Packet
 
@@ -240,6 +248,9 @@ typedef struct _RFMPktStat
 	uint16_t	rspID;			//	응답 ID
 	uint8_t		nManHop;		//	Manual Hopping 설정. ( 0:Default / 1:On / 2: Off )
 	uint8_t		nSpare22[1];	//	Spare
+	//--------------------------------------------------------------------------
+	//	TEXT 24
+	uint8_t		nDevFlag;		//	Device Flag ( DevFlagLight )
 
 } RFMPktStat;
 

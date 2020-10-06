@@ -51,6 +51,10 @@ enum eRFMConfig
 	MaxCarNo		=	15,			//	1 ~ 10호차 / 11(수신기#1) / 12(수신기#2) / 13~15(Test)
 };
 
+extern int		g_nDevID;			//  Device ID ( 1 : RF900M / 2 : RF900T )
+
+extern int		g_nDevFlag;			//  Device Flag
+
 extern int		g_nSpkLevel;		//  Default (2) - 0(Mute) / 1 / 2(Normal) / 3
 
 extern int		g_idxTrainSet;		//  Train Set Index

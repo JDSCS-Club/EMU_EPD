@@ -37,9 +37,7 @@
 //==========================================================================
 //	Define
 
-
 int		g_nDevStatus;
-
 
 //==========================================================================
 //	Function
@@ -156,6 +154,8 @@ void SendStat( void )
 	pStat->rspID		=	g_flagRspID;		//	Rsp ID Flag
 
 	pStat->nManHop		=	g_nManHopping;		//	Manual Hopping Setting
+
+	pStat->nDevFlag		=	g_nDevFlag;			//	Device Flag : 조명 상태 등.
 
 	//========================================================================
 	//	Send RF
@@ -382,7 +382,6 @@ void	SendUpgrData		( uint32_t nAddrTarget, int nPktTot, int nPktIdx, uint8_t *sB
 }
 
 
-
 //==========================================================================
 //		Process Packet
 //==========================================================================
@@ -410,6 +409,28 @@ int	ProcPktStat			( const RFMPkt *pRFPkt )
 
 		UpdateStat( pStat );	//	상태정보 Update. ( 버전정보 갱신 등 )
 	}
+
+	//========================================================================
+	//	송신기 조명상태에 따른 조명 제어.
+#if defined(USE_STAT_LIGHT)
+	if( pStat->nDevID == DevRF900T )
+	{
+		//	조명상태 저장 및 제어.
+		if( pStat->nDevFlag & DevFlagLight )
+		{
+			// 조명 On 명령 수신시.
+			g_nDevFlag |= DevFlagLight;
+			HAL_GPIO_WritePin ( LIGHT_ON_GPIO_Port, LIGHT_ON_Pin, GPIO_PIN_SET );
+		}
+		else
+		{
+			// 조명 Off
+			g_nDevFlag &= ~DevFlagLight;
+			HAL_GPIO_WritePin ( LIGHT_ON_GPIO_Port, LIGHT_ON_Pin, GPIO_PIN_RESET );
+		}
+	}
+#endif
+	//========================================================================
 }
 
 //========================================================================

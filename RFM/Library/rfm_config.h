@@ -61,6 +61,8 @@
 
 //#define		USE_RSSI						1		//	RSSI 모니터링.
 
+#define		USE_STAT_LIGHT					1		//	상태정보 정보 Light 추가. ( 송신기 Light 상태에 따른 수신기 조명제어 )
+
 //========================================================================
 //	송신기
 #define		USE_RFT_ONLY_RX_SPK_ON			1		//	송신기 수신중일때 만 Spk On.

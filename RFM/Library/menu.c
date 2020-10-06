@@ -377,6 +377,10 @@ void	ProcLightOn ( void )
 	SendLightOn();	 //  조명On 명령 전송.
 	HAL_Delay( 200 );
 	SendLightOn();	 //  조명On 명령 전송.
+
+#if defined(USE_STAT_LIGHT)
+	g_nDevFlag |= DevFlagLight;
+#endif
 }
 
 //========================================================================
@@ -393,6 +397,10 @@ void	ProcLightOff ( void )
 	SendLightOff();	 //  조명Off 명령 전송.
 	HAL_Delay( 200 );
 	SendLightOff();	 //  조명Off 명령 전송.
+
+#if defined(USE_STAT_LIGHT)
+	g_nDevFlag &= ~(DevFlagLight);
+#endif
 }
 
 //========================================================================
