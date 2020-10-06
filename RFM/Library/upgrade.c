@@ -64,20 +64,28 @@ int UpgrSendImage		( uint32_t nAddrBase, uint32_t nSizeImage )
 		//	수신기 Message 표시.
 		//	159,596 Byte = 3191 Pkt * 50 Byte
 		//	Upgr:[   1 / 3191 ]
-		sprintf( sLCD, "Upgr:[%4d/%4d]", i, nTotPkt );
-		LCDSetCursor( 1, 13 );
-		LCDPrintf( sLCD );
+		if ( ( i % 10 ) == 0 )
+		{
+			sprintf( sLCD, "Upgr:[%4d/%4d]", i, nTotPkt );
+			LCDSetCursor( 1, 13 );
+			LCDPrintf( sLCD );
+		}
 
-		HAL_Delay( 4 );	//	4 msec Delay
+//		HAL_Delay( 4 );	//	4 msec Delay
+		HAL_Delay( 2 );	//	2 msec Delay
 
 		//========================================================================
 		//	Watchdog Reload
-		if ( ( i % 100 ) == 0 )
+		if ( ( i % 50 ) == 0 )
 		{
 			__HAL_IWDG_RELOAD_COUNTER(&hiwdg);
 		}
 		//========================================================================
 	}
+
+	sprintf( sLCD, "Upgr:[%4d/%4d]", i, nTotPkt );
+	LCDSetCursor( 1, 13 );
+	LCDPrintf( sLCD );
 }
 
 
@@ -105,32 +113,50 @@ int cmd_upgrade	( int argc, char * argv[] )
 	//	Upgrade 수신측에서 동작.
 	//========================================================================
 	//	upgrade ch 1	//	Upgrade 채널 변경.
-	//	upgrade 		//
+	//	upgrade [1/0]	//	1(Start) / 0(End)
+
+	int nVal = 1;
 
 	printf( "%s(%d)\n", __func__, __LINE__ );
 
 	//========================================================================
-	//	채널변경. => CH #1
-//	ProcessCommand("ch 1");
-	g_idxTrainSet = 1;
-	//	수신기
-	vRadio_StartRX (
-		g_idxTrainSet,	//	pRadioConfiguration->Radio_ChannelNumber,
-		pRadioConfiguration->Radio_PacketLength );
-
-	//========================================================================
-	SetRFMMode( RFMModeRx );	//	수신모드로 설정. ( 상태정보 전송 X )
-	//========================================================================
-
-	//========================================================================
-
-//    switch ( argc )
-//    {
-//    case 3:		sscanf( argv[2], "%d", &nVal );			//	cmd [address] [value]
+	switch ( argc )
+	{
+	case 2:		sscanf( argv[2], "%d", &nVal );			//	cmd [address] [value]
 //    case 2:		sscanf( argv[1], "%d", &nAddr );		//	cmd [address]
-//        break;
-//    }
-}
+		break;
+	}
 
+	if ( nVal == 1 )
+	{
+		//========================================================================
+		//	Upgrade Start
+
+		//========================================================================
+		//	채널변경. => CH #1
+	//	ProcessCommand("ch 1");
+		g_idxTrainSet = 1;
+		//	수신기
+		vRadio_StartRX (
+			g_idxTrainSet,	//	pRadioConfiguration->Radio_ChannelNumber,
+			pRadioConfiguration->Radio_PacketLength );
+
+		//========================================================================
+		//	Log 출력 Off
+
+		//========================================================================
+		//	Upgrade Mode
+		SetRFMMode( RFMModeUpgr );	//	Upgrade Mode 설정. ( 상태정보 전송 X )
+		//========================================================================
+
+	}
+	else if ( nVal == 0 )
+	{
+		//========================================================================
+		//	Upgrade Mode
+		SetRFMMode( RFMModeNormal );	//	Normal Mode 로 변경
+		//========================================================================
+	}
+}
 //========================================================================
 

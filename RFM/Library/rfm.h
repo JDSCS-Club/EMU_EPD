@@ -38,6 +38,7 @@ enum eRFMMode
 	RFMModeTx		=	1,	//	Tx Only
 	RFMModeRx		=	2,
 	RFMModeOcc		=	3,	//	OCC Mode
+	RFMModeUpgr		=	4,	//	Upgrade Mode
 };
 
 //========================================================================

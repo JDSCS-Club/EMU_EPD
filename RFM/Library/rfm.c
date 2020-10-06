@@ -569,7 +569,7 @@ int cmd_rspid     ( int argc, char * argv[] )
     if ( nID < 0 || MaxCarNo < nID )
     {
     	printf("%s(%d) - return\n", __func__, __LINE__);
-    	return ;
+    	return 0;
     }
 
     //	ID Flag Manual 설정.
@@ -587,6 +587,8 @@ int cmd_rspid     ( int argc, char * argv[] )
     }
 
     printf( "%s(%d) - ID Flag : 0x%04X\n", __func__, __LINE__, g_flagRspID );
+
+	return 1;
 }
 
 
@@ -639,10 +641,8 @@ int cmd_OccPa     ( int argc, char * argv[] )
 
 		//  수신기 Spk Relay Off
 		HAL_GPIO_WritePin( AUDIO_ON_GPIO_Port, AUDIO_ON_Pin, GPIO_PIN_RESET );
-
     }
 }
-
 
 
 //========================================================================
@@ -1210,6 +1210,7 @@ void LoopProcRFM ( int nTick )
 	//	수신중 해제
 	if ( (nTick - g_nStampRxPkt) > TIMEOUT_RXSTAT && GetRFMMode() == RFMModeRx
 			&& ( GetRFMMode() != RFMModeOcc )		//	OCC Mode - Skip
+			&& ( GetRFMMode() != RFMModeUpgr )		//	Upgrade Mode - Skip
 		)
 	{
 		// Rx 패킷이 500 ms 없을 경우 수신모드 해제
@@ -1250,7 +1251,6 @@ void LoopProcRFM ( int nTick )
 
 #if defined(USE_SEND_STATUS)	//	상태 정보 전송.
 		//========================================================================
-
 		if ( GetRFMMode() == RFMModeNormal )
 		{
 		    SendStat();		//	상태정보전송.

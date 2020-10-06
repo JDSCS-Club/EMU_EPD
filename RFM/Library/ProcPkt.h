@@ -47,15 +47,17 @@ extern char 	_bufSend[64];
 //========================================================================
 //	Dump Function
 
-void	Dump		( const char *sTitle, const char *sBuf, int nSize );
+void	Dump				( const char *sTitle, const char *sBuf, int nSize );
 
 //========================================================================
 //	Packet Procedure
-int		InitProcPkt ( void );
+int		InitProcPkt 		( void );
 
-void	LoopProcPkt	( int nTick );
+void	LoopProcPkt			( int nTick );
 
-int		SendPacket	( const char *sBuf, int nSize );
+int		SendPacket			( const char *sBuf, int nSize );
+
+int		SendPktCh			( int nCh, const char *sBuf, int nSize );
 
 void 	CallbackRecvPacket	( const char *pData, int nSize );
 

@@ -341,21 +341,28 @@ void SendRFCmdUpgrade( void )
 
 	printf( "%s(%d)\n", __func__, __LINE__ );
 	//==========================================================================
-	SendRFCmd( "upgrade", 200 );	//	DFU모드의 경우 근접(RSSI-200)하지 않으면 동작하지 않도록 한다!!!
+	//	Upgrade Start Command
+	SendRFCmd( "upgrade 1", 200 );	//	DFU모드의 경우 근접(RSSI-200)하지 않으면 동작하지 않도록 한다!!!
 	//==========================================================================
+
+	HAL_Delay( 500 );		//	sleep 200 msec
 
 	//========================================================================
 	//	Upgrade Image 전송.
 	UpgrSendImageApp();
-
 	//========================================================================
+
+	//==========================================================================
+	//	Upgrade End Command
+	SendRFCmd( "upgrade 0", 200 );	//	DFU모드의 경우 근접(RSSI-200)하지 않으면 동작하지 않도록 한다!!!
+	//==========================================================================
 }
 
 //==========================================================================
 void	SendUpgrData		( uint32_t nAddrTarget, int nPktTot, int nPktIdx, uint8_t *sBuf, int nSize )	//	Send Upgrade Data
 //==========================================================================
 {
-	printf( "%s(%d)\n", __func__, __LINE__ );
+//	printf( "%s(%d)\n", __func__, __LINE__ );
 
 	RFMPkt			stPkt;
 	memset( &stPkt, 0, sizeof( stPkt ) );
@@ -376,7 +383,7 @@ void	SendUpgrData		( uint32_t nAddrTarget, int nPktTot, int nPktIdx, uint8_t *sB
 
 	//========================================================================
 	//	Send RF
-	SendPacket( (U8 *)&stPkt, (U8)sizeof( RFMPktHdr ) + RFPktDataLen );
+	SendPktCh( ChUpgrade, (U8 *)&stPkt, (U8)sizeof( RFMPktHdr ) + RFPktDataLen );
 
 	//========================================================================
 }

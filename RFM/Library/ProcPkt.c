@@ -56,7 +56,7 @@ int			g_bSetRspIDManual	=	0;				//  RspID Flag 수동설정. ( 디버깅용 )
 uint16_t	g_flagRspID 	=	0x00;				//  범위 안의 Device ID Flag ( 0 ~ 15 bit )
 uint8_t	 	g_nPktSeq 		=	0x00;				//  Packet Sequence
 
-static int	s_bShowPkt		=	1;
+static int	s_bShowPkt		=	DEFAULT_EN_SHOW_PKT;	//	1;
 
 /*------------------------------------------------------------------------*/
 /*                              Defines                                   */
@@ -625,6 +625,21 @@ int SendPacket( const char *sBuf, int nSize )
 	return TRUE;
 
 #endif
+}
+
+
+//========================================================================
+int SendPktCh	( int nCh, const char *sBuf, int nSize )
+//========================================================================
+{
+	Dump("Tx", sBuf, 0x40);
+
+	vRadio_StartTx_Variable_Packet (
+		nCh,	//		pRadioConfiguration->Radio_ChannelNumber,
+		&sBuf[0],
+		pRadioConfiguration->Radio_PacketLength );
+
+	return TRUE;
 }
 
 

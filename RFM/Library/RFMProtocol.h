@@ -156,6 +156,18 @@ enum ePktID
 	PktUpgr			=	0x40,		//	Upgrade ( nIDFlag(0) / nSeq(0) )
 };
 
+enum eChannel
+{
+	ChCommon		=	0,			//	* CH0 : 공통채널
+	ChUpgrade		=	1,			//	* CH1 : Upgrade 전용 채널 ( 수신기 - Target )
+	ChUpgrOrg		=	2,			//	* CH2 : Upgrade 전용 채널 ( 송신기 - Origin )
+	ChResv			=	3,			//	* CH3 ~ 10 : Reserved
+	ChTS1_1			=	11,			//	* CH11 : 1편성 ( 1,3,5호차 )
+	ChTS1_2			=	12,			//	* CH12 : 1편성 ( 2,4,6호차 )
+	ChTS2_1			=	13,			//	* CH13 : 2편성 ( 1,3,5호차 )
+	ChTS2_2			=	14,			//	* CH14 : 2편성 ( 2,4,6호차 )
+};
+
 //==========================================================================
 //	Device Status
 enum eStatus
