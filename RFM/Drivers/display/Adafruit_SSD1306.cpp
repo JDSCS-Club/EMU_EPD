@@ -182,6 +182,7 @@ Adafruit_SSD1306::Adafruit_SSD1306(int8_t reset) :
 Adafruit_GFX(SSD1306_LCDWIDTH, SSD1306_LCDHEIGHT)
 {
   sclk = dc = cs = sid = -1;
+  dbg = 1;		//	Default Enable Debug Print
   rst = reset;
 }
 
@@ -714,7 +715,9 @@ const int bitval_r[8 * 2] = {
 };
 
 
+//========================================================================
 void Adafruit_SSD1306::printf( const char* _format )
+//========================================================================
 {
     uint16_t i, j;
     uint8_t page;
@@ -740,7 +743,10 @@ void Adafruit_SSD1306::printf( const char* _format )
 
 #endif
 
-    ::printf( "%s - Text:%s\n", __func__, format );
+    if ( dbg )
+    {
+    	::printf( "%s - Text:%s\n", __func__, format );
+    }
 
     for ( i = 0; format[i] != '\0'; i++ )
     {
@@ -1047,6 +1053,15 @@ void LCDSetCursor( int x, int y )
     if ( g_bInitLCD == false ) return;
 
     display.setCursor( x, y );
+}
+
+//========================================================================
+void    LCDEnableDebug		( int bEnable )  		//  print LCD Display
+//========================================================================
+{
+    if ( g_bInitLCD == false ) return;
+
+    display.debug(bEnable);		//	LCD Debug Print
 }
 
 //========================================================================

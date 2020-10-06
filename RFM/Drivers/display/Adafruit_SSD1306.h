@@ -181,10 +181,12 @@ class Adafruit_SSD1306 : public Adafruit_GFX {
   virtual void drawFastVLine(int16_t x, int16_t y, int16_t h, uint16_t color);
   virtual void drawFastHLine(int16_t x, int16_t y, int16_t w, uint16_t color);
 
+  void debug( int bEnable ){ dbg = bEnable; }
   void printf(const char* format);
   
  private:
   int8_t _i2caddr, _vccstate, sid, sclk, dc, rst, cs;
+  int8_t dbg;
   void fastSPIwrite(uint8_t c);
   void memset(uint8_t buffer[], uint16_t start_address, uint16_t length);
 
@@ -224,6 +226,9 @@ void    LCDMenu             ( void );       //  LCD Menu
 void    LCDMenuUpDown       ( int nUpDown ); //  0( Off ) / 1( ▲Up ) / 2( ▼Down ) / 3( ▲Up/▼Down ) 
 
 void    LCDSetCursor        ( int x, int y );  		//  Setting LCD Cursor
+
+void    LCDEnableDebug		( int bEnable );  		//  print LCD Display
+
 void    LCDPrintf           ( char *str );  		//  print LCD Display
 void    LCDPrintfXY         ( int x, int y, char *str );  //  print LCD Display
 

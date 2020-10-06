@@ -55,6 +55,8 @@ int UpgrSendImage		( uint32_t nAddrBase, uint32_t nSizeImage )
 
 	char	sLCD[100];
 
+	LCDEnableDebug( 0 );	//	LCD - console printf Off
+
 	for ( i = 0; i < nTotPkt; i++ )
 	{
 		//	Flash Data 전송.
