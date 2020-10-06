@@ -35,7 +35,7 @@
 int UpgrSendImage		( uint32_t nAddrBase, uint32_t nSizeImage )
 //========================================================================
 {
-	//	송신기 Upgrade 명령. - Bootloader
+	//	송신기 Upgrade 명령.
 	printf( "%s(%d) - baseAddr(0x%08X) / size(%d)\n", __func__, __LINE__, nAddrBase, nSizeImage );
 
 	uint32_t	nAddrTarget;
@@ -51,7 +51,8 @@ int UpgrSendImage		( uint32_t nAddrBase, uint32_t nSizeImage )
 	nAddrTarget		=	nAddrBase + SIZE_FLASH_BOOTAPP;
 
 	int i;
-	int nTotPkt = ( ( nSizeImage + 49 ) / 50 );
+//	int nTotPkt = ( ( nSizeImage + 49 ) / 50 );
+	int nTotPkt = ( ( nSizeImage + (PktUpgrDataSize - 1) ) / PktUpgrDataSize );
 
 	char	sLCD[100];
 
@@ -60,8 +61,22 @@ int UpgrSendImage		( uint32_t nAddrBase, uint32_t nSizeImage )
 	for ( i = 0; i < nTotPkt; i++ )
 	{
 		//	Flash Data 전송.
-		memcpy( sBuf, *(__IO uint8_t*)(nAddrBase + (i * 50)), 50 );
-		SendUpgrData( nAddrTarget, nTotPkt, i, sBuf, 50 );
+//		memcpy( sBuf, *(__IO uint8_t*)(nAddrBase + (i * 50)), 50 );
+//		SendUpgrData( nAddrTarget, nTotPkt, i, sBuf, 50 );
+		memcpy( sBuf, *(__IO uint8_t*)(nAddrBase + (i * PktUpgrDataSize)), PktUpgrDataSize );
+		SendUpgrData( nAddrTarget, nTotPkt, i, sBuf, PktUpgrDataSize );
+
+		//========================================================================
+		if ( i == 0 )
+		{
+			//	첫번째 패킷 전송후  Flash Erase Delay : 3 sec
+			__HAL_IWDG_RELOAD_COUNTER(&hiwdg);
+			sprintf( sLCD, "Upgr:FL Erase", i, nTotPkt );
+			LCDSetCursor( 1, 13 );
+			LCDPrintf( sLCD );
+			HAL_Delay( 3000 );		//	sleep 3 sec
+		}
+		//========================================================================
 
 		//	수신기 Message 표시.
 		//	159,596 Byte = 3191 Pkt * 50 Byte
@@ -74,6 +89,7 @@ int UpgrSendImage		( uint32_t nAddrBase, uint32_t nSizeImage )
 		}
 
 //		HAL_Delay( 4 );	//	4 msec Delay
+//		HAL_Delay( 3 );	//	2 msec Delay
 		HAL_Delay( 2 );	//	2 msec Delay
 
 		//========================================================================
@@ -148,9 +164,8 @@ int cmd_upgrade	( int argc, char * argv[] )
 
 		//========================================================================
 		//	Upgrade Mode
-		SetRFMMode( RFMModeUpgr );	//	Upgrade Mode 설정. ( 상태정보 전송 X )
+		SetRFMMode( RFMModeUpgr );		//	Upgrade Mode 설정. ( 상태정보 전송 X )
 		//========================================================================
-
 	}
 	else if ( nVal == 0 )
 	{

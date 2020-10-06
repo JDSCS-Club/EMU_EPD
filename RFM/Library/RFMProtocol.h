@@ -289,14 +289,21 @@ typedef struct _RFMPktCmd
 //	RFM Packet - Upgrade Data ( 60 Byte )
 typedef struct _RFMPktUpgr
 {
+	enum ePktUpgr
+	{
+//		PktUpgrDataSize = 50
+		PktUpgrDataSize = 48
+	};
 	int32_t		baseAddr;		//	0	| Base Address ( 0x08080000 ~ 0x080FFFFF )
 	int16_t		totPkt;			//	4	| Total Packet
 	int16_t		idxPkt;			//	6	| Index Packet
 	int8_t		nSize;			//	8	| Data Size ( 0 ~ 50 )
 	int8_t		nSpare;			//	9	| Spare
-	char		data[50];		//	10	| Binary Data
+	char		data[PktUpgrDataSize];	//	48];		//	10	| Binary Data
+#if ( 50 - PktUpgrDataSize )
+	int8_t		nSpare2[ 50 - PktUpgrDataSize ];	//	| Spare
+#endif
 } RFMPktUpgr;
-
 
 //==========================================================================
 //	RFM Packet - Command PA/Call - Start/Stop

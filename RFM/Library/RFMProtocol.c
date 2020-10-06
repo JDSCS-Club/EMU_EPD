@@ -34,6 +34,9 @@
 
 #include "audio.h"				//	I2S_DMA_LOOP_SIZE
 
+#include "flash_if.h"			//	FLASH_If_Write()
+
+
 //==========================================================================
 //	Define
 
@@ -623,14 +626,19 @@ int	ProcPktUpgr			( const RFMPkt *pRFPkt )
 //	memcpy( pUpgr->data, sBuf, nSize );
 
 	//========================================================================
-	//	Write Upgrade Image Data
-
 	static int	s_rxPkt;
 
 	if ( pUpgr->idxPkt == 0 )
 	{
 		//	Start Uprade
 		printf("%s(%d) - Start Upgrade\n", __func__, __LINE__ );
+
+		//========================================================================
+//        FLASH_If_Erase( ADDR_FLASH_IMGBOOT );
+		printf( "[%08d] Flash Erase - Start\n", HAL_GetTick() );
+        FLASH_If_Erase( ADDR_FLASH_IMGAPP );
+		printf( "[%08d] Flash Erase - End\n", HAL_GetTick() );
+    	//========================================================================
 
 		s_rxPkt = 1;
 	}
@@ -645,15 +653,30 @@ int	ProcPktUpgr			( const RFMPkt *pRFPkt )
 		//========================================================================
 		SetRFMMode( RFMModeNormal );	//	Normal 모드로 설정.
 		//========================================================================
-
 	}
 	else
 	{
 		s_rxPkt++;
 	}
 
-	g_nStampRxPkt = HAL_GetTick();		//	Rx Pkt Stamp
+	//========================================================================
+	//	Write Upgrade Image Data
 
+	//    if ( FLASH_If_Write( flashdestination, (uint32_t*)ramsource, packet_length / 4 ) == FLASHIF_OK )
+	if ( FLASH_If_Write( pUpgr->baseAddr + (pUpgr->idxPkt * PktUpgrDataSize),
+						(uint32_t *)pUpgr->data,
+						pUpgr->nSize / 4 ) == FLASHIF_OK )
+	{
+//        flashdestination += packet_length;
+	}
+	else /* An error occurred while writing to Flash memory */
+	{
+		/* End session */
+		printf("%s(%d) - Error idx(%d)\n", __func__, __LINE__, pUpgr->idxPkt );
+	}
+
+
+	g_nStampRxPkt = HAL_GetTick();		//	Rx Pkt Stamp
 	//========================================================================
 }
 

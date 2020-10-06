@@ -90,11 +90,11 @@ enum{
 
 /* Exported macro ------------------------------------------------------------*/
 /* Exported functions ------------------------------------------------------- */
-void              FLASH_If_Init(void);
-uint32_t          FLASH_If_Erase(uint32_t StartSector);
-uint32_t          FLASH_If_Write(uint32_t FlashAddress, uint32_t* Data, uint32_t DataLength);
-uint16_t          FLASH_If_GetWriteProtectionStatus(void);
-HAL_StatusTypeDef FLASH_If_WriteProtectionConfig(uint32_t modifier);
+void				FLASH_If_Init(void);
+uint32_t			FLASH_If_Erase(uint32_t StartSector);
+uint32_t			FLASH_If_Write(uint32_t FlashAddress, uint32_t* Data, uint32_t DataLength);
+uint16_t			FLASH_If_GetWriteProtectionStatus(void);
+HAL_StatusTypeDef	FLASH_If_WriteProtectionConfig(uint32_t modifier);
 
 uint32_t			FLASH_If_FindLastData	( uint32_t baseAddr, uint32_t endAddr );
 
