@@ -375,7 +375,7 @@
 					<sourceEntries>
 						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="Core"/>
 						<entry excluding="radio/*|si4463/*" flags="VALUE_WORKSPACE_PATH" kind="sourcePath" name="Drivers"/>
-						<entry excluding="speex/*|ProcPkt.c|RFMProtocol.c|diag.c|keypad.c|menu.c|rfm.c" flags="VALUE_WORKSPACE_PATH" kind="sourcePath" name="Library"/>
+						<entry excluding="speex/*|ProcPkt.c|RFMProtocol.c|diag.c|keypad.c|menu.c|rfm.c|upgrade.c" flags="VALUE_WORKSPACE_PATH" kind="sourcePath" name="Library"/>
 					</sourceEntries>
 				</configuration>
 			</storageModule>

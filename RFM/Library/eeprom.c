@@ -92,24 +92,6 @@ void TestEEPROM( I2C_HandleTypeDef *hi2c )
 	printf("%s - 0x%02X, 0x%02X, 0x%02X\r\n", __func__, c[0],c[1],c[2]);
 }
 
-//========================================================================
-void TestEEPRomAll( I2C_HandleTypeDef *hi2c )
-//========================================================================
-{
-	//	eeprom 모든 영역 시험.
-	char d[100]={7,5,10};
-	char c[100]={20,20,20};
-
-	printf("%s - 0x%02X, 0x%02X, 0x%02X\r\n", __func__, c[0],c[1],c[2]);
-	M24_HAL_ReadBytes(hi2c, 0xA0, 10, (uint8_t *)c, 100);
-	printf("%s - 0x%02X, 0x%02X, 0x%02X\r\n", __func__, c[0],c[1],c[2]);
-
-	M24_HAL_WriteBytes(hi2c, 0xA0, 10, (uint8_t *)d, 100);
-
-	M24_HAL_ReadBytes(hi2c, 0xA0, 10, (uint8_t *)c, 100);
-	printf("%s - 0x%02X, 0x%02X, 0x%02X\r\n", __func__, c[0],c[1],c[2]);
-}
-
 /**
   * @brief               : This function handles Writing Array of Bytes on the specific Address .
   * 					   This program have this feature that don't force you to use absolute 16 bytes

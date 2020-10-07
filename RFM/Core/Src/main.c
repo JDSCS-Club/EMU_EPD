@@ -518,8 +518,10 @@ static void MX_IWDG_Init(void)
   /* USER CODE BEGIN IWDG_Init 0 */
 
 	//	32 KHz
-	//	32 : 1 / 32000 X 32 X 4000 = 4 sec
-	//	256 : 1 / 32000 X 256 X 4000 = 32 sec
+	//	1 / 32000 X 32 X 4000 = 4 sec
+	//	1 / 32000 X 64 X 4000 = 8 sec
+	//	1 / 32000 X 128 X 4000 = 16 sec
+	//	1 / 32000 X 256 X 4000 = 32 sec
 
   /* USER CODE END IWDG_Init 0 */
 
@@ -527,7 +529,7 @@ static void MX_IWDG_Init(void)
 
   /* USER CODE END IWDG_Init 1 */
   hiwdg.Instance = IWDG;
-  hiwdg.Init.Prescaler = IWDG_PRESCALER_32;
+  hiwdg.Init.Prescaler = IWDG_PRESCALER_128;
   hiwdg.Init.Reload = 4000;
   if (HAL_IWDG_Init(&hiwdg) != HAL_OK)
   {
