@@ -166,7 +166,9 @@ void LoopProcMain( int nTick )
 void MX_IWDG_Disable( void )
 //========================================================================
 {
-	IWDG_DISABLE_WRITE_ACCESS( &hiwdg );
+	//	iWdg : iWatchdog의 경우 처음 시작 이후에 Stop 불가.
+	//			-> Reset이후에만 종료됨.
+//	IWDG_DISABLE_WRITE_ACCESS( &hiwdg );
 }
 
 

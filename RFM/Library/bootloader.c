@@ -267,8 +267,8 @@ void BootLoaderTask(void)
 	if	(	//	DFU Mode ( Menu + OK + SOS 버튼을 누른상태에서 전원 On )
 			(_GetDevID() == DevRF900T) &&
 				( 	HAL_GPIO_ReadPin( DOME1_GPIO_Port, DOME1_Pin ) == 0			//	Menu
-					|| HAL_GPIO_ReadPin( DOME3_GPIO_Port, DOME3_Pin ) == 0		//	OK
-					|| HAL_GPIO_ReadPin( SOS_KEY_GPIO_Port, SOS_KEY_Pin ) == 0	//	SOS
+					&& HAL_GPIO_ReadPin( DOME3_GPIO_Port, DOME3_Pin ) == 0		//	OK
+					&& HAL_GPIO_ReadPin( SOS_KEY_GPIO_Port, SOS_KEY_Pin ) == 0	//	SOS
 					)
 		)
 	{
