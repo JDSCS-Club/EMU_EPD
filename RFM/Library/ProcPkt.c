@@ -613,7 +613,8 @@ int SendPacket( const char *sBuf, int nSize )
 
 		//	2회차 전송 : ch + 1
 		//	음성 전송 Timing : 14.49 msec
-		HAL_Delay( 5 );		//	5 msec 후 전송.
+//		HAL_Delay( 5 );		//	5 msec 후 전송.
+		HAL_Delay( 2 );		//	2 msec 후 전송.
 
 		vRadio_StartTx_Variable_Packet (
 			g_idxTrainSet + 1,	//		pRadioConfiguration->Radio_ChannelNumber,
