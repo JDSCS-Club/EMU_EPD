@@ -79,6 +79,34 @@ uint32_t FLASH_If_Erase(uint32_t StartSector)
   return (0);
 }
 
+//========================================================================
+uint32_t FLASH_If_EraseSectors(uint32_t StartSector, uint32_t nSectorNum)
+//========================================================================
+{
+  uint32_t UserStartSector;
+  uint32_t SectorError;
+  FLASH_EraseInitTypeDef pEraseInit;
+
+  /* Unlock the Flash to enable the flash control register access *************/
+  FLASH_If_Init();
+
+  /* Get the sector where start the user flash area */
+  UserStartSector = GetSector(StartSector);
+
+  pEraseInit.TypeErase = TYPEERASE_SECTORS;
+  pEraseInit.Sector = UserStartSector;
+  pEraseInit.NbSectors = nSectorNum;
+  pEraseInit.VoltageRange = VOLTAGE_RANGE_3;
+
+  if (HAL_FLASHEx_Erase(&pEraseInit, &SectorError) != HAL_OK)
+  {
+     /* Error occurred while page erase */
+     return (1);
+  }
+
+  return (0);
+}
+
 /**
   * @brief  This function writes a data buffer in flash (data are 32-bit aligned).
   * @note   After writing data buffer, the flash content is checked.

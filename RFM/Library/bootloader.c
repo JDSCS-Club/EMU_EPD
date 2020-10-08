@@ -34,6 +34,8 @@
 
 #include "Adafruit_SSD1306.h"       //  I2C LCD
 
+#include "eeprom.h"			//	AddrEEPUpgrMGN1
+
 //	STM32F407 Embedded Bootloader ( AN2606 - P.29 )
 //#define BOOT_ROM_ADDRESS		(uint32_t)0x1FFF77DE
 
@@ -117,6 +119,7 @@ void JumpToSTBootloader(void)
   HAL_RCC_DeInit();
 
 #ifdef STM32L476xx
+
   /* Enable the SYSCFG APB Clock */
   RCC->APB2ENR |= RCC_APB2ENR_SYSCFGEN;
   /*  System Flash memory mapped at 0x00000000  */
@@ -190,8 +193,14 @@ void BootLoaderTask(void)
 	int		fsize = 0;
 
 	int		readnum = 0, rremain = 0;
-	unsigned char	adata[512];
-	uint32_t		flashAddr = 0x020000;
+
+//#if defined( USE_YMODEM_EXT_FLASH )
+	uint8_t	adata[512];
+//#else
+//	uint8_t	*adata;
+//#endif
+
+	uint32_t		flashAddr = ADDR_FLASH_APP;	//	0x08020000;
 
 	FLASH_EraseInitTypeDef flash1;
 
@@ -262,8 +271,14 @@ void BootLoaderTask(void)
 	printf( "Check Upgrade App : 0x%02X 0x%02X 0x%02X 0x%02X 0x%02X\n", 
 		buf[0], buf[1], buf[2], buf[3], buf[4] );
 
+#else
+
+	char buf[10];
+    M24_HAL_ReadBytes( &hi2c1, 0xA0, AddrEEPUpgrMGN1, (uint8_t *)buf, 5 );
+
 #endif
 
+	//========================================================================
 	if	(	//	DFU Mode ( Menu + OK + SOS 버튼을 누른상태에서 전원 On )
 			(_GetDevID() == DevRF900T) &&
 				( 	HAL_GPIO_ReadPin( DOME1_GPIO_Port, DOME1_Pin ) == 0			//	Menu
@@ -293,7 +308,10 @@ void BootLoaderTask(void)
 #if defined( USE_YMODEM_EXT_FLASH )
 	else if ( ( buf[0] == 0xaa ) && ( buf[1] == 0x55 ) )
 #else
-	else if ( (*(char*)(0x0801F020) == 0xaa) && (*(char*)(0x0801F021) == 0x55) )
+//	else if ( (*(char*)(0x0801F020) == 0xaa) && (*(char*)(0x0801F021) == 0x55) )
+	else if ( ( buf[0] == 0xaa ) && ( buf[1] == 0x55 )
+			 &&	( ( ( *( __IO uint32_t* )ADDR_FLASH_IMGAPP ) & 0x2FF00000 ) == 0x20000000 )		//	Downlaod Image Correct
+		)
 #endif
 	{
 		//	Upgrade 할 이미지가 존재하는 경우.
@@ -304,9 +322,29 @@ void BootLoaderTask(void)
 		//	App 영역 삭제
 
 		//*
-		FLASH_If_Erase( ADDR_FLASH_APP );
+//		FLASH_If_Erase( ADDR_FLASH_APP );
+
+		//========================================================================
+		//	FLASH_SECTOR_5 ~ FLASH_SECTOR_7
+		FLASH_If_EraseSectors( ADDR_FLASH_APP, 3 );
+
+//		for ( int idxSector = FLASH_SECTOR_5; idxSector <= FLASH_SECTOR_7; idxSector++ )
+//		{
+//			HAL_FLASH_Unlock();
+//			flash1.TypeErase	=	FLASH_TYPEERASE_SECTORS;
+//			flash1.Banks		=	FLASH_BANK_1;
+//			flash1.Sector		=	FLASH_SECTOR_5;		//	FLASH_SECTOR_5 ~ FLASH_SECTOR_11;
+//			flash1.NbSectors	=	3;	//	5, 6, 7
+//			flash1.VoltageRange =	FLASH_VOLTAGE_RANGE_3;
+//			printf( "Internal flash erase old app #%d\n", flash1.Sector );
+//			HAL_FLASHEx_Erase( &flash1, NULL );
+//			HAL_FLASH_Lock();
+//		}
+
 		/*/
-		for ( int idxSector = FLASH_SECTOR_5; idxSector <= FLASH_SECTOR_11; idxSector++ )
+
+		//	FLASH_SECTOR_5 ~ FLASH_SECTOR_7 : 0x08020000 ~ 0x0807FFFF
+		for ( int idxSector = FLASH_SECTOR_5; idxSector <= FLASH_SECTOR_7; idxSector++ )
 		{
 			HAL_FLASH_Unlock();
 			flash1.TypeErase	=	FLASH_TYPEERASE_SECTORS;
@@ -322,16 +360,37 @@ void BootLoaderTask(void)
 		printf( "Internal flash erase done.\n" );
 		//========================================================================
 
+		//========================================================================
+		printf( "Erase Delay\n" );
+		HAL_Delay(3000);
+		//========================================================================
+
 #if defined( USE_YMODEM_EXT_FLASH )
 		fsize = ( buf[2] << 16 | buf[3] << 8 | buf[4] );		//	S/W Size
 #else
-		fsize = (*(char*)0x08010022 << 16 | *(char*)0x08010023 << 8 | *(char*)0x08010024);  // s/w size
+
+//		fsize = (*(char*)0x08010022 << 16 | *(char*)0x08010023 << 8 | *(char*)0x08010024);  // s/w size
+		fsize = ( buf[2] << 16 | buf[3] << 8 | buf[4] );		//	S/W Size
+
 #endif
 		printf("New S/W size = %d\n", fsize);
 
+		//========================================================================
+		/*
+		printf("Erase Upgrade Config\n");
+		memset(buf, 0, sizeof(buf));
+	    M24_HAL_WriteBytes( &hi2c1, 0xA0, AddrEEPUpgrMGN1, (uint8_t *)buf, 5 );
+	    //	*/
+		//========================================================================
+
 		readnum = fsize / 512 + 1;
 		rremain = fsize % 512;
-		//printf("file size =%x\n",fsize);
+		printf("readnum = %d\n", readnum);
+
+		printf("%s(%d) - Flash WritePorection( %d )\n", __func__, __LINE__,
+				FLASH_If_GetWriteProtectionStatus() );
+
+		FLASH_If_WriteProtectionConfig( OB_WRPSTATE_DISABLE );
 
 		//========================================================================
 		//	Write External Flash to Internal App
@@ -340,55 +399,59 @@ void BootLoaderTask(void)
 		SelectFlash( 0 );		//	MX25L128 ( PA4 - SPI_CS0 )
 #endif
 
-
 		for ( j = 0; j < readnum; j++ )
 		{
-			memset(adata,0x00,sizeof(adata));
-
 #if defined( USE_YMODEM_EXT_FLASH )
+			memset( adata, 0x00, sizeof(adata) );
 			FlashRead512( flashAddr, adata );
 			FlashWait();
+#else
+//			memset( adata, 0x00, sizeof(adata) );
+//			adata = (uint8_t *)( ADDR_FLASH_IMGAPP + ( 512 * j ) );
+			memcpy( adata, (uint8_t *)( ADDR_FLASH_IMGAPP + ( 512 * j ) ), 512 );
 #endif
 
+//			if ( j == ( readnum - 1 ) )
+//			{
+//				FLASH_If_Write( flashAddr, (uint32_t *)adata, 512 / 4 );
+//			}
+//			else
+//			{
+//				FLASH_If_Write( flashAddr, (uint32_t *)adata, 512 / 4 );
+//			}
+			HAL_FLASH_Unlock();
 
-//			 dump(adata,16,1);
+			int nCntRetry;
 
-			if ( j == ( readnum - 1 ) )
+			nCntRetry = 5;	//	5회 Re-Try
+
+			while( FLASH_If_Write( flashAddr, (uint32_t *)adata, 512 / 4 ) != FLASHIF_OK && nCntRetry > 0 )
 			{
-				//*
-				FLASH_If_Write( flashAddr, (uint32_t*)adata, 512 / 4 );
-				/*/
-				HAL_FLASH_Unlock();
-				for ( k = 0; k < rremain; k++ )
-				{
-					HAL_FLASH_Program( FLASH_TYPEPROGRAM_BYTE, APPLICATION_ADDRESS1 + (j * 512) + k, adata[0+k]);
-				}
-				HAL_FLASH_Lock();
-				//	*/
-			}
-			else
-			{
-				//*
-				FLASH_If_Write( flashAddr, (uint32_t*)adata, 512 / 4 );
-				/*/
-				HAL_FLASH_Unlock();
-				for ( k = 0; k < 512; k++ )
-				{
-					HAL_FLASH_Program( FLASH_TYPEPROGRAM_BYTE, APPLICATION_ADDRESS1 + (j * 512) + k, adata[0+k]);
-				}
-				HAL_FLASH_Lock();
-				//	*/
+				printf("%s(%d) - Write Error\n", __func__, __LINE__ );
+				HAL_Delay( 1000 );
+				nCntRetry--;
 			}
 
-//			dump(APPLICATION_ADDRESS1 + (j * 512),16,1);
+			HAL_FLASH_Lock();
 
+			//*
+			printf ("#");
+			/*/
+			printf("0x%08X -> 0x%08X\n", adata, flashAddr);
+
+			if( j <= 2 )
+			{
+				printf("0x%08X\n", adata);
+				dump( (unsigned char *)adata, 512, 1 );
+				printf("0x%08X\n", flashAddr);
+				dump( (unsigned char *)flashAddr, 512, 1 );
+			}
 			//	*/
 
-			flashAddr = flashAddr + 512;	
+			flashAddr = flashAddr + 512;
 
-			printf ("#");
+//			HAL_Delay(5);		//
 		}
-
 
 		printf("\nNew SW Flash Done\n");
 		//========================================================================
@@ -399,18 +462,31 @@ void BootLoaderTask(void)
 		Flash32KBErase( 0x0000 );
 
 #else
-		HAL_FLASH_Unlock();
-		flash1.TypeErase = FLASH_TYPEERASE_SECTORS;
-		flash1.Banks = FLASH_BANK_1;
-		flash1.Sector = FLASH_SECTOR_4;		//  0x08010000 ~ 0x0801ffff
-		flash1.NbSectors = 1;
-		flash1.VoltageRange = FLASH_VOLTAGE_RANGE_3;
-		printf("Internal flash command erase old app #%d\n", flash1.Sector);
-		HAL_FLASHEx_Erase(&flash1, NULL);	
-		HAL_FLASH_Lock();
-		printf("Internal flash erase command\n");
-  
+
+		//========================================================================
+		printf("Erase Upgrade Config\n");
+		memset(buf, 0, sizeof(buf));
+	    M24_HAL_WriteBytes( &hi2c1, 0xA0, AddrEEPUpgrMGN1, (uint8_t *)buf, 5 );
+
+		//========================================================================
+		printf("Erase Upgrade Binary Image\n");
+		FLASH_If_Erase( ADDR_FLASH_IMGAPP );		//	0x080A0000
+
+		//========================================================================
+
+//		HAL_FLASH_Unlock();
+//		flash1.TypeErase = FLASH_TYPEERASE_SECTORS;
+//		flash1.Banks = FLASH_BANK_1;
+//		flash1.Sector = FLASH_SECTOR_4;		//  0x08010000 ~ 0x0801ffff
+//		flash1.NbSectors = 1;
+//		flash1.VoltageRange = FLASH_VOLTAGE_RANGE_3;
+//		printf("Internal flash command erase old app #%d\n", flash1.Sector);
+//		HAL_FLASHEx_Erase(&flash1, NULL);
+//		HAL_FLASH_Lock();
+//		printf("Internal flash erase command\n");
+
 #endif
+
 		printf("\n");
 		printf("New S/W Boot\n");
 		HAL_Delay(1000);

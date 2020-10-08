@@ -16,6 +16,21 @@
 #include "stm32f2xx_hal_i2c.h"
 #endif
 
+enum eAddrEEPRom
+{
+	AddrEEPManHop		=	0x0D,		//	Manual Hopping
+	AddrEEPCarNo		=	0x0E,
+	AddrEEPSpkVol		=	0x0F,
+	AddrEEPTrainSet		=	0x10,
+
+	AddrEEPUpgrMGN1		=	0x20,		//	Upgrade Magic Num ( 0xAA )
+	AddrEEPUpgrMGN2		=	0x21,		//	Upgrade Magic Num ( 0x55 )
+
+	AddrEEPUpgrSize8	=	0x22,		//	Upgrade App Size 0x0000XX
+	AddrEEPUpgrSize16	=	0x23,		//	Upgrade App Size 0x00XX00
+	AddrEEPUpgrSize24	=	0x24,		//	Upgrade App Size 0xXX0000
+};
+
 
 void I2C_BusScan( I2C_HandleTypeDef *phi2c );
 

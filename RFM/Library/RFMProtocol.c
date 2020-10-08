@@ -36,6 +36,8 @@
 
 #include "flash_if.h"			//	FLASH_If_Write()
 
+#include "eeprom.h"				//	AddrEEPUpgrMGN1
+
 
 //==========================================================================
 //	Define
@@ -634,9 +636,13 @@ int	ProcPktUpgr			( const RFMPkt *pRFPkt )
 		printf("%s(%d) - Start Upgrade\n", __func__, __LINE__ );
 
 		//========================================================================
-//        FLASH_If_Erase( ADDR_FLASH_IMGBOOT );
+		//	Flash Erase
+//		 __HAL_RCC_DBGMCU_CLK_ENABLE();
+		 __HAL_DBGMCU_FREEZE_IWDG();
+//		MX_IWDG_Disable();		//	Disable Watchdog
 		printf( "[%08d] Flash Erase - Start\n", HAL_GetTick() );
-        FLASH_If_Erase( ADDR_FLASH_IMGAPP );
+//        FLASH_If_Erase( ADDR_FLASH_IMGAPP );
+		FLASH_If_Erase( ADDR_FLASH_IMGBOOT );		//	0x08080000
 		printf( "[%08d] Flash Erase - End\n", HAL_GetTick() );
     	//========================================================================
 
@@ -647,8 +653,48 @@ int	ProcPktUpgr			( const RFMPkt *pRFPkt )
 		//	End Upgrade
 		s_rxPkt++;
 
-		printf("%s(%d) - End Upgrade ( rxPkt : %d / totPkt : %d )", __func__, __LINE__,
+		printf("%s(%d) - End Upgrade ( rxPkt : %d / totPkt : %d )\n", __func__, __LINE__,
 					s_rxPkt, pUpgr->totPkt );
+
+		//========================================================================
+		if ( s_rxPkt == pUpgr->totPkt )
+		{
+			//	Upgrade Success
+
+			char buf[10];
+			int filesize = pUpgr->totPkt * PktUpgrDataSize;
+
+			printf("%s(%d) - Upgrade Success ( Size : %d )\n", __func__, __LINE__, filesize );
+
+			memset( buf, 0, sizeof( buf ) );
+
+			buf[0] = 0xaa;
+			buf[1] = 0x55;
+			buf[2] = ( filesize >> 16 ) & 0xFF;
+			buf[3] = ( filesize >> 8 ) & 0xFF;
+			buf[4] = ( filesize >> 0 ) & 0xFF;
+
+		    M24_HAL_WriteBytes( &hi2c1, 0xA0, AddrEEPUpgrMGN1, (uint8_t *)buf, 5 );
+
+			memset( buf, 0, sizeof( buf ) );
+
+		    M24_HAL_ReadBytes( &hi2c1, 0xA0, AddrEEPUpgrMGN1, (uint8_t *)buf, 5 );
+
+		    filesize = ( buf[2] << 16 ) | ( buf[3] << 8 ) | ( buf[4] );
+
+			printf( "%s(%d) - EEPROM [0,1] : 0x%02X 0x%02X / ( bin size : %d )\n", __func__, __LINE__, buf[0], buf[1], filesize );
+
+			//===========================================================================
+			//	Reset
+			cmd_reset(0, 0);
+			//===========================================================================
+		}
+		else
+		{
+			//	Upgrade Success
+			printf("%s(%d) - Upgrade Failed\n", __func__, __LINE__ );
+		}
+		//========================================================================
 
 		//========================================================================
 		SetRFMMode( RFMModeNormal );	//	Normal 모드로 설정.

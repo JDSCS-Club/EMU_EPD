@@ -294,14 +294,14 @@ typedef struct _RFMPktUpgr
 //		PktUpgrDataSize = 50
 		PktUpgrDataSize = 48
 	};
-	int32_t		baseAddr;		//	0	| Base Address ( 0x08080000 ~ 0x080FFFFF )
-	int16_t		totPkt;			//	4	| Total Packet
-	int16_t		idxPkt;			//	6	| Index Packet
-	int8_t		nSize;			//	8	| Data Size ( 0 ~ 50 )
+	uint32_t	baseAddr;		//	0	| Base Address ( 0x08080000 ~ 0x080FFFFF )
+	uint16_t	totPkt;			//	4	| Total Packet
+	uint16_t	idxPkt;			//	6	| Index Packet
+	uint8_t		nSize;			//	8	| Data Size ( 0 ~ 50 )
 	int8_t		nSpare;			//	9	| Spare
 	char		data[PktUpgrDataSize];	//	48];		//	10	| Binary Data
 #if ( 50 - PktUpgrDataSize )
-	int8_t		nSpare2[ 50 - PktUpgrDataSize ];	//	| Spare
+	uint8_t		nSpare2[ 50 - PktUpgrDataSize ];	//	| Spare
 #endif
 } RFMPktUpgr;
 

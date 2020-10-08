@@ -92,6 +92,9 @@ enum{
 /* Exported functions ------------------------------------------------------- */
 void				FLASH_If_Init(void);
 uint32_t			FLASH_If_Erase(uint32_t StartSector);
+
+uint32_t 			FLASH_If_EraseSectors(uint32_t StartSector, uint32_t nSectorNum);
+
 uint32_t			FLASH_If_Write(uint32_t FlashAddress, uint32_t* Data, uint32_t DataLength);
 uint16_t			FLASH_If_GetWriteProtectionStatus(void);
 HAL_StatusTypeDef	FLASH_If_WriteProtectionConfig(uint32_t modifier);

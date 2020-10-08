@@ -17,6 +17,7 @@
 #include "upgrade.h"
 
 #include "rfm.h"				//	g_idxTrainSet
+
 #include "radio.h"				//	pRadioConfiguration
 
 #include "flash_if.h"			//	ADDR_FLASH_BOOT
@@ -48,9 +49,9 @@ int UpgrSendImage		( uint32_t nAddrBase, uint32_t nSizeImage )
 	//========================================================================
 	//	0x0808 0000 ~ 0x080F FFFF	:	Upgrade Image
 	//========================================================================
-	nAddrTarget		=	nAddrBase + SIZE_FLASH_BOOTAPP;
+	nAddrTarget		=	nAddrBase + 0x80000;// + SIZE_FLASH_BOOTAPP;
 
-	int i;
+	int i, j;
 //	int nTotPkt = ( ( nSizeImage + 49 ) / 50 );
 	int nTotPkt = ( ( nSizeImage + (PktUpgrDataSize - 1) ) / PktUpgrDataSize );
 
@@ -61,9 +62,9 @@ int UpgrSendImage		( uint32_t nAddrBase, uint32_t nSizeImage )
 	for ( i = 0; i < nTotPkt; i++ )
 	{
 		//	Flash Data 전송.
-//		memcpy( sBuf, *(__IO uint8_t*)(nAddrBase + (i * 50)), 50 );
+//		memcpy( sBuf, (__IO uint8_t*)(nAddrBase + (i * 50)), 50 );
 //		SendUpgrData( nAddrTarget, nTotPkt, i, sBuf, 50 );
-		memcpy( sBuf, *(__IO uint8_t*)(nAddrBase + (i * PktUpgrDataSize)), PktUpgrDataSize );
+		memcpy( sBuf, (__IO uint8_t*)(nAddrBase + (i * PktUpgrDataSize)), PktUpgrDataSize );
 		SendUpgrData( nAddrTarget, nTotPkt, i, sBuf, PktUpgrDataSize );
 
 		//========================================================================
@@ -74,7 +75,12 @@ int UpgrSendImage		( uint32_t nAddrBase, uint32_t nSizeImage )
 			sprintf( sLCD, "Upgr:FL Erase", i, nTotPkt );
 			LCDSetCursor( 1, 13 );
 			LCDPrintf( sLCD );
-			HAL_Delay( 3000 );		//	sleep 3 sec
+//			HAL_Delay( 3000 );		//	sleep 3 sec
+			for( j = 0; j < 7; j++ )	//	sleep 7 sec
+			{
+				HAL_Delay( 1000 );
+				__HAL_IWDG_RELOAD_COUNTER(&hiwdg);	//	Watchdog Re-Flash
+			}
 		}
 		//========================================================================
 
