@@ -43,13 +43,20 @@ extern "C" {
 
 /* Exported constants --------------------------------------------------------*/
 /* USER CODE BEGIN EC */
-ADC_HandleTypeDef hadc1;
-ADC_HandleTypeDef hadc2;
+extern ADC_HandleTypeDef hadc1;
+extern ADC_HandleTypeDef hadc2;
 
-UART_HandleTypeDef huart1;
-UART_HandleTypeDef huart2;
-UART_HandleTypeDef huart3;
-UART_HandleTypeDef huart5;
+extern I2C_HandleTypeDef hi2c2;
+
+extern UART_HandleTypeDef huart5;		//	RS485
+extern UART_HandleTypeDef huart1;		//	Console
+extern UART_HandleTypeDef huart2;		//	RFM
+extern UART_HandleTypeDef huart3;		//	RS485
+
+//extern UART_HandleTypeDef UartHandle;
+
+#define	UartHandle huart2			//	UartHandle->UART2(RFM)
+
 /* USER CODE END EC */
 
 /* Exported macro ------------------------------------------------------------*/

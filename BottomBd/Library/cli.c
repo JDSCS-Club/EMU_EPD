@@ -143,13 +143,14 @@ char	old_cmd[MAX_COMMAND_LENGTH];
 //=============================================================================
 
 //========================================================================
-void dump( unsigned char *a, int delta, int width )
+void dump( uint8_t *a, int delta, int width )
 //========================================================================
 {
-	int     i, j, k;
-	unsigned char   *b;
-	unsigned char   c;
+	int		i, j, k;
+	uint8_t	*b;
+	uint8_t	c;
 	int		disp_unit = 16 / width;
+
 	char	*format[] = {
 							"",
 							"   ",			/* width 1 */
@@ -163,47 +164,35 @@ void dump( unsigned char *a, int delta, int width )
 		b = a;
 		j = i;
 		printf( "%08p  ", a );
+
 		for ( k = 0; k < disp_unit && i < delta; k++, i += width )
 		{
-			if ( k == 8 )
-			{
-				printf( " " );
-			}
-			if ( width == 1 )
-			{
-				printf( "%02x ", *a );
-			}
-			else if ( width == 2 )
-			{
-				printf( "%04x ", *(unsigned short *)a );
-			}
-			else if ( width == 4 )
-			{
-				printf( "%08x ", *(unsigned long *)a );
-			}
+			if ( k == 8 )				printf( " " );
+
+			if ( width == 1 )			printf( "%02x ", *a );
+			else if ( width == 2 )		printf( "%04x ", *(uint16_t *)a );
+			else if ( width == 4 )		printf( "%08x ", *(uint32_t *)a );
 			a += width;
 		}
 		for ( ; k < disp_unit; k++ )
 		{
-			if ( k == 8 )
-				printf( " " );
+			if ( k == 8 )				printf( " " );
+
 			printf( format[width] );
 		}
 		printf( "|" );
 		for ( k = 0; k < 16 && j < delta; k++, j++ )
 		{
-			if ( k == 8 )
-				printf( " " );
+			if ( k == 8 )				printf( " " );
+
 			c = *b++ & 0x7f;
-			if ( c < ' ' || c == 0x7f )
-				printf( "%c", '.' );
-			else
-				printf( "%c", c );
+			if ( c < ' ' || c == 0x7f )	printf( "%c", '.' );
+			else						printf( "%c", c );
 		}
 		for ( ; k < 16; k++ )
 		{
-			if ( k == 8 )
-				printf( " " );
+			if ( k == 8 )				printf( " " );
+
 			printf( " " );
 		}
 		printf( "|\n" );
@@ -412,7 +401,7 @@ int readline( char *bufp )
 
 	int		ret = 0;
 
-	for ( ;;)
+	for ( ;; )
 	{
 		ch = getchar();
 
@@ -690,24 +679,6 @@ int cmd_rfm(int argc, char *argv[])
 	//	RFM 명령 전송.
 	printf("%s(%d)\n", __func__, __LINE__ );
 
-
 	return 0;
 }
-
-/*
-//========================================================================
-int cmd_ts(int argc, char *argv[])
-//========================================================================
-{
-	char	*pbuffer;
-
-	pbuffer = pvPortMalloc( 512 );
-	vTaskList(pbuffer);
-	printf("Name            Status  Pri     StkHigh Task#\n");
-	printf(pbuffer);
-	vPortFree(pbuffer);
-	return 0;
-}
-*/
-
 
