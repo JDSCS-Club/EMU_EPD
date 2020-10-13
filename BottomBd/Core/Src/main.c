@@ -123,12 +123,24 @@ int main(void)
 
   /*/
 
+
+
   //	UART Queue 초기화.
   SerialInitQueue();
+
+  //	UART Interrupt 설정.
+#if defined(USE_BOOTLOADER)
+
+  SerialInit( &huart1, NULL, NULL, NULL );	//	Console Interrupt
+
+#else	//	Application
+
   //	UART Interrupt 설정.
   SerialInit( &huart1, &huart2, &huart3, &huart5 );
 //  SerialInit( &huart1, NULL, NULL, NULL );//&huart2, &huart3, &huart5 );
   InitRS485();		//	Init RS485
+
+#endif
 
   setbuf ( stdout, NULL );		            //	1024 byte buffer clear
 //  setvbuf ( stdout, NULL, _IOLBF, NULL );	//	Line Buffer
@@ -136,8 +148,17 @@ int main(void)
 
   printf( "[%d] Start\n", HAL_GetTick() );    // xTaskGetTickCount() );
 
-
   //	*/
+
+//=============================================================================
+#if defined(USE_BOOTLOADER)
+//=============================================================================
+
+  BootLoaderTask();
+
+//=============================================================================
+#else	//	Application
+//=============================================================================
 
   /* USER CODE END 2 */
 
@@ -184,6 +205,11 @@ int main(void)
 
 //		HAL_Delay(1);
   }
+
+//=============================================================================
+#endif	//	Application
+//=============================================================================
+
   /* USER CODE END 3 */
 }
 
