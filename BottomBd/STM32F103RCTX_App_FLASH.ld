@@ -62,8 +62,16 @@ _Min_Stack_Size = 0x400 ;	/* required amount of stack */
 MEMORY
 {
   RAM	(xrw)	: ORIGIN = 0x20000000,	LENGTH = 48K
-  /* 0x08000000 0x08004000 - 16K ( Boot ) */
-  FLASH	(rx)	: ORIGIN = 0x8000000,	LENGTH = 16K
+/*  FLASH	(rx)	: ORIGIN = 0x8000000,	LENGTH = 256K */
+/*  FLASH    (rx)    : ORIGIN = 0x8020000,   LENGTH = 256K - 16K */
+/*	FLASH Total : 1024 KB ( 1 MB )
+ * 0x00000 : Boot		( 16 KB )
+ * 0x04000 : App		( 112 KB )
+ * 0x20000 : ImgBoot	( 128 KB )
+ * 0x24000 : ImgApp		( 144 KB )
+ */
+  /* 0x08000000 0x08040000 - 256K */
+  FLASH	(rx)	: ORIGIN = 0x8004000,	LENGTH = 256K - 16K
 }
 
 /* Sections */
