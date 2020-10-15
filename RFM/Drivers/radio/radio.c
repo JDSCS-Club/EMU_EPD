@@ -341,6 +341,18 @@ U8 get_CCA(void)
 #endif
 }
 
+
+//=============================================================================
+void vRadio_Set_TxPower( U8 powerlvl )
+//=============================================================================
+{
+	//	dBm			powerlvl
+	//	20 dBm	-	0x7F		Max
+	//	0 dBm	-	0x07		환경시험
+	si446x_set_property( 0x22, 0x01, 0x01, powerlvl );
+}
+
+
 /*!
  *  Set Radio to TX mode, variable packet length.
  *

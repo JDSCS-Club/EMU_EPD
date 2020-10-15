@@ -56,12 +56,15 @@ extern U8	*g_pRadioRxPkt;
 /*****************************************************************************
  *  Global Function Declarations
  *****************************************************************************/
-void  vRadio_Init(void);
-U8    bRadio_Check_Tx_RX(void);
-void  vRadio_StartRX(U8,U8);
-U8    bRadio_Check_Ezconfig(U16);
-void  vRadio_StartTx_Variable_Packet(U8, U8*, U8);
-void  vRadio_StartTx_Variable_Packet_MultiField(U8, U8*, U8);
+void	vRadio_Init(void);
+U8		bRadio_Check_Tx_RX(void);
+void	vRadio_StartRX(U8,U8);
+U8		bRadio_Check_Ezconfig(U16);
+void	vRadio_StartTx_Variable_Packet(U8, U8*, U8);
+void	vRadio_StartTx_Variable_Packet_MultiField(U8, U8*, U8);
 U8 		bRadio_FindProperty(U8* pbArray, U8 bGroup, U8 bAddress, U8* pbValue);
+
+void	vRadio_Set_TxPower( U8 powerlvl );
+
 
 #endif /* RADIO_H_ */
