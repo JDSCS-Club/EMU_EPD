@@ -31,14 +31,21 @@
 
 #include "bootloader.h"
 
-#include "iap_common.h"		//	IAP Common
-#include "iap_menu.h"		//	IAP ( In-Application Programming )
+#include "flash_if.h"
 
-#include "ymodem.h"			//	Y-Modem
+//#include "iap_common.h"		//	IAP Common
+//#include "iap_menu.h"		//	IAP ( In-Application Programming )
+
+//#include "ymodem.h"			//	Y-Modem
 
 #include "main.h"			//	huart2 / MX_IWDG_Disable()
 
 #include "nvram.h"			//	AddrEEPUpgrMGN1
+
+//========================================================================
+//	printf disable
+//#define		printf(arg, ...)
+//========================================================================
 
 //	STM32F407 Embedded Bootloader ( AN2606 - P.29 )
 //#define BOOT_ROM_ADDRESS		(uint32_t)0x1FFF77DE
@@ -59,25 +66,7 @@ typedef  void (*pFunction)(void);
 pFunction	Jump_To_Application;
 uint32_t	JumpAddress;
 
-unsigned char id_buf[3];
-
-//========================================================================
-int g_nBootMode = BModeApp;			//	Default Application Boot
-//========================================================================
-
-//========================================================================
-void SetBootMode( int nBootMode )
-//========================================================================
-{
-	g_nBootMode = nBootMode;
-}
-
-//========================================================================
-int GetBootMode( void )
-//========================================================================
-{
-	return g_nBootMode;
-}
+#if 0
 
 //========================================================================
 void JumpToSTBootloader(void)
@@ -115,26 +104,8 @@ void JumpToSTBootloader(void)
   JumpToApplication();
 }
 
+#endif
 
-//========================================================================
-int InitBoot( void )
-//========================================================================
-{
-	printf("%s(%d)\n", __func__, __LINE__);
-
-	I2C_BusScan( &hi2c2 );
-
-	//========================================================================
-	//	MB85RC64T
-	if ( HAL_OK == HAL_I2C_IsDeviceReady( &hi2c2, (uint16_t)( MB85RC64_ID ), 2, 2 ) )
-	{
-		//========================================================================
-		//	MB85RC64T가 인식됨.
-		printf("%s(%d) - Init MB85RC64T\n", __func__, __LINE__);
-
-	}
-	//========================================================================
-}
 
 //========================================================================
 void BootLoaderTask(void)
@@ -157,61 +128,21 @@ void BootLoaderTask(void)
 	FLASH_EraseInitTypeDef flash1;
 
 	//========================================================================
-	InitBoot();
+	//	MB85RC64T
+#if 0
+	I2C_BusScan( &hi2c2 );
+	if ( HAL_OK == HAL_I2C_IsDeviceReady( &hi2c2, (uint16_t)( MB85RC64_ID ), 2, 2 ) )
+	{
+		//========================================================================
+		//	MB85RC64T가 인식됨.
+		printf("%s(%d) - Init MB85RC64T\n", __func__, __LINE__);
+	}
+#endif
 	//========================================================================
 
 	HAL_Delay( 500 );
 
-	printf( "BootLoader\n" );
-
-	//========================================================================
-	//	Y-Modem Master 설정.
-	SetYModemMaster( 1 );
-	//========================================================================
-
-	//========================================================================
-	//	IAP ( In-Application Programming )
-
-	//	Dev ID가 0x00인 경우 ">" 전송.
-	uint8_t ch;
-
-	if ( IsYModemMaster() )
-	{
-		ch = '>';
-		HAL_UART_Transmit( &huart2, &ch, 1, TX_TIMEOUT );
-	}
-
-	HAL_StatusTypeDef ret;
-
-	CHECK_ENTER:
-	
-	ret = HAL_UART_Receive( &huart2, &ch, 1, 3000 );		//	3 초 Timeout
-
-	if ( ret == HAL_OK )
-	{
-		//	'\r' 엔터 키 수신시. - Y-Modem Upgrade 수행.
-
-		printf( "%s(%d) - RS485 Input : 0x%02X\n", __func__, __LINE__, ch );
-
-		if ( ch == '>' )
-		{
-			goto CHECK_ENTER;
-		}
-
-		if ( ch == '\r' )
-		{
-			//IAP_Menu();
-			SerialDownload();	//	Y-Modem Serial Download
-		}
-	}
-
-//	if ( input_check() )
-//	{
-//		//	Console Key 입력이 있을 경우 IAP Menu로 진입.
-//		IAP_Menu();
-//	}
-
-//	vTaskDelay( 1000 * BOOTLOADER_START_DELAY );
+	printf( "BootTask\n" );
 
 	//========================================================================
 
@@ -220,8 +151,8 @@ void BootLoaderTask(void)
 	char buf[256];
 	FlashReadData( 0, buf, 256 );
 
-	printf( "Check Upgrade App : 0x%02X 0x%02X 0x%02X 0x%02X 0x%02X\n", 
-		buf[0], buf[1], buf[2], buf[3], buf[4] );
+//	printf( "Check Upgrade App : 0x%02X 0x%02X 0x%02X 0x%02X 0x%02X\n",
+//		buf[0], buf[1], buf[2], buf[3], buf[4] );
 
 #else
 
@@ -230,37 +161,22 @@ void BootLoaderTask(void)
 
 #endif
 
-	//========================================================================
-//	if	(	//	DFU Mode ( Menu + OK + SOS 버튼을 누른상태에서 전원 On )
+//	if	(	GetBootMode() == BModeBoot				//	Boot Mode로 진입 시.
+//			//|| HAL_GPIO_ReadPin(GPIOA, GPIO_PIN_11) == 0	//	Test버튼 누른상태에서 Booting 시.
 //		)
 //	{
-//		//========================================================================
-//		//	Jump to Embedded Bootloader
-//		//	DFU Mode
-//		printf("STBootLoader Mode ( DFU Mode )\n");
-//
-//		DispDFUMode();
-//
-//		JumpToSTBootloader();
-//		//========================================================================
+//		//	reset 할 때 test 버튼 누를 시
+//		printf("BootLoader Mode\n");
+//		HAL_Delay(1);
 //	}
+//#if defined( USE_YMODEM_EXT_FLASH )
+//	else if ( ( buf[0] == 0xaa ) && ( buf[1] == 0x55 ) )
+//#else
+////	else if ( (*(char*)(0x0801F020) == 0xaa) && (*(char*)(0x0801F021) == 0x55) )
 //	else
-	if	(	GetBootMode() == BModeBoot				//	Boot Mode로 진입 시.
-			//|| HAL_GPIO_ReadPin(GPIOA, GPIO_PIN_11) == 0	//	Test버튼 누른상태에서 Booting 시.
-		)
-	{
-		//	reset 할 때 test 버튼 누를 시
-		printf("BootLoader Mode\n");
-		HAL_Delay(1);
-	}
-#if defined( USE_YMODEM_EXT_FLASH )
-	else if ( ( buf[0] == 0xaa ) && ( buf[1] == 0x55 ) )
-#else
-//	else if ( (*(char*)(0x0801F020) == 0xaa) && (*(char*)(0x0801F021) == 0x55) )
-	else if ( ( buf[0] == 0xaa ) && ( buf[1] == 0x55 )
+	if ( ( buf[0] == 0xaa ) && ( buf[1] == 0x55 )
 			 &&	( ( ( *( __IO uint32_t* )ADDR_FLASH_IMGAPP ) & 0x2FF00000 ) == 0x20000000 )		//	Downlaod Image Correct
 		)
-#endif
 	{
 		//	Upgrade 할 이미지가 존재하는 경우.
 		printf("Find a New Version.\n");
@@ -292,7 +208,8 @@ void BootLoaderTask(void)
 		fsize = ( buf[2] << 16 | buf[3] << 8 | buf[4] );		//	S/W Size
 
 #endif
-		printf("New S/W size = %d\n", fsize);
+
+//		printf("New S/W size = %d\n", fsize);
 
 		//========================================================================
 		/*
@@ -304,10 +221,10 @@ void BootLoaderTask(void)
 
 		readnum = fsize / 512 + 1;
 		rremain = fsize % 512;
-		printf("readnum = %d\n", readnum);
+//		printf("readnum = %d\n", readnum);
 
-		printf("%s(%d) - Flash WritePorection( %d )\n", __func__, __LINE__,
-				FLASH_If_GetWriteProtectionStatus() );
+//		printf("%s(%d) - Flash WritePorection( %d )\n", __func__, __LINE__,
+//				FLASH_If_GetWriteProtectionStatus() );
 
 		FLASH_If_WriteProtectionConfig( OB_WRPSTATE_DISABLE );
 
@@ -330,14 +247,6 @@ void BootLoaderTask(void)
 			memcpy( adata, (uint8_t *)( ADDR_FLASH_IMGAPP + ( 512 * j ) ), 512 );
 #endif
 
-//			if ( j == ( readnum - 1 ) )
-//			{
-//				FLASH_If_Write( flashAddr, (uint32_t *)adata, 512 / 4 );
-//			}
-//			else
-//			{
-//				FLASH_If_Write( flashAddr, (uint32_t *)adata, 512 / 4 );
-//			}
 			HAL_FLASH_Unlock();
 
 			int nCntRetry;
@@ -346,7 +255,7 @@ void BootLoaderTask(void)
 
 			while( FLASH_If_Write( flashAddr, (uint32_t *)adata, 512 / 4 ) != FLASHIF_OK && nCntRetry > 0 )
 			{
-				printf("%s(%d) - Write Error\n", __func__, __LINE__ );
+				printf("Write Err\n");
 				HAL_Delay( 1000 );
 				nCntRetry--;
 			}
@@ -393,17 +302,6 @@ void BootLoaderTask(void)
 
 		//========================================================================
 
-//		HAL_FLASH_Unlock();
-//		flash1.TypeErase = FLASH_TYPEERASE_SECTORS;
-//		flash1.Banks = FLASH_BANK_1;
-//		flash1.Sector = FLASH_SECTOR_4;		//  0x08010000 ~ 0x0801ffff
-//		flash1.NbSectors = 1;
-//		flash1.VoltageRange = FLASH_VOLTAGE_RANGE_3;
-//		printf("Internal flash command erase old app #%d\n", flash1.Sector);
-//		HAL_FLASHEx_Erase(&flash1, NULL);
-//		HAL_FLASH_Lock();
-//		printf("Internal flash erase command\n");
-
 #endif
 
 		printf("\n");
@@ -413,7 +311,7 @@ void BootLoaderTask(void)
 			 ||	( ( ( *( __IO uint32_t* )ADDR_FLASH_APP ) & 0x2FF00000 ) == 0x20000000 )		//	ST4STM32(Ac6 SystemWorkbench) Binary Image
 			)
 		{
-			printf(" Jump to Main Application......\n");
+			printf(" Jump App\n");
 			JumpAddress = *(__IO uint32_t*) (ADDR_FLASH_APP + 4);
 			Jump_To_Application = (pFunction) JumpAddress;
 //			vPortEnterCritical();
@@ -426,33 +324,43 @@ void BootLoaderTask(void)
 	else
 	{
 		printf("\n");
-		printf("%s(%d) : Automatic Boot\n", __func__, __LINE__);
+		printf("Automatic Boot\n");
 		HAL_Delay(1000);
 
-		printf("0x%08X : 0x%08X\n", ADDR_FLASH_APP, *(__IO uint32_t*)ADDR_FLASH_APP );
+//		printf("0x%08X : 0x%08X\n", ADDR_FLASH_APP, *(__IO uint32_t*)ADDR_FLASH_APP );
 
 		if	( (((*(__IO uint32_t*)ADDR_FLASH_APP) & 0x2FFE0000 ) == 0x20000000)			//	Keil Binary Image
 			|| (((*(__IO uint32_t*)ADDR_FLASH_APP) & 0x2FF00000 ) == 0x20000000)		//	ST4STM32(Ac6 SystemWorkbench) Binary Image
 			)
 		{
-			printf(" Jump to Main Application......\n");
+			printf(" Jump App\n");
+			JumpAddress = *(__IO uint32_t*) (ADDR_FLASH_APP + 4);
+			Jump_To_Application = (pFunction) JumpAddress;
+			//========================================================================
+			//	De-Initialize
+	//		HAL_TIM_Base_Stop( &htim2 );
+
+	//		HAL_DeInit();
+			//========================================================================
+
+			/* Initialize user application's Stack Pointer */
+			__set_MSP(*(__IO uint32_t*) ADDR_FLASH_APP);
+
+			Jump_To_Application();
 		}
 
-		JumpAddress = *(__IO uint32_t*) (ADDR_FLASH_APP + 4);
-		Jump_To_Application = (pFunction) JumpAddress;
+//	    /* Test if user code is programmed starting from address "APPLICATION_ADDRESS" */
+//	    if (((*(__IO uint32_t*)APPLICATION_ADDRESS) & 0x2FFE0000 ) == 0x20000000)
+//	    {
+//	      /* Jump to user application */
+//	      JumpAddress = *(__IO uint32_t*) (APPLICATION_ADDRESS + 4);
+//	      JumpToApplication = (pFunction) JumpAddress;
+//	      /* Initialize user application's Stack Pointer */
+//	      __set_MSP(*(__IO uint32_t*) APPLICATION_ADDRESS);
+//	      JumpToApplication();
+//	    }
 
-		//========================================================================
-		//	De-Initialize
-//		HAL_TIM_Base_Stop( &htim2 );
 
-//		vPortEnterCritical();
-		HAL_DeInit();
-		//========================================================================
-
-		/* Initialize user application's Stack Pointer */
-		__set_MSP(*(__IO uint32_t*) ADDR_FLASH_APP);
-
-		Jump_To_Application();
 	}
 
 	while ( 1 )
@@ -462,17 +370,17 @@ void BootLoaderTask(void)
 	}
 }
 
-
-//========================================================================
-int cmd_stboot(int argc, char *argv[])
-//========================================================================
-{
-	printf( "Jump To STM32 Bootloader\n" );
-
-	DispDFUMode();
-
-	JumpToSTBootloader();
-
-	return 0;
-}
+//
+////========================================================================
+//int cmd_stboot(int argc, char *argv[])
+////========================================================================
+//{
+//	printf( "Jump To STM32 Bootloader\n" );
+//
+//	DispDFUMode();
+//
+//	JumpToSTBootloader();
+//
+//	return 0;
+//}
 

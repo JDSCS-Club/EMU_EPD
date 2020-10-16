@@ -5,7 +5,7 @@ REM -- _Make.bat V1.3
 REM --
 REM -- Auto Module Make.
 REM -- _Make.bat [_Make.bat 상대경로]
-REM -- ex) _Make.bat ..\ [Debug/Release/Boot] [RFM/Bootloader]
+REM -- ex) _Make.bat ..\ [Debug/Release/Boot_Rel] [BottomBd/Bootloader]
 REM ------------------------------------------------------------------------------------
 
 REM -- 설정정보 얻기.
@@ -40,20 +40,34 @@ set mm=%DATE_TODAY:~5,2%
 set dd=%DATE_TODAY:~8,2%
 set TODAY=%yy%%mm%%dd%
 
-REM set BIN_FILE_NAME=%MODULE%_%TODAY%_v1.%VER%.bin
-REM set HEX_FILE_NAME=%MODULE%_%TODAY%_v1.%VER%.hex
-set BIN_FILE_NAME=RFMBase_%TODAY%_v1.%VER%.bin
-set HEX_FILE_NAME=RFMBase_%TODAY%_v1.%VER%.hex
-REM set BOOT_FILE_NAME=smrt7tni_bootloader_%TODAY%_v%VER%.hex
+REM ------------------------------------------------------
+REM		Bootloader + Application
+REM if A != B => [ if A neq B ] or [ if not A == B ]
+if "%MODULE%" neq "Bootloader" (goto GEN_BOOTAPP) else (goto SKIP_BOOTAPP)
+:GEN_BOOTAPP
+
+set IMG_NAME=RFMBase_%TODAY%_v1.%VER%
+
+echo gen "bin\Boot%IMG_NAME%.hex"
+
+REM	#	Del last line. ( .hex file )
+findstr /V ":00000001FF" "%1\Boot_Rel\Bootloader.hex" > "%1\..\bin\Boot%IMG_NAME%.hex"
+
+REM	#	Append app.hex
+type "%1\%2\%MODULE%.hex" >> "%1\..\bin\Boot%IMG_NAME%.hex"
+
+REM	#	Copy Bin / Hex File
+set BIN_FILE_NAME=%IMG_NAME%.bin
+set HEX_FILE_NAME=%IMG_NAME%.hex
 
 echo copy "%CONFIG%\%MODULE%.bin" "bin\%BIN_FILE_NAME%"
 copy "%1\%CONFIG%\%MODULE%.bin" "%1\..\bin\%BIN_FILE_NAME%"
 
-echo copy "Release\%MODULE%.hex" "bin\%HEX_FILE_NAME%"
+echo copy "%CONFIG%\%MODULE%.hex" "bin\%HEX_FILE_NAME%"
 copy "%1\%CONFIG%\%MODULE%.hex" "%1\..\bin\%HEX_FILE_NAME%"
 
-rem echo copy "MDK-ARM\smrt7tni_bootloader\smrt7tni_bootloader.hex" "bin\%BOOT_FILE_NAME%"
-rem copy ".\MDK-ARM\smrt7tni_bootloader\smrt7tni_bootloader.hex" ".\bin\%BOOT_FILE_NAME%"
+:SKIP_BOOTAPP
+REM ------------------------------------------------------
 
 REM ------------------------------------------------------
 REM		인자가 있는경우 Skip

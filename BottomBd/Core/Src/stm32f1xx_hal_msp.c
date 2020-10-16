@@ -81,6 +81,9 @@ void HAL_MspInit(void)
   /* USER CODE END MspInit 1 */
 }
 
+#if defined(USE_BOOTLOADER)
+#else	//	Application
+
 /**
 * @brief ADC MSP Initialization
 * This function configures the hardware resources used in this example
@@ -202,6 +205,8 @@ void HAL_ADC_MspDeInit(ADC_HandleTypeDef* hadc)
 
 }
 
+#endif //	Application : ADC
+
 /**
 * @brief I2C MSP Initialization
 * This function configures the hardware resources used in this example
@@ -267,6 +272,9 @@ void HAL_I2C_MspDeInit(I2C_HandleTypeDef* hi2c)
 
 }
 
+#if defined(USE_BOOTLOADER)
+#else	//	Application
+
 /**
 * @brief TIM_Base MSP Initialization
 * This function configures the hardware resources used in this example
@@ -316,6 +324,8 @@ void HAL_TIM_Base_MspDeInit(TIM_HandleTypeDef* htim_base)
   }
 
 }
+
+#endif	//	Application : ADC
 
 /**
 * @brief UART MSP Initialization

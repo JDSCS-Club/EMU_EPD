@@ -22,9 +22,16 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-#include "naranja_boron.h"
 
 #include "cli.h"			//	CLI ( Command Line Interface )
+
+#if defined(USE_BOOTLOADER)
+#include "bootloader.h"
+
+#else
+#include "naranja_boron.h"
+
+#endif	//	#if defined(USE_BOOTLOADER)
 
 /* USER CODE END Includes */
 
@@ -43,12 +50,18 @@
 /* USER CODE END PM */
 
 /* Private variables ---------------------------------------------------------*/
+
+#if defined(USE_BOOTLOADER)
+#else	//	Application
+
 ADC_HandleTypeDef hadc1;
 ADC_HandleTypeDef hadc2;
 
-I2C_HandleTypeDef hi2c2;
-
 TIM_HandleTypeDef htim2;
+
+#endif	//	Application
+
+I2C_HandleTypeDef hi2c2;
 
 UART_HandleTypeDef huart5;
 UART_HandleTypeDef huart1;
@@ -76,6 +89,37 @@ static void MX_UART5_Init(void);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
+
+#if defined(USE_BOOTLOADER)
+
+#ifdef __GNUC__
+  /* With GCC/RAISONANCE, small printf (option LD Linker->Libraries->Small printf
+     set to 'Yes') calls __io_putchar() */
+  #define PUTCHAR_PROTOTYPE int __io_putchar(int ch)
+#else
+  #define PUTCHAR_PROTOTYPE int fputc(int ch, FILE *f)
+#endif /* __GNUC__ */
+
+//===========================================================================
+PUTCHAR_PROTOTYPE
+//===========================================================================
+{
+	/* Place your implementation of fputc here */
+	/* e.g. write a character to the EVAL_COM1 and Loop until the end of transmission */
+
+	//========================================================================
+	//	Console
+	HAL_UART_Transmit( &huart1, (uint8_t *)&ch, 1, 0xFFFF );
+	if ( ch == '\n' )
+	{
+		HAL_UART_Transmit( &huart1, (uint8_t *)"\r", 1, 0xFFFF );
+	}
+
+	return ch;
+}
+
+#endif	//	Bootloader
+
 
 /* USER CODE END 0 */
 
@@ -116,24 +160,28 @@ int main(void)
   MX_USART2_UART_Init();
   MX_UART5_Init();
   /* USER CODE BEGIN 2 */
+
+#if defined(USE_BOOTLOADER)
+#else	//	Application
+
   HAL_TIM_Base_Start_IT(&htim2);
+
+#endif
 
   /*
   RetargetInit(&huart1); // for printf
 
   /*/
 
+#if defined(USE_BOOTLOADER)
 
+#else	//	Application
 
+  //	UART Interrupt 설정.
   //	UART Queue 초기화.
   SerialInitQueue();
 
-  //	UART Interrupt 설정.
-#if defined(USE_BOOTLOADER)
-
-  SerialInit( &huart1, NULL, NULL, NULL );	//	Console Interrupt
-
-#else	//	Application
+//  SerialInit( &huart1, NULL, NULL, NULL );	//	Console Interrupt
 
   //	UART Interrupt 설정.
   SerialInit( &huart1, &huart2, &huart3, &huart5 );
@@ -146,7 +194,11 @@ int main(void)
 //  setvbuf ( stdout, NULL, _IOLBF, NULL );	//	Line Buffer
   setvbuf ( stdout, NULL, _IONBF, NULL );	//	No Buffer
 
-  printf( "[%d] Start\n", HAL_GetTick() );    // xTaskGetTickCount() );
+#if defined(USE_BOOTLOADER)
+  printf( "Boot\n" );    // xTaskGetTickCount() );
+#else
+  printf( "[%d]Start\n", HAL_GetTick() );    // xTaskGetTickCount() );
+#endif
 
   //	*/
 
@@ -255,6 +307,7 @@ void SystemClock_Config(void)
   }
 }
 
+
 /**
   * @brief ADC1 Initialization Function
   * @param None
@@ -264,6 +317,9 @@ static void MX_ADC1_Init(void)
 {
 
   /* USER CODE BEGIN ADC1_Init 0 */
+
+#if defined(USE_BOOTLOADER)
+#else	//	Application
 
   /* USER CODE END ADC1_Init 0 */
 
@@ -296,6 +352,8 @@ static void MX_ADC1_Init(void)
   }
   /* USER CODE BEGIN ADC1_Init 2 */
 
+#endif	//	Application
+
   /* USER CODE END ADC1_Init 2 */
 
 }
@@ -309,6 +367,9 @@ static void MX_ADC2_Init(void)
 {
 
   /* USER CODE BEGIN ADC2_Init 0 */
+
+#if defined(USE_BOOTLOADER)
+#else	//	Application
 
   /* USER CODE END ADC2_Init 0 */
 
@@ -340,6 +401,8 @@ static void MX_ADC2_Init(void)
     Error_Handler();
   }
   /* USER CODE BEGIN ADC2_Init 2 */
+
+#endif	//	Application
 
   /* USER CODE END ADC2_Init 2 */
 
@@ -379,6 +442,7 @@ static void MX_I2C2_Init(void)
 
 }
 
+
 /**
   * @brief TIM2 Initialization Function
   * @param None
@@ -388,6 +452,9 @@ static void MX_TIM2_Init(void)
 {
 
   /* USER CODE BEGIN TIM2_Init 0 */
+
+#if defined(USE_BOOTLOADER)
+#else	//	Application
 
   /* USER CODE END TIM2_Init 0 */
 
@@ -420,9 +487,12 @@ static void MX_TIM2_Init(void)
   }
   /* USER CODE BEGIN TIM2_Init 2 */
 
+#endif	//	Application
+
   /* USER CODE END TIM2_Init 2 */
 
 }
+
 
 /**
   * @brief UART5 Initialization Function

@@ -19,20 +19,20 @@ void BootLoaderTask (void );
 #define			BOOTLOADER_START_DELAY		3		//	3 Sec
 
 void JumpToSTBootloader(void);		//	STM32 Internal Bootloader
-
-enum eBootMode
-{
-	BModeNone	=	0,
-	BModeBoot	=	1,
-	BModeApp	=	2,
-};
-
-void	SetBootMode	( int nMode );
-int		GetBootMode	( void );
-
-//========================================================================
-int 	cmd_stboot ( int argc, char *argv[] );
-//========================================================================
+//
+//enum eBootMode
+//{
+//	BModeNone	=	0,
+//	BModeBoot	=	1,
+//	BModeApp	=	2,
+//};
+//
+//void	SetBootMode	( int nMode );
+//int		GetBootMode	( void );
+//
+////========================================================================
+//int 	cmd_stboot ( int argc, char *argv[] );
+////========================================================================
 
 #endif	/* BOOTLOADER_H */
 

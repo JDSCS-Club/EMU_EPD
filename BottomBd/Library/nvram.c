@@ -39,11 +39,16 @@
 
 #include "main.h"		//	hi2c1
 
+
+//========================================================================
+//	printf disable
+#define		printf(arg, ...)
+//========================================================================
+
 //========================================================================
 void I2C_BusScan( I2C_HandleTypeDef *phi2c )
 //========================================================================
 {
-
 	printf( "Scanning I2C bus:\r\n" );
 	HAL_StatusTypeDef result;
 	uint8_t i;
@@ -69,31 +74,6 @@ void I2C_BusScan( I2C_HandleTypeDef *phi2c )
 	printf( "\r\n" );
 }
 
-
-//int at24_HAL_WriteBytes	(I2C_HandleTypeDef *hi2c,uint16_t DevAddress,uint16_t MemAddress, uint8_t *pData,uint16_t TxBufferSize);
-//int at24_HAL_ReadBytes	(I2C_HandleTypeDef *hi2c,uint16_t DevAddress,uint16_t MemAddress, uint8_t *pData,uint16_t RxBufferSize);
-
-//int at24_HAL_SequentialRead(I2C_HandleTypeDef *hi2c ,uint8_t DevAddress,uint16_t MemAddress,uint8_t *pData,uint16_t RxBufferSize);
-//int at24_HAL_EraseMemFull(I2C_HandleTypeDef *hi2c);
-//int at24_HAL_WriteString(I2C_HandleTypeDef *hi2c,char *pString ,uint16_t MemAddress ,uint8_t length);
-//int at24_HAL_ReadString(I2C_HandleTypeDef *hi2c,char *pString,uint16_t MemAddress,uint8_t length);
-
-//========================================================================
-void TestEEPROM( I2C_HandleTypeDef *hi2c )
-//========================================================================
-{
-	char d[100]={7,5,10};
-	char c[100]={20,20,20};
-	
-	printf("%s - 0x%02X, 0x%02X, 0x%02X\r\n", __func__, c[0],c[1],c[2]);
-	MB85_HAL_ReadBytes(hi2c, 0xA0, 0x100, (uint8_t *)c, 100);
-	printf("%s - 0x%02X, 0x%02X, 0x%02X\r\n", __func__, c[0],c[1],c[2]);
-	
-	MB85_HAL_WriteBytes(hi2c, 0xA0, 0x100, (uint8_t *)d, 100);
-
-	MB85_HAL_ReadBytes(hi2c, 0xA0, 0x100, (uint8_t *)c, 100);
-	printf("%s - 0x%02X, 0x%02X, 0x%02X\r\n", __func__, c[0],c[1],c[2]);
-}
 
 /**
   * @brief               : This function handles Writing Array of Bytes on the specific Address .
@@ -131,6 +111,28 @@ int MB85_HAL_ReadBytes( I2C_HandleTypeDef *hi2c, uint16_t DevAddress, uint16_t M
 	return 1;
 }
 
+#if defined(USE_BOOTLOADER)
+#else	//	Application
+
+
+//========================================================================
+void TestEEPROM( I2C_HandleTypeDef *hi2c )
+//========================================================================
+{
+	char d[100]={7,5,10};
+	char c[100]={20,20,20};
+
+	printf("%s - 0x%02X, 0x%02X, 0x%02X\r\n", __func__, c[0],c[1],c[2]);
+	MB85_HAL_ReadBytes(hi2c, 0xA0, 0x100, (uint8_t *)c, 100);
+	printf("%s - 0x%02X, 0x%02X, 0x%02X\r\n", __func__, c[0],c[1],c[2]);
+
+	MB85_HAL_WriteBytes(hi2c, 0xA0, 0x100, (uint8_t *)d, 100);
+
+	MB85_HAL_ReadBytes(hi2c, 0xA0, 0x100, (uint8_t *)c, 100);
+	printf("%s - 0x%02X, 0x%02X, 0x%02X\r\n", __func__, c[0],c[1],c[2]);
+}
+
+
 //========================================================================
 int cmd_nvramRead		( int argc, char * argv[] )
 //========================================================================
@@ -151,7 +153,6 @@ int cmd_nvramRead		( int argc, char * argv[] )
 
 	printf("[0x%04X] 0x%02X\n", nAddr, buf[0]);
 }
-
 
 //========================================================================
 int cmd_nvramWrite	( int argc, char * argv[] )
@@ -211,4 +212,4 @@ int cmd_nvramDump		( int argc, char * argv[] )
 	}
 }
 
-
+#endif	//	Application

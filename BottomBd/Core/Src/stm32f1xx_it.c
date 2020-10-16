@@ -23,7 +23,12 @@
 #include "stm32f1xx_it.h"
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
+
+#if defined(USE_BOOTLOADER)
+#else	//	Application
 #include "naranja_boron.h"
+#endif
+
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -57,9 +62,16 @@
 /* USER CODE END 0 */
 
 /* External variables --------------------------------------------------------*/
+
+#if defined(USE_BOOTLOADER)
+#else	//	Application
+
 extern ADC_HandleTypeDef hadc1;
 extern ADC_HandleTypeDef hadc2;
 extern TIM_HandleTypeDef htim2;
+
+#endif
+
 extern UART_HandleTypeDef huart5;
 extern UART_HandleTypeDef huart1;
 extern UART_HandleTypeDef huart2;
@@ -204,6 +216,9 @@ void SysTick_Handler(void)
 /* please refer to the startup file (startup_stm32f1xx.s).                    */
 /******************************************************************************/
 
+#if defined(USE_BOOTLOADER)
+#else	//	Application
+
 /**
   * @brief This function handles ADC1 and ADC2 global interrupts.
   */
@@ -229,6 +244,10 @@ void TIM2_IRQHandler(void)
   /* USER CODE END TIM2_IRQn 0 */
   HAL_TIM_IRQHandler(&htim2);
   /* USER CODE BEGIN TIM2_IRQn 1 */
+
+#if defined(USE_BOOTLOADER)
+  // No Operation
+#else	//	Application
   if(u16LedChangeTick)
 	  u16LedChangeTick--;
 
@@ -244,8 +263,11 @@ void TIM2_IRQHandler(void)
 	  if (u16AmpSettingTick == 0)
 		  bAmpSettingDetected = true;
   }
+#endif
   /* USER CODE END TIM2_IRQn 1 */
 }
+
+#endif	//	Application : ADC
 
 /**
   * @brief This function handles USART1 global interrupt.
