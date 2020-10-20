@@ -212,6 +212,8 @@ int main(void)
 #else	//	Application
 //=============================================================================
 
+  TestNVRAM( &hi2c2 );
+
   /* USER CODE END 2 */
 
   /* Infinite loop */

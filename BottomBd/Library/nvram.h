@@ -19,6 +19,11 @@
 #include "stm32f1xx.h"
 #endif
 
+/*
+ * The MB85RC64T is an FRAM (Ferroelectric Random Access Memory) chip in a configuration of 8,192
+ * words × 8 bits, using the ferroelectric process and silicon gate CMOS process technologies for forming the
+ * nonvolatile memory cells ( NVRAM )
+ */
 
 #define MB85RC64_ID  0xA0
 
@@ -32,16 +37,12 @@ enum eAddrExtMem
 	AddrExtUpgrSize24	=	0x24,		//	Upgrade App Size 0xXX0000
 };
 
-
 void I2C_BusScan( I2C_HandleTypeDef *phi2c );
-
 
 int MB85_HAL_WriteBytes (I2C_HandleTypeDef *hi2c,uint16_t DevAddress,uint16_t MemAddress, uint8_t *pData,uint16_t TxBufferSize);
 int MB85_HAL_ReadBytes  (I2C_HandleTypeDef *hi2c,uint16_t DevAddress,uint16_t MemAddress, uint8_t *pData,uint16_t RxBufferSize);
 
-
-void TestEEPROM( I2C_HandleTypeDef *hi2c );
-
+void TestNVRAM( I2C_HandleTypeDef *hi2c );
 
 int cmd_nvramRead		( int argc, char * argv[] );
 int cmd_nvramWrite		( int argc, char * argv[] );
