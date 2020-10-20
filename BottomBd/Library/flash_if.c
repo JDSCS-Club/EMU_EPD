@@ -252,4 +252,101 @@ uint32_t FLASH_If_WriteProtectionConfig(uint32_t protectionstate)
   * @}
   */
 
+#if defined(USE_BOOTLOADER)
+#else	//	Application
+
+//========================================================================
+int cmd_flRead( int argc, char *argv[] )
+//========================================================================
+{
+	//	frd	[addr]
+	uint32_t nAddr;
+
+	switch ( argc )
+	{
+	case 2:
+		sscanf( argv[1], "%x", &nAddr );		//	nAddr
+		break;
+	}
+
+	if ( nAddr < ADDR_FLASH_BOOT || nAddr >= USER_FLASH_END_ADDRESS )
+	{
+		printf( "%s(%d) - Out of Range : Addr(0x%08X)\n", __func__, __LINE__,
+		        nAddr );
+		return 0;
+	}
+
+	printf( "[0x%08X] : 0x%08X\n", nAddr, *(uint32_t*) nAddr );
+
+	return 1;
+}
+
+//========================================================================
+int cmd_flWrite( int argc, char *argv[] )
+//========================================================================
+{
+	//	fwr [addr] [value]
+	uint32_t nAddr = ADDR_FLASH_IMGBOOT;
+	uint32_t nValue = 0x00;
+
+	switch ( argc )
+	{
+	case 3:
+		sscanf( argv[2], "%x", &nAddr );		//	nAddr
+	case 2:
+		sscanf( argv[1], "%x", &nAddr );		//	nAddr
+		break;
+	}
+
+	if ( FLASH_If_Write( nAddr, (uint32_t*) nValue, 1 ) == FLASHIF_OK )
+	{
+		printf( "success\n" );
+	}
+	else
+	{
+		printf( "failed\n" );
+	}
+
+	return 1;
+}
+
+//========================================================================
+int cmd_flErase( int argc, char *argv[] )
+//========================================================================
+{
+	//	ferase [start addr(Hex)]
+	uint32_t nAddr = ADDR_FLASH_IMGBOOT;
+
+	switch ( argc )
+	{
+	case 2:
+		sscanf( argv[1], "%x", &nAddr );		//	nAddr
+		break;
+	}
+
+	if ( nAddr < ADDR_FLASH_IMGBOOT || nAddr >= USER_FLASH_END_ADDRESS )
+	{
+		printf( "%s(%d) - Out of Range : Addr(0x%08X)\n", __func__, __LINE__,
+		        nAddr );
+		return 0;
+	}
+
+	printf( "%s(%d) - Addr(0x%08X)\n", __func__, __LINE__, nAddr );
+
+	//========================================================================
+	if ( FLASH_If_Erase( nAddr ) == FLASHIF_OK )
+	{
+		printf( "Success\n" );
+	}
+	else
+	{
+		printf( "Failed" );
+	}
+	//========================================================================
+
+	return 1;
+}
+
+#endif	//	Application
+
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/

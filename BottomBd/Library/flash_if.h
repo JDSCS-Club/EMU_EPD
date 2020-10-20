@@ -234,6 +234,15 @@ uint32_t FLASH_If_GetWriteProtectionStatus(void);
 uint32_t FLASH_If_Write(uint32_t destination, uint32_t *p_source, uint32_t length);
 uint32_t FLASH_If_WriteProtectionConfig(uint32_t protectionstate);
 
+
+//========================================================================
+//	Command
+int cmd_flRead		( int argc, char * argv[] );
+int cmd_flWrite		( int argc, char * argv[] );
+int cmd_flErase		( int argc, char * argv[] );
+//========================================================================
+
+
 #endif  /* __FLASH_IF_H */
 
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/

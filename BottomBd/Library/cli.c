@@ -59,6 +59,8 @@
 
 #include "ymodem.h"			//	cmd_ymodem()
 
+#include "flash_if.h"		//	cmd_fl[Read/Write/Erase]()
+
 #define		NELEMENTS(array)	(sizeof(array) / sizeof((array)[0]))
 #define		MAX_COMMAND_LENGTH	64
 
@@ -125,18 +127,18 @@ user_command_t	user_command_table[] = {
 #endif
 
 #if defined(NVRAM_I2C_H)
-		{"nvmw",
-			"nvmw			-	write byte to address",
-			"nvmw [addr] [data]",
-			cmd_nvramWrite,},
-		{"nvmr",
-			"nvmr			-	read byte from address",
-			"nvmr [addr]",
-			cmd_nvramRead,},
-		{"nvmdump",
-			"nvmdump		-	nvram dump",
-			"nvmdump [addr] [size]",
-			cmd_nvramDump,},
+	{"nvmw",
+		"nvmw			-	write byte to address",
+		"nvmw [addr] [data]",
+		cmd_nvramWrite,},
+	{"nvmr",
+		"nvmr			-	read byte from address",
+		"nvmr [addr]",
+		cmd_nvramRead,},
+	{"nvmdump",
+		"nvmdump		-	nvram dump",
+		"nvmdump [addr] [size]",
+		cmd_nvramDump,},
 #endif	//	defined(EEPROM_I2C_H)
 
 #if defined(__YMODEM_H_)
@@ -144,6 +146,21 @@ user_command_t	user_command_table[] = {
 		"ymodem		-	ymodem ( S/W Upgrade )",
 		"ymodem [down/up] [app/boot]",
 		cmd_ymodem},
+#endif
+
+#if defined(__FLASH_IF_H)
+	{"flrd",
+		"flrd			-	[Flash] Read byte from address",
+		"flrd [addr(hex)]",
+		cmd_flRead,},
+	{"flwr",
+		"flwr			-	[Flash] Write byte to address",
+		"flwr [addr(hex)] [data]",
+		cmd_flWrite,},
+	{"fler",
+		"fler			-	[Flash] Erase Flash Start Address to End Address",
+		"fler [start addr(hex)]",
+		cmd_flErase,},
 #endif
 
 };
@@ -678,6 +695,118 @@ int cmd_reset(int argc, char *argv[])
 //========================================================================
 {
   	NVIC_SystemReset();
+	return 0;
+}
+
+
+//========================================================================
+int cmd_wr( int argc, char *argv[] )
+//========================================================================
+{
+	unsigned int	addr = 0;
+	unsigned int	v;
+
+	int	index = 1;
+	int	option_loop = 0;
+
+	if ( (index <= argc) && (strcmp( argv[index], "-l" ) == 0) )
+	{
+		option_loop = 1;
+		index++;
+	}
+	if ( index < argc )
+	{
+		addr = a2hex( argv[index] );
+		index++;
+	}
+	if ( index < argc )
+	{
+		v = a2hex( argv[index] );
+	}
+	else
+	{
+		return -1;
+	}
+	do
+	{
+		if ( data_option == 1 )
+		{
+			*(unsigned char *)addr	=	(unsigned char)v;
+		}
+		else if ( data_option == 2 )
+		{
+			*(unsigned short *)addr	=	(unsigned short)v;
+		}
+		else if ( data_option == 4 )
+		{
+			*(unsigned int *)addr	=	(unsigned int)v;
+		}
+
+#if defined(USE_FREERTOS)
+		vTaskDelay( 100 / portTICK_RATE_MS );
+#else
+		HAL_Delay( 0 );
+#endif
+
+	} while ( option_loop == 1 && input_check() == 0 );
+
+	printf( "\n" );
+
+	return 0;
+}
+
+//========================================================================
+int cmd_rd( int argc, char *argv[] )
+//========================================================================
+{
+	unsigned int	addr;
+	unsigned int	v;
+
+	int		index = 1;
+	int		option_loop = 0;
+
+	if ( (index <= argc) && (strcmp( argv[index], "-l" ) == 0) )
+	{
+		option_loop = 1;
+		index++;
+	}
+	if ( index < argc )
+	{
+		addr = a2hex( argv[index] );
+	}
+	else
+	{
+		return -1;
+	}
+
+	do
+	{
+		if ( data_option == 1 )
+		{
+			v = *(unsigned char *)addr;
+			printf( "addr 0x%08x, value 0x%02x\r", addr, v );
+		}
+		else if ( data_option == 2 )
+		{
+			v = *(unsigned short *)addr;
+			printf( "addr 0x%08x, value 0x%04x\r", addr, v );
+		}
+		else if ( data_option == 4 )
+		{
+			v = *(unsigned int *)addr;
+			printf( "addr 0x%08x, value 0x%08x\r", addr, v );
+		}
+
+#if defined(USE_FREERTOS)
+		vTaskDelay( 10 / portTICK_RATE_MS );
+#else
+		HAL_Delay( 0 );
+#endif
+
+	} while ( option_loop == 1 && input_check() == 0 );
+
+	printf( "\n" );
+
 	return 0;
 }
 
