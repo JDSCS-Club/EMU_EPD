@@ -53,9 +53,6 @@ extern UART_HandleTypeDef huart1;		//	Console
 extern UART_HandleTypeDef huart2;		//	RFM
 extern UART_HandleTypeDef huart3;		//	RS485
 
-//extern UART_HandleTypeDef UartHandle;
-
-#define	UartHandle huart2			//	UartHandle->UART2(RFM)
 
 /* USER CODE END EC */
 

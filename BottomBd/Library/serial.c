@@ -194,7 +194,7 @@ void HAL_UART_RxCpltCallback( UART_HandleTypeDef *huart )
 	//	인터럽트.
 
 	//===========================================================================
-	if ( huart->Instance == USART1 )
+	if ( huart->Instance == USART1 && phuart1 )
 	{
 		//	Debug Console
 		g_nStampRx1 = HAL_GetTick();
@@ -208,7 +208,7 @@ void HAL_UART_RxCpltCallback( UART_HandleTypeDef *huart )
 		HAL_UART_Receive_IT( huart, dataRx1, 1 );
 	}
 	//===========================================================================
-	else if ( huart->Instance == USART2 )
+	else if ( huart->Instance == USART2 && phuart2 )
 	{
 		//	RS232 - RFM
 		g_nStampRx2 = HAL_GetTick();
@@ -218,7 +218,7 @@ void HAL_UART_RxCpltCallback( UART_HandleTypeDef *huart )
 		HAL_UART_Receive_IT( huart, dataRx2, 1 );
 	}
 	//===========================================================================
-	else if ( huart->Instance == USART3 )
+	else if ( huart->Instance == USART3 && phuart3 )
 	{
 		//	RS485
 		g_nStampRx3 = HAL_GetTick();
@@ -228,7 +228,7 @@ void HAL_UART_RxCpltCallback( UART_HandleTypeDef *huart )
 		HAL_UART_Receive_IT( huart, dataRx3, 1 );
 	}
 	//===========================================================================
-	else if ( huart->Instance == UART5 )
+	else if ( huart->Instance == UART5 && phuart5 )
 	{
 		//	RS485
 		g_nStampRx5 = HAL_GetTick();

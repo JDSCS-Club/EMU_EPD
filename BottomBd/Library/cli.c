@@ -55,6 +55,10 @@
 
 #include "occpa.h"			//	cmd_occ()
 
+#include "nvram.h"			//	cmd_nvram[Read/Write/Dump]()
+
+#include "ymodem.h"			//	cmd_ymodem()
+
 #define		NELEMENTS(array)	(sizeof(array) / sizeof((array)[0]))
 #define		MAX_COMMAND_LENGTH	64
 
@@ -120,21 +124,27 @@ user_command_t	user_command_table[] = {
 		cmd_occ},
 #endif
 
-#if defined(EEPROM_I2C_H)
-		{"eepw",
-			"eepw			-	write byte to address",
-			"eepw [addr] [data]",
-			cmd_eepromWrite,},
-		{"eepr",
-			"eepr			-	read byte from address",
-			"eepr [addr]",
-			cmd_eepromRead,},
-		{"eepdump",
-			"eepdump		-	eeprom dump",
-			"eepdump [addr] [size]",
-			cmd_eepromDump,},
+#if defined(NVRAM_I2C_H)
+		{"nvmw",
+			"nvmw			-	write byte to address",
+			"nvmw [addr] [data]",
+			cmd_nvramWrite,},
+		{"nvmr",
+			"nvmr			-	read byte from address",
+			"nvmr [addr]",
+			cmd_nvramRead,},
+		{"nvmdump",
+			"nvmdump		-	nvram dump",
+			"nvmdump [addr] [size]",
+			cmd_nvramDump,},
 #endif	//	defined(EEPROM_I2C_H)
 
+#if defined(__YMODEM_H_)
+	{"ymodem",
+		"ymodem		-	ymodem ( S/W Upgrade )",
+		"ymodem [down/up] [app/boot]",
+		cmd_ymodem},
+#endif
 
 };
 

@@ -32,6 +32,8 @@
 /* Private function prototypes -----------------------------------------------*/
 /* Private functions ---------------------------------------------------------*/
 
+UART_HandleTypeDef *pUartY = &huart2;		//	Y-Modem Uart Port
+
 /**
   * @brief  Convert an Integer to a string
   * @param  p_str: The string output pointer
@@ -142,13 +144,19 @@ uint32_t Str2Int(uint8_t *p_inputstr, uint32_t *p_intnum)
   */
 void Serial_PutString(uint8_t *p_string)
 {
+	if( pUartY == &huart1 )
+	{
+		//	YModem이 Console Port인경우 return
+		return ;
+	}
+
   uint16_t length = 0;
 
   while (p_string[length] != '\0')
   {
     length++;
   }
-  HAL_UART_Transmit(&UartHandle, p_string, length, TX_TIMEOUT);
+  HAL_UART_Transmit(pUartY, p_string, length, TX_TIMEOUT);
 }
 
 /**
@@ -158,10 +166,19 @@ void Serial_PutString(uint8_t *p_string)
   */
 HAL_StatusTypeDef Serial_PutByte( uint8_t param )
 {
-  return HAL_UART_Transmit(&UartHandle, &param, 1, TX_TIMEOUT);
+  return HAL_UART_Transmit(pUartY, &param, 1, TX_TIMEOUT);
 }
 /**
   * @}
   */
+
+//=============================================================================
+void	SetYmodemUart( UART_HandleTypeDef *_pUart )
+//=============================================================================
+{
+	pUartY = _pUart;
+}
+
+
 
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/

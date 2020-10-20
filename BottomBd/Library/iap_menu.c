@@ -34,6 +34,8 @@
 #include "iap_menu.h"
 #include "ymodem.h"
 
+#include "nvram.h"
+
 /* Private typedef -----------------------------------------------------------*/
 /* Private define ------------------------------------------------------------*/
 /* Private macro -------------------------------------------------------------*/
@@ -44,8 +46,8 @@ uint32_t FlashProtection = 0;
 uint8_t aFileName[FILE_NAME_LENGTH];
 
 /* Private function prototypes -----------------------------------------------*/
-void SerialDownload(void);
-void SerialUpload(void);
+int SerialDownload(void);
+int SerialUpload(void);
 
 /* Private functions ---------------------------------------------------------*/
 
@@ -54,7 +56,7 @@ void SerialUpload(void);
   * @param  None
   * @retval None
   */
-void SerialDownload(void)
+int SerialDownload(void)
 {
   uint8_t number[11] = {0};
   uint32_t size = 0;
@@ -71,6 +73,18 @@ void SerialDownload(void)
     Serial_PutString(number);
     Serial_PutString((uint8_t *)" Bytes\r\n");
     Serial_PutString((uint8_t *)"-------------------\n");
+
+	//========================================================================
+    //	Image Download Complete.
+	char buf[10];
+	buf[0] = 0xAA;
+	buf[1] = 0x55;
+	buf[2] = (size >> 16) & 0xFF;
+	buf[3] = (size >> 8) & 0xFF;
+	buf[4] = (size ) & 0xFF;
+    MB85_HAL_WriteBytes( &hi2c2, 0xA0, AddrExtUpgrMGN1, (uint8_t *)buf, 5 );
+
+	//========================================================================
   }
   else if (result == COM_LIMIT)
   {
@@ -88,6 +102,8 @@ void SerialDownload(void)
   {
     Serial_PutString((uint8_t *)"\n\rFailed to receive the file!\n\r");
   }
+
+  return result;
 }
 
 /**
@@ -95,13 +111,15 @@ void SerialDownload(void)
   * @param  None
   * @retval None
   */
-void SerialUpload(void)
+int SerialUpload(void)
 {
   uint8_t status = 0;
 
+  int result = 0;
+
   Serial_PutString((uint8_t *)"\n\n\rSelect Receive File\n\r");
 
-  HAL_UART_Receive(&UartHandle, &status, 1, RX_TIMEOUT);
+  HAL_UART_Receive(pUartY, &status, 1, RX_TIMEOUT);
   if ( status == CRC16)
   {
     /* Transmit the flash image through ymodem protocol */
@@ -110,12 +128,16 @@ void SerialUpload(void)
     if (status != 0)
     {
       Serial_PutString((uint8_t *)"\n\rError Occurred while Transmitting File\n\r");
+      result = 0;
     }
     else
     {
       Serial_PutString((uint8_t *)"\n\rFile uploaded successfully \n\r");
+      result = 1;
     }
   }
+
+  return result;
 }
 
 /**
@@ -159,10 +181,10 @@ void Main_Menu(void)
     Serial_PutString((uint8_t *)"==========================================================\r\n\n");
 
     /* Clean the input path */
-    __HAL_UART_FLUSH_DRREGISTER(&UartHandle);
+    __HAL_UART_FLUSH_DRREGISTER(pUartY);
 	
     /* Receive key */
-    HAL_UART_Receive(&UartHandle, &key, 1, RX_TIMEOUT);
+    HAL_UART_Receive(pUartY, &key, 1, RX_TIMEOUT);
 
     switch (key)
     {
