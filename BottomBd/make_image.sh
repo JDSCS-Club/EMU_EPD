@@ -19,11 +19,12 @@ VER_FILE=Library/version.h
 #fi
 
 ver_main=`grep "#define	APP_MAIN_VER" $VER_FILE | sed 's/[^0-9]//g'`
-ver_sub=`grep "#define	APP_SUB_VER" $VER_FILE  | sed 's/[^0-9]//g'`
-ver_det=`grep "#define	APP_DETAIL_VER" $VER_FILE  | sed 's/[^0-9]//g'`
+#ver_sub=`grep "#define	APP_SUB_VER" $VER_FILE  | sed 's/[^0-9]//g'`
+#ver_det=`grep "#define	APP_DETAIL_VER" $VER_FILE  | sed 's/[^0-9]//g'`
 ver_build=`grep "#define	APP_BUILD_VER" $VER_FILE  | sed 's/[^0-9]//g'`
 
-ver=$ver_main.$ver_sub.$ver_det.$ver_build
+#ver=$ver_main.$ver_sub.$ver_det.$ver_build
+ver=$ver_main.$ver_build
 
 #echo $ver_main.$ver_sub.$ver_det.$ver_build
 #echo $ver

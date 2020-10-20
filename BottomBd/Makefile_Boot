@@ -13,7 +13,7 @@
 ######################################
 # target
 ######################################
-TARGET = RFMBase
+TARGET = Bootloader
 
 
 ######################################
@@ -59,16 +59,9 @@ Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_tim_ex.c \
 Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_uart.c \
 Core/Src/system_stm32f1xx.c \
 Core/Src/syscalls.c \
-Core/Src/naranja_boron.c \
-Library/adc.c \
-Library/cli.c \
+Library/bootloader.c \
 Library/nvram.c \
-Library/serial.c \
-Library/rs485.c \
-Library/QBuf.c \
-Library/occpa.c \
 Library/flash_if.c \
-
 
 # ASM sources
 ASM_SOURCES =  \
@@ -117,15 +110,15 @@ AS_DEFS =
 # C defines
 C_DEFS =  \
 -DUSE_HAL_DRIVER \
--DSTM32F103xE
-
+-DSTM32F103xE \
+-DUSE_BOOTLOADER \
 
 # AS includes
 AS_INCLUDES = 
 
 # C includes
 C_INCLUDES =  \
--ICore/Inc \
+-ICore/Inc_Boot \
 -IDrivers/STM32F1xx_HAL_Driver/Inc \
 -IDrivers/STM32F1xx_HAL_Driver/Inc/Legacy \
 -IDrivers/CMSIS/Device/ST/STM32F1xx/Include \
@@ -151,7 +144,7 @@ CFLAGS += -MMD -MP -MF"$(@:%.o=%.d)"
 # LDFLAGS
 #######################################
 # link script
-LDSCRIPT = STM32F103RCTX_App_FLASH.ld
+LDSCRIPT = STM32F103RCTX_Boot_FLASH.ld
 
 # libraries
 LIBS = -lc -lm -lnosys 
