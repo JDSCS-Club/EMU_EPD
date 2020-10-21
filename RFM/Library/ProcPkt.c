@@ -106,13 +106,6 @@ U8 bBitOrderReverse(U8 bByteToReverse);
 // Extracts PHY payload length from PHR
 U16 wPayloadLenghtFromPhr(U8* pbPhrMsb);
 
-#if defined(USE_RFT_TX_MULTI_SEND)
-
-int		_nSendAgain	=	0;	//	송신기 송신완료후 CH+1에 한번더 송신.
-char 	_bufSend[64];
-
-#endif
-
 
 /*------------------------------------------------------------------------*/
 /*                          Function implementations                      */
@@ -186,8 +179,12 @@ int	InitProcPkt ( void )
 #else
 
 	//  RF 수신 Start
+	//	CH1 : 1, 3, 5
+	//	CH2 :  2, 4, 6
+	g_nChRx = ChTS1_1 + g_idxTrainSet * 2 + ((g_nCarNo+1) % 2);	// 현재 호차 채널
+
 	vRadio_StartRX(
-		g_idxTrainSet,	//		pRadioConfiguration->Radio_ChannelNumber,
+		g_nChRx,	//g_idxTrainSet,	//		pRadioConfiguration->Radio_ChannelNumber,
 		pRadioConfiguration->Radio_PacketLength );
 
 #endif
@@ -242,7 +239,16 @@ void CallbackRecvPacket( const char *pData, int nSize )
 		RFMPkt	*pSendPkt = (RFMPkt *)buf;
 		pSendPkt->hdr.nIDFlag |= g_flagRspID;
 
+#if defined(USE_HOP_CH)
+
+		int nCh = ChTS1_1 + g_idxTrainSet * 2 + ( (g_nCarNo) % 2);	//	타채널
+		SendPktCh( nCh, buf, nSize );
+
+#else
+
 		SendPacket( buf, nSize );
+
+#endif
 		//
 	}
 
@@ -598,26 +604,26 @@ int SendPacket( const char *sBuf, int nSize )
 
 	Dump("Tx", sBuf, 0x40);
 
+	//	CH1 : 1, 3, 5
+	//	CH2 :  2, 4, 6
+	int nCh = ChTS1_1 + g_idxTrainSet * 2 + ((g_nCarNo + 1) % 2); // 현재 호차 채널
+
 	vRadio_StartTx_Variable_Packet (
-		g_idxTrainSet,	//		pRadioConfiguration->Radio_ChannelNumber,
+		nCh,	//g_idxTrainSet,	//		pRadioConfiguration->Radio_ChannelNumber,
 		&sBuf[0],
 		pRadioConfiguration->Radio_PacketLength );
 
 #if defined(USE_RFT_TX_MULTI_SEND)
-	if( GetDevID() == DevRF900T && _nSendAgain == 0)
+	if( GetDevID() == DevRF900T )
 	{
-		/*
-		_nSendAgain = 1;
-		memcpy( _bufSend, &sBuf[0], pRadioConfiguration->Radio_PacketLength );
-		/*/
-
 		//	2회차 전송 : ch + 1
 		//	음성 전송 Timing : 14.49 msec
 //		HAL_Delay( 5 );		//	5 msec 후 전송.
 		HAL_Delay( 2 );		//	2 msec 후 전송.
 
+		nCh = ChTS1_1 + g_idxTrainSet * 2 + ( (g_nCarNo) % 2);	//	타채널
 		vRadio_StartTx_Variable_Packet (
-			g_idxTrainSet + 1,	//		pRadioConfiguration->Radio_ChannelNumber,
+			nCh,	//g_idxTrainSet + 1,	//		pRadioConfiguration->Radio_ChannelNumber,
 			&sBuf[0],
 			pRadioConfiguration->Radio_PacketLength );
 	}

@@ -43,6 +43,8 @@
 #define		DEFAULT_HOP_MAN_VAL				2		//	Default - Off(2)
 //#define		DEFAULT_HOP_MAN_VAL				0		//	Default - Off(2)
 
+#define		USE_HOP_CH						1		//	Hopping 시 타 채널 사용. 1->2->1->2
+
 #endif	//	defined(USE_HOP_MANUAL)
 
 

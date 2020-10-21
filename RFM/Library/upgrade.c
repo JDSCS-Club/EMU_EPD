@@ -158,11 +158,10 @@ int cmd_upgrade	( int argc, char * argv[] )
 
 		//========================================================================
 		//	채널변경. => CH #1
-	//	ProcessCommand("ch 1");
-		g_idxTrainSet = 1;
-		//	수신기
+		g_nChRx = ChUpgrade;		//	Upgrade Channel
+
 		vRadio_StartRX (
-			g_idxTrainSet,	//	pRadioConfiguration->Radio_ChannelNumber,
+			g_nChRx,	//g_idxTrainSet,	//	pRadioConfiguration->Radio_ChannelNumber,
 			pRadioConfiguration->Radio_PacketLength );
 
 		//========================================================================

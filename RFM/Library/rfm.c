@@ -49,6 +49,8 @@ int		g_nDevFlag		=	DevFlagNone;		//  Device Flag ( Light )
 int		g_idxTrainSet	=	0;	  				//  Train Set Index
 int		g_nCarNo		=	0;	  				//  Car Number
 
+int		g_nChRx			=	ChTS1_1;			//  RF Rx Channel
+
 int		g_Channel		=	0;	  				//  Train Set Index
 
 int	 	g_nSpkLevel		=	DefaultSpkVol;		//  Default (1) - 0(Mute) / 1 / 2(Normal) / 3
