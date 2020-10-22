@@ -297,13 +297,22 @@ typedef struct _RFMPktUpgr
 	enum ePktUpgr
 	{
 //		PktUpgrDataSize = 50
-		PktUpgrDataSize = 48
+		PktUpgrDataSize = 48,	//	FIXME: 4Byte의 배수로 설정 해야함.
+
+//		MaxUpgrDataPacket = 4000,
+		MaxUpgrDataPacket = 5000,
+	};
+
+	enum ePktUpgrFlag
+	{
+		PktUpgrFlagRetry = 0x1,
 	};
 	uint32_t	baseAddr;		//	0	| Base Address ( 0x08080000 ~ 0x080FFFFF )
 	uint16_t	totPkt;			//	4	| Total Packet
 	uint16_t	idxPkt;			//	6	| Index Packet
 	uint8_t		nSize;			//	8	| Data Size ( 0 ~ 50 )
-	int8_t		nSpare;			//	9	| Spare
+//	int8_t		nSpare;			//	9	| Spare
+	uint8_t		bFlag;			//	9	| Retry ( 1 - Retry )
 	char		data[PktUpgrDataSize];	//	48];		//	10	| Binary Data
 #if ( 50 - PktUpgrDataSize )
 	uint8_t		nSpare2[ 50 - PktUpgrDataSize ];	//	| Spare
@@ -394,7 +403,7 @@ void	SendLightOff		( void );		//	조명제어 조명 Off
 void	SendRFCmd			( char *sCmd, int nRSSI );	//	원격 Command 명령 전송.
 void	SendRFCmdReset		( void );		//	Reset 명령 전송.
 void	SendRFCmdDFUMode	( void );		//	DFU Mode 명령 전송.
-void	SendRFCmdUpgrade	( void );		//	Upgrade 명령 전송.
+void	SendRFCmdUpgrade	( int bRetry );		//	Upgrade 명령 전송.
 
 void	SendUpgrData		( uint32_t nAddrTarget, int nPktTot, int nPktIdx, uint8_t *sBuf, int nSize );	//	Send Upgrade Data
 void	SendUpgrStat		( int nUpgrResult );	//	Send Upgrade Data

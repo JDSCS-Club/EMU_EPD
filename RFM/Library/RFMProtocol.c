@@ -337,7 +337,7 @@ void SendRFCmdDFUMode( void )
 }
 
 //==========================================================================
-void SendRFCmdUpgrade( void )
+void SendRFCmdUpgrade( int bRetry )
 //==========================================================================
 {
 	//==========================================================================
@@ -350,7 +350,9 @@ void SendRFCmdUpgrade( void )
 	SendRFCmd( "upgrade 1", 200 );	//	DFU모드의 경우 근접(RSSI-200)하지 않으면 동작하지 않도록 한다!!!
 	//==========================================================================
 
-	HAL_Delay( 500 );		//	sleep 200 msec
+	SetUpgrReTry( bRetry );			//	Retry 설정.
+
+	HAL_Delay( 500 );	//	sleep 200 msec
 
 	//========================================================================
 	//	Upgrade Image 전송.
@@ -384,6 +386,9 @@ void	SendUpgrData		( uint32_t nAddrTarget, int nPktTot, int nPktIdx, uint8_t *sB
 	pUpgr->totPkt		=	nPktTot;
 	pUpgr->idxPkt		=	nPktIdx;
 	pUpgr->nSize		=	nSize;
+
+	if( GetUpgrReTry() ) pUpgr->bFlag	|=	PktUpgrFlagRetry;	//	Retry Flag
+
 	memcpy( pUpgr->data, sBuf, nSize );
 
 	//========================================================================
@@ -629,6 +634,9 @@ int	ProcPktCmdRsp		( const RFMPkt *pRFPkt )
 	//	ToDo
 }
 
+//========================================================================
+uint8_t	s_bUpgrDataValid[MaxUpgrDataPacket];	//	4000];	//	Upgrade Data Valid Check
+//========================================================================
 
 //========================================================================
 int	ProcPktUpgr			( const RFMPkt *pRFPkt )
@@ -668,29 +676,73 @@ int	ProcPktUpgr			( const RFMPkt *pRFPkt )
 		//	Start Uprade
 		printf("%s(%d) - Start Upgrade\n", __func__, __LINE__ );
 
-		//========================================================================
-		//	Flash Erase
-//		 __HAL_RCC_DBGMCU_CLK_ENABLE();
-		 __HAL_DBGMCU_FREEZE_IWDG();
-//		MX_IWDG_Disable();		//	Disable Watchdog
-		printf( "[%08d] Flash Erase - Start\n", HAL_GetTick() );
-//        FLASH_If_Erase( ADDR_FLASH_IMGAPP );
-		FLASH_If_Erase( ADDR_FLASH_IMGBOOT );		//	0x08080000
-		printf( "[%08d] Flash Erase - End\n", HAL_GetTick() );
-    	//========================================================================
+		if( pUpgr->bFlag & PktUpgrFlagRetry )
+		{
+			//	No Erase
+			printf( "[%08d] Flash Erase - Skip ( Retry - Upgrade )\n", HAL_GetTick() );
+		}
+		else
+		{
+			//========================================================================
+			//	Flash Erase
+	//		 __HAL_RCC_DBGMCU_CLK_ENABLE();
+			 __HAL_DBGMCU_FREEZE_IWDG();
+	//		MX_IWDG_Disable();		//	Disable Watchdog
+			printf( "[%08d] Flash Erase - Start\n", HAL_GetTick() );
+	//        FLASH_If_Erase( ADDR_FLASH_IMGAPP );
+			FLASH_If_Erase( ADDR_FLASH_IMGBOOT );		//	0x08080000
+			printf( "[%08d] Flash Erase - End\n", HAL_GetTick() );
+	    	//========================================================================
 
-		s_rxPkt = 1;
+			memset( s_bUpgrDataValid, 0, sizeof(s_bUpgrDataValid) );
+		}
+
+		s_rxPkt = 0;
 	}
-	else if ( pUpgr->idxPkt == ( pUpgr->totPkt - 1 ) )
+
+	s_rxPkt++;
+
+	//========================================================================
+	//	Write Upgrade Image Data
+
+	if ( FLASH_If_Write( pUpgr->baseAddr + (pUpgr->idxPkt * PktUpgrDataSize),
+						(uint32_t *)pUpgr->data,
+						pUpgr->nSize / 4 ) == FLASHIF_OK )
+	{
+		//	Valid Check Data
+		s_bUpgrDataValid[pUpgr->idxPkt] = 1;
+	}
+	else /* An error occurred while writing to Flash memory */
+	{
+		/* End session */
+		printf("%s(%d) - Error idx(%d)\n", __func__, __LINE__, pUpgr->idxPkt );
+		s_bUpgrDataValid[pUpgr->idxPkt] = 0;
+	}
+
+	g_nStampRxPkt = HAL_GetTick();		//	Rx Pkt Stamp
+	//========================================================================
+
+	//========================================================================
+	if ( pUpgr->idxPkt == (pUpgr->totPkt - 1) )
 	{
 		//	End Upgrade
-		s_rxPkt++;
+//		s_rxPkt++;
 
 		printf("%s(%d) - End Upgrade ( rxPkt : %d / totPkt : %d )\n", __func__, __LINE__,
 					s_rxPkt, pUpgr->totPkt );
 
+		int result = UpgrStatSuccess;
+		for( int i = 0; i < pUpgr->totPkt; i++ )
+		{
+			if( s_bUpgrDataValid[i] == 0 )
+			{
+				result = UpgrStatFailed;
+				break;
+			}
+		}
+
 		//========================================================================
-		if ( s_rxPkt == pUpgr->totPkt )
+		if ( result == UpgrStatSuccess )//( s_rxPkt == pUpgr->totPkt )
 		{
 			//	Upgrade Success
 
@@ -753,30 +805,6 @@ int	ProcPktUpgr			( const RFMPkt *pRFPkt )
 		SetRFMMode( RFMModeNormal );	//	Normal 모드로 설정.
 		//========================================================================
 	}
-	else
-	{
-		s_rxPkt++;
-	}
-
-	//========================================================================
-	//	Write Upgrade Image Data
-
-	//    if ( FLASH_If_Write( flashdestination, (uint32_t*)ramsource, packet_length / 4 ) == FLASHIF_OK )
-	if ( FLASH_If_Write( pUpgr->baseAddr + (pUpgr->idxPkt * PktUpgrDataSize),
-						(uint32_t *)pUpgr->data,
-						pUpgr->nSize / 4 ) == FLASHIF_OK )
-	{
-//        flashdestination += packet_length;
-	}
-	else /* An error occurred while writing to Flash memory */
-	{
-		/* End session */
-		printf("%s(%d) - Error idx(%d)\n", __func__, __LINE__, pUpgr->idxPkt );
-	}
-
-
-	g_nStampRxPkt = HAL_GetTick();		//	Rx Pkt Stamp
-	//========================================================================
 }
 
 

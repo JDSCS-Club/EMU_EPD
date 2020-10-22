@@ -135,9 +135,10 @@ Menu_t	g_MenuVerList = {
 
 #if defined(USE_RFT_MENU_CMD)
 char *_sCmdList[] = {
-	" Reset",		//  Reset
-	" DFU Mode",	//  DFU Mode
-	" Upgrade",		//  Upgrade
+	" Reset",			//  Reset
+	" DFU Mode",		//  DFU Mode
+	" Upgrade ReTry",	//  Upgrade Re-Try
+	" Upgrade",			//  Upgrade
 };
 
 Menu_t	g_MenuCmdList = {
@@ -467,7 +468,8 @@ void	ProcMenuCmd( int idxItem  )
 	{
 	case 0:		SendRFCmdReset();		break;		//	Reset 명령.
 	case 1:		SendRFCmdDFUMode();		break;		//	DFU Mode 명령.
-	case 2:		SendRFCmdUpgrade();		break;		//	Upgrade 명령.
+	case 2:		SendRFCmdUpgrade(1);	break;		//	Upgrade(Re-Try 명령.
+	case 3:		SendRFCmdUpgrade(0);	break;		//	Upgrade 명령.
 	}
 
 	//  1초후 Main화면 갱신.
