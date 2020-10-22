@@ -153,15 +153,20 @@ enum ePktID
 
 	PktCmd			=	0x20,		//	Command ( nIDFlag(0) / nSeq(0) )
 	PktCmdRsp		=	0x21,		//	Cmd 처리결과 응답.
+
 	PktUpgr			=	0x40,		//	Upgrade ( nIDFlag(0) / nSeq(0) )
+	PktUpgrStat		=	0x41,		//	Upgrade Status : Success / Failed
 };
 
 enum eChannel
 {
 	ChCommon		=	0,			//	* CH0 : 공통채널
-	ChUpgrade		=	1,			//	* CH1 : Upgrade 전용 채널 ( 수신기 - Target )
-	ChUpgrOrg		=	2,			//	* CH2 : Upgrade 전용 채널 ( 송신기 - Origin )
-	ChResv			=	3,			//	* CH3 ~ 10 : Reserved
+
+	ChUpgrade		=	3,			//	* CH3 : Upgrade 전용 채널 ( 수신기 - Target )
+	ChUpgrOrg		=	4,			//	* CH4 : Upgrade 전용 채널 ( 송신기 - Origin )
+
+	ChResv			=	5,			//	* CH3 ~ 10 : Reserved
+
 	ChTS1_1			=	11,			//	* CH11 : 1편성 ( 1,3,5호차 )
 	ChTS1_2			=	12,			//	* CH12 : 1편성 ( 2,4,6호차 )
 	ChTS2_1			=	13,			//	* CH13 : 2편성 ( 1,3,5호차 )
@@ -306,6 +311,25 @@ typedef struct _RFMPktUpgr
 } RFMPktUpgr;
 
 //==========================================================================
+//	RFM Packet - Upgrade Stat
+typedef struct _RFMPktUpgrStat
+{
+	enum ePktUpgrStat
+	{
+//		PktUpgrDataSize = 50
+		UpgrStatFailed	= 0,
+		UpgrStatSuccess	= 1,
+	};
+	uint8_t		nResult;		//	0	| 1 ( Success ) / 0 ( Failed )
+	uint8_t		nSpare1[3];		//	1	| Spare
+	uint8_t		nTrainSet;		//	4	| Train Set
+	uint8_t		nCarNo;			//	5	| Car Number
+	uint8_t		nSpare6[2];		//	6	| Spare
+	uint16_t	nTotPkt;		//	8	| Total Packet
+	uint16_t	nRecvPkt;		//	10	| Recv Packet
+} RFMPktUpgrStat;
+
+//==========================================================================
 //	RFM Packet - Command PA/Call - Start/Stop
 typedef struct _RFMPktPACall
 {
@@ -336,6 +360,7 @@ typedef struct _RFMPkt
 		RFMPktPACall	pacall;				//	PA/Call Start/Stop
 		RFMPktCmd		cmd;				//	Remote RF Command
 		RFMPktUpgr		upgr;				//	Upgrade Binary Data
+		RFMPktUpgrStat	upgrStat;			//	Upgrade Status
 	} dat;
 } RFMPkt;
 
@@ -372,6 +397,7 @@ void	SendRFCmdDFUMode	( void );		//	DFU Mode 명령 전송.
 void	SendRFCmdUpgrade	( void );		//	Upgrade 명령 전송.
 
 void	SendUpgrData		( uint32_t nAddrTarget, int nPktTot, int nPktIdx, uint8_t *sBuf, int nSize );	//	Send Upgrade Data
+void	SendUpgrStat		( int nUpgrResult );	//	Send Upgrade Data
 
 //==========================================================================
 
@@ -383,6 +409,7 @@ int		ProcPktLight		( const RFMPkt *pRFPkt );
 int		ProcPktCmd			( const RFMPkt *pRFPkt );
 int		ProcPktCmdRsp		( const RFMPkt *pRFPkt );
 int		ProcPktUpgr			( const RFMPkt *pRFPkt );
+int		ProcPktUpgrStat		( const RFMPkt *pRFPkt );
 
 //==========================================================================
 

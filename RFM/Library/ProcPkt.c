@@ -265,12 +265,13 @@ void CallbackRecvPacket( const char *pData, int nSize )
 
 	switch ( pRFPkt->hdr.nPktCmd )
 	{
-	case PktCall:		ProcPktCall	( pRFPkt );		break;
-	case PktPA:			ProcPktPA	( pRFPkt );		break;
-	case PktStat:		ProcPktStat	( pRFPkt );		break;
-	case PktLight:		ProcPktLight( pRFPkt );		break;
-	case PktCmd:		ProcPktCmd	( pRFPkt );		break;
-	case PktUpgr:		ProcPktUpgr	( pRFPkt );		break;
+	case PktCall:		ProcPktCall		( pRFPkt );		break;
+	case PktPA:			ProcPktPA		( pRFPkt );		break;
+	case PktStat:		ProcPktStat		( pRFPkt );		break;
+	case PktLight:		ProcPktLight	( pRFPkt );		break;
+	case PktCmd:		ProcPktCmd		( pRFPkt );		break;
+	case PktUpgr:		ProcPktUpgr		( pRFPkt );		break;
+	case PktUpgrStat:	ProcPktUpgrStat	( pRFPkt );		break;
 	default:
 		printf( "%s(%d) - Invalid Value(%d)\n", __func__, __LINE__, pRFPkt->hdr.nPktCmd );
 		break;
@@ -577,31 +578,6 @@ int SendPacket( const char *sBuf, int nSize )
 {
 	//	printf("%s(%d)\n", __func__, __LINE__);
 
-#if defined(USE_IEEE802_15_4G)
-
-	char buf[0x40];
-
-	buf[0] = 0x18;
-	buf[1] = 0x02;
-
-	memcpy( &buf[2], sBuf, 0x40 - 2);
-
-	Dump("Tx", buf, 0x40);
-
-	// Override PKT_CONFIG1
-	bRadio_FindProperty(pRadioConfiguration->Radio_ConfigurationArray, SI446X_PROP_GRP_ID_PKT, SI446X_PROP_GRP_INDEX_PKT_CONFIG1, &bPropValue1);
-	// Configure PH field split, CRC endian, bit order for RX
-	si446x_set_property(SI446X_PROP_GRP_ID_PKT, 1, SI446X_PROP_GRP_INDEX_PKT_CONFIG1, bPropValue1);
-
-	// Send custom packet
-	vRadio_StartTx_Variable_Packet_MultiField(pRadioConfiguration->Radio_ChannelNumber, &buf[0], pRadioConfiguration->Radio_PacketLength);
-
-	/* Packet sending initialized */
-
-	return TRUE;
-
-#else
-
 	Dump("Tx", sBuf, 0x40);
 
 	//	CH1 : 1, 3, 5
@@ -631,7 +607,6 @@ int SendPacket( const char *sBuf, int nSize )
 
 	return TRUE;
 
-#endif
 }
 
 

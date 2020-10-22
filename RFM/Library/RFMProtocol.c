@@ -393,6 +393,39 @@ void	SendUpgrData		( uint32_t nAddrTarget, int nPktTot, int nPktIdx, uint8_t *sB
 	//========================================================================
 }
 
+//==========================================================================
+void	SendUpgrStat		( int nUpgrResult )	//	Send Upgrade Data
+//==========================================================================
+{
+	printf( "%s(%d) - %d\n", __func__, __LINE__, nUpgrResult );
+
+	RFMPkt			stPkt;
+	memset( &stPkt, 0, sizeof( stPkt ) );
+
+	//========================================================================
+	//	Packet Header
+	_MakePktHdr( &stPkt, GetDevID(), 0xFF, RFPktDataLen, PktUpgrStat );
+
+	//========================================================================
+	//	Packet Body
+	RFMPktUpgrStat	*pUpgrStat = (RFMPktUpgrStat *)&stPkt.dat.upgrStat;
+
+	pUpgrStat->nResult		=	nUpgrResult;
+	pUpgrStat->nTrainSet	=	g_idxTrainSet;
+	pUpgrStat->nCarNo 		=	g_nCarNo;
+
+	//========================================================================
+	//	Send RF
+	int nCh = ChTS1_1 + g_idxTrainSet * 2 + ((g_nCarNo) % 2);	// 현재 호차 채널
+	SendPktCh( nCh, (U8 *)&stPkt, (U8)sizeof( RFMPktHdr ) + RFPktDataLen );
+
+	HAL_Delay(5);	//	재전송 전 Delay
+
+	nCh = ChTS1_1 + g_idxTrainSet * 2 + ((g_nCarNo+1) % 2);	// 현재 호차 채널
+	SendPktCh( nCh, (U8 *)&stPkt, (U8)sizeof( RFMPktHdr ) + RFPktDataLen );
+
+	//========================================================================
+}
 
 //==========================================================================
 //		Process Packet
@@ -684,6 +717,16 @@ int	ProcPktUpgr			( const RFMPkt *pRFPkt )
 
 			printf( "%s(%d) - EEPROM [0,1] : 0x%02X 0x%02X / ( bin size : %d )\n", __func__, __LINE__, buf[0], buf[1], filesize );
 
+			HAL_Delay( 2000 );	//	Upgrade 결과전송 전 Delay
+
+			//===========================================================================
+			//	Send Upgrade Result
+			SendUpgrStat( UpgrStatSuccess );	//	Upgrade 결과전송.
+			HAL_Delay( 100 );	//	Upgrade 결과전송 전 Delay
+			SendUpgrStat( UpgrStatSuccess );	//	Upgrade 결과전송.
+			HAL_Delay( 100 );	//	Upgrade 결과전송 전 Delay
+			SendUpgrStat( UpgrStatSuccess );	//	Upgrade 결과전송.
+
 			//===========================================================================
 			//	Reset
 			cmd_reset(0, 0);
@@ -691,7 +734,17 @@ int	ProcPktUpgr			( const RFMPkt *pRFPkt )
 		}
 		else
 		{
-			//	Upgrade Success
+			HAL_Delay( 2000 );	//	Upgrade 결과전송 전 Delay
+
+			//===========================================================================
+			//	Send Upgrade Result
+			SendUpgrStat( UpgrStatFailed );		//	Upgrade 결과전송.
+			HAL_Delay( 100 );	//	Upgrade 결과전송 전 Delay
+			SendUpgrStat( UpgrStatFailed );	//	Upgrade 결과전송.
+			HAL_Delay( 100 );	//	Upgrade 결과전송 전 Delay
+			SendUpgrStat( UpgrStatFailed );	//	Upgrade 결과전송.
+
+			//	Upgrade Failed
 			printf("%s(%d) - Upgrade Failed\n", __func__, __LINE__ );
 		}
 		//========================================================================
@@ -725,6 +778,50 @@ int	ProcPktUpgr			( const RFMPkt *pRFPkt )
 	g_nStampRxPkt = HAL_GetTick();		//	Rx Pkt Stamp
 	//========================================================================
 }
+
+
+//========================================================================
+int	ProcPktUpgrStat			( const RFMPkt *pRFPkt )
+//========================================================================
+{
+	//========================================================================
+	//	Upgrade Status
+	//========================================================================
+
+	//	Upgrade 결과 수신후 수신기 LCD창에 표시.
+	if ( GetDbgLevel() > 0 )
+		printf( "%s(%d)\n", __func__, __LINE__ );
+
+	char sBuf[50];
+
+	//========================================================================
+	//	Data Flash영역에 Write
+	RFMPktUpgrStat	*pUpgrStat = (RFMPktUpgrStat *)&pRFPkt->dat.upgrStat;
+
+	printf( "%s(%d) - %d\n", __func__, __LINE__, pUpgrStat->nResult );
+
+	if ( pUpgrStat->nResult == UpgrStatSuccess )
+	{
+		//	송신기 : Upgr Success
+
+		sprintf(sBuf, "Success(%d/%d)", pUpgrStat->nTrainSet, pUpgrStat->nCarNo);
+		LCDPrintfXY( 0, 13, sBuf );
+
+//		HAL_Delay(2000);
+	}
+	else if( pUpgrStat->nResult == UpgrStatFailed )
+	{
+		//	송신기 : Upgr Failed
+
+		sprintf(sBuf, "Failed(%d/%d)", pUpgrStat->nTrainSet, pUpgrStat->nCarNo);
+		LCDPrintfXY( 0, 13, sBuf );
+
+//		HAL_Delay(2000);
+	}
+
+	return 1;
+}
+
 
 
 #if OLD
