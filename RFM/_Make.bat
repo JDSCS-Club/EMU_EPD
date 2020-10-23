@@ -40,17 +40,6 @@ set BIN_FILE_NAME=%IMG_NAME%.bin
 set HEX_FILE_NAME=%IMG_NAME%.hex
 REM set BOOT_FILE_NAME=smrt7tni_bootloader_%TODAY%_v%VER%.hex
 
-REM ------------------------------------------------------
-REM .axf -> .bin
-REM set ELFTOBIN="C:\Keil_v5\ARM\ARMCC\bin\fromelf.exe"
-REM set SOURCE="%1MDK-ARM\%MODULE%\%MODULE%.axf"
-REM set DEST="%1MDK-ARM\%MODULE%\%MODULE%.bin"
-REM 
-REM echo "bin-file : %SOURCE% -> %DEST%"
-REM 
-REM %ELFTOBIN%  %SOURCE% --bin --output %DEST%
-REM ------------------------------------------------------
-
 echo copy "%2\%MODULE%.bin" "bin\%BIN_FILE_NAME%"
 copy "%1\%2\%MODULE%.bin" "%1\..\bin\%BIN_FILE_NAME%"
 
