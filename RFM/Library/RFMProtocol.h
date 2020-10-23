@@ -118,6 +118,7 @@
 	* CH1 : Upgrade 전용 채널 ( 수신기 - Target )
 	* CH2 : Upgrade 전용 채널 ( 송신기 - Origin )
 	* CH3 ~ 10 : Reserved
+	* CH10 : RFT(송신기)
 	* CH11 : 1편성 ( 1,3,5호차 )
 	* CH12 : 1편성 ( 2,4,6호차 )
 	* CH13 : 2편성 ( 1,3,5호차 )
@@ -419,10 +420,6 @@ int		ProcPktCmd			( const RFMPkt *pRFPkt );
 int		ProcPktCmdRsp		( const RFMPkt *pRFPkt );
 int		ProcPktUpgr			( const RFMPkt *pRFPkt );
 int		ProcPktUpgrStat		( const RFMPkt *pRFPkt );
-
-//==========================================================================
-
-void	ProcessPkt			( const uint8_t *pbuf, int length );
 
 //==========================================================================
 #ifdef __cplusplus

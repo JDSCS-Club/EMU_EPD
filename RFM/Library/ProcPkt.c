@@ -193,6 +193,39 @@ int	InitProcPkt ( void )
 }
 
 //========================================================================
+int _ChkDropPktSeq( uint8_t _nRxSeq, uint8_t _currSeq )
+//========================================================================
+{
+	//	현재 받은 Packet Sequence가 새로운 패킷인지 확인.
+	//		-> 이전 Packet인 경우 Drop
+
+	if ( _nRxSeq == _currSeq )		//	Seq가 같은 Packet 수신시 Drop
+	{
+		return 1;	//	Pkt Drop
+	}
+
+	//	Rx Packet이 currPkt보다 1크면 처리.
+	uint8_t currSeq = _currSeq;
+	if ( ++currSeq == 0 )	currSeq++;
+	if ( _nRxSeq == currSeq )		//	Seq가 같은 Packet 수신시 Drop
+	{
+		return 0;	//	Valid Pkt
+	}
+
+	//	현재 패킷보다 이전에 받은 5개 패킷은 Drop
+	for( int i = 0; i < 5; i++ )
+	{
+		if ( ++_nRxSeq == 0 )	_nRxSeq++;
+		if ( _nRxSeq == _currSeq )		//	Seq가 같은 Packet 수신시 Drop
+		{
+			return 1;	//	Pkt Drop
+		}
+	}
+
+	return 0;	//	Valid Pkt
+}
+
+//========================================================================
 void CallbackRecvPacket( const char *pData, int nSize )
 //========================================================================
 {
@@ -204,7 +237,9 @@ void CallbackRecvPacket( const char *pData, int nSize )
 	//	Packet Filtering
 	//		- Pkt 처리 여부 확인.
 	if	(	pRFPkt->hdr.nSeq != 0 &&
-			(	pRFPkt->hdr.nSeq == g_nPktSeq		//	Seq가 같은 Packet 수신시 Drop
+			(
+//				(pRFPkt->hdr.nSeq == g_nPktSeq)		//	Seq가 같은 Packet 수신시 Drop
+				_ChkDropPktSeq(pRFPkt->hdr.nSeq, g_nPktSeq)		//	Seq가 같은 Packet 수신시 Drop
 				|| GetRFMMode() == RFMModeTx		//	송신모드에서는 Packet Drop
 			)
 		)
@@ -222,7 +257,9 @@ void CallbackRecvPacket( const char *pData, int nSize )
 	if ( ( pRFPkt->hdr.nSeq != 0 && pRFPkt->hdr.nIDFlag != 0
 				&& (GetDevID() == DevRF900M) )		//	수신기만 중계함.
 #if defined(USE_HOP_FORCE)
+			//========================================================================
 			//	강제 중계 설정.
+			//========================================================================
 #else
 			&& ( ( ( (g_nManHopping == 0) && (((~pRFPkt->hdr.nIDFlag)&flagID) != 0) )	//	Default
 				|| ( g_nManHopping == 1 ) )		//	Hopping On
@@ -635,7 +672,7 @@ int cmd_pktmon      ( int argc, char * argv[] )
 //========================================================================
 {
 	//	bEnable ( 1 / 0 )
-	int bEnable = 0;
+	int bEnable = 1;	//	Default : Enable
 
 	switch ( argc )
 	{
