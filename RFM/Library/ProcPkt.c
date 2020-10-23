@@ -221,9 +221,13 @@ void CallbackRecvPacket( const char *pData, int nSize )
 #if defined(USE_HOP_MANUAL)
 	if ( ( pRFPkt->hdr.nSeq != 0 && pRFPkt->hdr.nIDFlag != 0
 				&& (GetDevID() == DevRF900M) )		//	수신기만 중계함.
+#if defined(USE_HOP_FORCE)
+			//	강제 중계 설정.
+#else
 			&& ( ( ( (g_nManHopping == 0) && (((~pRFPkt->hdr.nIDFlag)&flagID) != 0) )	//	Default
 				|| ( g_nManHopping == 1 ) )		//	Hopping On
 				&& !( g_nManHopping == 2 ) )	//	Hopping Off
+#endif
 		)
 #else
 	if ( pRFPkt->hdr.nSeq != 0 && pRFPkt->hdr.nIDFlag != 0
@@ -273,7 +277,8 @@ void CallbackRecvPacket( const char *pData, int nSize )
 	case PktUpgr:		ProcPktUpgr		( pRFPkt );		break;
 	case PktUpgrStat:	ProcPktUpgrStat	( pRFPkt );		break;
 	default:
-		printf( "%s(%d) - Invalid Value(%d)\n", __func__, __LINE__, pRFPkt->hdr.nPktCmd );
+//		printf( "%s(%d) - Invalid Value(%d)\n", __func__, __LINE__, pRFPkt->hdr.nPktCmd );
+		printf( "E\n" );	//	Packet Error
 		break;
 	}
 }
