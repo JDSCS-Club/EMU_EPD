@@ -45,6 +45,8 @@
 
 #define		USE_HOP_CH						1		//	Hopping 시 타 채널 사용. 1->2->1->2
 
+#define		USE_HOP_FORCE					1		//	강제 중계 설정.
+
 #endif	//	defined(USE_HOP_MANUAL)
 
 
