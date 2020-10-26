@@ -78,6 +78,7 @@ int		GetRFMMode		( void );
 void	SetRFMMode		( int nRFMMode );
 //========================================================================
 
+int 	GetChRx			( void );
 
 int		GetDevID		( void );
 void	SetDevID		( int nDevID );

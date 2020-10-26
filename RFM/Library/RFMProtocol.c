@@ -164,7 +164,13 @@ void SendStat( void )
 
 	//========================================================================
 	//	Send RF
+#if defined(USE_CH_ISO_DEV)
+	//	상태정보는 송신기로 전송.
+	int nCh = ChTx_1;
+	SendPktCh(nCh, (U8 *)&stPkt, (U8)sizeof( RFMPktHdr ) + sizeof( RFMPktStat ) );
+#else
 	SendPacket( (U8 *)&stPkt, (U8)sizeof( RFMPktHdr ) + sizeof( RFMPktStat ) );
+#endif
 	//64 );
 //		(unsigned char)(sizeof( RFMPktHdr ) + sizeof(RFMPktStat)) );
 
@@ -393,7 +399,7 @@ void	SendUpgrData		( uint32_t nAddrTarget, int nPktTot, int nPktIdx, uint8_t *sB
 
 	//========================================================================
 	//	Send RF
-	SendPktCh( ChUpgrade, (U8 *)&stPkt, (U8)sizeof( RFMPktHdr ) + RFPktDataLen );
+	SendPktCh( ChUpgrDst, (U8 *)&stPkt, (U8)sizeof( RFMPktHdr ) + RFPktDataLen );
 
 	//========================================================================
 }
@@ -635,7 +641,7 @@ int	ProcPktCmdRsp		( const RFMPkt *pRFPkt )
 }
 
 //========================================================================
-uint8_t	s_bUpgrDataValid[MaxUpgrDataPacket];	//	4000];	//	Upgrade Data Valid Check
+uint8_t	s_bUpgrDataValid[(MaxUpgrDataPacket + 7) / 8];	//	4000];	//	Upgrade Data Valid Check
 //========================================================================
 
 //========================================================================
@@ -710,13 +716,13 @@ int	ProcPktUpgr			( const RFMPkt *pRFPkt )
 						pUpgr->nSize / 4 ) == FLASHIF_OK )
 	{
 		//	Valid Check Data
-		s_bUpgrDataValid[pUpgr->idxPkt] = 1;
+		SET_BIT( s_bUpgrDataValid[pUpgr->idxPkt/8], (0x1 << (pUpgr->idxPkt % 8)) );
 	}
 	else /* An error occurred while writing to Flash memory */
 	{
 		/* End session */
 		printf("%s(%d) - Error idx(%d)\n", __func__, __LINE__, pUpgr->idxPkt );
-		s_bUpgrDataValid[pUpgr->idxPkt] = 0;
+		CLEAR_BIT( s_bUpgrDataValid[pUpgr->idxPkt/8], (0x1 << (pUpgr->idxPkt % 8)) );	//	Clear
 	}
 
 	g_nStampRxPkt = HAL_GetTick();		//	Rx Pkt Stamp
@@ -734,7 +740,7 @@ int	ProcPktUpgr			( const RFMPkt *pRFPkt )
 		int result = UpgrStatSuccess;
 		for( int i = 0; i < pUpgr->totPkt; i++ )
 		{
-			if( s_bUpgrDataValid[i] == 0 )
+			if( READ_BIT( s_bUpgrDataValid[i / 8], (i % 8) ) == 0 )
 			{
 				result = UpgrStatFailed;
 				break;

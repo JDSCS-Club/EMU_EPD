@@ -179,9 +179,7 @@ int	InitProcPkt ( void )
 #else
 
 	//  RF 수신 Start
-	//	CH1 : 1, 3, 5
-	//	CH2 :  2, 4, 6
-	g_nChRx = ChTS1_1 + g_idxTrainSet * 2 + ((g_nCarNo+1) % 2);	// 현재 호차 채널
+	g_nChRx = GetChRx();	//	ChTS1_1 + g_idxTrainSet * 2 + ((g_nCarNo+1) % 2);	// 현재 호차 채널
 
 	vRadio_StartRX(
 		g_nChRx,	//g_idxTrainSet,	//		pRadioConfiguration->Radio_ChannelNumber,
@@ -280,7 +278,13 @@ void CallbackRecvPacket( const char *pData, int nSize )
 		RFMPkt	*pSendPkt = (RFMPkt *)buf;
 		pSendPkt->hdr.nIDFlag |= g_flagRspID;
 
-#if defined(USE_HOP_CH)
+#if defined(USE_CH_ISO_DEV)
+
+		//	수신채널 분리.
+		int nCh = GetChRx() + 1;	//	Test : Hopping 시 Rx + 1 Channel로 전송.
+		SendPktCh( nCh, buf, nSize );
+
+#elif defined(USE_HOP_CH)
 
 		int nCh = ChTS1_1 + g_idxTrainSet * 2 + ( (g_nCarNo) % 2);	//	타채널
 		SendPktCh( nCh, buf, nSize );

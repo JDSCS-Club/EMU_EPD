@@ -31,6 +31,9 @@
 //	RF 설정.
 //#define		USE_IEEE802_15_4G				1		//	radio_config_802_15_4g.h 사용.
 
+//	장치별 Channel 구분. Data 충돌 방지.
+#define		USE_CH_ISO_DEV					1		//	장치별 수신 채널 분리. ( Channel Isolation Each Device )
+
 //========================================================================
 //	패킷 설정.
 #define		USE_HOPPING						1		//	Hopping
