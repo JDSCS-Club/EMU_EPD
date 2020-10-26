@@ -740,7 +740,7 @@ int	ProcPktUpgr			( const RFMPkt *pRFPkt )
 		int result = UpgrStatSuccess;
 		for( int i = 0; i < pUpgr->totPkt; i++ )
 		{
-			if( READ_BIT( s_bUpgrDataValid[i / 8], (i % 8) ) == 0 )
+			if( READ_BIT( s_bUpgrDataValid[i / 8], (0x1 << (i % 8)) ) == 0 )
 			{
 				result = UpgrStatFailed;
 				break;
