@@ -23,9 +23,9 @@
 //========================================================================
 // Define
 
-#ifndef GetDbgLevel
+#ifndef GetDbg
 
-#define GetDbgLevel( args ... )     (0)         //  GetDbgLevel이 정의되지 않으면 Default 0
+#define GetDbg( args ... )     (0)         //  GetDbgLevel이 정의되지 않으면 Default 0
 
 #endif
 
@@ -56,7 +56,7 @@ void Adc_Power( void )
     //  충전중인지 검사.
     bIsCharge = ( HAL_GPIO_ReadPin( BAT_CHRG_GPIO_Port, BAT_CHRG_Pin ) ) ? 0 : 1;
 
-    if( GetDbgLevel() > 0 )
+    if( GetDbg() > 0 )
     {
         printf( "%s(%d) - adc_pwr : %d / old_adc_pwr : %d / BAT_CHRG : %d\n",
             __func__, __LINE__,

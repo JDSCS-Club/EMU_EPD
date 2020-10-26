@@ -59,15 +59,19 @@
 
 //========================================================================
 //	상태정보 송/수신
+#define		USE_STAT_REQ					1		//	상태정보 요청/응답 Enable
+
+#if !defined(USE_STAT_REQ)
+//	상태정보 요청/응답 방식인 경우 -> 주기적으로 상태정보 전송 Disable
 #define		USE_SEND_STATUS					1		//	상태정보 전송 사용.
+#endif
+
 #define		TIMEOUT_RECV_STATUS				4		//	상태정보 수신 Timeout. ( seconds )
 
 //========================================================================
 //	모니터링
 #define		USE_SHOW_PKT					1		//	패킷 상태 모니터링.
 #define		DEFAULT_EN_SHOW_PKT				0		//	패킷 상태 모니터링 - 초기값 Off(0)
-
-//#define		USE_RSSI						1		//	RSSI 모니터링.
 
 //#define		USE_STAT_LIGHT					1		//	상태정보 정보 Light 추가. ( 송신기 Light 상태에 따른 수신기 조명제어 )
 

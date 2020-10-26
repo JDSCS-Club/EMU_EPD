@@ -41,6 +41,31 @@
 //		| Src Addr | Dest Addr | Len | PktID |     Data      |
 //		|----------------------------------------------------|
 //	
+
+//==========================================================================
+//	Packet Define ( 64 Byte ) - Hopping
+//		Header Type
+//		|-----------------------------------------------------------------|
+//		|                   Header 4 Byte                  | Data 60 Byte |
+//		|-----------------------------------------------------------------|
+//		| DevIDFlag(2Byte) | Seq. No(1Byte) | PktID(1Byte) |    Data      |
+//		|-----------------------------------------------------------------|
+
+
+//		Header Type #1
+//		|-------------------------------------------------------------------------|
+//		| HdrID |              Header 4 Byte                       | Data 60 Byte |
+//		|-------------------------------------------------------------------------|
+//		| 0 | 0 | DevIDFlag(14Bit) | Seq. No(1Byte) | PktID(1Byte) |     Data     |
+//		|-------------------------------------------------------------------------|
+
+//		Header Type #2
+//		|-------------------------------------------------------------------------|
+//		| HdrID |              Header 4 Byte                       | Data 60 Byte |
+//		|-------------------------------------------------------------------------|
+//		| 0 | 1 | DevIDFlag(14Bit) | Src Ch(1Byte)  | PktID(1Byte) |     Data     |
+//		|-------------------------------------------------------------------------|
+
 //==========================================================================
 
 /*==========================================================================
@@ -147,21 +172,54 @@ enum eDevID
 enum ePktID
 {
 	PktNone			=	0x00,		//	None
+
+	//	Packet ID	: 0x00 ~ 0x7F
+	//	|-----------------------------------------------------------------|
+	//	|                   Header 4 Byte                  | Data 60 Byte |
+	//	|-----------------------------------------------------------------|
+	//	| DevIDFlag(2Byte) | Seq. No(1Byte) | PktID(1Byte) |    Data      |
+	//	|-----------------------------------------------------------------|
 	PktStat			=	0x01,		//	상태정보. ( nIDFlag(0) / nSeq(0) )
-	PktPA			=	0x02,		//	방송. ( 송신기 -> 수신기 )
-	PktCall			=	0x03,		//	통화. ( 송신기 -> 송신기 )
+	PktPA			=	0x02,		//	방송스트림. ( 송신기 -> 수신기 )
+	PktCall			=	0x03,		//	통화스트림. ( 송신기 -> 송신기 )
 	PktLight		=	0x04,		//	조명제어. ( On/Off )
 
+	PktCtrlPaCall	=	0x08,		//	방송/통화 제어. ( 시작 / 종료 )
+
+	//==========================================================================
+	//	Request
+	PktStatReq		=	0x11,		//	상태정보 요청. ( nIDFlag(0) / nSeq(0) )
+
+	//==========================================================================
+	//	Command
 	PktCmd			=	0x20,		//	Command ( nIDFlag(0) / nSeq(0) )
 	PktCmdRsp		=	0x21,		//	Cmd 처리결과 응답.
 
+	//==========================================================================
+	//	Upgrade
 	PktUpgr			=	0x40,		//	Upgrade ( nIDFlag(0) / nSeq(0) )
 	PktUpgrStat		=	0x41,		//	Upgrade Status : Success / Failed
+
+
+
+	//	Packet ID Extented : 0x80 ~ 0xFF
+	//	|---------------------------------------------------------------------------|
+	//	|                   Header 4 Byte                  | Ex 4Byte | Data 60 Byte|
+	//	|---------------------------------------------------------------------------|
+	//	| DevIDFlag(2Byte) | Seq. No(1Byte) | PktID(1Byte) |          |   Data      |
+	//	|---------------------------------------------------------------------------|
+//
+//	PktExStatReq	=	0x81,		//	상태정보 요청. ( nIDFlag(0) / nSeq(0) )
+//	PktExStatRsp	=	0x82,		//	상태정보 응답. ( nIDFlag(0) / nSeq(0) )
+//
+//	PktExConnTx		=	0x88,		//	수신기->송신기 : 등록 / 해제
+
 };
 
 enum eChannel
 {
-	ChCommon		=	0,			//	* CH0 : 공통채널
+	ChNoUsed		=	0,			//	* CH0 : 사용안함.
+	ChCommon		=	1,			//	* CH1 : 공통채널
 
 	ChUpgrDst		=	3,			//	* CH3 : Upgrade 전용 채널 ( 수신기 - Target )
 	ChUpgrSrc		=	4,			//	* CH4 : Upgrade 전용 채널 ( 송신기 - Origin )
@@ -171,10 +229,17 @@ enum eChannel
 	ChTx_1			=	8,			//	* 송신기#1
 	ChTx_2			=	9,			//	* 송신기#2
 
-	ChTS1_1			=	11,			//	* CH11 : 1편성 ( 1,3,5호차 )
-	ChTS1_2			=	12,			//	* CH12 : 1편성 ( 2,4,6호차 )
-	ChTS2_1			=	13,			//	* CH13 : 2편성 ( 1,3,5호차 )
-	ChTS2_2			=	14,			//	* CH14 : 2편성 ( 2,4,6호차 )
+	ChRFT			=	10,			//	* 송신기
+
+	ChTS1_1			=	11,			//	* CH11 : 1편성 ( 1호차 )
+	ChTS1_2			=	12,			//	* CH12 : 1편성 ( 2호차 )
+
+	//	...
+
+	ChTS1_10		=	20,			//	* CH20 : 1편성 ( 10호차 )
+
+	ChTS2_1			=	21,			//	* CH21 : 2편성 ( 1호차 )
+	ChTS2_2			=	22,			//	* CH22 : 2편성 ( 2호차 )
 };
 
 //==========================================================================
@@ -212,8 +277,18 @@ enum eDevFlag
 
 typedef struct _RFMPktHdr
 {
-	uint16_t	nIDFlag;		//	Device ID Flag		( 0(Stat) : Hopping X )
-	uint8_t		nSeq;			//	Pkt Sequence Number ( 0(Stat) : Hopping X / 1 ~ 255 : Hopping)
+	enum eHdrID
+	{
+		HdrID1	=	0x0,
+		HdrID2	=	0x1,
+	};
+	uint16_t	bHdrID:2;		//	00 : Hdr#1 / 01 : Hdr#2
+	uint16_t	nIDFlag:14;		//	Device ID Flag		( 0(Stat) : Hopping X )
+	union
+	{
+		uint8_t		nSeq;			//	Hdr#1 : Pkt Sequence Number ( 0(Stat) : Hopping X / 1 ~ 255 : Hopping)
+		uint8_t		nSrcCh;			//	Hdr#2 : Source Channel
+	};
 	uint8_t		nPktCmd;		//	Command에 따라 Data Length 구분.
 } RFMPktHdr;
 
@@ -234,6 +309,17 @@ typedef struct _RFMPktHdr
 //==========================================================================
 #endif
 
+//==========================================================================
+//	RFM Packet - Status Data Request
+typedef struct _RFMPktStatReq
+{
+	//	상태정보 요청.
+	//--------------------------------------------------------------------------
+	//	TEXT 0
+	uint8_t		nSrcCh;			//	Source Channel
+	uint8_t		nSpare1[3];		//	Spare
+
+} RFMPktStatReq;
 
 //==========================================================================
 //	RFM Packet - Status Data
@@ -252,7 +338,7 @@ typedef struct _RFMPktStat
 	//--------------------------------------------------------------------------
 	//	TEXT 8
 	uint16_t	nFrequncy;		//	Frequency	-	주파수
-	uint8_t		nCh;			//	Channel		-	채널
+	uint8_t		nChRx;			//	Channel		-	수신채널
 	uint8_t		nSpare11[1];	//	Spare
 	//--------------------------------------------------------------------------
 	//	TEXT 12
@@ -268,7 +354,7 @@ typedef struct _RFMPktStat
 	//	TEXT 20
 	uint16_t	rspID;			//	응답 ID
 	uint8_t		nManHop;		//	Manual Hopping 설정. ( 0:Default / 1:On / 2: Off )
-	uint8_t		nSpare22[1];	//	Spare
+	uint8_t		nSpare23[1];	//	Spare
 	//--------------------------------------------------------------------------
 	//	TEXT 24
 	uint8_t		nDevFlag;		//	Device Flag ( DevFlagLight )
@@ -300,14 +386,14 @@ typedef struct _RFMPktUpgr
 {
 	enum ePktUpgr
 	{
-		PktUpgrDataSize = 48,	//	FIXME: 4Byte의 배수로 설정 해야함.
+		PktUpgrDataSize		=	48,		//	FIXME: 4Byte의 배수로 설정 해야함.
 
-		MaxUpgrDataPacket = 8192,	//	Max 0x60000( 384KB ) : 8192 Packet = 384 * 1024 / 48
+		MaxUpgrDataPacket	=	8192,	//	Max 0x60000( 384KB ) : 8192 Packet = 384 * 1024 / 48
 	};
 
 	enum ePktUpgrFlag
 	{
-		PktUpgrFlagRetry = 0x1,
+		PktUpgrFlagRetry	=	0x1,
 	};
 	uint32_t	baseAddr;		//	0	| Base Address ( 0x08080000 ~ 0x080FFFFF )
 	uint16_t	totPkt;			//	4	| Total Packet
@@ -342,11 +428,19 @@ typedef struct _RFMPktUpgrStat
 
 //==========================================================================
 //	RFM Packet - Command PA/Call - Start/Stop
-typedef struct _RFMPktPACall
+typedef struct _RFMPktStrmPACall
+{
+	uint8_t		nStrmData[RFPktDataLen];	//	PA / Call Stream Data
+} RFMPktStrmPACall;
+
+//==========================================================================
+//	RFM Packet - Command PA/Call - Start/Stop
+typedef struct _RFMPktCtrlPACall
 {
 	uint8_t		nStartStop;		//	Start(1) / Stop(0)
-	uint8_t		nSpare1[3];		//	Spare
-} RFMPktPACall;
+	uint8_t		nTypePACall;	//	PA( PktPA - 2 ) / Call( PktCall - 3 )
+	uint8_t		nSpare2[2];		//	Spare
+} RFMPktCtrlPACall;
 
 
 //==========================================================================
@@ -365,14 +459,18 @@ typedef struct _RFMPkt
 
 	union
 	{
-		uint8_t			data[RFPktDataLen];	//	Data
-		RFMPktStat		stat;				//	Status Info
-		RFMPktLight		light;				//	Light On/Off
-		RFMPktPACall	pacall;				//	PA/Call Start/Stop
-		RFMPktCmd		cmd;				//	Remote RF Command
-		RFMPktUpgr		upgr;				//	Upgrade Binary Data
-		RFMPktUpgrStat	upgrStat;			//	Upgrade Status
+		uint8_t				data[RFPktDataLen];	//	Data
+		RFMPktStat			stat;				//	Status Data
+		RFMPktStatReq		statReq;			//	Status Data Request
+		RFMPktLight			light;				//	Light On/Off
+		RFMPktCtrlPACall	pacall;				//	PA/Call Start/Stop
+		RFMPktStrmPACall	pacallStrm;			//	PA/Call Stream Data
+		RFMPktCmd			cmd;				//	Remote RF Command
+		RFMPktUpgr			upgr;				//	Upgrade Binary Data
+		RFMPktUpgrStat		upgrStat;			//	Upgrade Status
 	} dat;
+
+	//	Tail : Src Channel ( 1 Byte )
 } RFMPkt;
 
 
@@ -395,7 +493,9 @@ int		GetStatus			( void );
 
 //==========================================================================
 
-void	SendStat			( void );
+void	SendStat			( int nDestCh );
+void 	SendStatReq			( int nDestCh );
+
 void	SendPA				( int nStartStop );
 void	SendCall			( int nStartStop );
 void	SendLight			( int nOnOff );
@@ -413,6 +513,7 @@ void	SendUpgrStat		( int nUpgrResult );	//	Send Upgrade Data
 //==========================================================================
 
 int		ProcPktStat			( const RFMPkt *pRFPkt );
+int		ProcPktStatReq		( const RFMPkt *pRFPkt );
 int		ProcPktPA			( const RFMPkt *pRFPkt );
 int		ProcPktCall			( const RFMPkt *pRFPkt );
 int		ProcPktLight		( const RFMPkt *pRFPkt );

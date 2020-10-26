@@ -98,7 +98,7 @@ int		GetRFMMode	( void )
 void	SetRFMMode	( int nRFMMode )
 //========================================================================
 {
-	if( GetDbgLevel() > 1 )
+	if( GetDbg() > 1 )
 	{
 		printf( "%s : ", __func__ );
 		switch( nRFMMode )
@@ -167,7 +167,7 @@ int		GetTrainSetIdx	( void )
 //    M24_HAL_ReadBytes( &hi2c1, 0xA0, 0x10, (uint8_t *)&idxTrainSet, 1 );
     M24_HAL_ReadBytes( &hi2c1, 0xA0, AddrEEPTrainSet, (uint8_t *)&idxTrainSet, 1 );
 
-    if ( GetDbgLevel() > 0 )
+    if ( GetDbg() > 0 )
     	printf( "%s(%d) - %d\n", __func__, __LINE__, idxTrainSet );
 
     return idxTrainSet;
@@ -184,7 +184,7 @@ void	SetTrainSetIdx	( int idxTrainSet )
         return ;
     }
 
-    if ( GetDbgLevel() > 0 )
+    if ( GetDbg() > 0 )
     	printf( "%s(%d) - %d\n", __func__, __LINE__, idxTrainSet );
 //    M24_HAL_WriteBytes( &hi2c1, 0xA0, 0x10, (uint8_t *)&idxTrainSet, 1 );
     M24_HAL_WriteBytes( &hi2c1, 0xA0, AddrEEPTrainSet, (uint8_t *)&idxTrainSet, 1 );
@@ -211,7 +211,7 @@ int		GetManHop	( void )
 //    if ( nManHop > 2 || nManHop < 0 ) nManHop = 0;
     if ( nManHop > 2 || nManHop < 0 ) nManHop = DEFAULT_HOP_MAN_VAL;	//	Default Hop Man
 
-    if ( GetDbgLevel() > 0 )
+    if ( GetDbg() > 0 )
     	printf( "%s(%d) - %d\n", __func__, __LINE__, nManHop );
 
     return nManHop;
@@ -228,7 +228,7 @@ void	SetManHop	( int nManHop )
         return ;
     }
 
-    if ( GetDbgLevel() > 0 )
+    if ( GetDbg() > 0 )
     	printf( "%s(%d) - %d\n", __func__, __LINE__, nManHop );
 
 //    M24_HAL_WriteBytes( &hi2c1, 0xA0, 0x0D, (uint8_t *)&nManHop, 1 );
@@ -253,7 +253,7 @@ int		LoadCarNo		( void )
 //    M24_HAL_ReadBytes( &hi2c1, 0xA0, 0x0E, (uint8_t *)&nCarNo, 1 );
     M24_HAL_ReadBytes( &hi2c1, 0xA0, AddrEEPCarNo, (uint8_t *)&nCarNo, 1 );
 
-    if ( GetDbgLevel() > 0 )
+    if ( GetDbg() > 0 )
     	printf( "%s(%d) - %d\n", __func__, __LINE__, nCarNo );
 
     g_nCarNo = nCarNo;
@@ -288,7 +288,7 @@ void	SetCarNo		( int nCarNo )
         return ;
     }
 
-	if ( GetDbgLevel() > 0 )
+	if ( GetDbg() > 0 )
     	printf( "%s(%d) - %d\n", __func__, __LINE__, nCarNo );
 
 	g_nCarNo = nCarNo;
@@ -356,7 +356,7 @@ void RF_RSSI( void )
     si446x_get_modem_status_fast_clear_read();
 //	si446x_get_modem_status(0xff);
 
-    if ( GetDbgLevel() > 0 )
+    if ( GetDbg() > 0 )
     {
         printf( "%s(%d) - ant1:%d / ant2:%d / curr:%d / latch:%d\n", __func__, __LINE__,
                 Si446xCmd.GET_MODEM_STATUS.ANT1_RSSI,
@@ -414,7 +414,7 @@ void RF_RxTx_Mode()
 void	RFM_Spk			( int bOnOff )		//	1(On) / 0(Off)
 //========================================================================
 {
-	if( GetDbgLevel() > 1 )
+	if( GetDbg() > 1 )
 		printf("%s(%d) - %d\n", __func__, __LINE__, bOnOff);
 
     if ( bOnOff )
@@ -502,7 +502,7 @@ int cmd_ch      ( int argc, char * argv[] )
 
     if ( nCh < 0 || MaxTrainSet <= nCh )  nCh = 0;
 
-    if ( GetDbgLevel() > 0 )
+    if ( GetDbg() > 0 )
     	printf( "%s(%d) - Channel : %d\n", __func__, __LINE__, nCh );
 
     SetTrainSetIdx( nCh );
@@ -1180,11 +1180,11 @@ void LoopProcRFM ( int nTick )
 					//	Packet Header
 					if( GetKey(eKeyPtt) )
 					{
-						_MakePktHdr( &bufRFTx, GetDevID(), 0xFF, sizeof( RFMPktPACall ), PktPA );
+						_MakePktHdr( &bufRFTx, GetDevID(), 0xFF, sizeof( RFMPktCtrlPACall ), PktPA );
 					}
 					else
 					{
-						_MakePktHdr( &bufRFTx, GetDevID(), 0xFF, sizeof( RFMPktPACall ), PktCall );
+						_MakePktHdr( &bufRFTx, GetDevID(), 0xFF, sizeof( RFMPktCtrlPACall ), PktCall );
 					}
 
 #else
@@ -1269,6 +1269,7 @@ void LoopProcRFM ( int nTick )
 		HAL_GPIO_WritePin ( LED_ON_B_GPIO_Port, LED_ON_B_Pin, GPIO_PIN_RESET ); //  RED LED
 	}
 
+	//========================================================================
 	//  수신기 Standby GPIO 제어 : 모듈동작시 1초간격 Blink
 	static int s_nTickStandby;
 
@@ -1290,7 +1291,7 @@ void LoopProcRFM ( int nTick )
 		//========================================================================
 		if ( GetRFMMode() == RFMModeNormal )
 		{
-		    SendStat();		//	상태정보전송.
+		    SendStat(0);		//	상태정보전송.
 
 		    //	Reflash Status
 		    ReflashStat( nTick );	//	상태정보 갱신.
@@ -1300,22 +1301,23 @@ void LoopProcRFM ( int nTick )
 		s_nTickStandby = nTick;
 	}
 
+#if defined(USE_STAT_REQ)	//	송신기 : 상태 정보 요청 100 msec간격.
 	//========================================================================
 	//	RSSI 수신감도 체크.
-	static int oldTickRSSI = 0;
+	static int oldTickStatReq = 0;
+	static int s_idxCh = 0;
 
-	if ( nTick - oldTickRSSI > 100 )
+	if	(	nTick - oldTickStatReq > 100 &&		//	주기 : 100 msec
+			GetDevID() == DevRF900T				//	송신기
+		)
 	{
-		//  Period : 1 sec
-//		if ( GetRFMMode() == RFMModeNormal )
-		{
-#if defined(USE_RSSI)
-			RF_RSSI();	//	주기적으로 상태정보 전송.
-#endif	//	defined(USE_RSSI)
-		}
+		//	상태정보 요청.
+		SendStatReq( ChTS1_1 + s_idxCh );
 
-		oldTickRSSI = nTick;
+		s_idxCh = ( s_idxCh + 1 ) % MaxTrainSet;	//	MaxTrainSet : 10
+		oldTickStatReq = nTick;
 	}
+#endif
 }
 
 //========================================================================

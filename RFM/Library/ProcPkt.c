@@ -115,7 +115,7 @@ U16 wPayloadLenghtFromPhr(U8* pbPhrMsb);
 void Dump( const char *sTitle, const char *sBuf, int nSize )
 //========================================================================
 {
-	if ( GetDbgLevel() < 2 )	return;
+	if ( GetDbg() < 2 )	return;
 
 	printf( "%s : ", sTitle );
 
@@ -232,6 +232,18 @@ void CallbackRecvPacket( const char *pData, int nSize )
 #if defined(USE_HOPPING)
 
 	//========================================================================
+	//	Header ID
+	switch( pRFPkt->hdr.bHdrID )
+	{
+	case HdrID1:		//	Header ID #1
+//		if(GetDbg()) printf("H1");
+		break;
+	case HdrID2:		//	Header ID #2
+		if(GetDbg()) printf("H2");
+		break;
+	}
+
+	//========================================================================
 	//	Packet Filtering
 	//		- Pkt 처리 여부 확인.
 	if	(	pRFPkt->hdr.nSeq != 0 &&
@@ -282,7 +294,20 @@ void CallbackRecvPacket( const char *pData, int nSize )
 
 		//	수신채널 분리.
 		int nCh = GetChRx() + 1;	//	Test : Hopping 시 Rx + 1 Channel로 전송.
+
+		//	1 - 2 - 3 - 4 - 5 - 6
+		//	  <- ->	2번 수신시 1, 3으로 전송.
+		//
+
+		//==========================================================================
+		//	Tx #1
 		SendPktCh( nCh, buf, nSize );
+
+		//==========================================================================
+		//	Tx #2
+		HAL_Delay(2);		//	2 msec
+		SendPktCh( nCh + 10, buf, nSize );
+		//==========================================================================
 
 #elif defined(USE_HOP_CH)
 
@@ -313,6 +338,7 @@ void CallbackRecvPacket( const char *pData, int nSize )
 	case PktCall:		ProcPktCall		( pRFPkt );		break;
 	case PktPA:			ProcPktPA		( pRFPkt );		break;
 	case PktStat:		ProcPktStat		( pRFPkt );		break;
+	case PktStatReq:	ProcPktStatReq	( pRFPkt );		break;
 	case PktLight:		ProcPktLight	( pRFPkt );		break;
 	case PktCmd:		ProcPktCmd		( pRFPkt );		break;
 	case PktUpgr:		ProcPktUpgr		( pRFPkt );		break;

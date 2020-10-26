@@ -20,7 +20,7 @@ extern	unsigned char *mem_addr;
 extern	int	dumpsize, data_option;
 extern	int	debug_level;
 
-int		GetDbgLevel		( void );
+int		GetDbg		( void );
 
 void	memory_modify	( void *mem_addr, int unit );
 

@@ -205,7 +205,7 @@ U8 bRadio_Check_Tx_RX(void)
 
 			g_nRSSI = Si446xCmd.FRR_B_READ.FRR_B_VALUE;		//	RSSI Value
 
-			if( GetDbgLevel() > 2 )
+			if( GetDbg() > 2 )
 				printf("Latch RSSI : %02d\n",Si446xCmd.FRR_B_READ.FRR_B_VALUE);
 			//========================================================================
 
