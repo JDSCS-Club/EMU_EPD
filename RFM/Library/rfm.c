@@ -51,8 +51,6 @@ int		g_nCarNo		=	0;	  				//  Car Number
 
 int		g_nChRx			=	ChTS1_1;			//  RF Rx Channel
 
-int		g_Channel		=	0;	  				//  Train Set Index
-
 int	 	g_nSpkLevel		=	DefaultSpkVol;		//  Default (1) - 0(Mute) / 1 / 2(Normal) / 3
 
 int	 	g_nRFMMode 		=	RFMModeNormal;		//  eRFMMode
@@ -120,6 +118,32 @@ void	SetRFMMode	( int nRFMMode )
 	}
 
 	g_nRFMMode = nRFMMode;
+}
+
+//========================================================================
+int GetChRx( void )
+//========================================================================
+{
+	//	Get Self Rx Channel
+
+#if defined(USE_CH_ISO_DEV)
+
+	if ( GetDevID() == DevRF900T )
+	{
+		//	송신기 #1 / #2
+		return ChTx_1 + (g_nCarNo%2);	// 현재 호차 채널
+	}
+	else if ( GetDevID() == DevRF900M )
+	{
+		//	수신기.
+		return ChTS1_1 + g_nCarNo;		// 현재 호차 채널
+	}
+
+#else
+	//	CH1 : 1, 3, 5
+	//	CH2 :  2, 4, 6
+	return ChTS1_1 + g_idxTrainSet * 2 + ((g_nCarNo+1) % 2);	// 현재 호차 채널
+#endif
 }
 
 
@@ -533,7 +557,6 @@ int cmd_hop     ( int argc, char * argv[] )
 int cmd_swinfo    ( int argc, char * argv[] )
 //========================================================================
 {
-
     printf( "[S/W Info]\n" );
     printf( " - Boot : %d Byte\n", FLASH_If_GetBootSize() );
     printf( " - App : %d Byte\n", FLASH_If_GetAppSize() );
@@ -551,6 +574,7 @@ int cmd_info    ( int argc, char * argv[] )
     printf( "[Setting]\n" );
     printf( " - Train Set : %d\n", 100 + GetTrainSetIdx() );
     printf( " - Car No : %d\n", GetCarNo() );
+    printf( " - RF Channel: %d\n", GetChRx() );
 }
 
 

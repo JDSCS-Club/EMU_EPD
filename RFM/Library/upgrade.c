@@ -173,7 +173,7 @@ int cmd_upgrade	( int argc, char * argv[] )
 
 		//========================================================================
 		//	채널변경. => CH #1
-		g_nChRx = ChUpgrade;		//	Upgrade Channel
+		g_nChRx = ChUpgrDst;		//	Upgrade Channel
 
 		vRadio_StartRX (
 			g_nChRx,	//g_idxTrainSet,	//	pRadioConfiguration->Radio_ChannelNumber,

@@ -179,9 +179,7 @@ int	InitProcPkt ( void )
 #else
 
 	//  RF 수신 Start
-	//	CH1 : 1, 3, 5
-	//	CH2 :  2, 4, 6
-	g_nChRx = ChTS1_1 + g_idxTrainSet * 2 + ((g_nCarNo+1) % 2);	// 현재 호차 채널
+	g_nChRx = GetChRx();	//	ChTS1_1 + g_idxTrainSet * 2 + ((g_nCarNo+1) % 2);	// 현재 호차 채널
 
 	vRadio_StartRX(
 		g_nChRx,	//g_idxTrainSet,	//		pRadioConfiguration->Radio_ChannelNumber,
@@ -190,6 +188,39 @@ int	InitProcPkt ( void )
 #endif
 
 	return TRUE;
+}
+
+//========================================================================
+int _ChkDropPktSeq( uint8_t _nRxSeq, uint8_t _currSeq )
+//========================================================================
+{
+	//	현재 받은 Packet Sequence가 새로운 패킷인지 확인.
+	//		-> 이전 Packet인 경우 Drop
+
+	if ( _nRxSeq == _currSeq )		//	Seq가 같은 Packet 수신시 Drop
+	{
+		return 1;	//	Pkt Drop
+	}
+
+	//	Rx Packet이 currPkt보다 1크면 처리.
+	uint8_t currSeq = _currSeq;
+	if ( ++currSeq == 0 )	currSeq++;
+	if ( _nRxSeq == currSeq )		//	Seq가 같은 Packet 수신시 Drop
+	{
+		return 0;	//	Valid Pkt
+	}
+
+	//	현재 패킷보다 이전에 받은 5개 패킷은 Drop
+	for( int i = 0; i < 5; i++ )
+	{
+		if ( ++_nRxSeq == 0 )	_nRxSeq++;
+		if ( _nRxSeq == _currSeq )		//	Seq가 같은 Packet 수신시 Drop
+		{
+			return 1;	//	Pkt Drop
+		}
+	}
+
+	return 0;	//	Valid Pkt
 }
 
 //========================================================================
@@ -204,7 +235,9 @@ void CallbackRecvPacket( const char *pData, int nSize )
 	//	Packet Filtering
 	//		- Pkt 처리 여부 확인.
 	if	(	pRFPkt->hdr.nSeq != 0 &&
-			(	pRFPkt->hdr.nSeq == g_nPktSeq		//	Seq가 같은 Packet 수신시 Drop
+			(
+//				(pRFPkt->hdr.nSeq == g_nPktSeq)		//	Seq가 같은 Packet 수신시 Drop
+				_ChkDropPktSeq(pRFPkt->hdr.nSeq, g_nPktSeq)		//	Seq가 같은 Packet 수신시 Drop
 				|| GetRFMMode() == RFMModeTx		//	송신모드에서는 Packet Drop
 			)
 		)
@@ -222,7 +255,9 @@ void CallbackRecvPacket( const char *pData, int nSize )
 	if ( ( pRFPkt->hdr.nSeq != 0 && pRFPkt->hdr.nIDFlag != 0
 				&& (GetDevID() == DevRF900M) )		//	수신기만 중계함.
 #if defined(USE_HOP_FORCE)
+			//========================================================================
 			//	강제 중계 설정.
+			//========================================================================
 #else
 			&& ( ( ( (g_nManHopping == 0) && (((~pRFPkt->hdr.nIDFlag)&flagID) != 0) )	//	Default
 				|| ( g_nManHopping == 1 ) )		//	Hopping On
@@ -243,7 +278,13 @@ void CallbackRecvPacket( const char *pData, int nSize )
 		RFMPkt	*pSendPkt = (RFMPkt *)buf;
 		pSendPkt->hdr.nIDFlag |= g_flagRspID;
 
-#if defined(USE_HOP_CH)
+#if defined(USE_CH_ISO_DEV)
+
+		//	수신채널 분리.
+		int nCh = GetChRx() + 1;	//	Test : Hopping 시 Rx + 1 Channel로 전송.
+		SendPktCh( nCh, buf, nSize );
+
+#elif defined(USE_HOP_CH)
 
 		int nCh = ChTS1_1 + g_idxTrainSet * 2 + ( (g_nCarNo) % 2);	//	타채널
 		SendPktCh( nCh, buf, nSize );
@@ -635,7 +676,7 @@ int cmd_pktmon      ( int argc, char * argv[] )
 //========================================================================
 {
 	//	bEnable ( 1 / 0 )
-	int bEnable = 0;
+	int bEnable = 1;	//	Default : Enable
 
 	switch ( argc )
 	{

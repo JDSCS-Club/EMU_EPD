@@ -118,6 +118,7 @@
 	* CH1 : Upgrade 전용 채널 ( 수신기 - Target )
 	* CH2 : Upgrade 전용 채널 ( 송신기 - Origin )
 	* CH3 ~ 10 : Reserved
+	* CH10 : RFT(송신기)
 	* CH11 : 1편성 ( 1,3,5호차 )
 	* CH12 : 1편성 ( 2,4,6호차 )
 	* CH13 : 2편성 ( 1,3,5호차 )
@@ -162,10 +163,13 @@ enum eChannel
 {
 	ChCommon		=	0,			//	* CH0 : 공통채널
 
-	ChUpgrade		=	3,			//	* CH3 : Upgrade 전용 채널 ( 수신기 - Target )
-	ChUpgrOrg		=	4,			//	* CH4 : Upgrade 전용 채널 ( 송신기 - Origin )
+	ChUpgrDst		=	3,			//	* CH3 : Upgrade 전용 채널 ( 수신기 - Target )
+	ChUpgrSrc		=	4,			//	* CH4 : Upgrade 전용 채널 ( 송신기 - Origin )
 
 	ChResv			=	5,			//	* CH3 ~ 10 : Reserved
+
+	ChTx_1			=	8,			//	* 송신기#1
+	ChTx_2			=	9,			//	* 송신기#2
 
 	ChTS1_1			=	11,			//	* CH11 : 1편성 ( 1,3,5호차 )
 	ChTS1_2			=	12,			//	* CH12 : 1편성 ( 2,4,6호차 )
@@ -192,9 +196,9 @@ enum eStartStop
 
 enum eDevFlag
 {
-	DevFlagNone			=	0x00,		//	Normal
+	DevFlagNone		=	0x00,		//	Normal
 #if defined(USE_STAT_LIGHT)
-	DevFlagLight		=	0x01,       //  점등/소등 상태.
+	DevFlagLight	=	0x01,       //  점등/소등 상태.
 #endif
 };
 
@@ -296,11 +300,9 @@ typedef struct _RFMPktUpgr
 {
 	enum ePktUpgr
 	{
-//		PktUpgrDataSize = 50
 		PktUpgrDataSize = 48,	//	FIXME: 4Byte의 배수로 설정 해야함.
 
-//		MaxUpgrDataPacket = 4000,
-		MaxUpgrDataPacket = 5000,
+		MaxUpgrDataPacket = 8192,	//	Max 0x60000( 384KB ) : 8192 Packet = 384 * 1024 / 48
 	};
 
 	enum ePktUpgrFlag
@@ -419,10 +421,6 @@ int		ProcPktCmd			( const RFMPkt *pRFPkt );
 int		ProcPktCmdRsp		( const RFMPkt *pRFPkt );
 int		ProcPktUpgr			( const RFMPkt *pRFPkt );
 int		ProcPktUpgrStat		( const RFMPkt *pRFPkt );
-
-//==========================================================================
-
-void	ProcessPkt			( const uint8_t *pbuf, int length );
 
 //==========================================================================
 #ifdef __cplusplus
