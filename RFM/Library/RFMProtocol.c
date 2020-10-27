@@ -240,11 +240,13 @@ void SendPA( int nStartStop )
 
 	//========================================================================
 	//	Packet Header
-	_MakePktHdr( &stPkt, GetDevID(), 0xFF, sizeof( RFMPktCtrlPACall ), PktPA );
+	_MakePktHdr( &stPkt, GetDevID(), 0xFF, sizeof( RFMPktCtrlPACall ), PktCtrlPaCall );
 
 	//========================================================================
 	//	Status Data
-	pPACall->nStartStop	=	nStartStop;
+	pPACall->nStartStop		=	nStartStop;
+
+	pPACall->nTypePACall	=	CtrlPA;
 
 	//========================================================================
 	//	Send RF
@@ -269,11 +271,13 @@ void SendCall( int nStartStop )
 
 	//========================================================================
 	//	Packet Header
-	_MakePktHdr( &stPkt, GetDevID(), 0xFF, sizeof( RFMPktCtrlPACall ), PktCall );
+	_MakePktHdr( &stPkt, GetDevID(), 0xFF, sizeof( RFMPktCtrlPACall ), PktCtrlPaCall );
 
 	//========================================================================
 	//	Status Data
-	pPACall->nStartStop = nStartStop;
+	pPACall->nStartStop		=	nStartStop;
+
+	pPACall->nTypePACall	=	CtrlCall;
 
 	//========================================================================
 	//	Send RF
@@ -517,6 +521,32 @@ int	ProcPktStatReq		( const RFMPkt *pRFPkt )
 	SendStat( pStatReq->nSrcCh );
 }
 
+
+//========================================================================
+int	ProcPktCtrlPaCall	( const RFMPkt *pRFPkt )
+//========================================================================
+{
+	if ( GetDbg() )		printf( "%s(%d)\n", __func__, __LINE__ );
+
+	//	방송/통화 시작 종료 명령.
+	RFMPktCtrlPACall	*pCtrl = &pRFPkt->dat.pacall;
+
+	switch ( pCtrl->nStartStop )
+	{
+	case CtrlStart:		printf("[Start]");					break;
+	case CtrlStop:		printf("[Stop]");					break;
+	default:			printf("%s:Invalid\n", __func__);	return 0;
+	}
+
+	switch ( pCtrl->nTypePACall )
+	{
+	case CtrlPA:		printf("[PA]");						break;
+	case CtrlCall:		printf("[Call]");					break;
+	default:			printf("%s:Invalid\n", __func__);	return 0;
+	}
+
+	printf("\n");
+}
 
 //========================================================================
 int	ProcPktPA			( const RFMPkt *pRFPkt )

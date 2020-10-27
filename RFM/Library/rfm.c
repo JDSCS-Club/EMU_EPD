@@ -1097,7 +1097,6 @@ int InitRFM( void )
 	HAL_Delay(g_offsetCA);
 
 	//========================================================================
-
 }
 
 //========================================================================
@@ -1285,6 +1284,9 @@ void LoopProcRFM ( int nTick )
 		{
 			//  Standby LED Toggle
 			HAL_GPIO_TogglePin( STANDBY_GPIO_Port, STANDBY_Pin );
+
+			//	RFM(Board) Status LED
+			HAL_GPIO_TogglePin ( LED_ST_GPIO_Port, LED_ST_Pin );
 		}
 
 #if defined(USE_SEND_STATUS)	//	상태 정보 전송.

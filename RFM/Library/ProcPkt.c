@@ -290,6 +290,7 @@ void CallbackRecvPacket( const char *pData, int nSize )
 		RFMPkt	*pSendPkt = (RFMPkt *)buf;
 		pSendPkt->hdr.nIDFlag |= g_flagRspID;
 
+		//==========================================================================
 #if defined(USE_CH_ISO_DEV)
 
 		//	수신채널 분리.
@@ -308,7 +309,6 @@ void CallbackRecvPacket( const char *pData, int nSize )
 		HAL_Delay(2);		//	2 msec
 		SendPktCh( nCh + 10, buf, nSize );
 		//==========================================================================
-
 #elif defined(USE_HOP_CH)
 
 		int nCh = ChTS1_1 + g_idxTrainSet * 2 + ( (g_nCarNo) % 2);	//	타채널
@@ -319,7 +319,7 @@ void CallbackRecvPacket( const char *pData, int nSize )
 		SendPacket( buf, nSize );
 
 #endif
-		//
+		//==========================================================================
 	}
 
 	if ( pRFPkt->hdr.nSeq != 0 )
@@ -335,14 +335,15 @@ void CallbackRecvPacket( const char *pData, int nSize )
 
 	switch ( pRFPkt->hdr.nPktCmd )
 	{
-	case PktCall:		ProcPktCall		( pRFPkt );		break;
-	case PktPA:			ProcPktPA		( pRFPkt );		break;
-	case PktStat:		ProcPktStat		( pRFPkt );		break;
-	case PktStatReq:	ProcPktStatReq	( pRFPkt );		break;
-	case PktLight:		ProcPktLight	( pRFPkt );		break;
-	case PktCmd:		ProcPktCmd		( pRFPkt );		break;
-	case PktUpgr:		ProcPktUpgr		( pRFPkt );		break;
-	case PktUpgrStat:	ProcPktUpgrStat	( pRFPkt );		break;
+	case PktCall:		ProcPktCall			( pRFPkt );		break;
+	case PktPA:			ProcPktPA			( pRFPkt );		break;
+	case PktStat:		ProcPktStat			( pRFPkt );		break;
+	case PktStatReq:	ProcPktStatReq		( pRFPkt );		break;
+	case PktLight:		ProcPktLight		( pRFPkt );		break;
+	case PktCtrlPaCall:	ProcPktCtrlPaCall	( pRFPkt );		break;
+	case PktCmd:		ProcPktCmd			( pRFPkt );		break;
+	case PktUpgr:		ProcPktUpgr			( pRFPkt );		break;
+	case PktUpgrStat:	ProcPktUpgrStat		( pRFPkt );		break;
 	default:
 //		printf( "%s(%d) - Invalid Value(%d)\n", __func__, __LINE__, pRFPkt->hdr.nPktCmd );
 		printf( "E\n" );	//	Packet Error

@@ -330,7 +330,7 @@ void KeySos( int bValue )
 		SetRFMMode( RFMModeTx );
 
 		//	통화 - 시작
-		SendCall( 1 );		//	SendRF - Send Call ( 송신기 -> 송신기 )
+		SendCall( CtrlStart );		//	SendRF - Send Call ( 송신기 -> 송신기 )
 	}
 	else
 	{
@@ -342,7 +342,7 @@ void KeySos( int bValue )
 		SetRFMMode( RFMModeNormal );
 
 		//	통화 - 종료
-		SendCall( 0 );		//	SendRF - Send Call ( 송신기 -> 송신기 )
+		SendCall( CtrlStop );		//	SendRF - Send Call ( 송신기 -> 송신기 )
 	}
 }
 

@@ -437,6 +437,16 @@ typedef struct _RFMPktStrmPACall
 //	RFM Packet - Command PA/Call - Start/Stop
 typedef struct _RFMPktCtrlPACall
 {
+	enum eCtrlPACall
+	{
+		//	nStart/Stop
+		CtrlStart	=	1,
+		CtrlStop	=	0,
+
+		//	nStart/Stop
+		CtrlPA		=	1,
+		CtrlCall	=	2,
+	};
 	uint8_t		nStartStop;		//	Start(1) / Stop(0)
 	uint8_t		nTypePACall;	//	PA( PktPA - 2 ) / Call( PktCall - 3 )
 	uint8_t		nSpare2[2];		//	Spare
@@ -516,6 +526,7 @@ int		ProcPktStat			( const RFMPkt *pRFPkt );
 int		ProcPktStatReq		( const RFMPkt *pRFPkt );
 int		ProcPktPA			( const RFMPkt *pRFPkt );
 int		ProcPktCall			( const RFMPkt *pRFPkt );
+int		ProcPktCtrlPaCall	( const RFMPkt *pRFPkt );
 int		ProcPktLight		( const RFMPkt *pRFPkt );
 
 int		ProcPktCmd			( const RFMPkt *pRFPkt );
