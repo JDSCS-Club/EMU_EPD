@@ -66,7 +66,7 @@ int		g_nManHopping	=	0;					//	On(1) / Off(2) / Unused(0 : Other)
 #endif	//	defined(USE_HOP_MANUAL)
 
 //	Device Stat
-RFMDevStat		devStat[ MaxCarNo ] = {0, };
+RFMDevStat		g_devStat[ MaxCarNo ] = { 0, };
 
 //========================================================================
 
@@ -1372,8 +1372,18 @@ void UpdateStat( RFMPktStat *pStat )
 
 	if ( 0 < pStat->nCarNo && pStat->nCarNo <= MaxCarNo )
 	{
-		//	버전정보 갱신.
 		int idx = pStat->nCarNo;
+
+		//========================================================================
+		//	상태정보 갱신.
+		memcpy( &g_devStat[idx].stat, pStat, sizeof(RFMPktStat) );
+
+		//========================================================================
+		//	RSSI 갱신
+		g_devStat[idx].nRSSI = g_nRSSI;
+
+		//========================================================================
+		//	버전정보 갱신.
 
 #if defined(USE_HOP_MANUAL)
 		sprintf(_sVerList[idx], "%02d:v%d/hop(%d)", idx,
@@ -1403,7 +1413,7 @@ void SetStat( int nRspID )
 
 	//	TimeStamp 저장.
 //DEL	stampStat[nRspID] = HAL_GetTick();
-	devStat[nRspID].stampRx = HAL_GetTick();
+	g_devStat[nRspID].stampRx = HAL_GetTick();
 }
 
 //========================================================================
@@ -1414,7 +1424,7 @@ void ReflashStat( int nTick )
 	//	Timeout 초과 상태정보 Disable
 	if( g_bSetRspIDManual )
 	{
-		//	수동설정모드인 경우 return
+		//	ID 수동설정모드인 경우 return
 		return ;
 	}
 
@@ -1428,9 +1438,14 @@ void ReflashStat( int nTick )
 			continue;
 		}
 
-		if ( ( nTick - devStat[idx].stampRx ) > TIMEOUT_RECV_STATUS * 1000 )
+		if ( ( nTick - g_devStat[idx].stampRx ) > TIMEOUT_RECV_STATUS * 1000 )
 		{
 			g_flagRspID &= ~( 0x1 << idx );
+
+			//========================================================================
+			//	Timeout 발생시 RSSI값 초기화.
+			g_devStat[idx].nRSSI = 0;
+			//========================================================================
 		}
 	}
 }
@@ -1452,7 +1467,7 @@ void ReloadStampStat( void )
 	{
 		if( g_flagRspID & ( 0x1 << idx ) )
 		{
-			devStat[idx].stampRx = nStamp;
+			g_devStat[idx].stampRx = nStamp;
 		}
 	}
 }

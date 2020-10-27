@@ -280,18 +280,31 @@ typedef struct _RFMPktHdr
 {
 	enum eHdrID
 	{
-		HdrID1	=	0x0,
-		HdrID2	=	0x1,
+		HdrID1	=	0x0,		//	4 Byte Header
+//		HdrID2	=	0x1,		//
 	};
 	uint16_t	bHdrID:2;		//	00 : Hdr#1 / 01 : Hdr#2
 	uint16_t	nIDFlag:14;		//	Device ID Flag		( 0(Stat) : Hopping X )
-	union
-	{
-		uint8_t		nSeq;			//	Hdr#1 : Pkt Sequence Number ( 0(Stat) : Hopping X / 1 ~ 255 : Hopping)
-		uint8_t		nSrcCh;			//	Hdr#2 : Source Channel
-	};
+	uint8_t		nSeq;			//	Hdr#1 : Pkt Sequence Number ( 0(Stat) : Hopping X / 1 ~ 255 : Hopping)
 	uint8_t		nPktCmd;		//	Command에 따라 Data Length 구분.
 } RFMPktHdr;
+
+//#define		RFPktExHdrLen		8
+//#define		RFPktExDataLen		56
+
+typedef struct _RFMPktHdr2
+{
+	enum eHdrIDEx
+	{
+//		HdrID1	=	0x0,		//	4 Byte Header
+		HdrID2	=	0x1,		//	채널 분리.
+	};
+	uint8_t		bHdrID:2;		//	00 : Hdr#1 / 01 : Hdr#2
+	uint8_t		bSpare0_0:6;	//	Spare
+	uint8_t		nSrcCh;			//	Source Channel
+	uint8_t		nTS;			//	TrainSet
+	uint8_t		nPktCmd;		//	Command에 따라 Data Length 구분.
+} RFMPktHdr2;
 
 #else	//	Non - Hopping
 
@@ -497,27 +510,52 @@ typedef struct _RFMPktLight
 } RFMPktLight;
 
 //==========================================================================
-
+//	Packet		:		Header( 4 Byte ) / Data( 60 Byte )
 typedef struct _RFMPkt
 {
-	RFMPktHdr	hdr;
+	union
+	{
+		RFMPktHdr	hdr;
+		RFMPktHdr2	hdr2;	//	Source Channel / Train Set 포함
+	};
 
 	union
 	{
-		uint8_t				data[RFPktDataLen];	//	Data
-		RFMPktStat			stat;				//	Status Data
-		RFMPktStatReq		statReq;			//	Status Data Request
-		RFMPktLight			light;				//	Light On/Off
-		RFMPktCtrlPACall	pacall;				//	PA/Call Start/Stop
-		RFMPktStrmPACall	pacallStrm;			//	PA/Call Stream Data
-		RFMPktCmd			cmd;				//	Remote RF Command
-		RFMPktDevConn		devConn;			//	Device Node Connection
-		RFMPktUpgr			upgr;				//	Upgrade Binary Data
-		RFMPktUpgrStat		upgrStat;			//	Upgrade Status
+		uint8_t				data[RFPktDataLen];		//	Data
+		RFMPktStat			stat;					//	Status Data
+		RFMPktStatReq		statReq;				//	Status Data Request
+		RFMPktLight			light;					//	Light On/Off
+		RFMPktCtrlPACall	pacall;					//	PA/Call Start/Stop
+		RFMPktStrmPACall	pacallStrm;				//	PA/Call Stream Data
+		RFMPktCmd			cmd;					//	Remote RF Command
+		RFMPktDevConn		devConn;				//	Device Node Connection
+		RFMPktUpgr			upgr;					//	Upgrade Binary Data
+		RFMPktUpgrStat		upgrStat;				//	Upgrade Status
 	} dat;
 
 	//	Tail : Src Channel ( 1 Byte )
 } RFMPkt;
+
+//==========================================================================
+//	Packet Extend	:	Header( 8 Byte ) / Data( 56 Byte ) - 확장패킷 ( 헤더정보에 편성번호 / 소스채널 추가 )
+//typedef struct _RFMPktEx
+//{
+//	RFMPktHdrEx	hdr;
+//
+//	union
+//	{
+//		uint8_t				data[RFPktExDataLen];	//	Data
+//		RFMPktStat			stat;					//	Status Data
+//		RFMPktStatReq		statReq;				//	Status Data Request
+//		RFMPktLight			light;					//	Light On/Off
+//		RFMPktCtrlPACall	pacall;					//	PA/Call Start/Stop
+//		RFMPktStrmPACall	pacallStrm;				//	PA/Call Stream Data
+//		RFMPktCmd			cmd;					//	Remote RF Command
+//		RFMPktDevConn		devConn;				//	Device Node Connection
+//	} dat;
+//
+//	//	Tail : Src Channel ( 1 Byte )
+//} RFMPktEx;
 
 
 //==========================================================================

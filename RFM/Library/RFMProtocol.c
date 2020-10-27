@@ -69,6 +69,7 @@ void _MakePktHdr	( RFMPkt *pPkt, int addrSrc, int addrDest, int nLen, int nPktCm
 		)
 	{
 		//	상태정보의 경우 Seq / ID : 0x00
+		pPkt->hdr.bHdrID		=	HdrID1;		//	Header ID #1
 		pPkt->hdr.nSeq			=	0x00;		//	Sequence
 		pPkt->hdr.nIDFlag		=	0x00;		//	ID Flag
 	}

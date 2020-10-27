@@ -60,25 +60,28 @@ enum eRFMConfig
 //	Device Status
 
 
-extern int		g_nDevID;			//  Device ID ( 1 : RF900M / 2 : RF900T )
+extern int			g_nDevID;			//  Device ID ( 1 : RF900M / 2 : RF900T )
 
-extern int		g_nDevFlag;			//  Device Flag
+extern int			g_nDevFlag;			//  Device Flag
 
-extern int		g_nSpkLevel;		//  Default (2) - 0(Mute) / 1 / 2(Normal) / 3
+extern int			g_nSpkLevel;		//  Default (2) - 0(Mute) / 1 / 2(Normal) / 3
 
-extern int		g_idxTrainSet;		//  Train Set Index
-extern int		g_nCarNo;			//  Car Number
+extern int			g_idxTrainSet;		//  Train Set Index
+extern int			g_nCarNo;			//  Car Number
 
-extern int		g_nChRx;			//  RF Rx Channel
+extern int			g_nChRx;			//  RF Rx Channel
 
-extern int		g_offsetCA;			//	충돌회피 Offset ( msec )
+extern int			g_offsetCA;			//	충돌회피 Offset ( msec )
 
-extern int		g_nStampRxPkt;		//	방송/통화 Stamp
+extern int			g_nStampRxPkt;		//	방송/통화 Stamp
 
-extern int		g_nRSSI;			//	RSSI Value
+extern int			g_nRSSI;			//	RSSI Value
+
+extern RFMDevStat	g_devStat[];	//	Device Status
+
 
 #if defined(USE_HOP_MANUAL)
-extern int		g_nManHopping;		//	On(1) / Off(2) / Unused(0 : Other)
+extern int			g_nManHopping;		//	On(1) / Off(2) / Unused(0 : Other)
 #endif	//	defined(USE_HOP_MANUAL)
 
 //========================================================================
