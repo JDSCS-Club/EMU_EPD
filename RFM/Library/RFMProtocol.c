@@ -108,7 +108,7 @@ void _MakePktHdr	( RFMPkt *pPkt, int addrSrc, int addrDest, int nLen, int nPktCm
 #if defined(USE_CH_ISO_DEV)		//	장치별 채널분리.
 
 //========================================================================
-void _MakePktHdr2	( RFMPkt *pPkt, int nLen, int nPktCmd )
+void _MakePktHdr2	( RFMPkt *pPkt, int nPktCmd )
 //========================================================================
 {
 	//	상태정보의 경우 Seq / ID : 0x00

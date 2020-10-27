@@ -1206,6 +1206,18 @@ void LoopProcRFM ( int nTick )
 #if defined(USE_HOPPING)
 					//========================================================================
 					//	Packet Header
+#if defined( USE_CH_ISO_DEV )
+					//	Header #2
+					if( GetKey(eKeyPtt) )
+					{
+						_MakePktHdr2( &bufRFTx, PktPA );
+					}
+					else
+					{
+						_MakePktHdr2( &bufRFTx, PktCall );
+					}
+
+#else
 					if( GetKey(eKeyPtt) )
 					{
 						_MakePktHdr( &bufRFTx, GetDevID(), 0xFF, sizeof( RFMPktCtrlPACall ), PktPA );
@@ -1214,6 +1226,7 @@ void LoopProcRFM ( int nTick )
 					{
 						_MakePktHdr( &bufRFTx, GetDevID(), 0xFF, sizeof( RFMPktCtrlPACall ), PktCall );
 					}
+#endif
 
 #else
 					//  송신기 -> 수신기
