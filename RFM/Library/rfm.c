@@ -65,6 +65,9 @@ int		g_nRSSI			=	0;					//	RSSI Value
 int		g_nManHopping	=	0;					//	On(1) / Off(2) / Unused(0 : Other)
 #endif	//	defined(USE_HOP_MANUAL)
 
+//	Device Stat
+RFMDevStat		devStat[ MaxCarNo ] = {0, };
+
 //========================================================================
 
 //========================================================================
@@ -126,24 +129,39 @@ int GetChRx( void )
 {
 	//	Get Self Rx Channel
 
+	//========================================================================
 #if defined(USE_CH_ISO_DEV)
 
 	if ( GetDevID() == DevRF900T )
 	{
+		//========================================================================
 		//	송신기 #1 / #2
-		return ChTx_1 + (g_nCarNo%2);	// 현재 호차 채널
+		//	ChTx_1			=	8,			//	* CH8 : 송신기#1 - (Car No : 11)
+		//	ChTx_2			=	9,			//	* CH9 : 송신기#2 - (Car No : 12)
+		return ChTx_1 + ( g_nCarNo % 2 );	// 현재 호차 채널
+		//========================================================================
 	}
 	else if ( GetDevID() == DevRF900M )
 	{
+		//========================================================================
 		//	수신기.
+		//	ChTS1_1			=	11,			//	* CH11 : 1편성 ( 1호차 )
+		//	ChTS1_2			=	12,			//	* CH12 : 1편성 ( 2호차 )
+		//
+		//		...
+		//
+		//	ChTS1_10		=	20,			//	* CH20 : 1편성 ( 10호차 )
 		return ChTS1_1 + g_nCarNo;		// 현재 호차 채널
+		//========================================================================
 	}
 
 #else
+	//========================================================================
 	//	CH1 : 1, 3, 5
 	//	CH2 :  2, 4, 6
 	return ChTS1_1 + g_idxTrainSet * 2 + ((g_nCarNo+1) % 2);	// 현재 호차 채널
 #endif
+	//========================================================================
 }
 
 
@@ -711,7 +729,7 @@ static int bRxBuffering = 1;	//  Rx Buffering. ( Packet 4 ~ Packet 0)
 void RFM_I2SEx_TxRxCpltCallback( I2S_HandleTypeDef *hi2s )
 //========================================================================
 {
-	static int idx = 0;
+	static int 	idx = 0;
 	int16_t		*pAudioTx;
 	int16_t		*pAudioRx;
 
@@ -1309,14 +1327,37 @@ void LoopProcRFM ( int nTick )
 	static int oldTickStatReq = 0;
 	static int s_idxCh = 0;
 
-	if	(	nTick - oldTickStatReq > 100 &&		//	주기 : 100 msec
-			GetDevID() == DevRF900T				//	송신기
+	if	( ( (nTick - oldTickStatReq) > TIME_STAT_REQ )	//	주기 : 200 msec
+			&&	GetDevID() == DevRF900T					//	송신기
+			&&	GetRFMMode() == RFMModeNormal			//	Normal모드 : 상태정보 요청.
 		)
 	{
 		//	상태정보 요청.
-		SendStatReq( ChTS1_1 + s_idxCh );
+		if ( s_idxCh < MaxTrainSet )
+		{
+			//========================================================================
+			//	수신기 상태정보
+			SendStatReq( ChTS1_1 + s_idxCh );
+		}
+		else
+		{
+			//========================================================================
+			//	송신기 상태정보
+			if( ChTx_1 + ( s_idxCh % 2 ) != GetChRx() )
+			{
+				//	타 송신기에 상태정보 요청.
+				SendStatReq( ChTx_1 + ( s_idxCh % 2 ) );
+			}
+		}
 
-		s_idxCh = ( s_idxCh + 1 ) % MaxTrainSet;	//	MaxTrainSet : 10
+		if ( s_idxCh == 0 )
+		{
+		    //	Reflash Status
+		    ReflashStat( nTick );	//	상태정보 갱신.
+		}
+
+		s_idxCh = ( s_idxCh + 1 ) % ( MaxTrainSet + 2 );	//	MaxTrainSet : 10 + 2(송신기 2채널)
+
 		oldTickStatReq = nTick;
 	}
 #endif
@@ -1350,8 +1391,6 @@ void UpdateStat( RFMPktStat *pStat )
 	}
 }
 
-int	stampStat[16] = { 0, };		//	Time Stamp Status
-
 //========================================================================
 void SetStat( int nRspID )
 //========================================================================
@@ -1363,7 +1402,8 @@ void SetStat( int nRspID )
 	g_flagRspID	|= ( 0x1 << nRspID );
 
 	//	TimeStamp 저장.
-	stampStat[nRspID] = HAL_GetTick();
+//DEL	stampStat[nRspID] = HAL_GetTick();
+	devStat[nRspID].stampRx = HAL_GetTick();
 }
 
 //========================================================================
@@ -1380,7 +1420,7 @@ void ReflashStat( int nTick )
 
 	int idx;
 
-	for( idx = 0; idx < 16; idx++ )
+	for( idx = 0; idx < MaxCarNo; idx++ )
 	{
 		if ( GetCarNo() == idx )
 		{
@@ -1388,7 +1428,7 @@ void ReflashStat( int nTick )
 			continue;
 		}
 
-		if ( ( nTick - stampStat[idx] ) > TIMEOUT_RECV_STATUS * 1000 )
+		if ( ( nTick - devStat[idx].stampRx ) > TIMEOUT_RECV_STATUS * 1000 )
 		{
 			g_flagRspID &= ~( 0x1 << idx );
 		}
@@ -1412,7 +1452,7 @@ void ReloadStampStat( void )
 	{
 		if( g_flagRspID & ( 0x1 << idx ) )
 		{
-			stampStat[idx] = nStamp;
+			devStat[idx].stampRx = nStamp;
 		}
 	}
 }

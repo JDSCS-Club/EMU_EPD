@@ -190,6 +190,8 @@ enum ePktID
 	//	Request
 	PktStatReq		=	0x11,		//	상태정보 요청. ( nIDFlag(0) / nSeq(0) )
 
+	PktDevConn		=	0x19,		//	장치 노드 연결. ( Device Node Connection )
+
 	//==========================================================================
 	//	Command
 	PktCmd			=	0x20,		//	Command ( nIDFlag(0) / nSeq(0) )
@@ -199,7 +201,6 @@ enum ePktID
 	//	Upgrade
 	PktUpgr			=	0x40,		//	Upgrade ( nIDFlag(0) / nSeq(0) )
 	PktUpgrStat		=	0x41,		//	Upgrade Status : Success / Failed
-
 
 
 	//	Packet ID Extented : 0x80 ~ 0xFF
@@ -224,10 +225,10 @@ enum eChannel
 	ChUpgrDst		=	3,			//	* CH3 : Upgrade 전용 채널 ( 수신기 - Target )
 	ChUpgrSrc		=	4,			//	* CH4 : Upgrade 전용 채널 ( 송신기 - Origin )
 
-	ChResv			=	5,			//	* CH3 ~ 10 : Reserved
+	ChResv			=	5,			//	* CH3 ~ 7 : Reserved
 
-	ChTx_1			=	8,			//	* 송신기#1
-	ChTx_2			=	9,			//	* 송신기#2
+	ChTx_1			=	8,			//	* CH8 : 송신기#1 - (Car No : 11)
+	ChTx_2			=	9,			//	* CH9 : 송신기#2 - (Car No : 12)
 
 	ChRFT			=	10,			//	* 송신기
 
@@ -361,6 +362,40 @@ typedef struct _RFMPktStat
 
 } RFMPktStat;
 
+
+//==========================================================================
+//	RFM Packet - Status Data
+typedef struct _RFMDevStat
+{
+	//--------------------------------------------------------------------------
+	RFMPktStat	stat;
+	int			stampRx;	//	상태정보 수신 Timestamp
+	int			nRSSI;		//	RSSI 값.
+} RFMDevStat;
+
+
+//==========================================================================
+//	RFM Packet - Device Node Connection
+typedef struct _RFMPktDevConn
+{
+	//	Device Node Connection
+	//--------------------------------------------------------------------------
+	//	TEXT 0
+
+	enum eDevConnect
+	{
+		DevConnect			=	1,	//	Node 연결
+		DevDisconnect		=	0,	//	Node 연결 해제
+	};
+
+	uint8_t		nDevType;		//	장치 Type DevRF900T(송신기) / DevRF900M(수신기)
+	uint8_t		nSrcCh;		//	송신기 Channel 등록.
+	uint8_t		nConnect;		//	Connect / Disconnect
+	uint8_t		nSpare1[13];	//
+
+} RFMPktDevConn;
+
+
 //==========================================================================
 //	RFM Packet - Command Data
 typedef struct _RFMPktCmd
@@ -476,6 +511,7 @@ typedef struct _RFMPkt
 		RFMPktCtrlPACall	pacall;				//	PA/Call Start/Stop
 		RFMPktStrmPACall	pacallStrm;			//	PA/Call Stream Data
 		RFMPktCmd			cmd;				//	Remote RF Command
+		RFMPktDevConn		devConn;			//	Device Node Connection
 		RFMPktUpgr			upgr;				//	Upgrade Binary Data
 		RFMPktUpgrStat		upgrStat;			//	Upgrade Status
 	} dat;
@@ -527,6 +563,7 @@ int		ProcPktStatReq		( const RFMPkt *pRFPkt );
 int		ProcPktPA			( const RFMPkt *pRFPkt );
 int		ProcPktCall			( const RFMPkt *pRFPkt );
 int		ProcPktCtrlPaCall	( const RFMPkt *pRFPkt );
+int		ProcPktDevConn		( const RFMPkt *pRFPkt );
 int		ProcPktLight		( const RFMPkt *pRFPkt );
 
 int		ProcPktCmd			( const RFMPkt *pRFPkt );

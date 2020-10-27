@@ -46,6 +46,8 @@ void 	ProcMenuMain		( int idxItem );	//	Main
 void	ProcMenuTrainSet	( int idxItem );	//	TrainSet
 void 	ProcMenuLightCtrl	( int idxItem );	//	LightCtrl
 
+void 	ProcMenuRFTID		( int idxItem );	//	송신기 ID설정.
+
 void 	ProcMenuDiag		( int idxItem );	//	Diag
 void	ProcMenuVer			( int idxItem );	//	Menu Version
 void	ProcMenuCmd			( int idxItem );	//	Command

@@ -50,8 +50,15 @@ enum eRFMConfig
 	MaxTrainSet		=	10,			//	100 ~ 109 편성 ( 10개 편성 )
 //	MaxCarNo		=	12,			//	1 ~ 10호차 / 11(수신기#1) / 12(수신기#2)
 //	MaxCarNo		=	15,			//	1 ~ 10호차 / 11(수신기#1) / 12(수신기#2) / 13~15(Test)
+
+	RFTCarNo1		=	11,			//	송신기 #1 ( 11호차 )
+	RFTCarNo2		=	12,			//	송신기 #2 ( 12호차 )
+
 	MaxCarNo		=	13,			//	1 ~ 10호차 / 11(수신기#1) / 12(수신기#2)
 };
+
+//	Device Status
+
 
 extern int		g_nDevID;			//  Device ID ( 1 : RF900M / 2 : RF900T )
 

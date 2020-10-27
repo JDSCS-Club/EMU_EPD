@@ -70,6 +70,23 @@ Menu_t	g_MenuTrainSet = {
 };
 
 //========================================================================
+//	Menu RFTID
+
+#if defined(USE_RFT_MENU_RFTID)
+char *_sRFTIDList[] = {
+	" 송신기#1",		//  11
+	" 송신기#2",		//  12
+};
+
+Menu_t	g_MenuRFTIDList = {
+	_sRFTIDList,
+	sizeof(_sRFTIDList)/sizeof(char *),		//	Item Count
+	0,						// 	curr Idx
+	ProcMenuRFTID			//	Callback Function
+};
+#endif	//	defined(USE_RFT_MENU_RFTID)
+
+//========================================================================
 //	Menu Diag
 
 #if defined(USE_RFT_MENU_DIAG)
@@ -157,6 +174,9 @@ enum eMenuIdx
 	eMenuIdxCtlLight = 0,	//	조명제어
 	eMenuIdxSWVer,			//	S/W버전
 	eMenuIdxTrainSet,		//	편성설정
+#if defined(USE_RFT_MENU_RFTID)
+	eMenuIdxRFTID,			//	송신기 ID
+#endif
 #if defined(USE_RFT_MENU_DIAG)
 	eMenuIdxDiag,			//	진단
 #endif
@@ -172,17 +192,19 @@ char *_sMainMenu[] = {
 	"1. 조명제어",
 	"2. S/W 버전",
 	"3. 편성설정",
+#if defined(USE_RFT_MENU_RFTID)
+	"4. 송신기ID",			//	송신기 ID
+#endif
 #if defined(USE_RFT_MENU_DIAG)
-	"4. 진    단",
+	"5. 진    단",
 #endif	//	defined(USE_RFT_MENU_DIAG)
 #if defined(USE_RFT_MENU_STAT)
-	"5. 상태정보",
+	"6. 상태정보",
 #endif	//	defined(USE_RFT_MENU_STAT)
 #if defined(USE_RFT_MENU_CMD)
-	"6. 명령전송",
+	"7. 명령전송",
 #endif	//	defined(USE_RFT_MENU_CMD)
 };
-
 
 Menu_t	g_MenuMain = {
 	_sMainMenu,
@@ -190,7 +212,6 @@ Menu_t	g_MenuMain = {
 	0,					// 	curr Idx
 	ProcMenuMain		//	Callback Function
 };
-
 
 //========================================================================
 Menu_t	*g_pActiveMenu	=	NULL;
@@ -520,9 +541,22 @@ void 	ProcMenuMain( int idxItem )
 		UpdateLCDMenu();
 		break;
 
+#if defined(USE_RFT_MENU_RFTID)
+
+	case eMenuIdxRFTID:		//	3:		 //  송신기 ID
+
+		SetActiveMenu( &g_MenuRFTIDList );
+		GetActiveMenu()->currIdx = ( ( GetCarNo() + 1 ) % 2 );	//	메뉴 Index초기화.
+
+		UpdateLCDMenu();
+		break;
+
+#endif	//	defined(USE_RFT_MENU_DIAG)
+
+
 #if defined(USE_RFT_MENU_DIAG)
 
-	case eMenuIdxDiag:		//	3:		 //  진단
+	case eMenuIdxDiag:		//	4:		 //  진단
 
 		SetActiveMenu( &g_MenuDiagList );
 		GetActiveMenu()->currIdx = 0;	//	메뉴 Index초기화.
@@ -535,7 +569,7 @@ void 	ProcMenuMain( int idxItem )
 
 #if defined(USE_RFT_MENU_STAT)
 
-	case eMenuIdxStat:		//	4:		 //  상태정보.
+	case eMenuIdxStat:		//	5:		 //  상태정보.
 
 		SetActiveMenu( NULL );
 
@@ -547,7 +581,7 @@ void 	ProcMenuMain( int idxItem )
 
 #if defined(USE_RFT_MENU_CMD)
 
-	case eMenuIdxCmd:		//	5:		 //  명령전송.
+	case eMenuIdxCmd:		//	6:		 //  명령전송.
 
 		SetActiveMenu( &g_MenuCmdList );
 		GetActiveMenu()->currIdx = 0;	//	메뉴 Index초기화.
@@ -602,6 +636,35 @@ void 	ProcMenuLightCtrl( int idxItem )
 	RF_Rx_Mode();
 }
 
+//========================================================================
+void 	ProcMenuRFTID( int idxItem )
+//========================================================================
+{
+	LCDMenuUpDown( 0 );	//	UpDown Off
+
+	switch( idxItem )
+	{
+	case 0:	//	송신기 #1
+		SetCarNo( RFTCarNo1 );	//	CarNo ( 11 )
+		LCDPrintf( "Set RFT#1" );
+		break;
+
+	case 1:	//	송신기 #2
+		SetCarNo( RFTCarNo2 );	//	CarNo ( 12 )
+		LCDPrintf( "Set RFT#2" );
+		break;
+
+	default:
+		printf("%s(%d) - invalid menu(%d)\n", __func__, __LINE__, idxItem);
+		break;
+	}
+
+	//  1초후 Main화면 갱신.
+	HAL_Delay( 1000 );
+	UpdateLCDMain();
+
+	SetActiveMenu( NULL );
+}
 
 //========================================================================
 void 	ProcMenuDiag( int idxItem )

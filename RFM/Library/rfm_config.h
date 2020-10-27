@@ -61,10 +61,15 @@
 //	상태정보 송/수신
 #define		USE_STAT_REQ					1		//	상태정보 요청/응답 Enable
 
-#if !defined(USE_STAT_REQ)
+#if defined(USE_STAT_REQ)
+
+#define		TIME_STAT_REQ					200		//	상태정보 요청 주기. 200 msec ( 모든 호차 상태정보 요청주기 200 X 12 msec )
+
+#else
 //	상태정보 요청/응답 방식인 경우 -> 주기적으로 상태정보 전송 Disable
 #define		USE_SEND_STATUS					1		//	상태정보 전송 사용.
 #endif
+
 
 #define		TIMEOUT_RECV_STATUS				4		//	상태정보 수신 Timeout. ( seconds )
 
@@ -86,6 +91,8 @@
 #define		USE_RFT_MENU_DIAG				1		//	송신기 진단 메뉴 사용.
 
 #define		USE_RFT_MENU_TRAINSET			1		//	송신기 편성설정.
+
+#define		USE_RFT_MENU_RFTID				1		//	송신기 ID 설정.
 
 #define		USE_RFT_MENU_STAT				1		//	상태정보 현시 메뉴 사용.
 
