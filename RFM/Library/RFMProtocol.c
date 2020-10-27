@@ -105,6 +105,20 @@ void _MakePktHdr	( RFMPkt *pPkt, int addrSrc, int addrDest, int nLen, int nPktCm
 	pPkt->hdr.nPktCmd		=	nPktCmd;		//	Status
 }
 
+#if defined(USE_CH_ISO_DEV)		//	장치별 채널분리.
+
+//========================================================================
+void _MakePktHdr2	( RFMPkt *pPkt, int nLen, int nPktCmd )
+//========================================================================
+{
+	//	상태정보의 경우 Seq / ID : 0x00
+	pPkt->hdr2.bHdrID		=	HdrID2;				//	Header ID #1
+	pPkt->hdr2.nSrcCh		=	GetChRx();			//	Source Channel
+	pPkt->hdr2.nTS			=	GetTrainSetIdx();	//	ID Flag
+	pPkt->hdr.nPktCmd		=	nPktCmd;			//	Status
+}
+
+#endif	//	defined(USE_CH_ISO_DEV)		//	장치별 채널분리.
 
 //==========================================================================
 void _MakeRFCmd( RFMPkt	*pPkt, char *sCmd, int nRSSI )

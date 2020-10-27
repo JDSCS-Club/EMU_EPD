@@ -170,7 +170,7 @@ int GetChRx( void )
 #include "eeprom.h"    //  EEPROM
 
 //========================================================================
-int		GetTrainSetIdx	( void )
+int		LoadTrainSetIdx	( void )
 //========================================================================
 {
     uint8_t     idxTrainSet = 0;
@@ -191,10 +191,30 @@ int		GetTrainSetIdx	( void )
     return idxTrainSet;
 }
 
+
+//========================================================================
+int		GetTrainSetIdx		( void )
+//========================================================================
+{
+	static int s_bOnce 			=	0;
+
+	if ( s_bOnce == 0 )
+	{
+		//	초기로딩시 I2C에서 Load
+		g_idxTrainSet = LoadTrainSetIdx();
+		s_bOnce = 1;
+	}
+
+	return g_idxTrainSet;
+}
+
+
 //========================================================================
 void	SetTrainSetIdx	( int idxTrainSet )
 //========================================================================
 {
+	g_idxTrainSet = idxTrainSet;
+
     if ( HAL_OK != HAL_I2C_IsDeviceReady( &hi2c1, (uint16_t)( 0x50 << 1 ), 2, 2 ) )
     {
         printf( "%s(%d) - EEPROM Error\n", __func__, __LINE__ );

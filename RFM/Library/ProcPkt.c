@@ -224,25 +224,11 @@ int _ChkDropPktSeq( uint8_t _nRxSeq, uint8_t _currSeq )
 }
 
 //========================================================================
-void CallbackRecvPacket( const char *pData, int nSize )
+int ProcPktHdr1( const RFMPkt *pRFPkt, int nSize  )
 //========================================================================
 {
-	const RFMPkt	*pRFPkt = (const RFMPkt *)pData;
 
 #if defined(USE_HOPPING)
-
-	//========================================================================
-	//	Header ID
-	switch( pRFPkt->hdr.bHdrID )
-	{
-	case HdrID1:		//	Header ID #1
-//		if(GetDbg()) printf("H1");
-		break;
-	case HdrID2:		//	Header ID #2
-		if(GetDbg()) printf("H2");
-		break;
-	}
-
 	//========================================================================
 	//	Packet Filtering
 	//		- Pkt 처리 여부 확인.
@@ -256,7 +242,7 @@ void CallbackRecvPacket( const char *pData, int nSize )
 	{
 		//	이미 처리된 Packet Skip.
 		nDropPkt++;
-		return ;
+		return 0;		//	Skip
 	}
 
 	//========================================================================
@@ -286,7 +272,7 @@ void CallbackRecvPacket( const char *pData, int nSize )
 		//	Rsp Flag 설정 후에 전송.
 		nHopPkt++;
 		char buf[64];
-		memcpy( buf, pData, 64 );
+		memcpy( buf, pRFPkt, 64 );
 		RFMPkt	*pSendPkt = (RFMPkt *)buf;
 		pSendPkt->hdr.nIDFlag |= g_flagRspID;
 
@@ -332,6 +318,104 @@ void CallbackRecvPacket( const char *pData, int nSize )
 
 #endif	//	defined(USE_HOPPING)
 	//========================================================================
+
+	return 1;
+}
+
+
+//========================================================================
+int ProcPktHdr2( const RFMPkt *pRFPkt, int nSize  )
+//========================================================================
+{
+	//	편성번호가 다른경우 Skip
+
+	RFMPktHdr2 *pHdr = &pRFPkt->hdr2;
+
+	char buf[64];
+
+	if ( pHdr->nTS != GetTrainSetIdx() )
+	{
+		//	열차번호가 다른경우 : Skip
+		return 0;	//	Skip
+	}
+
+#if defined(USE_HOPPING)
+
+	if ( GetDevID() == DevRF900T )
+	{
+		//	송신기의 경우 중계하지 않음.
+		return 1;
+	}
+	else if ( GetDevID() == DevRF900M )
+	{
+		//	송신기로부터 Data 수신 시
+		if( pHdr->nSrcCh == ChTx_1 || pHdr->nSrcCh == ChTx_1 )
+		{
+			//	상위 / 하위 채널로 중계.
+			//	1 <= 2 => 3
+			nHopPkt++;
+			memcpy( buf, pRFPkt, 64 );
+			RFMPkt	*pSendPkt = (RFMPkt *)buf;
+			pSendPkt->hdr2.nSrcCh = GetChRx();
+
+			SendPktCh( GetChRx() + 1, buf, nSize );
+
+			HAL_Delay( 2 );
+
+			SendPktCh( GetChRx() - 1, buf, nSize );
+		}
+		//	수신기로부터 Data 수신 시
+		else if( pHdr->nSrcCh == ( GetChRx() - 1 ) )
+		{
+			//	상위 채널로 중계.
+			//	1 -> 2 => 3
+			nHopPkt++;
+			memcpy( buf, pRFPkt, 64 );
+			RFMPkt	*pSendPkt = (RFMPkt *)buf;
+			pSendPkt->hdr2.nSrcCh = GetChRx();
+
+			SendPktCh( GetChRx() + 1, buf, nSize );
+		}
+		else if( pHdr->nSrcCh == ( GetChRx() + 1 ) )
+		{
+			//	하위 채널로 중계.
+			//	1 <= 2 <- 3
+			nHopPkt++;
+			memcpy( buf, pRFPkt, 64 );
+			RFMPkt	*pSendPkt = (RFMPkt *)buf;
+			pSendPkt->hdr2.nSrcCh = GetChRx();
+
+			SendPktCh( GetChRx() - 1, buf, nSize );
+		}
+	}
+
+#endif	//	defined(USE_HOPPING)
+
+}
+//========================================================================
+int ProcPktHdr( const RFMPkt *pRFPkt, int nSize  )
+//========================================================================
+{
+	//========================================================================
+	//	Header ID
+	switch( pRFPkt->hdr.bHdrID )
+	{
+	case HdrID1:		return ProcPktHdr1( pRFPkt, nSize );
+	case HdrID2:		return ProcPktHdr2( pRFPkt, nSize );
+	default:			return 0;
+	}
+}
+
+//========================================================================
+void CallbackRecvPacket( const char *pData, int nSize )
+//========================================================================
+{
+	const RFMPkt	*pRFPkt = (const RFMPkt *)pData;
+
+	if ( ProcPktHdr( pRFPkt, nSize ) == 0 )
+	{
+		return;
+	}
 
 	switch ( pRFPkt->hdr.nPktCmd )
 	{

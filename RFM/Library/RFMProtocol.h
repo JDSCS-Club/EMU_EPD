@@ -292,6 +292,8 @@ typedef struct _RFMPktHdr
 //#define		RFPktExHdrLen		8
 //#define		RFPktExDataLen		56
 
+#if defined(USE_CH_ISO_DEV)		//	장치별 채널분리.
+
 typedef struct _RFMPktHdr2
 {
 	enum eHdrIDEx
@@ -300,11 +302,13 @@ typedef struct _RFMPktHdr2
 		HdrID2	=	0x1,		//	채널 분리.
 	};
 	uint8_t		bHdrID:2;		//	00 : Hdr#1 / 01 : Hdr#2
-	uint8_t		bSpare0_0:6;	//	Spare
+	uint8_t		nTS:6;			//	TrainSet
 	uint8_t		nSrcCh;			//	Source Channel
-	uint8_t		nTS;			//	TrainSet
+	uint8_t		nSpare3;		//	Spare
 	uint8_t		nPktCmd;		//	Command에 따라 Data Length 구분.
 } RFMPktHdr2;
+
+#endif	//	defined(USE_CH_ISO_DEV)		//	장치별 채널분리.
 
 #else	//	Non - Hopping
 
