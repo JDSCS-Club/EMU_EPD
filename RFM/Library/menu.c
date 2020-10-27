@@ -612,9 +612,6 @@ void 	ProcMenuMain( int idxItem )
 void 	ProcMenuLightCtrl( int idxItem )
 //========================================================================
 {
-	//  Tx모드
-	RF_Tx_Mode();
-
 	LCDMenuUpDown( 0 );
 
 	if ( idxItem == 0 )
@@ -631,9 +628,6 @@ void 	ProcMenuLightCtrl( int idxItem )
 	UpdateLCDMain();
 
 	SetActiveMenu( NULL );
-
-	//  Rx모드
-	RF_Rx_Mode();
 }
 
 //========================================================================

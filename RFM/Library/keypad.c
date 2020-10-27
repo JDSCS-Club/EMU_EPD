@@ -270,7 +270,7 @@ void KeyPtt( int bValue )
 	//	bValue : 0(Up) / 1(Down)
 	printf( "%s(%d) - %d\n", __func__, __LINE__, bValue );
 
-	//	송신기 -> 송신기
+	//	송신기 -> 수신기	:	방송
 
 	if ( bValue )
 	{
@@ -291,24 +291,14 @@ void KeyPtt( int bValue )
 		//  편성 : XXX
 		UpdateLCDMain();
 
-		//========================================================================
-		RF_Rx_Mode();
-		//========================================================================
-
 		SetRFMMode( RFMModeNormal );
 
 		//  Green LED Off
 		HAL_GPIO_WritePin ( LED_ON_A_GPIO_Port, LED_ON_A_Pin, GPIO_PIN_RESET ); //  Green LED
 
-//		// Start RX with radio packet length
-//		vRadio_StartRX (
-//			pRadioConfiguration->Radio_ChannelNumber,
-//			pRadioConfiguration->Radio_PacketLength );
-
 		//	방송 - 종료
 		SendPA( 0 );		//	SendRF - Send PA ( 송신기 -> 수신기 )
 	}
-
 }
 
 
@@ -319,7 +309,7 @@ void KeySos( int bValue )
 	//	bValue : 0(Up) / 1(Down)
 	printf( "%s(%d) - %d\n", __func__, __LINE__, bValue );
 
-	//	송신기 -> 수신기
+	//	송신기 -> 송신기	:	통화
 
 	if ( bValue )
 	{

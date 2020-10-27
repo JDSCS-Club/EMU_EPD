@@ -36,7 +36,7 @@ enum eRFMMode
 {
 	RFMModeNormal	=	0,	//	Rx/Tx
 	RFMModeTx		=	1,	//	Tx Only
-	RFMModeRx		=	2,
+	RFMModeRx		=	2,	//	Rx Only
 	RFMModeOcc		=	3,	//	OCC Mode
 	RFMModeUpgr		=	4,	//	Upgrade Mode
 };
@@ -91,6 +91,9 @@ void	SetRFMMode		( int nRFMMode );
 
 int 	GetChRx			( void );
 
+int		GetChOtherRFT	( void );			//	타 송신기 채널.
+int		GetChNearRFM	( void );			//	가장 가까운 수신기 채널.
+
 int		GetDevID		( void );
 void	SetDevID		( int nDevID );
 
@@ -112,9 +115,6 @@ void	SetManHop	( int nManHop );
 
 //========================================================================
 //	GPIO Setting
-
-void	RF_Tx_Mode		( void );
-void	RF_Rx_Mode		( void );
 
 void	RFM_Spk			( int bOnOff );		//	1(On) / 0(Off)
 

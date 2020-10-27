@@ -447,6 +447,17 @@ void	SendUpgrStat		( int nUpgrResult )	//	Send Upgrade Data
 
 	//========================================================================
 	//	Send RF
+#if defined( USE_CH_ISO_DEV )
+
+	//	송신기#1
+	SendPktCh( ChTx_1, (U8 *)&stPkt, (U8)sizeof( RFMPktHdr ) + RFPktDataLen );
+
+	HAL_Delay(5);	//	재전송 전 Delay
+
+	//	송신기#2
+	SendPktCh( ChTx_2, (U8 *)&stPkt, (U8)sizeof( RFMPktHdr ) + RFPktDataLen );
+
+#else
 	int nCh;
 	nCh = ChTS1_1 + g_idxTrainSet * 2 + ((g_nCarNo) % 2);	// 현재 호차 채널
 	SendPktCh( nCh, (U8 *)&stPkt, (U8)sizeof( RFMPktHdr ) + RFPktDataLen );
@@ -455,6 +466,7 @@ void	SendUpgrStat		( int nUpgrResult )	//	Send Upgrade Data
 
 	nCh = ChTS1_1 + g_idxTrainSet * 2 + ((g_nCarNo+1) % 2);	// 현재 호차 채널
 	SendPktCh( nCh, (U8 *)&stPkt, (U8)sizeof( RFMPktHdr ) + RFPktDataLen );
+#endif
 
 	//========================================================================
 }
@@ -533,8 +545,14 @@ int	ProcPktCtrlPaCall	( const RFMPkt *pRFPkt )
 
 	switch ( pCtrl->nStartStop )
 	{
-	case CtrlStart:		printf("[Start]");					break;
-	case CtrlStop:		printf("[Stop]");					break;
+	case CtrlStart:
+		printf("[Start]");
+		SetRFMMode( RFMModeRx );
+		break;
+	case CtrlStop:
+		printf("[Stop]");
+		SetRFMMode( RFMModeNormal );
+		break;
 	default:			printf("%s:Invalid\n", __func__);	return 0;
 	}
 

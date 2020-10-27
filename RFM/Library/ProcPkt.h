@@ -16,6 +16,8 @@
 #define PROC_PKT_H
 //========================================================================
 
+#include "RFMProtocol.h"	//	RFMPkt
+
 //========================================================================
 extern int nTxPkt;		//	Tx Packet Count
 extern int nRxPkt;		//	Rx Packet Count
@@ -50,6 +52,10 @@ void	LoopProcPkt			( int nTick );
 int		SendPacket			( const char *sBuf, int nSize );
 
 int		SendPktCh			( int nCh, const char *sBuf, int nSize );
+
+int 	ProcPktHdr1			( const RFMPkt *pRFPkt, int nSize  );
+int 	ProcPktHdr2			( const RFMPkt *pRFPkt, int nSize  );
+//int 	ProcPktHdr			( const RFMPkt *pRFPkt, int nSize  );
 
 void 	CallbackRecvPacket	( const char *pData, int nSize );
 

@@ -120,6 +120,18 @@ void	SetRFMMode	( int nRFMMode )
 		ReloadStampStat();
 	}
 
+	if ( g_nRFMMode != nRFMMode )
+	{
+		//	타 모드에서 Normal 모드로 변경시 상태정보 ID Flag값 유지.
+		switch( nRFMMode )
+		{
+		case RFMModeNormal:		printf("[Normal]");	break;
+		case RFMModeTx:			printf("[Tx]");		break;
+		case RFMModeRx:			printf("[Rx]");		break;
+		default:				printf("[N/A]");		break;
+		}
+	}
+
 	g_nRFMMode = nRFMMode;
 }
 
@@ -151,7 +163,7 @@ int GetChRx( void )
 		//		...
 		//
 		//	ChTS1_10		=	20,			//	* CH20 : 1편성 ( 10호차 )
-		return ChTS1_1 + g_nCarNo;		// 현재 호차 채널
+		return ChTS1_1 + ( g_nCarNo - 1 );	// 현재 호차 채널
 		//========================================================================
 	}
 
@@ -159,11 +171,34 @@ int GetChRx( void )
 	//========================================================================
 	//	CH1 : 1, 3, 5
 	//	CH2 :  2, 4, 6
-	return ChTS1_1 + g_idxTrainSet * 2 + ((g_nCarNo+1) % 2);	// 현재 호차 채널
+	return ChTS1_1 + g_idxTrainSet * 2 + ( ( g_nCarNo + 1 ) % 2 );	// 현재 호차 채널
 #endif
 	//========================================================================
 }
 
+//========================================================================
+int		GetChOtherRFT	( void )			//	타 송신기 채널.
+//========================================================================
+{
+	//========================================================================
+	//	송신기 #1 / #2
+	//	ChTx_1			=	8,				//	* CH8 : 송신기#1 - (Car No : 11)
+	//	ChTx_2			=	9,				//	* CH9 : 송신기#2 - (Car No : 12)
+//	return ChTx_1 + ( g_nCarNo % 2 );		// Self 송신기 채널
+	return ChTx_1 + ( (g_nCarNo+1) % 2 );	// Other 송신기 채널
+	//========================================================================
+}
+
+//========================================================================
+int		GetChNearRFM	( void )			//	가장 가까운 수신기 채널.
+//========================================================================
+{
+	int nCh = ChTS1_1;		//	Default
+
+	//	가장가까운 호차 검색.
+//	for ( int i = 0; i < )
+	return nCh;
+}
 
 //========================================================================
 
@@ -414,38 +449,6 @@ void RF_RSSI( void )
     else if ( 100 < rssi && rssi <= 130 )    LCDRSSI( 2 );  //  RSSI 2
     else if ( 85 < rssi && rssi <= 100 )     LCDRSSI( 1 );  //  RSSI 1
     else if ( rssi <= 85 )                   LCDRSSI( 0 );  //  RSSI 0
-}
-
-//========================================================================
-void RF_Tx_Mode()
-//========================================================================
-{
-    //  송신 모드
-	return ;
-
-    HAL_GPIO_WritePin( RF_TX_GPIO_Port, RF_TX_Pin, GPIO_PIN_SET );
-    HAL_GPIO_WritePin( RF_RX_GPIO_Port, RF_RX_Pin, GPIO_PIN_RESET );
-}
-
-//========================================================================
-void RF_Rx_Mode()
-//========================================================================
-{
-    //  수신 모드
-	return ;
-
-    HAL_GPIO_WritePin( RF_TX_GPIO_Port, RF_TX_Pin, GPIO_PIN_RESET );
-    HAL_GPIO_WritePin( RF_RX_GPIO_Port, RF_RX_Pin, GPIO_PIN_SET );
-}
-
-//========================================================================
-void RF_RxTx_Mode()
-//========================================================================
-{
-    //  송/수신 모드
-
-    HAL_GPIO_WritePin( RF_TX_GPIO_Port, RF_TX_Pin, GPIO_PIN_SET );
-    HAL_GPIO_WritePin( RF_RX_GPIO_Port, RF_RX_Pin, GPIO_PIN_SET );
 }
 
 //========================================================================
@@ -1063,12 +1066,6 @@ int InitRFM( void )
 	}
 	//========================================================================
 
-	//========================================================================
-	//  Default 수신모드.
-	RF_Rx_Mode();
-
-	//========================================================================
-
 #if defined(USE_RFT_ONLY_RX_SPK_ON)
 
 	if ( GetDevID() == DevRF900T )
@@ -1147,8 +1144,6 @@ int RFM_main( void )
 
 	//========================================================================
 	//	Radio Spi
-	RF_RxTx_Mode();
-
 #if 0
 
 	TestProcPkt();		//	RFM Main
@@ -1202,10 +1197,6 @@ void LoopProcRFM ( int nTick )
 		{
 			if( GetKey(eKeyPtt) || GetKey(eKeySos) )
 			{
-				//========================================================================
-				RF_Tx_Mode();
-				//========================================================================
-
 				// PTT Key가 눌려있을시 전송.
 				if( qBufCnt( &g_qBufAudioTx ) >= ( I2S_DMA_LOOP_SIZE * 2 ) )
 				{
@@ -1243,8 +1234,28 @@ void LoopProcRFM ( int nTick )
 					else					bufRFTx.hdr.nPktCmd = PktCall;	//  송신기 -> 송신기
 #endif
 
+#if defined(USE_CH_ISO_DEV)
+					int nCh;
+
+					if( GetKey(eKeyPtt) )
+					{
+						//	PA
+						nCh = GetChNearRFM();	//	가장 가까운 수신기.
+						SendPktCh( nCh, (uint8_t *)&bufRFTx,
+							pRadioConfiguration->Radio_PacketLength );
+					}
+					else
+					{
+						//	Call
+						nCh = GetChOtherRFT();	//	타 송신기 채널.
+						SendPktCh( nCh, (uint8_t *)&bufRFTx,
+							pRadioConfiguration->Radio_PacketLength );
+					}
+
+#else
 					SendPacket( (uint8_t *)&bufRFTx,
 						pRadioConfiguration->Radio_PacketLength );
+#endif
 				}
 			}
 		}
@@ -1343,7 +1354,7 @@ void LoopProcRFM ( int nTick )
 
 #if defined(USE_STAT_REQ)	//	송신기 : 상태 정보 요청 100 msec간격.
 	//========================================================================
-	//	RSSI 수신감도 체크.
+	//	송신기 장치 상태정보 요청.
 	static int oldTickStatReq = 0;
 	static int s_idxCh = 0;
 

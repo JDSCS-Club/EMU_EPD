@@ -388,23 +388,23 @@ int ProcPktHdr2( const RFMPkt *pRFPkt, int nSize  )
 			SendPktCh( GetChRx() - 1, buf, nSize );
 		}
 	}
-
 #endif	//	defined(USE_HOPPING)
+}
 
-}
-//========================================================================
-int ProcPktHdr( const RFMPkt *pRFPkt, int nSize  )
-//========================================================================
-{
-	//========================================================================
-	//	Header ID
-	switch( pRFPkt->hdr.bHdrID )
-	{
-	case HdrID1:		return ProcPktHdr1( pRFPkt, nSize );
-	case HdrID2:		return ProcPktHdr2( pRFPkt, nSize );
-	default:			return 0;
-	}
-}
+////========================================================================
+//int ProcPktHdr( const RFMPkt *pRFPkt, int nSize  )
+////========================================================================
+//{
+//	//========================================================================
+//	//	Header ID
+//	//		Data Drop & 중계 처리.
+//	switch( pRFPkt->hdr.bHdrID )
+//	{
+//	case HdrID1:		return ProcPktHdr1( pRFPkt, nSize );
+//	case HdrID2:		return ProcPktHdr2( pRFPkt, nSize );
+//	default:			return 0;
+//	}
+//}
 
 //========================================================================
 void CallbackRecvPacket( const char *pData, int nSize )
@@ -412,11 +412,27 @@ void CallbackRecvPacket( const char *pData, int nSize )
 {
 	const RFMPkt	*pRFPkt = (const RFMPkt *)pData;
 
-	if ( ProcPktHdr( pRFPkt, nSize ) == 0 )
+	//========================================================================
+	//	Header
+	if ( pRFPkt->hdr2.bHdrID == 0 )
 	{
-		return;
+		//	Header #1
+		if ( ProcPktHdr1( pRFPkt, nSize ) == 0 )
+		{
+			return;
+		}
+	}
+	else
+	{
+		//	Header #1
+		if ( ProcPktHdr2( pRFPkt, nSize ) == 0 )
+		{
+			return;
+		}
 	}
 
+	//========================================================================
+	//	Proc Packet
 	switch ( pRFPkt->hdr.nPktCmd )
 	{
 	case PktCall:		ProcPktCall			( pRFPkt );		break;
@@ -754,7 +770,7 @@ int SendPacket( const char *sBuf, int nSize )
 //		HAL_Delay( 5 );		//	5 msec 후 전송.
 		HAL_Delay( 2 );		//	2 msec 후 전송.
 
-		nCh = ChTS1_1 + g_idxTrainSet * 2 + ( (g_nCarNo) % 2);	//	타채널
+		nCh = ChTS1_1 + g_idxTrainSet * 2 + ( ( g_nCarNo ) % 2 );	//	타채널
 		vRadio_StartTx_Variable_Packet (
 			nCh,	//g_idxTrainSet + 1,	//		pRadioConfiguration->Radio_ChannelNumber,
 			&sBuf[0],

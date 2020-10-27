@@ -283,8 +283,8 @@ typedef struct _RFMPktHdr
 		HdrID1	=	0x0,		//	4 Byte Header
 //		HdrID2	=	0x1,		//
 	};
-	uint16_t	bHdrID:2;		//	00 : Hdr#1 / 01 : Hdr#2
-	uint16_t	nIDFlag:14;		//	Device ID Flag		( 0(Stat) : Hopping X )
+	uint16_t	nIDFlag:14;		//	[13:0] Device ID Flag		( 0(Stat) : Hopping X )
+	uint16_t	bHdrID:2;		//	[15:14] 00 : Hdr#1 / 01 : Hdr#2
 	uint8_t		nSeq;			//	Hdr#1 : Pkt Sequence Number ( 0(Stat) : Hopping X / 1 ~ 255 : Hopping)
 	uint8_t		nPktCmd;		//	Command에 따라 Data Length 구분.
 } RFMPktHdr;
@@ -301,8 +301,8 @@ typedef struct _RFMPktHdr2
 //		HdrID1	=	0x0,		//	4 Byte Header
 		HdrID2	=	0x1,		//	채널 분리.
 	};
-	uint8_t		bHdrID:2;		//	00 : Hdr#1 / 01 : Hdr#2
-	uint8_t		nTS:6;			//	TrainSet
+	uint8_t		nTS:6;			//	[5:0] TrainSet
+	uint8_t		bHdrID:2;		//	[7:6] 00 : Hdr#1 / 01 : Hdr#2
 	uint8_t		nSrcCh;			//	Source Channel
 	uint8_t		nSpare3;		//	Spare
 	uint8_t		nPktCmd;		//	Command에 따라 Data Length 구분.
