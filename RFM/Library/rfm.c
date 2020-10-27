@@ -196,8 +196,38 @@ int		GetChNearRFM	( void )			//	가장 가까운 수신기 채널.
 	int nCh = ChTS1_1;		//	Default
 
 	//	가장가까운 호차 검색.
-//	for ( int i = 0; i < )
+	int nMaxRSSI = 0;
+	for ( int idx = 1; idx <= 10; idx++ )
+	{
+		//	Car #1 ~ #10
+		if ( g_devStat[idx].nRSSI > nMaxRSSI )
+		{
+			nCh = g_devStat[idx].stat.nChRx;		//	채널 설정.
+			nMaxRSSI = g_devStat[idx].nRSSI;
+		}
+	}
+
 	return nCh;
+}
+
+//========================================================================
+//	방송채널 : 송신기에서 수신기로 송신할 방송채널 설정.
+int		g_nChPA	=	ChTS1_1;		//	Default
+
+//========================================================================
+void	SetChPA( int nCh )
+//========================================================================
+{
+	//	방송채널 설정.
+	g_nChPA	= nCh;
+}
+
+//========================================================================
+int		GetChPA( void )
+//========================================================================
+{
+	//	방송채널 설정.
+	return g_nChPA;
 }
 
 //========================================================================
@@ -1253,7 +1283,7 @@ void LoopProcRFM ( int nTick )
 					if( GetKey(eKeyPtt) )
 					{
 						//	PA
-						nCh = GetChNearRFM();	//	가장 가까운 수신기.
+						nCh = GetChPA();//GetChNearRFM();	//	가장 가까운 수신기.
 						SendPktCh( nCh, (uint8_t *)&bufRFTx,
 							pRadioConfiguration->Radio_PacketLength );
 					}

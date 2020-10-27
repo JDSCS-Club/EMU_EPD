@@ -579,10 +579,10 @@ extern "C" {
 void	SetStatus			( int nStat );
 int		GetStatus			( void );
 
-void	_MakePktHdr	( RFMPkt *pPkt, int addrSrc, int addrDest, int nLen, int nPktCmd );
+void	_MakePktHdr			( RFMPkt *pPkt, int addrSrc, int addrDest, int nLen, int nPktCmd );
 
 #if defined(USE_CH_ISO_DEV)		//	장치별 채널분리.
-void	_MakePktHdr2	( RFMPkt *pPkt, int nPktCmd );
+void	_MakePktHdr2		( RFMPkt *pPkt, int nPktCmd );
 #endif	//	defined(USE_CH_ISO_DEV)		//	장치별 채널분리.
 
 //==========================================================================
