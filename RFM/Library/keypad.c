@@ -120,7 +120,7 @@ void LoopProcKey ( uint32_t tickCurr )
 	{
 		//	Period : 1 sec
 		static int s_cntKeyOkMenu = 0;
-		if ( btnStat[eKeyOk] && btnStat[eKeyMenu] )
+		if ( s_btnStat[eKeyOk] && s_btnStat[eKeyMenu] )
 		{
 			s_cntKeyOkMenu++;
 		}
