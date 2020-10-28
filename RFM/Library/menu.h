@@ -21,23 +21,26 @@
 //========================================================================
 //	Define
 
+
 //========================================================================
 //	Menu Structure
 
 typedef struct _Menu
 {
-	char 		**sItem;					//	Item Name
-	int			cntItem;					//	Menu Item Count
-	int			currIdx;					//	Current Item Index
-	void		(*cbFunc)( int idxItem );	//	Callback Func
+	char 		**sItem;						//	Item Name
+	int			cntItem;						//	Menu Item Count
+	int			currIdx;						//	Current Item Index
+	void		(*cbFunc)( int idxItem );		//	Callback Func
 } Menu_t;
 
-extern Menu_t	g_MenuMain;					//	Main Menu
-extern Menu_t	g_MenuLightCtrl;			//	Light Ctrl
-extern Menu_t	g_MenuTrainSet;				//	TrainSet
+extern int		g_bEnMenuMaint;					//	MainMenu Maintenace Menu활성화.
+void 	EnableMenuMaint		( int bEnable );	//	MainMenu Maintenace Menu활성화.
 
-extern char 	_sVerList[16][20];			//	Version Info
+extern Menu_t	g_MenuMain;						//	Main Menu
+extern Menu_t	g_MenuLightCtrl;				//	Light Ctrl
+extern Menu_t	g_MenuTrainSet;					//	TrainSet
 
+extern char 	_sVerList[16][20];				//	Version Info
 
 //========================================================================
 //	Menu Procedure
@@ -54,10 +57,10 @@ void	ProcMenuCmd			( int idxItem );	//	Command
 
 //========================================================================
 
-void	ProcLightOn		( void );
-void	ProcLightOff	( void );
-void	ProcDispVer		( void );
-void	ProcDispStat 	( void );
+void	ProcLightOn			( void );
+void	ProcLightOff		( void );
+void	ProcDispVer			( void );
+void	ProcDispStat 		( void );
 
 //========================================================================
 //	Menu LCD Disp
@@ -70,11 +73,11 @@ void	UpdateLCDMonitor	( int nTick );		//	LCD : 모니터링 상태 Update
 //========================================================================
 //	Menu Key Proc
 
-void    ProcBtnUp		( void );
-void    ProcBtnDown		( void );
+void    ProcBtnUp			( void );
+void    ProcBtnDown			( void );
 
-void    ProcBtnMenu		( void );
-void    ProcBtnOK		( void );
+void    ProcBtnMenu			( void );
+void    ProcBtnOK			( void );
 
 //========================================================================
 #endif

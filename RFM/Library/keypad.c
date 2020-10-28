@@ -23,6 +23,8 @@
 
 #include "Adafruit_SSD1306.h"	//	OLED Display
 
+#include "menu.h"				//	g_bEnMenuMaint
+
 //#include "audio.h"				//	Audio Function
 
 //========================================================================
@@ -66,14 +68,17 @@ void GetKeyStat( int *btnStat )
 void LoopProcKey ( uint32_t tickCurr )
 //========================================================================
 {
+	//========================================================================
 	static uint32_t tickBase = 0;
 	int 	btnStat[9];
 
 	//    if( ( HAL_GetTick() - tickBase ) >= 1000 )
 	if ( ( tickCurr - tickBase ) >= 100 )
 	{
+		//========================================================================
 		//  Period : 100 ms
 
+		//========================================================================
 		//	Key 값 얻기.
 		GetKeyStat( btnStat );
 
@@ -104,6 +109,36 @@ void LoopProcKey ( uint32_t tickCurr )
 
 		tickBase = tickCurr;
 	}
+
+	//========================================================================
+	//	* [송신기][MENU] : 유지보수 메뉴 진입 기능 추가.
+	//		- [OK]버튼을 누른상태에서 [MENU]버튼을 3초간 누를 경우 Maintance모드로 진입함.
+
+	static uint32_t tickBase2 = 0;
+
+	if ( ( tickCurr - tickBase2 ) >= 1000 && g_bEnMenuMaint == 0 )
+	{
+		//	Period : 1 sec
+		static int s_cntKeyOkMenu = 0;
+		if ( btnStat[eKeyOk] && btnStat[eKeyMenu] )
+		{
+			s_cntKeyOkMenu++;
+		}
+		else
+		{
+			s_cntKeyOkMenu = 0;
+		}
+
+		if ( s_cntKeyOkMenu > 3 )	//	3초 이상 누를 경우.
+		{
+			EnableMenuMaint( 1 );
+		}
+
+		tickBase2 = tickCurr;
+	}
+
+	//========================================================================
+
 
 #if defined(USE_FREERTOS)
 	osDelay( 1 );		//	1 msec
@@ -279,7 +314,7 @@ void KeyPtt( int bValue )
 #endif
 
 		LCDSetCursor( 20, 13 );
-#if 0
+#if 1
 		char sBuf[20];
 		sprintf( sBuf, "방송중...(%d)", GetChPA() );
 		LCDPrintf( sBuf );

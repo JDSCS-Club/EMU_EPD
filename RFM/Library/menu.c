@@ -188,7 +188,39 @@ enum eMenuIdx
 #endif
 };
 
-char *_sMainMenu[] = {
+//========================================================================
+int	g_bEnMenuMaint	= 	0;	//	MainMenu Maintenace Menu활성화.
+
+//========================================================================
+void EnableMenuMaint( int bEnable )
+//========================================================================
+{
+	g_bEnMenuMaint = bEnable;
+
+	if ( bEnable )
+	{
+		//	LCD [Menu Maint.]
+		LCDPrintfXY( 10, 13, "[Maint. Menu]" );
+	}
+}
+
+//========================================================================
+//	Main Menu - Base 기본메뉴
+char *_sMainMenuBase[] = {
+	"1. 조명제어",
+	"2. S/W 버전",
+};
+
+Menu_t	g_MenuMainBase = {
+	_sMainMenuBase,
+	sizeof(_sMainMenuBase)/sizeof(char *),		//	Item Count
+	0,					// 	curr Idx
+	ProcMenuMain		//	Callback Function
+};
+
+//========================================================================
+//	Main Menu -	Maintenance Menu 활성화.
+char *_sMainMenuMaint[] = {
 	"1. 조명제어",
 	"2. S/W 버전",
 	"3. 편성설정",
@@ -206,12 +238,14 @@ char *_sMainMenu[] = {
 #endif	//	defined(USE_RFT_MENU_CMD)
 };
 
-Menu_t	g_MenuMain = {
-	_sMainMenu,
-	sizeof(_sMainMenu)/sizeof(char *),		//	Item Count
+Menu_t	g_MenuMainMaint = {
+	_sMainMenuMaint,
+	sizeof(_sMainMenuMaint)/sizeof(char *),		//	Item Count
 	0,					// 	curr Idx
 	ProcMenuMain		//	Callback Function
 };
+
+//========================================================================
 
 //========================================================================
 Menu_t	*g_pActiveMenu	=	NULL;
@@ -371,7 +405,17 @@ void	ProcBtnMenu( void )
 		//  메뉴모드가 아닌경우 메뉴로 진입.
 
 		//	Set Main Menu
-		SetActiveMenu( &g_MenuMain );
+
+		if ( g_bEnMenuMaint )
+		{
+			//	Maintenance 유지보수 메뉴 활성화.
+			SetActiveMenu( &g_MenuMainMaint );
+		}
+		else
+		{
+			//	Base 기본메뉴.
+			SetActiveMenu( &g_MenuMainBase );
+		}
 		GetActiveMenu()->currIdx = 0;	//	메뉴 Index초기화.
 	}
 	else
@@ -449,11 +493,17 @@ void	ProcMenuTrainSet( int idxItem  )
 {
 	LCDSetCursor( 20, 13 );
 	LCDPrintf( "[편성설정]" );
-	g_idxTrainSet = idxItem;  //  메뉴 Index값으로 설정.
+	g_idxTrainSet = idxItem;	//	메뉴 Index값으로 설정.
 	SetTrainSetIdx( g_idxTrainSet );
 
+#if defined(USE_CH_ISO_DEV)		//	장치별로 채널 구분.
+	//	각 장치별로 채널 구분.
+	//	편성이 변경되어도 채널 고정.
+#else
+	//	편성별 채널 구분.
 	//  Radio Channel 설정.
 	pRadioConfiguration->Radio_ChannelNumber = g_idxTrainSet;
+#endif
 
 	//  1초후 Main화면 갱신.
 	HAL_Delay( 1000 );
