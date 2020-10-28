@@ -290,10 +290,10 @@ int ProcPktHdr1( const RFMPkt *pRFPkt, int nSize  )
 		//	Tx #1
 		SendPktCh( nCh, buf, nSize );
 
-		//==========================================================================
-		//	Tx #2
-		HAL_Delay(2);		//	2 msec
-		SendPktCh( nCh + 10, buf, nSize );
+//		//==========================================================================
+//		//	Tx #2
+//		HAL_Delay(2);		//	2 msec
+//		SendPktCh( nCh + 10, buf, nSize );
 		//==========================================================================
 #elif defined(USE_HOP_CH)
 
@@ -349,7 +349,7 @@ int ProcPktHdr2( const RFMPkt *pRFPkt, int nSize  )
 	else if ( GetDevID() == DevRF900M )
 	{
 		//	송신기로부터 Data 수신 시
-		if( pHdr->nSrcCh == ChTx_1 || pHdr->nSrcCh == ChTx_1 )
+		if( pHdr->nSrcCh == ChTx_1 || pHdr->nSrcCh == ChTx_2 )
 		{
 			//	상위 / 하위 채널로 중계.
 			//	1 <= 2 => 3
@@ -360,7 +360,7 @@ int ProcPktHdr2( const RFMPkt *pRFPkt, int nSize  )
 
 			SendPktCh( GetChRx() + 1, buf, nSize );
 
-			HAL_Delay( 2 );
+			HAL_Delay( 3 );		//	최소 Delay
 
 			SendPktCh( GetChRx() - 1, buf, nSize );
 		}

@@ -274,17 +274,23 @@ void KeyPtt( int bValue )
 
 	if ( bValue )
 	{
+#if defined(USE_CH_ISO_DEV)
+		SetChPA( GetChNearRFM() );		//	가장 가까운 송신기 설정.
+#endif
+
 		LCDSetCursor( 20, 13 );
+#if 0
+		char sBuf[20];
+		sprintf( sBuf, "방송중...(%d)", GetChPA() );
+		LCDPrintf( sBuf );
+#else
 		LCDPrintf( "방송중..." );
+#endif
 
 		SetRFMMode( RFMModeTx );
 
 		//  Green LED On
 		HAL_GPIO_WritePin ( LED_ON_A_GPIO_Port, LED_ON_A_Pin, GPIO_PIN_SET ); //  Green LED
-
-#if defined(USE_CH_ISO_DEV)
-		SetChPA( GetChNearRFM() );		//	가장 가까운 송신기 설정.
-#endif
 
 		//	방송 - 시작
 		SendPA( 1 );		//	SendRF - Send PA ( 송신기 -> 수신기 )

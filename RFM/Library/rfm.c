@@ -101,19 +101,6 @@ int		GetRFMMode	( void )
 void	SetRFMMode	( int nRFMMode )
 //========================================================================
 {
-	if( GetDbg() > 1 )
-	{
-		printf( "%s : ", __func__ );
-		switch( nRFMMode )
-		{
-		case RFMModeNormal:		printf("Normal");	break;
-		case RFMModeTx:			printf("Tx");		break;
-		case RFMModeRx:			printf("Rx");		break;
-		default:				printf("N/A");		break;
-		}
-		printf("(%d)\n", nRFMMode);
-	}
-
 	if ( g_nRFMMode != nRFMMode && nRFMMode == RFMModeNormal )
 	{
 		//	타 모드에서 Normal 모드로 변경시 상태정보 ID Flag값 유지.
@@ -128,7 +115,9 @@ void	SetRFMMode	( int nRFMMode )
 		case RFMModeNormal:		printf("[Normal]");	break;
 		case RFMModeTx:			printf("[Tx]");		break;
 		case RFMModeRx:			printf("[Rx]");		break;
-		default:				printf("[N/A]");		break;
+		case RFMModeOcc:		printf("[Occ]");	break;
+		case RFMModeUpgr:		printf("[Upgr]");	break;
+		default:				printf("[N/A]");	break;
 		}
 	}
 

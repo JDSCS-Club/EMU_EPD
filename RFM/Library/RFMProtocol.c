@@ -240,7 +240,11 @@ void SendPA( int nStartStop )
 
 	//========================================================================
 	//	Packet Header
+#if defined(USE_CH_ISO_DEV)
+	_MakePktHdr2( &stPkt, PktCtrlPaCall );
+#else
 	_MakePktHdr( &stPkt, GetDevID(), 0xFF, sizeof( RFMPktCtrlPACall ), PktCtrlPaCall );
+#endif
 
 	//========================================================================
 	//	Status Data
@@ -251,7 +255,12 @@ void SendPA( int nStartStop )
 	//========================================================================
 	//	Send RF
 
+#if defined(USE_CH_ISO_DEV)
+	SendPktCh( GetChPA(), (uint8_t *)&stPkt,
+		(U8)sizeof( RFMPktHdr ) + sizeof( RFMPktCtrlPACall ) );
+#else
 	SendPacket( (U8 *)&stPkt, (U8)sizeof( RFMPktHdr ) + sizeof( RFMPktCtrlPACall ) );
+#endif
 
 	//========================================================================
 }
@@ -271,7 +280,11 @@ void SendCall( int nStartStop )
 
 	//========================================================================
 	//	Packet Header
+#if defined(USE_CH_ISO_DEV)
+	_MakePktHdr2( &stPkt, PktCtrlPaCall );
+#else
 	_MakePktHdr( &stPkt, GetDevID(), 0xFF, sizeof( RFMPktCtrlPACall ), PktCtrlPaCall );
+#endif
 
 	//========================================================================
 	//	Status Data
@@ -282,7 +295,12 @@ void SendCall( int nStartStop )
 	//========================================================================
 	//	Send RF
 
+#if defined(USE_CH_ISO_DEV)
+	SendPktCh( GetChOtherRFT(), (uint8_t *)&stPkt,
+		(U8)sizeof( RFMPktHdr ) + sizeof( RFMPktCtrlPACall ) );
+#else
 	SendPacket( (U8 *)&stPkt, (U8)sizeof( RFMPktHdr ) + sizeof( RFMPktCtrlPACall ) );
+#endif
 
 	//========================================================================
 }
@@ -709,6 +727,7 @@ int	ProcPktCmd			( const RFMPkt *pRFPkt )
 	if ( GetDbg() )		printf( "%s(%d)\n", __func__, __LINE__ );
 
 	//	RSSI Check
+	printf( "%s(%d) - %s\n", __func__, __LINE__, pRFPkt->dat.cmd.sCmd );
 
 	if ( g_nRSSI >= pRFPkt->dat.cmd.nRSSIOver )
 	{
