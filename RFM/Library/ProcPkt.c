@@ -644,9 +644,15 @@ void LoopProcPkt( int nTick )
 	}
 
 #else
-
-	if( bMain_IT_Status & SI446X_CMD_GET_INT_STATUS_REP_PH_PEND_PACKET_RX_PEND_BIT )
+	if( ( bMain_IT_Status & SI446X_CMD_GET_CHIP_STATUS_REP_CHIP_PEND_CMD_ERROR_PEND_BIT )
+			|| ( bMain_IT_Status & SI446X_CMD_GET_INT_STATUS_REP_PH_STATUS_CRC_ERROR_BIT ) )
 	{
+		//	Packet Error or CRC Error
+		printf ( "E" );
+	}
+	else if( bMain_IT_Status & SI446X_CMD_GET_INT_STATUS_REP_PH_PEND_PACKET_RX_PEND_BIT )
+	{
+		//	Rx Packet
 		HAL_GPIO_TogglePin ( LED_ST_GPIO_Port, LED_ST_Pin );
 
 		nRxPkt++;
