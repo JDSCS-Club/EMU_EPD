@@ -77,7 +77,7 @@ extern int			g_nStampRxPkt;		//	방송/통화 Stamp
 
 extern int			g_nRSSI;			//	RSSI Value
 
-extern RFMDevStat	g_devStat[];	//	Device Status
+extern RFMDevStat	g_devStat[];		//	Device Status
 
 
 #if defined(USE_HOP_MANUAL)

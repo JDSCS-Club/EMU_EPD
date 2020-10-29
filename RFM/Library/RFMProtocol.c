@@ -320,7 +320,11 @@ void SendLight( int nOnOff )
 
 	//========================================================================
 	//	Packet Header
+#if defined(USE_CH_ISO_DEV)
+	_MakePktHdr2( &stPkt, PktLight );
+#else
 	_MakePktHdr( &stPkt, GetDevID(), 0xFF, sizeof( RFMPktLight ), PktLight );
+#endif
 
 	//========================================================================
 	//	Status Data
@@ -328,7 +332,12 @@ void SendLight( int nOnOff )
 
 	//========================================================================
 	//	Send RF
+#if defined(USE_CH_ISO_DEV)
+	SendPktCh( GetChPA(), (uint8_t *)&stPkt,
+		(U8)sizeof( RFMPktHdr ) + sizeof( RFMPktLight ) );
+#else
 	SendPacket( (U8 *)&stPkt, (U8)sizeof( RFMPktHdr ) + sizeof( RFMPktLight ) );
+#endif
 
 	//========================================================================
 }
