@@ -768,26 +768,8 @@ int SendPacket( const char *sBuf, int nSize )
 		&sBuf[0],
 		pRadioConfiguration->Radio_PacketLength );
 
-#if defined(USE_RFT_TX_MULTI_SEND)
-	if( GetDevID() == DevRF900T )
-	{
-		//	2회차 전송 : ch + 1
-		//	음성 전송 Timing : 14.49 msec
-//		HAL_Delay( 5 );		//	5 msec 후 전송.
-		HAL_Delay( 2 );		//	2 msec 후 전송.
-
-		nCh = ChTS1_1 + g_idxTrainSet * 2 + ( ( g_nCarNo ) % 2 );	//	타채널
-		vRadio_StartTx_Variable_Packet (
-			nCh,	//g_idxTrainSet + 1,	//		pRadioConfiguration->Radio_ChannelNumber,
-			&sBuf[0],
-			pRadioConfiguration->Radio_PacketLength );
-	}
-#endif	// defined(USE_RFT_TX_MULTI_SEND)
-
 	return TRUE;
-
 }
-
 
 //========================================================================
 int SendPktCh	( int nCh, const char *sBuf, int nSize )

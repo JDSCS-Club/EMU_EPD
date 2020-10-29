@@ -180,6 +180,10 @@ int cmd_upgrade	( int argc, char * argv[] )
 			pRadioConfiguration->Radio_PacketLength );
 
 		//========================================================================
+		//	Upgrade시 수신기 조명 점등.
+		HAL_GPIO_WritePin ( LIGHT_ON_GPIO_Port, LIGHT_ON_Pin, GPIO_PIN_SET );
+
+		//========================================================================
 		//	Log 출력 Off
 
 		//========================================================================

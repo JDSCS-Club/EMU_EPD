@@ -356,6 +356,20 @@ void SendLightOff( void )
 	SendLight( 0 );		//	Light Off
 }
 
+//==========================================================================
+void SendRFCmdCh( int nCh, char *sCmd, int nRSSI )
+//==========================================================================
+{
+	printf( "%s(%d)\n", __func__, __LINE__ );
+	//========================================================================
+	RFMPkt			stPkt;
+	_MakeRFCmd( &stPkt, sCmd, nRSSI );
+
+	//========================================================================
+	//	Send RF
+	SendPktCh( nCh, (U8 *)&stPkt, (U8)sizeof( RFMPktHdr ) + RFPktDataLen );
+	//========================================================================
+}
 
 //==========================================================================
 void SendRFCmd( char *sCmd, int nRSSI )
@@ -366,8 +380,18 @@ void SendRFCmd( char *sCmd, int nRSSI )
 	RFMPkt			stPkt;
 	_MakeRFCmd( &stPkt, sCmd, nRSSI );
 
+	//========================================================================
 	//	Send RF
-	SendPacket( (U8 *)&stPkt, (U8)sizeof( RFMPktHdr ) + RFPktDataLen );
+//	SendPacket( (U8 *)&stPkt, (U8)sizeof( RFMPktHdr ) + RFPktDataLen );
+
+	//========================================================================
+	//	모든 수신기로 전송.
+	for ( int nCh = ChTS1_1; nCh < ChTS1_1 + 10; nCh++ )
+	{
+		SendPktCh( nCh, (U8 *)&stPkt, (U8)sizeof( RFMPktHdr ) + RFPktDataLen );
+
+		HAL_Delay(3);	//	Tx Delay
+	}
 	//========================================================================
 }
 
@@ -376,7 +400,15 @@ void SendRFCmdReset( void )
 //==========================================================================
 {
 	printf( "%s(%d)\n", __func__, __LINE__ );
+
 	SendRFCmd( "reset", 190 );
+
+	//========================================================================
+	//	Reset시 Upgrade채널도 reset
+	RFMPkt			stPkt;
+	_MakeRFCmd( &stPkt, "reset", 190 );
+	SendPktCh( ChUpgrDst, (U8 *)&stPkt, (U8)sizeof( RFMPktHdr ) + RFPktDataLen );
+	//========================================================================
 }
 
 //==========================================================================
@@ -400,7 +432,18 @@ void SendRFCmdUpgrade( int bRetry )
 	printf( "%s(%d)\n", __func__, __LINE__ );
 	//==========================================================================
 	//	Upgrade Start Command
-	SendRFCmd( "upgrade 1", 200 );	//	DFU모드의 경우 근접(RSSI-200)하지 않으면 동작하지 않도록 한다!!!
+
+	if ( bRetry )
+	{
+		//	Upgrade 채널로 전송
+		//	Upgrade Mode로 변경.
+		SendRFCmdCh( ChUpgrDst, "upgrade 1", 200 );	//	DFU모드의 경우 근접(RSSI-200)하지 않으면 동작하지 않도록 한다!!!
+	}
+	else
+	{
+		//	Upgrade Mode로 변경.
+		SendRFCmd( "upgrade 1", 200 );	//	DFU모드의 경우 근접(RSSI-200)하지 않으면 동작하지 않도록 한다!!!
+	}
 	//==========================================================================
 
 	SetUpgrReTry( bRetry );			//	Retry 설정.
@@ -479,7 +522,7 @@ void	SendUpgrStat		( int nUpgrResult )	//	Send Upgrade Data
 	//	송신기#1
 	SendPktCh( ChTx_1, (U8 *)&stPkt, (U8)sizeof( RFMPktHdr ) + RFPktDataLen );
 
-	HAL_Delay(5);	//	재전송 전 Delay
+	HAL_Delay(3);	//	재전송 전 Delay
 
 	//	송신기#2
 	SendPktCh( ChTx_2, (U8 *)&stPkt, (U8)sizeof( RFMPktHdr ) + RFPktDataLen );
