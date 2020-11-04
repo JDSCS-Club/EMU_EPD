@@ -47,6 +47,7 @@ int nRxErr = 0;			//	Error Packet Count
 int nCrcErr = 0;
 
 int nTxStamp = 0;
+int nTxStampComp = 0;	//	Tx Complete
 int nRxStamp = 0;
 
 //========================================================================
@@ -647,12 +648,12 @@ void LoopProcPkt( int nTick )
 	if( ( bMain_IT_Status & SI446X_CMD_GET_CHIP_STATUS_REP_CHIP_PEND_CMD_ERROR_PEND_BIT )
 			|| ( bMain_IT_Status & SI446X_CMD_GET_INT_STATUS_REP_PH_STATUS_CRC_ERROR_BIT ) )
 	{
-		//	Packet Error or CRC Error
+		//	Rx Packet Error or CRC Error
 		printf ( "E" );
 	}
 	else if( bMain_IT_Status & SI446X_CMD_GET_INT_STATUS_REP_PH_PEND_PACKET_RX_PEND_BIT )
 	{
-		//	Rx Packet
+		//	Rx Packet Receive Complete
 		HAL_GPIO_TogglePin ( LED_ST_GPIO_Port, LED_ST_Pin );
 
 		nRxPkt++;
@@ -672,7 +673,7 @@ void LoopProcPkt( int nTick )
 		HAL_GPIO_TogglePin ( LED_ST_GPIO_Port, LED_ST_Pin );
 
 		nTxPkt++;
-		nTxStamp = HAL_GetTick();
+		nTxStampComp = HAL_GetTick();	//	송신완료 Stamp
 
 		// Custom message sent successfully
 		if ( nTxPkt % 250 == 0 )
@@ -763,10 +764,18 @@ int SendPacket( const char *sBuf, int nSize )
 	//	CH2 :  2, 4, 6
 	int nCh = ChTS1_1 + g_idxTrainSet * 2 + ((g_nCarNo + 1) % 2); // 현재 호차 채널
 
+	//========================================================================
+	while( ( HAL_GetTick() - nTxStamp) < 3 )	;	//	Tx 시작 후 완료까지 : 3msec
+	//========================================================================
+
 	vRadio_StartTx_Variable_Packet (
 		nCh,	//g_idxTrainSet,	//		pRadioConfiguration->Radio_ChannelNumber,
 		&sBuf[0],
 		pRadioConfiguration->Radio_PacketLength );
+
+	//========================================================================
+	nTxStamp = HAL_GetTick();
+	//========================================================================
 
 	return TRUE;
 }
@@ -777,10 +786,18 @@ int SendPktCh	( int nCh, const char *sBuf, int nSize )
 {
 	Dump("Tx", sBuf, 0x40);
 
+	//========================================================================
+	while( ( HAL_GetTick() - nTxStamp) < 3 )	;	//	Tx 시작 후 완료까지 : 3msec
+	//========================================================================
+
 	vRadio_StartTx_Variable_Packet (
 		nCh,	//		pRadioConfiguration->Radio_ChannelNumber,
 		&sBuf[0],
 		pRadioConfiguration->Radio_PacketLength );
+
+	//========================================================================
+	nTxStamp = HAL_GetTick();
+	//========================================================================
 
 	return TRUE;
 }

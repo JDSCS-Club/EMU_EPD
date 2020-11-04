@@ -862,7 +862,7 @@ void RFM_I2SEx_TxRxCpltCallback( I2S_HandleTypeDef *hi2s )
 				//  패킷이 4개 이상인경우 버퍼링 종료.
 				bRxBuffering = 0;
 
-				printf ( "E" );	 //  버퍼링종료
+				printf ( "F" );	 //  버퍼링종료 ( Buffering End - Buffer Full )
 			}
 		}
 
@@ -915,7 +915,7 @@ void RFM_I2SEx_TxRxCpltCallback( I2S_HandleTypeDef *hi2s )
 			}
 			else
 			{
-				printf ( "B" );	 //  버퍼링시작
+				printf ( "B" );	 //  버퍼링시작 ( Buffering )
 				//  Data
 				bRxBuffering = 1;
 			}
