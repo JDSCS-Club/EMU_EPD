@@ -110,7 +110,7 @@ Menu_t	g_MenuDiagList = {
 #if defined(USE_RFT_MENU_DEV_VER)
 
 char _sVerList[16][20] = {
-	"RFM v----",		//  Self Device Version
+	"RFM v" APP_VER,		//  Self Device Version
 //	"01:v1.1.X.X",
 	"01:    --- ",	//	"01:v1.1.X.X",
 	"02:    --- ",	//
@@ -190,6 +190,11 @@ enum eMenuIdx
 
 //========================================================================
 int	g_bEnMenuMaint	= 	0;	//	MainMenu Maintenace Menu활성화.
+
+int 	IsMenuMaint			( void )			//	MainMenu Maintenace Menu활성화.
+{
+	return g_bEnMenuMaint;
+}
 
 //========================================================================
 void EnableMenuMaint( int bEnable )
@@ -581,8 +586,16 @@ void 	ProcMenuMain( int idxItem )
 		//  메뉴 Exit
 
 #if defined(USE_RFT_MENU_DEV_VER)
-		SetActiveMenu( &g_MenuVerList );	//	버전 List 현시.
-		GetActiveMenu()->currIdx = 0;		//	메뉴 Index초기화.
+
+		if ( IsMenuMaint() )
+		{
+			SetActiveMenu( &g_MenuVerList );	//	버전 List 현시.
+			GetActiveMenu()->currIdx = 0;		//	메뉴 Index초기화.
+		}
+		else
+		{
+			SetActiveMenu( NULL );
+		}
 
 		ProcDispVer();
 //		UpdateLCDMenu();

@@ -314,13 +314,18 @@ void KeyPtt( int bValue )
 #endif
 
 		LCDSetCursor( 20, 13 );
-#if 1
-		char sBuf[20];
-		sprintf( sBuf, "방송중...(%d)", GetChPA() );
-		LCDPrintf( sBuf );
-#else
-		LCDPrintf( "방송중..." );
-#endif
+
+		if ( IsMenuMaint() )
+		{
+			//	Maint Mode : 송신채널 표시.
+			char sBuf[20];
+			sprintf( sBuf, "방송중...(%d)", GetChPA() );
+			LCDPrintf( sBuf );
+		}
+		else
+		{
+			LCDPrintf( "방송중..." );
+		}
 
 		SetRFMMode( RFMModeTx );
 

@@ -34,6 +34,7 @@ typedef struct _Menu
 } Menu_t;
 
 extern int		g_bEnMenuMaint;					//	MainMenu Maintenace Menu활성화.
+int 	IsMenuMaint			( void );			//	MainMenu Maintenace Menu활성화.
 void 	EnableMenuMaint		( int bEnable );	//	MainMenu Maintenace Menu활성화.
 
 extern Menu_t	g_MenuMain;						//	Main Menu
