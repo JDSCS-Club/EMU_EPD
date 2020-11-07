@@ -248,6 +248,11 @@ int ProcPktHdr1( const RFMPkt *pRFPkt, int nSize  )
 
 	//========================================================================
 	//	Hopping
+#if defined(USE_CH_ISO_DEV)
+	//	Device 별로 채널분리.
+
+#else	//	Pkt Hdr1 사용 X
+
 	uint16_t flagID = g_flagRspID &	(~(0x1 << GetCarNo()));		//	자신의 ID Flag를 제외한 값.
 
 #if defined(USE_HOP_MANUAL)
@@ -308,6 +313,8 @@ int ProcPktHdr1( const RFMPkt *pRFPkt, int nSize  )
 #endif
 		//==========================================================================
 	}
+
+#endif	//	defined(USE_CH_ISO_DEV)
 
 	if ( pRFPkt->hdr.nSeq != 0 )
 	{
@@ -415,6 +422,7 @@ void CallbackRecvPacket( const char *pData, int nSize )
 
 	//========================================================================
 	//	Header
+	//if ( ( pRFPkt->hdr2.nTS & 0xC0 ) == 0x00 )	//	[7:6] 00 : Hdr#1 / 01 : Hdr#2
 	if ( pRFPkt->hdr2.bHdrID == 0 )
 	{
 		//	Header #1
@@ -423,13 +431,18 @@ void CallbackRecvPacket( const char *pData, int nSize )
 			return;
 		}
 	}
-	else
+	else if ( pRFPkt->hdr2.bHdrID == 0x01 )
 	{
-		//	Header #1
+		//	Header #2
 		if ( ProcPktHdr2( pRFPkt, nSize ) == 0 )
 		{
 			return;
 		}
+	}
+	else
+	{
+		printf( "H" );	//	Packet Header Error
+		return ;
 	}
 
 	//========================================================================

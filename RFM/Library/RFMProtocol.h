@@ -268,6 +268,7 @@ enum eDevFlag
 #endif
 };
 
+
 //==========================================================================
 //	RFM Packet
 
@@ -303,7 +304,9 @@ typedef struct _RFMPktHdr2
 	};
 	uint8_t		nTS:6;			//	[5:0] TrainSet
 	uint8_t		bHdrID:2;		//	[7:6] 00 : Hdr#1 / 01 : Hdr#2
-	uint8_t		nSrcCh;			//	Source Channel
+	uint8_t		nSrcCh:6;		//	Source Channel ( 0 ~ 64 )
+	uint8_t		bRFT1:1;		//	송신기#1 전송 Flag
+	uint8_t		bRFT2:1;		//	송신기#2 전송 Flag
 	uint8_t		nSpare3;		//	Spare
 	uint8_t		nPktCmd;		//	Command에 따라 Data Length 구분.
 } RFMPktHdr2;
@@ -336,6 +339,9 @@ typedef struct _RFMPktStatReq
 	//	TEXT 0
 	uint8_t		nSrcCh;			//	Source Channel
 	uint8_t		nSpare1[3];		//	Spare
+
+	uint8_t		nTrainNo;		//	편성번호.
+	uint8_t		nCarNo;			//	열차번호.
 
 } RFMPktStatReq;
 
@@ -406,7 +412,7 @@ typedef struct _RFMPktDevConn
 	};
 
 	uint8_t		nDevType;		//	장치 Type DevRF900T(송신기) / DevRF900M(수신기)
-	uint8_t		nSrcCh;		//	송신기 Channel 등록.
+	uint8_t		nSrcCh;			//	송신기 Channel 등록.
 	uint8_t		nConnect;		//	Connect / Disconnect
 	uint8_t		nSpare1[13];	//
 
@@ -560,6 +566,7 @@ typedef struct _RFMPkt
 //
 //	//	Tail : Src Channel ( 1 Byte )
 //} RFMPktEx;
+
 
 
 //==========================================================================

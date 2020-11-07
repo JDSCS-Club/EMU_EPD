@@ -115,7 +115,25 @@ void _MakePktHdr2	( RFMPkt *pPkt, int nPktCmd )
 	pPkt->hdr2.bHdrID		=	HdrID2;				//	Header ID #1
 	pPkt->hdr2.nSrcCh		=	GetChRx();			//	Source Channel
 	pPkt->hdr2.nTS			=	GetTrainSetIdx();	//	ID Flag
-	pPkt->hdr.nPktCmd		=	nPktCmd;			//	Status
+	pPkt->hdr2.nPktCmd		=	nPktCmd;			//	Status
+
+//	CLEAR_BIT(pPkt->hdr2.nTS, (0x1<<7));
+//	SET_BIT(pPkt->hdr2.nTS, (0x1<<6));
+
+#if defined( USE_RFT_REG_TO_RFM )
+	//	자신의 송신기 ID Flag 설정.	-	재수신 받지 않음.
+	if( GetRFTID() == 1 )
+	{
+		pPkt->hdr2.bRFT1	=	1;	//	SET_BIT( pPkt->hdr2.nSrcCh, (0x1<<6) );	//
+		if( GetChPARFT() != 0 )	pPkt->hdr2.bRFT2	=	1;	//	송신기에 직접 전송하는경우.
+	}
+	else if( GetRFTID() == 2 )
+	{
+		pPkt->hdr2.bRFT2	=	1;	//	SET_BIT( pPkt->hdr2.nSrcCh, (0x1<<7) );//
+		if( GetChPARFT() != 0 )	pPkt->hdr2.bRFT1	=	1;	//	송신기에 직접 전송하는경우.
+	}
+
+#endif
 }
 
 #endif	//	defined(USE_CH_ISO_DEV)		//	장치별 채널분리.
@@ -161,6 +179,9 @@ void SendStatReq( int nDestCh )
 	//	Packet Body
 	pStatReq->nSrcCh	=	GetChRx();	//	수신받을 채널
 
+	pStatReq->nCarNo	=	GetCarNo();			//	호차번호.
+	pStatReq->nTrainNo	=	GetTrainSetIdx();	//	편성번호.
+
 	//========================================================================
 	//	Send RF
 	SendPktCh( nDestCh, (U8 *)&stPkt, (U8)sizeof( RFMPktHdr ) + sizeof( RFMPktStatReq ) );
@@ -196,6 +217,8 @@ void SendStat( int nDestCh )
 
 	pStat->nCarNo		=	GetCarNo();
 	pStat->nDevID		=	GetDevID();
+
+	pStat->nTrainNo		=	GetTrainSetIdx();	//	편성번호.
 
 	pStat->upTime		=	HAL_GetTick();
 
@@ -256,8 +279,18 @@ void SendPA( int nStartStop )
 	//	Send RF
 
 #if defined(USE_CH_ISO_DEV)
+
+	if ( GetChPARFT() != 0 )
+	{
+		//	송신기에 전송.
+		SendPktCh( GetChPARFT(), (uint8_t *)&stPkt,
+			(U8)sizeof( RFMPktHdr ) + sizeof( RFMPktCtrlPACall ) );
+	}
+
+	//	수신기에 전송
 	SendPktCh( GetChPA(), (uint8_t *)&stPkt,
 		(U8)sizeof( RFMPktHdr ) + sizeof( RFMPktCtrlPACall ) );
+
 #else
 	SendPacket( (U8 *)&stPkt, (U8)sizeof( RFMPktHdr ) + sizeof( RFMPktCtrlPACall ) );
 #endif
@@ -296,10 +329,25 @@ void SendCall( int nStartStop )
 	//	Send RF
 
 #if defined(USE_CH_ISO_DEV)
-	SendPktCh( GetChOtherRFT(), (uint8_t *)&stPkt,
-		(U8)sizeof( RFMPktHdr ) + sizeof( RFMPktCtrlPACall ) );
+
+	if ( GetChPARFT() != 0 )
+	{
+		//	송신기에 직접 전송.
+		SendPktCh( GetChPARFT(), (uint8_t *)&stPkt,
+			(U8)sizeof( RFMPktHdr ) + sizeof( RFMPktCtrlPACall ) );
+	}
+	else
+	{
+		//	수신기를 통해 전송.
+		SendPktCh( GetChPA(),	//GetChOtherRFT(),
+				(uint8_t *)&stPkt,
+				(U8)sizeof( RFMPktHdr ) + sizeof( RFMPktCtrlPACall ) );
+	}
+
 #else
+
 	SendPacket( (U8 *)&stPkt, (U8)sizeof( RFMPktHdr ) + sizeof( RFMPktCtrlPACall ) );
+
 #endif
 
 	//========================================================================
@@ -321,9 +369,13 @@ void SendLight( int nOnOff )
 	//========================================================================
 	//	Packet Header
 #if defined(USE_CH_ISO_DEV)
+
 	_MakePktHdr2( &stPkt, PktLight );
+
 #else
+
 	_MakePktHdr( &stPkt, GetDevID(), 0xFF, sizeof( RFMPktLight ), PktLight );
+
 #endif
 
 	//========================================================================
@@ -333,10 +385,14 @@ void SendLight( int nOnOff )
 	//========================================================================
 	//	Send RF
 #if defined(USE_CH_ISO_DEV)
+
 	SendPktCh( GetChPA(), (uint8_t *)&stPkt,
 		(U8)sizeof( RFMPktHdr ) + sizeof( RFMPktLight ) );
+
 #else
+
 	SendPacket( (U8 *)&stPkt, (U8)sizeof( RFMPktHdr ) + sizeof( RFMPktLight ) );
+
 #endif
 
 	//========================================================================
@@ -599,6 +655,21 @@ int	ProcPktStatReq		( const RFMPkt *pRFPkt )
 
 	RFMPktStatReq *pStatReq = &pRFPkt->dat.statReq;
 
+	//	수신기의 경우 송신기 상태정보 갱신.
+	//		-> 상태정보 요청한 송신기의 상태정보를 갱신한다.
+	if ( GetDevID() == DevRF900M )
+	{
+		int idx = pStatReq->nCarNo;
+
+		//========================================================================
+		//	장치 응답 Flag 설정.
+		SetStat( idx );		//	상태정보 설정.
+
+		//========================================================================
+		//	RSSI 갱신
+		g_devStat[idx].nRSSI = g_nRSSI;
+	}
+
 	//	Source Channel로 상태정보 송신.
 	SendStat( pStatReq->nSrcCh );
 }
@@ -634,6 +705,8 @@ int	ProcPktCtrlPaCall	( const RFMPkt *pRFPkt )
 	}
 
 	printf("\n");
+
+	g_nStampRxPkt = HAL_GetTick();		//	방송/통화 Stamp
 }
 
 //========================================================================

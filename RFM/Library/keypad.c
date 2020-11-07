@@ -310,7 +310,9 @@ void KeyPtt( int bValue )
 	if ( bValue )
 	{
 #if defined(USE_CH_ISO_DEV)
-		SetChPA( GetChNearRFM() );		//	가장 가까운 송신기 설정.
+		SetChPA( GetChNearRFM() );		//	가장 가까운 수신기 설정.
+
+		SetChPARFT( GetChNearRFT() );	//	가까운 송신기 설정.
 #endif
 
 		LCDSetCursor( 20, 13 );
@@ -344,7 +346,9 @@ void KeyPtt( int bValue )
 		SetRFMMode( RFMModeNormal );
 
 #if defined(USE_CH_ISO_DEV)
-		SetChPA( GetChNearRFM() );		//	가장 가까운 송신기 설정.
+		SetChPA( GetChNearRFM() );		//	가장 가까운 수신기 설정.
+
+		SetChPARFT( GetChNearRFT() );	//	가까운 송신기 설정.
 #endif
 
 		//  Green LED Off
@@ -367,6 +371,12 @@ void KeySos( int bValue )
 
 	if ( bValue )
 	{
+#if defined(USE_CH_ISO_DEV)
+		SetChPARFT( GetChNearRFT() );	//	가까운 송신기 설정.
+
+		SetChPA( GetChNearRFM() );		//	가장 가까운 수신기 설정.
+#endif
+
 		//	송신중
 		LCDSetCursor( 20, 13 );
 		LCDPrintf( "통화중..." );
@@ -378,6 +388,12 @@ void KeySos( int bValue )
 	}
 	else
 	{
+#if defined(USE_CH_ISO_DEV)
+		SetChPARFT( GetChNearRFT() );	//	가까운 송신기 설정.
+
+		SetChPA( GetChNearRFM() );		//	가장 가까운 수신기 설정.
+#endif
+
 		//    편성 : 100
 		UpdateLCDMain();
 //		LCDSetCursor( 20, 13 );

@@ -131,6 +131,20 @@ char	*StrRFMMode		( int nRFMMode )
 	}
 }
 
+//========================================================================
+int	GetRFTID( void )	//	송신기 ID
+//========================================================================
+{
+	//	송신기 ID 얻기.
+	//========================================================================
+	//	송신기 #1 / #2
+	//	ChTx_1			=	8,			//	* CH8 : 송신기#1 - (Car No : 11)
+	//	ChTx_2			=	9,			//	* CH9 : 송신기#2 - (Car No : 12)
+	if ( g_nCarNo == RFTCarNo1 ) return 1;			//	11
+	else if ( g_nCarNo == RFTCarNo2 ) return 2;		//	12
+	else return 0;
+	//========================================================================
+}
 
 //========================================================================
 int GetChRx( void )
@@ -186,6 +200,50 @@ int		GetChOtherRFT	( void )			//	타 송신기 채널.
 	//========================================================================
 }
 
+
+//========================================================================
+int		IsNearRFT	( void )			//	가까운 송신기 존재 유무 확인.
+//========================================================================
+{
+	int nCh = ChTS1_1;		//	Default
+
+	//	가장가까운 호차 검색.
+	int nMaxRSSI = 0;
+	for ( int idx = 1; idx <= 10; idx++ )
+	{
+		//	Car #1 ~ #10
+		if ( g_devStat[idx].nRSSI > nMaxRSSI )
+		{
+			nCh = g_devStat[idx].stat.nChRx;		//	채널 설정.
+			nMaxRSSI = g_devStat[idx].nRSSI;
+		}
+	}
+
+	return nCh;
+}
+
+
+//========================================================================
+int		GetChNearRFT	( void )			//	가장 가까운 송신기 채널.
+//========================================================================
+{
+	int nCh = 0;		//	Default
+
+	//	가장가까운 송신기 검색.
+	int nMaxRSSI = 0;
+	for ( int idx = 11; idx <= 12; idx++ )			//	송시기 채널 검색.
+	{
+		//	Car #1 ~ #10
+		if ( g_devStat[idx].nRSSI > nMaxRSSI )
+		{
+			nCh = g_devStat[idx].stat.nChRx;		//	채널 설정.
+			nMaxRSSI = g_devStat[idx].nRSSI;
+		}
+	}
+
+	return nCh;
+}
+
 //========================================================================
 int		GetChNearRFM	( void )			//	가장 가까운 수신기 채널.
 //========================================================================
@@ -225,6 +283,24 @@ int		GetChPA( void )
 {
 	//	방송채널 설정.
 	return g_nChPA;
+}
+
+int		g_nChRFT	=	0;		//	Default
+
+//========================================================================
+void	SetChPARFT( int nCh )	//	가까운 송신기 채널(방송/통화용) 설정.
+//========================================================================
+{
+	//	방송채널 설정.
+	g_nChRFT	= nCh;
+}
+
+//========================================================================
+int		GetChPARFT( void )		//	가까운 송신기 채널(방송/통화용) 설정.
+//========================================================================
+{
+	//	방송채널 설정.
+	return g_nChRFT;
 }
 
 //========================================================================
@@ -1280,17 +1356,38 @@ void LoopProcRFM ( int nTick )
 
 					if( GetKey(eKeyPtt) )
 					{
+						//========================================================================
 						//	PA
-						nCh = GetChPA();//GetChNearRFM();	//	가장 가까운 수신기.
-						SendPktCh( nCh, (uint8_t *)&bufRFTx,
+
+						if ( GetChPARFT() != 0 )
+						{
+							//	송신기에 전송.
+							SendPktCh( GetChPARFT(), (uint8_t *)&bufRFTx,
+								(U8)sizeof( RFMPktHdr ) + sizeof( RFMPktCtrlPACall ) );
+						}
+
+//						nCh = GetChPA();//GetChNearRFM();	//	가장 가까운 수신기.
+						SendPktCh( GetChPA(), (uint8_t *)&bufRFTx,
 							pRadioConfiguration->Radio_PacketLength );
 					}
 					else
 					{
+						//========================================================================
 						//	Call
-						nCh = GetChOtherRFT();	//	타 송신기 채널.
-						SendPktCh( nCh, (uint8_t *)&bufRFTx,
-							pRadioConfiguration->Radio_PacketLength );
+						if ( GetChPARFT() != 0 )
+						{
+							//	송신기에 직접 전송.
+							SendPktCh( GetChPARFT(), (uint8_t *)&bufRFTx,
+								(U8)sizeof( RFMPktHdr ) + sizeof( RFMPktCtrlPACall ) );
+						}
+						else
+						{
+							//	수신기를 통해 전송.
+//						nCh = GetChOtherRFT();	//	타 송신기 채널.
+							SendPktCh( GetChPA(), (uint8_t *)&bufRFTx,
+								pRadioConfiguration->Radio_PacketLength );
+						}
+
 					}
 
 #else
@@ -1379,6 +1476,13 @@ void LoopProcRFM ( int nTick )
 			HAL_GPIO_TogglePin ( LED_ST_GPIO_Port, LED_ST_Pin );
 		}
 
+		if ( GetRFMMode() == RFMModeNormal )
+		{
+			//	Normal 모드인 경우 상태정보 갱신.
+		    //	Reflash Status
+		    ReflashStat( nTick );	//	상태정보 갱신.
+		}
+
 #if defined(USE_SEND_STATUS)	//	상태 정보 전송.
 		//========================================================================
 		if ( GetRFMMode() == RFMModeNormal )
@@ -1446,11 +1550,11 @@ void LoopProcRFM ( int nTick )
 			}
 		}
 
-		if ( s_idxCh == 0 )
-		{
-		    //	Reflash Status
-		    ReflashStat( nTick );	//	상태정보 갱신.
-		}
+//		if ( s_idxCh == 0 )
+//		{
+//		    //	Reflash Status
+//		    ReflashStat( nTick );	//	상태정보 갱신.
+//		}
 
 		s_idxCh = ( s_idxCh + 1 ) % ( MaxTrainSet + 2 );	//	MaxTrainSet : 10 + 2(송신기 2채널)
 
