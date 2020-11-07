@@ -1393,6 +1393,30 @@ void LoopProcRFM ( int nTick )
 		s_nTickStandby = nTick;
 	}
 
+#if defined(TIMEOUT_UPGRADE)
+
+	//========================================================================
+	//	Upgrade Mode 진입후 5분간 Rx가 없는경우 Normal모드로 변경.
+	if ( ( GetDevID() == DevRF900M )						//	수신기.
+		&& ( ( nTick - g_nStampRxPkt ) > (TIMEOUT_UPGRADE * 1000) )	//	Timeout
+		&& ( GetRFMMode() == RFMModeUpgr )
+		)
+	{
+		//========================================================================
+		//	Normal 모드로 변경.
+		SetRFMMode( RFMModeNormal );	//	Normal Mode 로 변경
+		//========================================================================
+
+		//  RF 수신 Start
+		g_nChRx = GetChRx();	//	ChTS1_1 + g_idxTrainSet * 2 + ((g_nCarNo+1) % 2);	// 현재 호차 채널
+
+		vRadio_StartRX(
+			g_nChRx,	//g_idxTrainSet,	//		pRadioConfiguration->Radio_ChannelNumber,
+			pRadioConfiguration->Radio_PacketLength );
+	}
+
+#endif
+
 #if defined(USE_STAT_REQ)	//	송신기 : 상태 정보 요청 100 msec간격.
 	//========================================================================
 	//	송신기 장치 상태정보 요청.

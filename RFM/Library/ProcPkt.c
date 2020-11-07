@@ -666,6 +666,7 @@ void LoopProcPkt( int nTick )
 		}
 
 		CallbackRecvPacket( g_pRadioRxPkt, 0x40 );
+		memset( g_pRadioRxPkt, 0, 0x40 );			//	Buffer Clear
 	}
 
 	if( bMain_IT_Status & SI446X_CMD_GET_INT_STATUS_REP_PH_PEND_PACKET_SENT_PEND_BIT )

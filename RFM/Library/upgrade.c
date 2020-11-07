@@ -194,9 +194,16 @@ int cmd_upgrade	( int argc, char * argv[] )
 	else if ( nVal == 0 )
 	{
 		//========================================================================
-		//	Upgrade Mode
+		//	Normal Mode
 		SetRFMMode( RFMModeNormal );	//	Normal Mode 로 변경
 		//========================================================================
+
+		//  RF 수신 Start
+		g_nChRx = GetChRx();	//	ChTS1_1 + g_idxTrainSet * 2 + ((g_nCarNo+1) % 2);	// 현재 호차 채널
+
+		vRadio_StartRX(
+			g_nChRx,	//g_idxTrainSet,	//		pRadioConfiguration->Radio_ChannelNumber,
+			pRadioConfiguration->Radio_PacketLength );
 	}
 }
 //========================================================================

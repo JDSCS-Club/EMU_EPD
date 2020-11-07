@@ -63,7 +63,7 @@
 
 #if defined(USE_STAT_REQ)
 
-#define		TIME_STAT_REQ					200		//	상태정보 요청 주기. 200 msec ( 모든 호차 상태정보 요청주기 200 X 12 msec )
+#define		TIME_STAT_REQ					300		//	상태정보 요청 주기. 200 msec ( 모든 호차 상태정보 요청주기 200 X 12 msec )
 
 #else
 //	상태정보 요청/응답 방식인 경우 -> 주기적으로 상태정보 전송 Disable
@@ -99,6 +99,10 @@
 #define		USE_RFT_MENU_LOOP				1		//	송신기 메뉴 Up/Down Loop.
 
 #define		USE_RFT_MENU_CMD				1		//	송신기 Command 명령.
+
+//========================================================================
+//	Upgrade 관련
+#define		TIMEOUT_UPGRADE					300		//	300 sec ( 5 min ) - Upgrade 모드 진입후 5분동안 Rx Packet이 없는경우 Normal모드로 변경.
 
 //========================================================================
 //	시험용 설정
