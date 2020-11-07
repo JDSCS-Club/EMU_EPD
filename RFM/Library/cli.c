@@ -157,7 +157,7 @@ user_command_t	user_command_table[] = {
 		(char *)0,
 		cmd_info},
 	{"swinfo",
-		"info	-	Software Information",
+		"swinfo	-	Software Information",
 		(char *)0,
 		cmd_swinfo},
 	{"rfstat",

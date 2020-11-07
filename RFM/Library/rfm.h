@@ -87,6 +87,8 @@ extern int			g_nManHopping;		//	On(1) / Off(2) / Unused(0 : Other)
 //========================================================================
 int		GetRFMMode		( void );
 void	SetRFMMode		( int nRFMMode );
+
+char	*StrRFMMode		( int nRFMMode );
 //========================================================================
 
 int 	GetChRx			( void );

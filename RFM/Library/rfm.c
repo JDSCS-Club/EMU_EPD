@@ -110,19 +110,27 @@ void	SetRFMMode	( int nRFMMode )
 	if ( g_nRFMMode != nRFMMode )
 	{
 		//	타 모드에서 Normal 모드로 변경시 상태정보 ID Flag값 유지.
-		switch( nRFMMode )
-		{
-		case RFMModeNormal:		printf("[Normal]");	break;
-		case RFMModeTx:			printf("[Tx]");		break;
-		case RFMModeRx:			printf("[Rx]");		break;
-		case RFMModeOcc:		printf("[Occ]");	break;
-		case RFMModeUpgr:		printf("[Upgr]");	break;
-		default:				printf("[N/A]");	break;
-		}
+		printf( "%s", StrRFMMode( nRFMMode ) );
 	}
 
 	g_nRFMMode = nRFMMode;
 }
+
+//========================================================================
+char	*StrRFMMode		( int nRFMMode )
+//========================================================================
+{
+	switch( nRFMMode )
+	{
+	case RFMModeNormal:		return "[Normal]";
+	case RFMModeTx:			return "[Tx]";
+	case RFMModeRx:			return "[Rx]";
+	case RFMModeOcc:		return "[Occ]";
+	case RFMModeUpgr:		return "[Upgr]";
+	default:				return "[N/A]";
+	}
+}
+
 
 //========================================================================
 int GetChRx( void )
@@ -635,6 +643,7 @@ int cmd_info    ( int argc, char * argv[] )
     printf( " - Train Set : %d\n", 100 + GetTrainSetIdx() );
     printf( " - Car No : %d\n", GetCarNo() );
     printf( " - RF Channel: %d\n", GetChRx() );
+    printf( " - Mode : %s(%d)\n", StrRFMMode( GetRFMMode() ), GetRFMMode()  );	//	Normal / Tx / Rx / Upgrade
 }
 
 

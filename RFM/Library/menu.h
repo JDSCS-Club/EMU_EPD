@@ -33,7 +33,6 @@ typedef struct _Menu
 	void		(*cbFunc)( int idxItem );		//	Callback Func
 } Menu_t;
 
-extern int		g_bEnMenuMaint;					//	MainMenu Maintenace Menu활성화.
 int 	IsMenuMaint			( void );			//	MainMenu Maintenace Menu활성화.
 void 	EnableMenuMaint		( int bEnable );	//	MainMenu Maintenace Menu활성화.
 

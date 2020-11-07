@@ -116,7 +116,7 @@ void LoopProcKey ( uint32_t tickCurr )
 
 	static uint32_t tickBase2 = 0;
 
-	if ( ( tickCurr - tickBase2 ) >= 1000 && g_bEnMenuMaint == 0 )
+	if ( ( tickCurr - tickBase2 ) >= 1000 && IsMenuMaint() == 0 )
 	{
 		//	Period : 1 sec
 		static int s_cntKeyOkMenu = 0;
