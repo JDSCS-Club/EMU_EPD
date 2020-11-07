@@ -161,7 +161,7 @@ int GetChRx( void )
 		//	송신기 #1 / #2
 		//	ChTx_1			=	8,			//	* CH8 : 송신기#1 - (Car No : 11)
 		//	ChTx_2			=	9,			//	* CH9 : 송신기#2 - (Car No : 12)
-		return ChTx_1 + ( g_nCarNo % 2 );	// 현재 호차 채널
+		return ChTx_1 + ( ( g_nCarNo + 1) % 2 );	// 현재 호차 채널
 		//========================================================================
 	}
 	else if ( GetDevID() == DevRF900M )
@@ -196,7 +196,7 @@ int		GetChOtherRFT	( void )			//	타 송신기 채널.
 	//	ChTx_1			=	8,				//	* CH8 : 송신기#1 - (Car No : 11)
 	//	ChTx_2			=	9,				//	* CH9 : 송신기#2 - (Car No : 12)
 //	return ChTx_1 + ( g_nCarNo % 2 );		// Self 송신기 채널
-	return ChTx_1 + ( (g_nCarNo+1) % 2 );	// Other 송신기 채널
+	return ChTx_1 + ( ( g_nCarNo ) % 2 );	// Other 송신기 채널
 	//========================================================================
 }
 
@@ -231,7 +231,7 @@ int		GetChNearRFT	( void )			//	가장 가까운 송신기 채널.
 
 	//	가장가까운 송신기 검색.
 	int nMaxRSSI = 0;
-	for ( int idx = 11; idx <= 12; idx++ )			//	송시기 채널 검색.
+	for ( int idx = 11; idx <= 12; idx++ )			//	송신기 채널 검색.
 	{
 		//	Car #1 ~ #10
 		if ( g_devStat[idx].nRSSI > nMaxRSSI )
@@ -720,6 +720,10 @@ int cmd_info    ( int argc, char * argv[] )
     printf( " - Car No : %d\n", GetCarNo() );
     printf( " - RF Channel: %d\n", GetChRx() );
     printf( " - Mode : %s(%d)\n", StrRFMMode( GetRFMMode() ), GetRFMMode()  );	//	Normal / Tx / Rx / Upgrade
+    printf( " - GetChNearRFM() : %d\n", GetChNearRFM() );
+    printf( " - GetChNearRFT() : %d\n", GetChNearRFT() );
+    printf( " - GetChPARFT() : %d\n", GetChPARFT() );
+    printf( " - GetChPA() : %d\n", GetChPA() );
 }
 
 
@@ -761,11 +765,13 @@ int cmd_rspid     ( int argc, char * argv[] )
     {
     	//	Set ID Flag
     	g_flagRspID |= ( 0x1 << nID );
+		g_devStat[nID].nRSSI = 200;
     }
     else
     {
     	//	Clear ID Flag
     	g_flagRspID &= ~( 0x1 << nID );
+		g_devStat[nID].nRSSI = 0;
     }
 
     printf( "%s(%d) - ID Flag : 0x%04X\n", __func__, __LINE__, g_flagRspID );

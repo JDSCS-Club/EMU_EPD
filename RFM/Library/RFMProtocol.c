@@ -667,6 +667,7 @@ int	ProcPktStatReq		( const RFMPkt *pRFPkt )
 
 		//========================================================================
 		//	RSSI 갱신
+		g_devStat[idx].stat.nChRx = pStatReq->nSrcCh;
 		g_devStat[idx].nRSSI = g_nRSSI;
 	}
 
@@ -705,6 +706,14 @@ int	ProcPktCtrlPaCall	( const RFMPkt *pRFPkt )
 	}
 
 	printf("\n");
+
+	if ( GetDevID() == DevRF900M )
+	{
+		//	수신기
+
+		//	가까이 있는 송신기 설정. ( 수신기 -> 송신기 중계시 사용 )
+		SetChPARFT( GetChNearRFT() );
+	}
 
 	g_nStampRxPkt = HAL_GetTick();		//	방송/통화 Stamp
 }

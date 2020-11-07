@@ -366,6 +366,19 @@ int ProcPktHdr2( const RFMPkt *pRFPkt, int nSize  )
 			RFMPkt	*pSendPkt = (RFMPkt *)buf;
 			pSendPkt->hdr2.nSrcCh = GetChRx();
 
+//#if defined(USE_RFT_REG_TO_RFM)
+//			if ( GetChPARFT() == ChTx_1 && pSendPkt->hdr2.bRFT1 == 0 )
+//			{
+//				pSendPkt->hdr2.bRFT1 = 1;
+//				SendPktCh( GetChPARFT(), buf, nSize );
+//			}
+//			else if ( GetChPARFT() == ChTx_2 && pSendPkt->hdr2.bRFT2 == 0 )
+//			{
+//				pSendPkt->hdr2.bRFT2 = 1;
+//				SendPktCh( GetChPARFT(), buf, nSize );
+//			}
+//#endif
+
 			SendPktCh( GetChRx() + 1, buf, nSize );
 
 			HAL_Delay( 3 );		//	최소 Delay
@@ -382,6 +395,19 @@ int ProcPktHdr2( const RFMPkt *pRFPkt, int nSize  )
 			RFMPkt	*pSendPkt = (RFMPkt *)buf;
 			pSendPkt->hdr2.nSrcCh = GetChRx();
 
+#if defined(USE_RFT_REG_TO_RFM)
+			if ( GetChPARFT() == ChTx_1 && pSendPkt->hdr2.bRFT1 == 0 )
+			{
+				pSendPkt->hdr2.bRFT1 = 1;
+				SendPktCh( GetChPARFT(), buf, nSize );
+			}
+			else if ( GetChPARFT() == ChTx_2 && pSendPkt->hdr2.bRFT2 == 0 )
+			{
+				pSendPkt->hdr2.bRFT2 = 1;
+				SendPktCh( GetChPARFT(), buf, nSize );
+			}
+#endif
+
 			SendPktCh( GetChRx() + 1, buf, nSize );
 		}
 		else if( pHdr->nSrcCh == ( GetChRx() + 1 ) )
@@ -392,6 +418,19 @@ int ProcPktHdr2( const RFMPkt *pRFPkt, int nSize  )
 			memcpy( buf, pRFPkt, 64 );
 			RFMPkt	*pSendPkt = (RFMPkt *)buf;
 			pSendPkt->hdr2.nSrcCh = GetChRx();
+
+#if defined(USE_RFT_REG_TO_RFM)
+			if ( GetChPARFT() == ChTx_1 && pSendPkt->hdr2.bRFT1 == 0 )
+			{
+				pSendPkt->hdr2.bRFT1 = 1;
+				SendPktCh( GetChPARFT(), buf, nSize );
+			}
+			else if ( GetChPARFT() == ChTx_2 && pSendPkt->hdr2.bRFT2 == 0 )
+			{
+				pSendPkt->hdr2.bRFT2 = 1;
+				SendPktCh( GetChPARFT(), buf, nSize );
+			}
+#endif
 
 			SendPktCh( GetChRx() - 1, buf, nSize );
 		}
