@@ -1249,6 +1249,20 @@ int InitRFM( void )
 
 		//  LCD : Spk Icon
 		LCDSpeaker( g_nSpkLevel );		//  Spk Icon : Spk On
+
+		//========================================================================
+		//  Mic Vol Set
+		//  Default (5) - 0 ~ 9
+
+		int	 nMicVol;
+		nMicVol = GetMicVol();
+
+		if ( nMicVol < 0 || nMicVol > MaxMicVol )
+		{
+			nSpkVol = DefaultMicVol;
+			SetSpkVol( nMicVol );
+		}
+
 		//========================================================================
 #if defined(USE_AUDIO_INTERPOL_COMPRESS)
 		//	보간압축 사용시 음량 Level 조절.

@@ -47,6 +47,49 @@ Menu_t	g_MenuLightCtrl = {
 };
 
 //========================================================================
+//	Main Version Info
+
+#if defined(USE_RFT_MENU_DEV_VER)
+
+char _sVerList[16][20] = {
+	"RFM v" APP_VER,		//  Self Device Version
+//	"01:v1.1.X.X",
+	"01:    --- ",	//	"01:v1.1.X.X",
+	"02:    --- ",	//
+	"03:    --- ",	//
+	"04:    --- ",	//
+	"05:    --- ",	//
+	"06:    --- ",	//
+	"07:    --- ",	//
+	"08:    --- ",	//
+	"09:    --- ",	//
+	"10:    --- ",	//
+	"11:    --- ",	//
+	"12:    --- ",	//
+	"13:    --- ",	//
+	"14:    --- ",	//
+	"15:    --- ",	//
+};
+
+char *_psVerList[] = {
+	_sVerList[0],	_sVerList[1],	_sVerList[2],	_sVerList[3],
+	_sVerList[4],	_sVerList[5],	_sVerList[6],	_sVerList[7],
+	_sVerList[8],	_sVerList[9],	_sVerList[10],	_sVerList[11],
+	_sVerList[12],	_sVerList[13],	_sVerList[14],	_sVerList[15],
+};
+
+
+Menu_t	g_MenuVerList = {
+	_psVerList,
+	sizeof(_psVerList)/sizeof(char *),		//	Item Count
+	0,						// 	curr Idx
+	ProcMenuVer				//	Callback Function
+};
+
+#endif	//	defined(USE_RFT_MENU_DEV_VER)
+//========================================================================
+
+//========================================================================
 //	Menu TrainSet
 
 char *_sTrainSet[] = {
@@ -105,47 +148,74 @@ Menu_t	g_MenuDiagList = {
 #endif	//	defined(USE_RFT_MENU_DIAG)
 
 //========================================================================
-//	Main Version Info
+//	Menu Setting
 
-#if defined(USE_RFT_MENU_DEV_VER)
-
-char _sVerList[16][20] = {
-	"RFM v" APP_VER,		//  Self Device Version
-//	"01:v1.1.X.X",
-	"01:    --- ",	//	"01:v1.1.X.X",
-	"02:    --- ",	//
-	"03:    --- ",	//
-	"04:    --- ",	//
-	"05:    --- ",	//
-	"06:    --- ",	//
-	"07:    --- ",	//
-	"08:    --- ",	//
-	"09:    --- ",	//
-	"10:    --- ",	//
-	"11:    --- ",	//
-	"12:    --- ",	//
-	"13:    --- ",	//
-	"14:    --- ",	//
-	"15:    --- ",	//
+#if defined(USE_RFT_MENU_SETTING)
+char *_sSettingList[] = {
+	" Mic Vol",		//	Mic Volume
+	" Spk Vol",		//	Spk Volume
+	" RF Tx Pwr",	//	RF Tx Power
 };
 
-char *_psVerList[] = {
-	_sVerList[0],	_sVerList[1],	_sVerList[2],	_sVerList[3],
-	_sVerList[4],	_sVerList[5],	_sVerList[6],	_sVerList[7],
-	_sVerList[8],	_sVerList[9],	_sVerList[10],	_sVerList[11],
-	_sVerList[12],	_sVerList[13],	_sVerList[14],	_sVerList[15],
-};
-
-
-Menu_t	g_MenuVerList = {
-	_psVerList,
-	sizeof(_psVerList)/sizeof(char *),		//	Item Count
+Menu_t	g_MenuSettingList = {
+	_sSettingList,
+	sizeof(_sSettingList)/sizeof(char *),		//	Item Count
 	0,						// 	curr Idx
-	ProcMenuVer				//	Callback Function
+	ProcMenuSetting		//	Callback Function
 };
 
-#endif	//	defined(USE_RFT_MENU_DEV_VER)
-//========================================================================
+char *_sSetMicList[] = { " Mic : 0",
+						" Mic : 1",
+						" Mic : 2",
+						" Mic : 3",
+						" Mic : 4",
+						" Mic : 5",
+						" Mic : 6",
+						" Mic : 7",
+						" Mic : 8",
+						" Mic : 9",
+						};
+
+Menu_t	g_MenuSetMicList = {
+	_sSetMicList,
+	sizeof(_sSetMicList)/sizeof(char *),		//	Item Count
+	0,						// 	curr Idx
+	ProcMenuSetMic			//	Callback Function
+};
+
+char *_sSetSpkList[] = { " Spk : 0",
+						" Spk : 1",
+						" Spk : 2",
+						" Spk : 3",
+						};
+
+Menu_t	g_MenuSetSpkList = {
+	_sSetSpkList,
+	sizeof(_sSetSpkList)/sizeof(char *),		//	Item Count
+	0,						// 	curr Idx
+	ProcMenuSetSpk			//	Callback Function
+};
+
+//	[0(-38dBm)~7(0dBm)~12(5dBm)~22(10dBm)~40(15dBm)~127(20dBm)]",
+char *_sSetTxPwrList[] = { 	" Pwr : -38 dBm",	//	0
+							" Pwr : -20 dBm",	//	1
+							" Pwr : -5 dBm",	//	4
+							" Pwr : 0 dBm",		//	7
+							" Pwr : 5 dBm",		//	12
+							" Pwr : 10 dBm",	//	22
+							" Pwr : 15 dBm",	//	40
+							" Pwr : 20 dBm",	//	127
+						};
+
+Menu_t	g_MenuSetTxPwrList = {
+	_sSetTxPwrList,
+	sizeof(_sSetTxPwrList)/sizeof(char *),		//	Item Count
+	0,							// 	curr Idx
+	ProcMenuSetTxPwr			//	Callback Function
+};
+
+
+#endif	//	defined(USE_RFT_MENU_SETTING)
 
 //========================================================================
 //	Menu Command
@@ -179,6 +249,9 @@ enum eMenuIdx
 #endif
 #if defined(USE_RFT_MENU_DIAG)
 	eMenuIdxDiag,			//	진단
+#endif
+#if defined(USE_RFT_MENU_SETTING)
+	eMenuIdxSetting,		//	설정
 #endif
 #if defined(USE_RFT_MENU_STAT)
 	eMenuIdxStat,			//	상태정보
@@ -235,11 +308,14 @@ char *_sMainMenuMaint[] = {
 #if defined(USE_RFT_MENU_DIAG)
 	"5. 진    단",
 #endif	//	defined(USE_RFT_MENU_DIAG)
+#if defined(USE_RFT_MENU_SETTING)
+	"6. 설    정",
+#endif	//	defined(USE_RFT_MENU_SETTING)
 #if defined(USE_RFT_MENU_STAT)
-	"6. 상태정보",
+	"7. 상태정보",
 #endif	//	defined(USE_RFT_MENU_STAT)
 #if defined(USE_RFT_MENU_CMD)
-	"7. 명령전송",
+	"8. 명령전송",
 #endif	//	defined(USE_RFT_MENU_CMD)
 };
 
@@ -639,10 +715,21 @@ void 	ProcMenuMain( int idxItem )
 
 #endif	//	defined(USE_RFT_MENU_DIAG)
 
+#if defined(USE_RFT_MENU_SETTING)
+
+	case eMenuIdxSetting:	//	5:		 //  설정
+
+		SetActiveMenu( &g_MenuSettingList );
+		GetActiveMenu()->currIdx = 0;	//	메뉴 Index초기화.
+
+		UpdateLCDMenu();
+		break;
+
+#endif	//	defined(USE_RFT_MENU_DIAG)
 
 #if defined(USE_RFT_MENU_STAT)
 
-	case eMenuIdxStat:		//	5:		 //  상태정보.
+	case eMenuIdxStat:		//	6:		 //  상태정보.
 
 		SetActiveMenu( NULL );
 
@@ -654,7 +741,7 @@ void 	ProcMenuMain( int idxItem )
 
 #if defined(USE_RFT_MENU_CMD)
 
-	case eMenuIdxCmd:		//	6:		 //  명령전송.
+	case eMenuIdxCmd:		//	7:		 //  명령전송.
 
 		SetActiveMenu( &g_MenuCmdList );
 		GetActiveMenu()->currIdx = 0;	//	메뉴 Index초기화.
@@ -782,6 +869,145 @@ void 	ProcMenuDiag( int idxItem )
 
 //	SetActiveMenu( NULL );
 }
+
+
+//========================================================================
+void 	ProcMenuSetting( int idxItem )
+//========================================================================
+{
+	LCDMenuUpDown( 0 );
+
+//	" Mic Vol",		//	Mic Volume
+//	" Spk Vol",		//	Spk Volume
+//	" RF Tx Pwr",	//	RF Tx Power
+
+	switch( idxItem )
+	{
+	case 0:		//	Mic Volume
+		SetActiveMenu( &g_MenuSetMicList );
+		GetActiveMenu()->currIdx = GetMicVol();	//	메뉴 Index초기화.
+
+		UpdateLCDMenu();
+
+		break;
+
+	case 1:		//	Spk Volume
+		SetActiveMenu( &g_MenuSetSpkList );
+		GetActiveMenu()->currIdx = GetSpkVol();	//	메뉴 Index초기화.
+
+		UpdateLCDMenu();
+		break;
+
+	case 2:		//	RF Tx Power
+		SetActiveMenu( &g_MenuSetTxPwrList );
+		GetActiveMenu()->currIdx = 7;	//	메뉴 Index초기화.
+
+		UpdateLCDMenu();
+		break;
+
+	default:
+		printf("%s(%d) - invalid menu(%d)\n", __func__, __LINE__, idxItem);
+		break;
+	}
+}
+
+//========================================================================
+void 	ProcMenuSetMic( int idxItem )
+//========================================================================
+{
+	LCDMenuUpDown( 0 );
+
+	//	Mic : 0 ~ 9
+
+	switch( idxItem )
+	{
+	case 0:
+	case 1:
+	case 2:
+	case 3:
+	case 4:
+	case 5:
+	case 6:
+	case 7:
+	case 8:
+	case 9:
+		SetMicVol(idxItem);
+		break;
+	default:
+		printf("%s(%d) - invalid menu(%d)\n", __func__, __LINE__, idxItem);
+		break;
+	}
+	//  1초후 Main화면 갱신.
+	HAL_Delay( 1000 );
+	UpdateLCDMain();
+
+	SetActiveMenu( NULL );
+}
+
+//========================================================================
+void 	ProcMenuSetSpk( int idxItem )
+//========================================================================
+{
+	LCDMenuUpDown( 0 );
+
+	//	Spk : 0 ~ 3
+
+	switch( idxItem )
+	{
+	case 0:
+	case 1:
+	case 2:
+	case 3:
+		SetSpkVol(idxItem);
+		break;
+	default:
+		printf("%s(%d) - invalid menu(%d)\n", __func__, __LINE__, idxItem);
+		break;
+	}
+	//  1초후 Main화면 갱신.
+	HAL_Delay( 1000 );
+	UpdateLCDMain();
+
+	SetActiveMenu( NULL );
+}
+
+
+//========================================================================
+void 	ProcMenuSetTxPwr( int idxItem )
+//========================================================================
+{
+	LCDMenuUpDown( 0 );
+
+//	char *_sSetTxPwrList[] = { 	" Pwr : -38 dBm",	//	0
+//								" Pwr : -20 dBm",	//	1
+//								" Pwr : -5 dBm",	//	4
+//								" Pwr : 0 dBm",		//	7
+//								" Pwr : 5 dBm",		//	12
+//								" Pwr : 10 dBm",	//	22
+//								" Pwr : 15 dBm",	//	40
+//								" Pwr : 20 dBm",	//	127
+//							};
+
+	switch( idxItem )
+	{
+	case 0:	vRadio_Set_TxPower(0);		break;
+	case 1:	vRadio_Set_TxPower(1);		break;
+	case 2:	vRadio_Set_TxPower(4);		break;
+	case 3:	vRadio_Set_TxPower(7);		break;
+	case 4:	vRadio_Set_TxPower(12);		break;
+	case 5:	vRadio_Set_TxPower(40);		break;
+	case 6:	vRadio_Set_TxPower(127);	break;
+	default:
+		printf("%s(%d) - invalid menu(%d)\n", __func__, __LINE__, idxItem);
+		break;
+	}
+	//  1초후 Main화면 갱신.
+	HAL_Delay( 1000 );
+	UpdateLCDMain();
+
+	SetActiveMenu( NULL );
+}
+
 
 //========================================================================
 void	ProcBtnOK( void )
