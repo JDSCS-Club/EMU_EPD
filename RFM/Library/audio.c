@@ -588,114 +588,6 @@ int		AudioPlayDMASine( void )
 	return 0;
 }
 
-static int tick_start, tick_mid, tick_mid2, tick_end;
-
-//========================================================================
-void	LoopProcAudio			( void )
-//========================================================================
-{
-
-#if 0
-
-	while( qBufCnt(&g_qBufAudioRx) >= FRAME_SIZE )
-	{
-
-#if 1
-		tick_start = HAL_GetTick();
-
-		qBufGet( &g_qBufAudioRx, &bufAudioCodec[0], FRAME_SIZE );
-		/* Flush all the bits in the struct so we can encode a new frame */
-		speex_bits_reset(&bits);
-
-		//========================================================================
-		//	Encoding
-		/* Encode the frame */
-		speex_encode_int(enc_state, (spx_int16_t*)&bufAudioCodec[0], &bits);
-		/* Copy the bits to an array of char that can be decoded */
-		speex_bits_write(&bits, (char *)out_bytes, ENCODED_FRAME_SIZE);
-
-		tick_mid = HAL_GetTick();
-
-		//========================================================================
-		//	Decoding
-		/* Copy the encoded data into the bit-stream struct */
-		speex_bits_read_from(&bits, (char *)out_bytes, ENCODED_FRAME_SIZE);
-		/* Decode the data */
-		speex_decode_int(dec_state, &bits, (spx_int16_t*)&bufAudioCodec[FRAME_SIZE]);
-
-		tick_mid2 = HAL_GetTick();
-
-		qBufPut( &g_qBufAudioTx, &bufAudioCodec[FRAME_SIZE], FRAME_SIZE );
-
-		tick_end = HAL_GetTick();
-
-		printf("[%d] %d / %d / %d / %d\n", tick_end - tick_start, tick_start, tick_mid, tick_mid2, tick_end );
-
-#else
-
-		qBufGet( &g_qBufAudioRx, &bufAudioCodec[0], FRAME_SIZE );
-		qBufPut( &g_qBufAudioTx, &bufAudioCodec[0], FRAME_SIZE );
-
-#endif
-
-	}
-
-#else
-
-#if 0
-
-	int i;
-
-	while( qBufCnt(&g_qBufAudioTx) <= FRAME_SIZE * ( I2S_DMA_LOOP_QCNT - 1) )
-	{
-		/* we prepare two buffers of decoded data: */
-		/* the first one, */
-
-		tick_start = HAL_GetTick();
-
-		for(i=0;i<ENCODED_FRAME_SIZE; i++)
-		{
-			input_bytes[i] = male_voice[sample_index++];
-		}
-
-		speex_bits_read_from(&bits, input_bytes, ENCODED_FRAME_SIZE);
-		speex_decode_int(dec_state, &bits, (spx_int16_t*)&bufAudioCodec[0]);
-
-//		for( i = 0; i < FRAME_SIZE; i++ )
-//		{
-////			printf("%d ", (int16_t)bufAudioCodec[i] );
-//			bufAudioCodec[i] <<= 2;
-//		}
-
-		qBufPut( &g_qBufAudioTx, &bufAudioCodec[0], FRAME_SIZE );
-
-		tick_end = HAL_GetTick();
-
-		printf("[%d] %d / %d\n", tick_end - tick_start, tick_start , tick_end );
-
-//		for( i = 0; i < FRAME_SIZE; i++ )
-//		{
-//			printf("%d ", (int16_t)bufAudioCodec[i] );
-//		}
-//		printf("\n");
-	}
-
-	if( sample_index >= ALL_FRAMES ) sample_index = 0;
-
-#else
-
-//	{
-//
-//		qBufPut( &g_qBufAudioTx, &bufAudioCodec[0], FRAME_SIZE );
-//
-//	}
-
-#endif
-
-#endif
-
-}
-
 //========================================================================
 void	AudioSpkVol	    ( int nSpkVol )
 //========================================================================
@@ -729,7 +621,37 @@ void	AudioSpkVol	    ( int nSpkVol )
         // Power DAC / ADC Enable
 //        WriteI2CCodec( 0x10, 0x8A );	//powered on, DAC on, both ADC(Left) Enable
     }
+}
 
+
+//========================================================================
+void	AudioMicVol	    ( int nMicVol )
+//========================================================================
+{
+    //========================================================================
+    //	Codec MAX9860ETG+
+    if ( HAL_OK == HAL_I2C_IsDeviceReady( &hi2c1, (uint16_t)( 0x10 << 1 ), 2, 2 ) )
+    {
+        // Power DAC / ADC Disable
+//        WriteI2CCodec( 0x10, 0x00 );	//powered on, DAC on, both ADC(Left) Enable
+        switch ( nMicVol )
+		{
+		case 0:		WriteI2CCodec( 0x0c, 0x34 );	break;	// ( 0 dB ) PAM = 01(+0) / PGAM = 0x14(+0)
+		case 1:		WriteI2CCodec( 0x0c, 0x32 );	break;	// ( 2 dB ) PAM = 01(+0) / PGAM = 0x12(+2)
+		case 2:		WriteI2CCodec( 0x0c, 0x30 );	break;	// ( 4 dB ) PAM = 01(+0) / PGAM = 0x10(+4)
+		case 3:		WriteI2CCodec( 0x0c, 0x2E );	break;	// ( 6 dB ) PAM = 01(+0) / PGAM = 0x0E(+6)
+		case 4:		WriteI2CCodec( 0x0c, 0x2C );	break;	// ( 8 dB ) PAM = 01(+0) / PGAM = 0x0C(+8)
+		default:	//	Default ( 5 )
+		case 5:		WriteI2CCodec( 0x0c, 0x2A );	break;	// ( 10 dB ) PAM = 01(+0) / PGAM = 0x0A(+10) - Default
+		case 6:		WriteI2CCodec( 0x0c, 0x28 );	break;	// ( 12 dB ) PAM = 01(+0) / PGAM = 0x08(+12)
+		case 7:		WriteI2CCodec( 0x0c, 0x26 );	break;	// ( 14 dB ) PAM = 01(+0) / PGAM = 0x06(+14)
+		case 8:		WriteI2CCodec( 0x0c, 0x24 );	break;	// ( 16 dB ) PAM = 01(+0) / PGAM = 0x04(+16)
+		case 9:		WriteI2CCodec( 0x0c, 0x22 );	break;	// ( 18 dB ) PAM = 01(+0) / PGAM = 0x02(+18)
+		}
+
+        // Power DAC / ADC Enable
+//        WriteI2CCodec( 0x10, 0x8A );	//powered on, DAC on, both ADC(Left) Enable
+    }
 }
 
 //========================================================================
@@ -813,6 +735,22 @@ int cmd_audio( int argc, char *argv[] )
         case 8:		WriteI2CCodec( 0x09, 0x06 );	break;	// ( 0 dB ) DAC adjustment, this would require testing and/or a better understanding of the overall system
         case 9:		WriteI2CCodec( 0x09, 0x00 );	break;	// ( +3 )
         default:	break;
+		}
+	}
+	else if ( strcmp( argv[1], "mic" ) == 0 )
+	{
+		switch( nVal )
+		{
+		case 0:		WriteI2CCodec( 0x0c, 0x34 );	break;	// ( 0 dB ) PAM = 01(+0) / PGAM = 0x14(+0)
+		case 1:		WriteI2CCodec( 0x0c, 0x32 );	break;	// ( 2 dB ) PAM = 01(+0) / PGAM = 0x12(+2)
+		case 2:		WriteI2CCodec( 0x0c, 0x30 );	break;	// ( 4 dB ) PAM = 01(+0) / PGAM = 0x10(+4)
+		case 3:		WriteI2CCodec( 0x0c, 0x2E );	break;	// ( 6 dB ) PAM = 01(+0) / PGAM = 0x0E(+6)
+		case 4:		WriteI2CCodec( 0x0c, 0x2C );	break;	// ( 8 dB ) PAM = 01(+0) / PGAM = 0x0C(+8)
+		case 5:		WriteI2CCodec( 0x0c, 0x2A );	break;	// ( 10 dB ) PAM = 01(+0) / PGAM = 0x0A(+10) - Default
+		case 6:		WriteI2CCodec( 0x0c, 0x28 );	break;	// ( 12 dB ) PAM = 01(+0) / PGAM = 0x08(+12)
+		case 7:		WriteI2CCodec( 0x0c, 0x26 );	break;	// ( 14 dB ) PAM = 01(+0) / PGAM = 0x06(+14)
+		case 8:		WriteI2CCodec( 0x0c, 0x24 );	break;	// ( 16 dB ) PAM = 01(+0) / PGAM = 0x04(+16)
+		case 9:		WriteI2CCodec( 0x0c, 0x22 );	break;	// ( 18 dB ) PAM = 01(+0) / PGAM = 0x02(+18)
 		}
 	}
 	else

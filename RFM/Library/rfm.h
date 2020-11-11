@@ -138,6 +138,11 @@ int		cmd_car			( int argc, char * argv[] );
 int 	cmd_swinfo    	( int argc, char * argv[] );
 int		cmd_info		( int argc, char * argv[] );
 int 	cmd_rfstat		( int argc, char * argv[] );
+
+int 	cmd_rftx    	( int argc, char * argv[] );	//	RF Tx Test
+
+int 	cmd_txpwr		( int argc, char * argv[] );	//	Tx Pwr Setting
+
 int		cmd_rspid		( int argc, char * argv[] );
 
 int		cmd_OccPa		( int argc, char * argv[] );	//	대승객방송 시작/종료

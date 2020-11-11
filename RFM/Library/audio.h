@@ -114,9 +114,8 @@ int		AudioLoopbackDMACompress( void );
 
 int		AudioPlayDMASine		( void );
 
-void	LoopProcAudio			( void );
-
 void	AudioSpkVol				( int nSpkVol );
+void	AudioMicVol				( int nMicVol );
 
 //========================================================================
 //	Command Function

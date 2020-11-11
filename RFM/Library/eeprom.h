@@ -18,10 +18,11 @@
 
 enum eAddrEEPRom
 {
+	AddrEEPMicVol		=	0x0C,		//	Mic Vol
 	AddrEEPManHop		=	0x0D,		//	Manual Hopping
-	AddrEEPCarNo		=	0x0E,
-	AddrEEPSpkVol		=	0x0F,
-	AddrEEPTrainSet		=	0x10,
+	AddrEEPCarNo		=	0x0E,		//	Car Number
+	AddrEEPSpkVol		=	0x0F,		//	Spk Vol
+	AddrEEPTrainSet		=	0x10,		//	Train Number
 
 	AddrEEPUpgrMGN1		=	0x20,		//	Upgrade Magic Num ( 0xAA )
 	AddrEEPUpgrMGN2		=	0x21,		//	Upgrade Magic Num ( 0x55 )

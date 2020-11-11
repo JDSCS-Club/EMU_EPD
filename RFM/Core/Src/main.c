@@ -287,8 +287,6 @@ int main(void)
 
 	LoopProcKey( nCurrTick );
 
-	LoopProcAudio();
-
 	if ( ( nCurrTick - nLedTick ) >= 1000 )
 	{
 	    HAL_GPIO_TogglePin( LED_ST_GPIO_Port, LED_ST_Pin );

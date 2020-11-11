@@ -219,7 +219,7 @@ enum ePktID
 
 enum eChannel
 {
-	ChNoUsed		=	0,			//	* CH0 : 사용안함.
+	ChNoUsed		=	0,			//	* CH0 : 사용안함. - 915 MHz
 	ChCommon		=	1,			//	* CH1 : 공통채널
 
 	ChUpgrDst		=	3,			//	* CH3 : Upgrade 전용 채널 ( 수신기 - Target )
@@ -230,14 +230,14 @@ enum eChannel
 	ChTx_1			=	8,			//	* CH8 : 송신기#1 - (Car No : 11)
 	ChTx_2			=	9,			//	* CH9 : 송신기#2 - (Car No : 12)
 
-	ChRFT			=	10,			//	* 송신기
+	ChRFT			=	10,			//	* 송신기 - 917.5 MHz
 
 	ChTS1_1			=	11,			//	* CH11 : 1편성 ( 1호차 )
 	ChTS1_2			=	12,			//	* CH12 : 1편성 ( 2호차 )
 
 	//	...
 
-	ChTS1_10		=	20,			//	* CH20 : 1편성 ( 10호차 )
+	ChTS1_10		=	20,			//	* CH20 : 1편성 ( 10호차 ) - 920 MHz
 
 	ChTS2_1			=	21,			//	* CH21 : 2편성 ( 1호차 )
 	ChTS2_2			=	22,			//	* CH22 : 2편성 ( 2호차 )

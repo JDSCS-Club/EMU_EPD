@@ -100,6 +100,8 @@
 
 #define		USE_RFT_MENU_CMD				1		//	송신기 Command 명령.
 
+#define		USE_RFT_MENU_SETTING			1		//	송신기 설정메뉴.
+
 //========================================================================
 //	송신기 -> 수신기에 등록.
 #define		USE_RFT_REG_TO_RFM				1		//	송신기 가까운 수신기에 등록. (중계동작)
@@ -112,6 +114,9 @@
 //========================================================================
 //	시험용 설정
 //#define		USE_TEST_PTT_AUDIO_LOOP			1		//	Test PTT Key Audio Loopback
+
+
+//#define		USE_TEST_RF_TX_LOOP				1		//	Test RF TX Loop
 
 //========================================================================
 #endif	//	RFM_CONFIG_H

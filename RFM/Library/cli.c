@@ -172,21 +172,32 @@ user_command_t	user_command_table[] = {
 		"occ		-	OCC PA Start/Stop",
 		"occ [1(Start)/0(Stop)]",
 		cmd_OccPa},
+	{"txpwr",
+		"txpwr		-	RF Tx Power",
+		"txpwr [0(-38dBm)~7(0dBm)~12(5dBm)~22(10dBm)~40(15dBm)~127(20dBm)]",
+		cmd_txpwr},
+
+	#if defined(USE_TEST_RF_TX_LOOP)
+	{"tx",
+		"tx		-	RF Tx Data",
+		"tx [ch:0~63]",
+		cmd_rftx},
+	#endif
 #endif	//	defined(RFM_H)
 
 #if defined(EEPROM_I2C_H)
-		{"eepw",
-			"eepw			-	write byte to address",
-			"eepw [addr] [data]",
-			cmd_eepromWrite,},
-		{"eepr",
-			"eepr			-	read byte from address",
-			"eepr [addr]",
-			cmd_eepromRead,},
-		{"eepdump",
-			"eepdump		-	eeprom dump",
-			"eepdump [addr] [size]",
-			cmd_eepromDump,},
+	{"eepw",
+		"eepw			-	write byte to address",
+		"eepw [addr] [data]",
+		cmd_eepromWrite,},
+	{"eepr",
+		"eepr			-	read byte from address",
+		"eepr [addr]",
+		cmd_eepromRead,},
+	{"eepdump",
+		"eepdump		-	eeprom dump",
+		"eepdump [addr] [size]",
+		cmd_eepromDump,},
 #endif	//	defined(EEPROM_I2C_H)
 
 #if defined(USE_ENV_TEST)

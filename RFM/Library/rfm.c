@@ -518,6 +518,51 @@ void	SetSpkVol	    ( int nSpkVol )
     }
 }
 
+
+//========================================================================
+int		GetMicVol	    ( void )
+//========================================================================
+{
+    uint8_t     nMicVol = 0;
+
+    if ( HAL_OK != HAL_I2C_IsDeviceReady( &hi2c1, (uint16_t)( 0x50 << 1 ), 2, 2 ) )
+    {
+        printf( "%s(%d) - EEPROM Error\n", __func__, __LINE__ );
+
+        return -1;
+    }
+
+//    M24_HAL_ReadBytes( &hi2c1, 0xA0, 0x0F, (uint8_t *)&nSpkVol, 1 );
+    M24_HAL_ReadBytes( &hi2c1, 0xA0, AddrEEPMicVol, (uint8_t *)&nMicVol, 1 );
+
+    printf( "%s(%d) - %d\n", __func__, __LINE__, nMicVol );
+
+    return nMicVol;
+}
+
+//========================================================================
+void	SetMicVol	    ( int nMicVol )
+//========================================================================
+{
+    if ( HAL_OK != HAL_I2C_IsDeviceReady( &hi2c1, (uint16_t)( 0x50 << 1 ), 2, 2 ) )
+    {
+        printf( "%s(%d) - EEPROM Error\n", __func__, __LINE__ );
+
+        return ;
+    }
+
+    printf( "%s(%d) - %d\n", __func__, __LINE__, nMicVol );
+
+//    M24_HAL_WriteBytes( &hi2c1, 0xA0, 0x0F, (uint8_t *)&nSpkVol, 1 );
+    M24_HAL_WriteBytes( &hi2c1, 0xA0, AddrEEPMicVol, (uint8_t *)&nMicVol, 1 );
+
+    //========================================================================
+    //	Codec MAX9860ETG+
+    if ( HAL_OK == HAL_I2C_IsDeviceReady( &hi2c1, (uint16_t)( 0x10 << 1 ), 2, 2 ) )
+    {
+    	AudioMicVol( nMicVol );
+    }
+}
 //========================================================================
 
 
@@ -735,6 +780,78 @@ int cmd_rfstat    ( int argc, char * argv[] )
     printf( "[RF Info] Tx : %d / Rx : %d\n", nTxPkt, nRxPkt );
 }
 
+#if defined(USE_TEST_RF_TX_LOOP)
+//========================================================================
+int cmd_rftx    ( int argc, char * argv[] )
+//========================================================================
+{
+    //	RF Tx
+    int 	nCh		=	0;
+
+    switch ( argc )
+    {
+    case 2:		sscanf( argv[1], "%d", &nCh );	        //	ID
+//	case 2:		sText = argv[1];						//	sscanf( argv[1], "%s", sText );		//	cmd [Text]
+        break;
+    }
+
+    printf( "%s(%d) - CH(%d)\n", __func__, __LINE__, nCh );
+
+    uint8_t sBuf[100];
+    int nCnt = 0;
+
+    while ( 1 )
+    {
+    	if ( ( nCnt % 300 ) == 0 )
+    	{
+    		printf(".");
+
+			//	RFM(Board) Status LED
+			HAL_GPIO_TogglePin ( LED_ST_GPIO_Port, LED_ST_Pin );
+    	}
+
+    	//*
+    	SendPktCh(nCh, sBuf, 64);
+    	HAL_Delay(3);
+
+    	//	Watchdog Reload
+    	__HAL_IWDG_RELOAD_COUNTER(&hiwdg);
+
+    	/*/
+
+    	SendPktCh(7, sBuf, 64);	//	Reserved
+
+    	SendPktCh(ChRFT, sBuf, 64);
+
+    	SendPktCh(ChTS2_1, sBuf, 64);	//	21
+
+    	SendPktCh(nCh, sBuf, 64);
+
+    	//*/
+
+    	nCnt++;
+    }
+}
+#endif
+
+//========================================================================
+int cmd_txpwr    ( int argc, char * argv[] )
+//========================================================================
+{
+    //	RF Tx
+    uint8_t		nPwr	=	0x7F;
+
+    switch ( argc )
+    {
+    case 2:		sscanf( argv[1], "%d", &nPwr );	        //	ID
+//	case 2:		sText = argv[1];						//	sscanf( argv[1], "%s", sText );		//	cmd [Text]
+        break;
+    }
+
+    printf( "%s(%d) - Tx Pwr(%d)\n", __func__, __LINE__, nPwr );
+
+    vRadio_Set_TxPower( nPwr );
+}
 
 //========================================================================
 int cmd_rspid     ( int argc, char * argv[] )
@@ -1257,6 +1374,16 @@ int RFM_main( void )
 #if 0
 
 	TestProcPkt();		//	RFM Main
+
+#endif
+
+#if defined(USE_TEST_RF_TX_LOOP)
+	//========================================================================
+	//cmd_rftx( int argc, char * argv[] )
+//	ProcessCommand( "tx 0" );
+
+	char *argv[] = {"tx", "0"};
+	cmd_rftx( 2, argv );
 
 #endif
 
