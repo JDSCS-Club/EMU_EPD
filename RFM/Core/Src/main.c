@@ -150,14 +150,14 @@ void LoopProcMain( int nTick )
 	//	Watchdog Reload
 	__HAL_IWDG_RELOAD_COUNTER(&hiwdg);
 
-	static int s_nTick = 0;
-
-	if ( ( nTick - s_nTick ) >= 1000 )
-	{
-		char *sTest = "USB 가나다라\n\r";
-		CDC_Transmit_FS(sTest, strlen(sTest) + 1);
-		s_nTick = nTick;
-	}
+//	static int s_nTick = 0;
+//
+//	if ( ( nTick - s_nTick ) >= 1000 )
+//	{
+//		char *sTest = "USB 가나다라\n\r";
+//		CDC_Transmit_FS(sTest, strlen(sTest) + 1);
+//		s_nTick = nTick;
+//	}
 }
 
 #endif
