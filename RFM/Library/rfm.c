@@ -1259,8 +1259,8 @@ int InitRFM( void )
 
 		if ( nMicVol < 0 || nMicVol > MaxMicVol )
 		{
-			nSpkVol = DefaultMicVol;
-			SetSpkVol( nMicVol );
+			nMicVol = DefaultMicVol;
+			SetMicVol( nMicVol );
 		}
 
 		//========================================================================
