@@ -92,6 +92,8 @@
 
 #define		USE_RFT_MENU_RFTID				1		//	송신기 ID 설정.
 
+#define		USE_RFT_MENU_SELFTEST			1		//	송신기 자가진단 메뉴.
+
 #define		USE_RFT_MENU_STAT				1		//	상태정보 현시 메뉴 사용.
 
 #define		USE_RFT_MENU_DEV_VER			1		//	장치 버전정보.

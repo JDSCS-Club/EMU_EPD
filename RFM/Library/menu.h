@@ -52,6 +52,8 @@ void 	ProcMenuLightCtrl	( int idxItem );	//	LightCtrl
 void 	ProcMenuRFTID		( int idxItem );	//	송신기 ID설정.
 
 //========================================================================
+void 	ProcMenuSelfTest	( int idxItem );	//	자가진단 ( 호차별 상태정보 점검 )
+
 void 	ProcMenuSetting		( int idxItem );	//	설정
 
 void 	ProcMenuSetMic		( int idxItem );

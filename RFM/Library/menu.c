@@ -130,7 +130,28 @@ Menu_t	g_MenuRFTIDList = {
 #endif	//	defined(USE_RFT_MENU_RFTID)
 
 //========================================================================
-//	Menu Diag
+//	Menu SelfTest - 자가진단
+
+#if defined(USE_RFT_MENU_SELFTEST)
+char *_sSelfTestList[] = {
+	" 1 호차 : OK",	//
+	" 2 호차 : OK",	//
+	" 3 호차 : OK",	//
+	" 4 호차 : N/A",	//
+	" 5 호차 : N/A",	//
+	" 6 호차 : OK",	//
+};
+
+Menu_t	g_MenuSelfTestList = {
+	_sSelfTestList,
+	sizeof(_sSelfTestList)/sizeof(char *),		//	Item Count
+	0,						// 	curr Idx
+	ProcMenuSelfTest		//	Callback Function
+};
+#endif	//	defined(USE_RFT_MENU_SELFTEST)
+
+//========================================================================
+//	Menu Diag - 진단
 
 #if defined(USE_RFT_MENU_DIAG)
 char *_sDiagList[] = {
@@ -247,6 +268,9 @@ enum eMenuIdx
 #if defined(USE_RFT_MENU_RFTID)
 	eMenuIdxRFTID,			//	송신기 ID
 #endif
+#if defined(USE_RFT_MENU_SELFTEST)
+	eMenuIdxSelfTest,		//	자가 진단
+#endif
 #if defined(USE_RFT_MENU_DIAG)
 	eMenuIdxDiag,			//	진단
 #endif
@@ -305,17 +329,20 @@ char *_sMainMenuMaint[] = {
 #if defined(USE_RFT_MENU_RFTID)
 	"4. 송신기ID",			//	송신기 ID
 #endif
+#if defined(USE_RFT_MENU_SELFTEST)
+	"5. 자가진단",
+#endif	//	defined(USE_RFT_MENU_SELFTEST)
 #if defined(USE_RFT_MENU_DIAG)
-	"5. 진    단",
+	"6. 진    단",
 #endif	//	defined(USE_RFT_MENU_DIAG)
 #if defined(USE_RFT_MENU_SETTING)
-	"6. 설    정",
+	"7. 설    정",
 #endif	//	defined(USE_RFT_MENU_SETTING)
 #if defined(USE_RFT_MENU_STAT)
-	"7. 상태정보",
+	"8. 상태정보",
 #endif	//	defined(USE_RFT_MENU_STAT)
 #if defined(USE_RFT_MENU_CMD)
-	"8. 명령전송",
+	"9. 명령전송",
 #endif	//	defined(USE_RFT_MENU_CMD)
 };
 
@@ -702,10 +729,22 @@ void 	ProcMenuMain( int idxItem )
 
 #endif	//	defined(USE_RFT_MENU_DIAG)
 
+#if defined(USE_RFT_MENU_RFTID)
+
+	case eMenuIdxSelfTest:	//	4:		 //  송신기 ID
+
+		SetActiveMenu( &g_MenuSelfTestList );
+		GetActiveMenu()->currIdx = 0;	//	메뉴 Index초기화.
+
+		UpdateLCDMenu();
+		break;
+
+#endif	//	defined(USE_RFT_MENU_DIAG)
+
 
 #if defined(USE_RFT_MENU_DIAG)
 
-	case eMenuIdxDiag:		//	4:		 //  진단
+	case eMenuIdxDiag:		//	5:		 //  진단
 
 		SetActiveMenu( &g_MenuDiagList );
 		GetActiveMenu()->currIdx = 0;	//	메뉴 Index초기화.
@@ -717,7 +756,7 @@ void 	ProcMenuMain( int idxItem )
 
 #if defined(USE_RFT_MENU_SETTING)
 
-	case eMenuIdxSetting:	//	5:		 //  설정
+	case eMenuIdxSetting:	//	6:		 //  설정
 
 		SetActiveMenu( &g_MenuSettingList );
 		GetActiveMenu()->currIdx = 0;	//	메뉴 Index초기화.
@@ -729,7 +768,7 @@ void 	ProcMenuMain( int idxItem )
 
 #if defined(USE_RFT_MENU_STAT)
 
-	case eMenuIdxStat:		//	6:		 //  상태정보.
+	case eMenuIdxStat:		//	7:		 //  상태정보.
 
 		SetActiveMenu( NULL );
 
@@ -741,7 +780,7 @@ void 	ProcMenuMain( int idxItem )
 
 #if defined(USE_RFT_MENU_CMD)
 
-	case eMenuIdxCmd:		//	7:		 //  명령전송.
+	case eMenuIdxCmd:		//	8:		 //  명령전송.
 
 		SetActiveMenu( &g_MenuCmdList );
 		GetActiveMenu()->currIdx = 0;	//	메뉴 Index초기화.
@@ -812,6 +851,19 @@ void 	ProcMenuRFTID( int idxItem )
 		printf("%s(%d) - invalid menu(%d)\n", __func__, __LINE__, idxItem);
 		break;
 	}
+
+	//  1초후 Main화면 갱신.
+	HAL_Delay( 1000 );
+	UpdateLCDMain();
+
+	SetActiveMenu( NULL );
+}
+
+//========================================================================
+void 	ProcMenuSelfTest( int idxItem )
+//========================================================================
+{
+	LCDMenuUpDown( 0 );
 
 	//  1초후 Main화면 갱신.
 	HAL_Delay( 1000 );
