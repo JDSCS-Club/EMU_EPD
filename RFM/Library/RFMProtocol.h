@@ -180,7 +180,7 @@ enum ePktID
 	//	| DevIDFlag(2Byte) | Seq. No(1Byte) | PktID(1Byte) |    Data      |
 	//	|-----------------------------------------------------------------|
 	PktStat			=	0x01,		//	상태정보. ( nIDFlag(0) / nSeq(0) )
-	PktPA			=	0x02,		//	방송스트림. ( 송신기 -> 수신기 )
+	PktPA			=	0x02,		//	방송스트림. ( 송신기 -> 수신기 ) / OccPa ( 송신기 -> 송신기 )
 	PktCall			=	0x03,		//	통화스트림. ( 송신기 -> 송신기 )
 	PktLight		=	0x04,		//	조명제어. ( On/Off )
 
@@ -495,15 +495,19 @@ typedef struct _RFMPktStrmPACall
 //	RFM Packet - Command PA/Call - Start/Stop
 typedef struct _RFMPktCtrlPACall
 {
-	enum eCtrlPACall
+	enum eCtrlStartStop
 	{
 		//	nStart/Stop
 		CtrlStart	=	1,
 		CtrlStop	=	0,
+	};
 
+	enum eCtrlPACall
+	{
 		//	nStart/Stop
 		CtrlPA		=	1,
 		CtrlCall	=	2,
+		CtrlOccPa	=	3,
 	};
 	uint8_t		nStartStop;		//	Start(1) / Stop(0)
 	uint8_t		nTypePACall;	//	PA( PktPA - 2 ) / Call( PktCall - 3 )
@@ -599,6 +603,8 @@ void 	SendStatReq			( int nDestCh );
 
 void	SendPA				( int nStartStop );
 void	SendCall			( int nStartStop );
+void 	SendOCCPA			( int nStartStop );
+
 void	SendLight			( int nOnOff );
 void	SendLightOn			( void );		//	조명제어 조명 On
 void	SendLightOff		( void );		//	조명제어 조명 Off
@@ -615,8 +621,11 @@ void	SendUpgrStat		( int nUpgrResult );	//	Send Upgrade Data
 
 int		ProcPktStat			( const RFMPkt *pRFPkt );
 int		ProcPktStatReq		( const RFMPkt *pRFPkt );
+
 int		ProcPktPA			( const RFMPkt *pRFPkt );
 int		ProcPktCall			( const RFMPkt *pRFPkt );
+int		ProcPktOccPa		( const RFMPkt *pRFPkt );
+
 int		ProcPktCtrlPaCall	( const RFMPkt *pRFPkt );
 int		ProcPktDevConn		( const RFMPkt *pRFPkt );
 int		ProcPktLight		( const RFMPkt *pRFPkt );

@@ -902,7 +902,7 @@ int cmd_OccPa     ( int argc, char * argv[] )
 //========================================================================
 {
 	//========================================================================
-    //	occ [1(start)/0(stop)]
+    //	occ [1(start)/0(stop)]	-	대승객방송
 
 	printf("%s(%d)\n", __func__, __LINE__ );
 
@@ -922,8 +922,15 @@ int cmd_OccPa     ( int argc, char * argv[] )
     	//	OCC Mode
     	SetRFMMode( RFMModeOcc );
 
+#if USE_RFM_OCC_PA
+
+#else
     	//	Audio Loopback On
 		AudioDMALoopback();
+#endif
+
+		// 조명 On
+		HAL_GPIO_WritePin ( LIGHT_ON_GPIO_Port, LIGHT_ON_Pin, GPIO_PIN_SET );
 
 		//	Spk On
 		HAL_GPIO_WritePin( SPK_ON_GPIO_Port, SPK_ON_Pin, GPIO_PIN_SET );
@@ -938,8 +945,12 @@ int cmd_OccPa     ( int argc, char * argv[] )
     	//	Normal Mode
     	SetRFMMode( RFMModeNormal );
 
+#if USE_RFM_OCC_PA
+
+#else
     	//	Audio Loopback Off
     	AudioDMARFM();
+#endif
 
     	//	Spk Off.
 		HAL_GPIO_WritePin( SPK_ON_GPIO_Port, SPK_ON_Pin, GPIO_PIN_RESET );
@@ -1498,9 +1509,7 @@ void LoopProcRFM ( int nTick )
 					else					bufRFTx.hdr.nPktCmd = PktCall;	//  송신기 -> 송신기
 #endif
 
-#if defined(USE_CH_ISO_DEV)
-					int nCh;
-
+#if defined( USE_CH_ISO_DEV )
 					if( GetKey(eKeyPtt) )
 					{
 						//========================================================================
@@ -1513,7 +1522,6 @@ void LoopProcRFM ( int nTick )
 								(U8)sizeof( RFMPktHdr ) + sizeof( RFMPktCtrlPACall ) );
 						}
 
-//						nCh = GetChPA();//GetChNearRFM();	//	가장 가까운 수신기.
 						SendPktCh( GetChPA(), (uint8_t *)&bufRFTx,
 							pRadioConfiguration->Radio_PacketLength );
 					}
@@ -1530,11 +1538,9 @@ void LoopProcRFM ( int nTick )
 						else
 						{
 							//	수신기를 통해 전송.
-//						nCh = GetChOtherRFT();	//	타 송신기 채널.
 							SendPktCh( GetChPA(), (uint8_t *)&bufRFTx,
 								pRadioConfiguration->Radio_PacketLength );
 						}
-
 					}
 
 #else
@@ -1573,6 +1579,47 @@ void LoopProcRFM ( int nTick )
 		if( GetRFMMode() == RFMModeNormal )
 		{
 			UpdateLCDMonitor( nTick );		//	LCD : 모니터링 상태 Update
+		}
+	}
+	//========================================================================
+	//  RFM - 수신기 - 대승객방송
+	else if ( GetDevID() == DevRF900M )
+	{
+		if( GetRFMMode() == RFMModeOcc )
+		{
+			//	대승객 방송 모드인 경우 대승객 방송 음성 송출.
+			if( qBufCnt( &g_qBufAudioTx ) >= ( I2S_DMA_LOOP_SIZE * 2 ) )
+			{
+				//		printf ( "G" );
+				//========================================================================
+				//	Audio ( 대승객방송 음성 )
+				qBufGet( &g_qBufAudioTx, (uint8_t*)bufRFTx.dat.data, ( I2S_DMA_LOOP_SIZE * 2 ) );
+				//	Audio Loopback ( 대승객방송 음성 )
+				qBufPut( &g_qBufAudioRx, (uint8_t*)bufRFTx.dat.data, ( I2S_DMA_LOOP_SIZE * 2 ) );
+
+				//========================================================================
+				//	Packet Header	-	OCC PA 전송
+
+				//	Header #2
+				_MakePktHdr2( &bufRFTx, PktPA );
+
+				if( GetChRx() == ChTS1_1 )	//	1호차 수신기
+				{
+					//	1 -> 2 ... -> 10
+					SendPktCh( GetChPA() + 1, (uint8_t *)&bufRFTx,
+						pRadioConfiguration->Radio_PacketLength );
+				}
+				else
+				{
+					// 10 -> 9 ... -> 1
+					SendPktCh( GetChPA() - 1, (uint8_t *)&bufRFTx,
+						pRadioConfiguration->Radio_PacketLength );
+				}
+
+				// 조명 On
+				HAL_GPIO_WritePin ( LIGHT_ON_GPIO_Port, LIGHT_ON_Pin, GPIO_PIN_SET );
+				//========================================================================
+			}
 		}
 	}
 

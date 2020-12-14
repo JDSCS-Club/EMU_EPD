@@ -255,7 +255,7 @@ void SendPA( int nStartStop )
 {
 	printf( "%s(%d)\n", __func__, __LINE__ );
 
-	RFMPkt			stPkt;
+	RFMPkt				stPkt;
 	RFMPktCtrlPACall	*pPACall;
 
 	memset( &stPkt, 0, sizeof( stPkt ) );
@@ -348,6 +348,55 @@ void SendCall( int nStartStop )
 
 	SendPacket( (U8 *)&stPkt, (U8)sizeof( RFMPktHdr ) + sizeof( RFMPktCtrlPACall ) );
 
+#endif
+
+	//========================================================================
+}
+
+//========================================================================
+void SendOCCPA( int nStartStop )
+//========================================================================
+{
+	printf( "%s(%d)\n", __func__, __LINE__ );
+
+	RFMPkt				stPkt;
+	RFMPktCtrlPACall	*pPACall;
+
+	memset( &stPkt, 0, sizeof( stPkt ) );
+	pPACall = (RFMPktCtrlPACall *)&stPkt.dat.pacall;
+
+	//========================================================================
+	//	Packet Header
+#if defined(USE_CH_ISO_DEV)
+	_MakePktHdr2( &stPkt, PktCtrlPaCall );
+#else
+	_MakePktHdr( &stPkt, GetDevID(), 0xFF, sizeof( RFMPktCtrlPACall ), PktCtrlPaCall );
+#endif
+
+	//========================================================================
+	//	Status Data
+	pPACall->nStartStop		=	nStartStop;
+
+	pPACall->nTypePACall	=	CtrlOccPa;
+
+	//========================================================================
+	//	Send RF
+
+#if defined(USE_CH_ISO_DEV)
+
+	if ( GetChPARFT() != 0 )
+	{
+		//	송신기에 전송.
+		SendPktCh( GetChPARFT(), (uint8_t *)&stPkt,
+			(U8)sizeof( RFMPktHdr ) + sizeof( RFMPktCtrlPACall ) );
+	}
+
+	//	수신기에 전송
+	SendPktCh( GetChPA(), (uint8_t *)&stPkt,
+		(U8)sizeof( RFMPktHdr ) + sizeof( RFMPktCtrlPACall ) );
+
+#else
+	SendPacket( (U8 *)&stPkt, (U8)sizeof( RFMPktHdr ) + sizeof( RFMPktCtrlPACall ) );
 #endif
 
 	//========================================================================
@@ -694,6 +743,8 @@ int	ProcPktCtrlPaCall	( const RFMPkt *pRFPkt )
 	case CtrlStop:
 		printf("[Stop]");
 		SetRFMMode( RFMModeNormal );
+		//  송신기 & 수신기 Spk Relay Off
+		HAL_GPIO_WritePin( AUDIO_ON_GPIO_Port, AUDIO_ON_Pin, GPIO_PIN_RESET );
 		break;
 	default:			printf("%s:Invalid\n", __func__);	return 0;
 	}
@@ -702,6 +753,7 @@ int	ProcPktCtrlPaCall	( const RFMPkt *pRFPkt )
 	{
 	case CtrlPA:		printf("[PA]");						break;
 	case CtrlCall:		printf("[Call]");					break;
+	case CtrlOccPa:		printf("[OccPa]");					break;
 	default:			printf("%s:Invalid\n", __func__);	return 0;
 	}
 

@@ -7,8 +7,6 @@
 #include <stdarg.h>
 #include <stdint.h>
 
-//#include "main.h"
-
 /* USER CODE BEGIN 1 */
 
 #include "serial.h"

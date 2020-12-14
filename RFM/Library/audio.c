@@ -734,7 +734,7 @@ int cmd_audio( int argc, char *argv[] )
 	    case 7:		WriteI2CCodec( 0x09, 0x0C );	break;	// ( -3 )
         case 8:		WriteI2CCodec( 0x09, 0x06 );	break;	// ( 0 dB ) DAC adjustment, this would require testing and/or a better understanding of the overall system
         case 9:		WriteI2CCodec( 0x09, 0x00 );	break;	// ( +3 )
-        default:	break;
+        default:	printf( "%s(%d) - invalid\n", __func__, __LINE__ );	break;
 		}
 	}
 	else if ( strcmp( argv[1], "mic" ) == 0 )
@@ -751,6 +751,7 @@ int cmd_audio( int argc, char *argv[] )
 		case 7:		WriteI2CCodec( 0x0c, 0x26 );	break;	// ( 14 dB ) PAM = 01(+0) / PGAM = 0x06(+14)
 		case 8:		WriteI2CCodec( 0x0c, 0x24 );	break;	// ( 16 dB ) PAM = 01(+0) / PGAM = 0x04(+16)
 		case 9:		WriteI2CCodec( 0x0c, 0x22 );	break;	// ( 18 dB ) PAM = 01(+0) / PGAM = 0x02(+18)
+        default:	printf( "%s(%d) - invalid\n", __func__, __LINE__ );	break;
 		}
 	}
 	else
