@@ -124,6 +124,13 @@ bool getMasterIn(void){ return HAL_GPIO_ReadPin(MASTER_IN_GPIO_Port, MASTER_IN_P
 //
 //--------------------------------------------------------------------------------------------//
 /**
+  * @brief  get Digital input
+  */
+bool getDICtl(void){ return HAL_GPIO_ReadPin(DI_CTL_GPIO_Port, DI_CTL_Pin); }
+//--------------------------------------------------------------------------------------------//
+//
+//--------------------------------------------------------------------------------------------//
+/**
   * @brief  Override On
   */
 bool getOverrideOn(void){ return HAL_GPIO_ReadPin(OVERRIDE_GPIO_Port, OVERRIDE_Pin); }
@@ -307,6 +314,7 @@ void processLightLed(void)
 {
 	if(getMasterIn())
 	{
+		//	방공등 Off
 		bool bLightOn = getLightOn();
 		if(bLightOn)
 			ledCtrOn();
@@ -316,6 +324,7 @@ void processLightLed(void)
 	}
 	else
 	{
+		//	방공등 On
 		ledCtrOn();
 		bCurLedCtr = true;
 	}
@@ -405,6 +414,7 @@ void processTestDebug(void)
 		PrintfUart1(printf("getVccIn():%d\n", getVccIn()));
 		PrintfUart1(printf("getRS485Id():%d\n", getRS485Id()));
 		PrintfUart1(printf("getMasterIn():%d\n", getMasterIn()));
+		PrintfUart1(printf("getDICtl():%d\n", getDICtl()));
 		PrintfUart1(printf("getOverrideOn():%d\n", getOverrideOn()));
 		PrintfUart1(printf("getAudioOn():%d\n", getAudioOn()));
 		PrintfUart1(printf("getStandBy():%d\n\n", getStandBy()));

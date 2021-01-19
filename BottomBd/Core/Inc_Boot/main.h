@@ -78,8 +78,8 @@ void Error_Handler(void);
 /* USER CODE END EFP */
 
 /* Private defines -----------------------------------------------------------*/
-#define MASTER_IN_OUT_Pin GPIO_PIN_13
-#define MASTER_IN_OUT_GPIO_Port GPIOC
+#define MASTER_IN_Pin GPIO_PIN_13
+#define MASTER_IN_GPIO_Port GPIOC
 #define CHARGER_DET_Pin GPIO_PIN_14
 #define CHARGER_DET_GPIO_Port GPIOC
 #define VCC_IN_Pin GPIO_PIN_0

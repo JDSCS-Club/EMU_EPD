@@ -309,7 +309,6 @@ void SystemClock_Config(void)
   }
 }
 
-
 /**
   * @brief ADC1 Initialization Function
   * @param None
@@ -444,7 +443,6 @@ static void MX_I2C2_Init(void)
 
 }
 
-
 /**
   * @brief TIM2 Initialization Function
   * @param None
@@ -494,7 +492,6 @@ static void MX_TIM2_Init(void)
   /* USER CODE END TIM2_Init 2 */
 
 }
-
 
 /**
   * @brief UART5 Initialization Function
@@ -644,9 +641,6 @@ static void MX_GPIO_Init(void)
   __HAL_RCC_GPIOB_CLK_ENABLE();
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(MASTER_IN_OUT_GPIO_Port, MASTER_IN_OUT_Pin, GPIO_PIN_SET);
-
-  /*Configure GPIO pin Output Level */
   HAL_GPIO_WritePin(GPIOC, RE_Pin|SD_Pin|MUTE_Pin|LED_CTL_Pin, GPIO_PIN_RESET);
 
   /*Configure GPIO pin Output Level */
@@ -661,19 +655,17 @@ static void MX_GPIO_Init(void)
   /*Configure GPIO pin Output Level */
   HAL_GPIO_WritePin(GPIOB, LED_100_RED_Pin|LED_100_GREEN_Pin, GPIO_PIN_RESET);
 
-  /*Configure GPIO pins : MASTER_IN_OUT_Pin RE_Pin SD_Pin MUTE_Pin
-                           LED_CTL_Pin */
-  GPIO_InitStruct.Pin = MASTER_IN_OUT_Pin|RE_Pin|SD_Pin|MUTE_Pin
-                          |LED_CTL_Pin;
+  /*Configure GPIO pins : MASTER_IN_Pin CHARGER_DET_Pin VCC_IN_Pin */
+  GPIO_InitStruct.Pin = MASTER_IN_Pin|CHARGER_DET_Pin|VCC_IN_Pin;
+  GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
+
+  /*Configure GPIO pins : RE_Pin SD_Pin MUTE_Pin LED_CTL_Pin */
+  GPIO_InitStruct.Pin = RE_Pin|SD_Pin|MUTE_Pin|LED_CTL_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
-  HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
-
-  /*Configure GPIO pins : CHARGER_DET_Pin VCC_IN_Pin */
-  GPIO_InitStruct.Pin = CHARGER_DET_Pin|VCC_IN_Pin;
-  GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
-  GPIO_InitStruct.Pull = GPIO_NOPULL;
   HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
 
   /*Configure GPIO pins : RE1_Pin DI_CTL_Pin OVERRIDE_Pin */
