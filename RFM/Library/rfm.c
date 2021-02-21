@@ -1568,6 +1568,14 @@ void LoopProcRFM ( int nTick )
 				//========================================================================
 				//  편성 : XXX
 				UpdateLCDMain();
+				//	송신기 Speaker Mute
+#if defined(USE_RFT_ONLY_RX_SPK_ON)
+				if ( GetDevID() == DevRF900T )
+				{
+					//  송신기 : 수신중이 아닌경우 SPK OFF
+					RFM_Spk(0);
+				}
+#endif
 				break;
 			}
 
