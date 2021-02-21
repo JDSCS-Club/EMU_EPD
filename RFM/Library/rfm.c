@@ -1574,6 +1574,9 @@ void LoopProcRFM ( int nTick )
 				{
 					//  송신기 : 수신중이 아닌경우 SPK OFF
 					RFM_Spk(0);
+
+					//  Red LED Off
+					HAL_GPIO_WritePin ( LED_ON_B_GPIO_Port, LED_ON_B_Pin, GPIO_PIN_RESET ); //  RED LED
 				}
 #endif
 				break;
