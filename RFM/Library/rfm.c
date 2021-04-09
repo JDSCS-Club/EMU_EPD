@@ -174,7 +174,7 @@ int GetChRx( void )
 		//		...
 		//
 		//	ChTS1_10		=	20,			//	* CH20 : 1편성 ( 10호차 )
-		return ChTS1_1 + ( g_nCarNo - 1 );	// 현재 호차 채널
+		return ChTS1_1 + ( g_nCarNo - 1 )*ChGap;	// 현재 호차 채널
 		//========================================================================
 	}
 
@@ -1742,7 +1742,7 @@ void LoopProcRFM ( int nTick )
 		{
 			//========================================================================
 			//	수신기 상태정보
-			SendStatReq( ChTS1_1 + s_idxCh );
+			SendStatReq( ChTS1_1 + (s_idxCh*ChGap) );
 		}
 		else
 		{

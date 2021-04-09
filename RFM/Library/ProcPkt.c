@@ -379,14 +379,15 @@ int ProcPktHdr2( const RFMPkt *pRFPkt, int nSize  )
 //			}
 //#endif
 
-			SendPktCh( GetChRx() + 1, buf, nSize );
+			SendPktCh( GetChRx() + ChGap, buf, nSize );
 
 			HAL_Delay( 3 );		//	최소 Delay
 
-			SendPktCh( GetChRx() - 1, buf, nSize );
+			if ( g_nCarNo != 1 )	//	1호차가 아닌 경우.
+				SendPktCh( GetChRx() - ChGap, buf, nSize );
 		}
 		//	수신기로부터 Data 수신 시
-		else if( pHdr->nSrcCh == ( GetChRx() - 1 ) )
+		else if( pHdr->nSrcCh == ( GetChRx() - ChGap ) )
 		{
 			//	상위 채널로 중계.
 			//	1 -> 2 => 3
@@ -408,7 +409,7 @@ int ProcPktHdr2( const RFMPkt *pRFPkt, int nSize  )
 			}
 #endif
 
-			SendPktCh( GetChRx() + 1, buf, nSize );
+			SendPktCh( GetChRx() + ChGap, buf, nSize );
 		}
 		else if( pHdr->nSrcCh == ( GetChRx() + 1 ) )
 		{
@@ -432,7 +433,7 @@ int ProcPktHdr2( const RFMPkt *pRFPkt, int nSize  )
 			}
 #endif
 
-			SendPktCh( GetChRx() - 1, buf, nSize );
+			SendPktCh( GetChRx() - ChGap, buf, nSize );
 		}
 	}
 #endif	//	defined(USE_HOPPING)

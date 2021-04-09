@@ -44,6 +44,7 @@ echo "./bin/${IMG_NAME}.hex"
 echo "./bin/${IMG_NAME}.bin"
 
 cp -fr ./build/${APP_NAME}.bin ${TARGET_PATH}/${IMG_NAME}.bin
+cp -fr ./build/${APP_NAME}.hex ${TARGET_PATH}/${IMG_NAME}.hex
 
 if [ $APP_NAME != "bootloader" ]; then
 

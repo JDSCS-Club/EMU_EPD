@@ -491,7 +491,7 @@ void SendRFCmd( char *sCmd, int nRSSI )
 
 	//========================================================================
 	//	모든 수신기로 전송.
-	for ( int nCh = ChTS1_1; nCh < ChTS1_1 + 10; nCh++ )
+	for ( int nCh = ChTS_base; nCh < ChTS1_1 + (ChGap * 10); nCh++ )
 	{
 		SendPktCh( nCh, (U8 *)&stPkt, (U8)sizeof( RFMPktHdr ) + RFPktDataLen );
 

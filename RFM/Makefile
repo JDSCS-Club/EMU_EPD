@@ -273,8 +273,8 @@ all: Library/version.h $(BUILD_DIR)/$(TARGET).elf $(TARGET_DIR)/$(TARGET).hex $(
 # Make Version
 GITVERSION	=	`git rev-list HEAD --count | sed 's/:.*//g' | sed 's/[^0-9]//g'`
 
-MKVERSION	=	sed "26s/.*/\#define	APP_BUILD_VER\t$(GITVERSION)/g" Library/version.h.template > Library/version.h
-
+#MKVERSION	=	sed "26s/.*/\#define	APP_BUILD_VER\t$(GITVERSION)/g" Library/version.h.template > Library/version.h
+MKVERSION	=	cat Library/version.h.template | sed 's/\$$WCREV\$$/'$(GITVERSION)'/g' > Library/version.h
 Library/version.h:
 	$(MKVERSION)
 
