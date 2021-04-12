@@ -43,7 +43,7 @@ REM set BOOT_FILE_NAME=smrt7tni_bootloader_%TODAY%_v%VER%.hex
 echo copy "%2\%MODULE%.bin" "bin\%BIN_FILE_NAME%"
 copy "%1\%2\%MODULE%.bin" "%1\..\bin\%BIN_FILE_NAME%"
 
-echo copy "%2\%MODULE%.hex" "bin\%BIN_FILE_NAME%"
+echo copy "%2\%MODULE%.hex" "bin\%HEX_FILE_NAME%"
 copy "%1\%2\%MODULE%.hex" "%1\..\bin\%HEX_FILE_NAME%"
 
 REM ------------------------------------------------------

@@ -454,63 +454,6 @@ void AudioSpeex_I2SEx_TxRxCpltCallback( I2S_HandleTypeDef *hi2s )
 	HAL_I2SEx_TransmitReceive_DMA( &hi2s3, (uint16_t*)bufAudio, (uint16_t*)&bufAudio[FRAME_SIZE], FRAME_SIZE );
 }
 
-//	interpolation compress ( 보간압축 )
-#define	AUDIO_COMPR_RATE	8	//	Audio 압축율.
-//#define	AUDIO_COMPR_RATE	4	//	Audio 압축율.
-//#define	AUDIO_COMPR_RATE	2	//	Audio 압축율.
-//#define	AUDIO_COMPR_RATE	1	//	Audio 압축율.
-
-#define	FRAME_ENC_SIZE		(I2S_DMA_LOOP_SIZE / AUDIO_COMPR_RATE)
-
-static int16_t	bufAudioEnc[FRAME_ENC_SIZE];
-static int16_t	bufAudioDec[FRAME_ENC_SIZE];
-
-//========================================================================
-void AudioLoopback_I2SEx_TxRxCpltCallback( I2S_HandleTypeDef *hi2s )
-//========================================================================
-{
-	//	printf( "%s(%d)\n", __func__, __LINE__ );
-
-	//	Loopback Encoding / Decoding
-
-	//	Audio Buffer Put
-//	qBufPut( &g_qBufAudioRx, (uint8_t *)&bufAudio[FRAME_SIZE], FRAME_SIZE );
-//	qBufGet( &g_qBufAudioTx, (uint8_t *)&bufAudio[0], FRAME_SIZE );
-
-	int16_t	*inBuf = &bufAudio[I2S_DMA_LOOP_SIZE];
-	int16_t	*outBuf = &bufAudio[0];
-
-	//	Encoding : 8 KHz -> 2 KHz
-	int i;
-	for( i = 0; i < FRAME_ENC_SIZE; i++ )
-	{
-		bufAudioEnc[i] = inBuf[ i * AUDIO_COMPR_RATE];
-	}
-
-	memcpy( bufAudioDec, bufAudioEnc, FRAME_ENC_SIZE * 2 );
-
-	int dtVal;	//	sample 보간.
-
-	//	Decoding : 2 KHz -> 8 KHz
-	for( i = 0; i < I2S_DMA_LOOP_SIZE; i++ )
-	{
-		if ( i % AUDIO_COMPR_RATE == 0 )
-		{
-			outBuf[ i ] = bufAudioDec[i / AUDIO_COMPR_RATE];
-			if( i == ( I2S_DMA_LOOP_SIZE - 1) ) dtVal = 0;
-			else dtVal = (bufAudioDec[(i / AUDIO_COMPR_RATE) + 1] - outBuf[ i ]) / AUDIO_COMPR_RATE;
-		}
-		else
-		{
-			//	sample간 보간.
-			outBuf[ i ] = outBuf[ i - 1 ] + dtVal;
-		}
-//		outBuf[ i ] = bufAudioDec[i / AUDIO_COMPR_RATE];
-	}
-
-	HAL_I2SEx_TransmitReceive_DMA( &hi2s3, (uint16_t*)outBuf, (uint16_t*)inBuf, FRAME_SIZE );
-}
-
 //========================================================================
 void AudioSine_I2SEx_TxRxCpltCallback( I2S_HandleTypeDef *hi2s )
 //========================================================================
@@ -544,20 +487,6 @@ void AudioSine_I2SEx_TxRxCpltCallback( I2S_HandleTypeDef *hi2s )
 									);
 
 #endif
-}
-
-//========================================================================
-int		AudioLoopbackDMACompress( void )
-//========================================================================
-{
-	printf( "%s(%d)\n", __func__, __LINE__ );
-
-	SetCallbackI2STxRxCplt( AudioLoopback_I2SEx_TxRxCpltCallback );
-
-	//	Speex ( 1 frame ) : 160 sample ( 320 bytes ) / 20 msec
-	HAL_I2SEx_TransmitReceive_DMA( &hi2s3, (uint16_t*)bufAudio, (uint16_t*)&bufAudio[FRAME_SIZE], FRAME_SIZE );
-
-	return 0;
 }
 
 //========================================================================

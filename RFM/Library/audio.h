@@ -79,7 +79,6 @@ void	AudioStop				( void );
 void	SetCallbackI2STxRxCplt	( void ( *pCallbackTxRxCplt )( I2S_HandleTypeDef *hi2s ) );
 
 void 	AudioSine_I2SEx_TxRxCpltCallback( I2S_HandleTypeDef *hi2s );
-void 	AudioLoopback_I2SEx_TxRxCpltCallback( I2S_HandleTypeDef *hi2s );
 
 //========================================================================
 enum eAudioIC
@@ -110,7 +109,6 @@ int		AudioDMALoopback		( void );
 int		AudioDMARFM				( void );
 
 int 	AudioLoopbackDMASpeex	( void );
-int		AudioLoopbackDMACompress( void );
 
 int		AudioPlayDMASine		( void );
 

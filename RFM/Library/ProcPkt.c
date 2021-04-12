@@ -381,7 +381,7 @@ int ProcPktHdr2( const RFMPkt *pRFPkt, int nSize  )
 
 			SendPktCh( GetChRx() + ChGap, buf, nSize );
 
-			HAL_Delay( 3 );		//	최소 Delay
+//DEL			HAL_Delay( 3 );		//	최소 Delay
 
 			if ( g_nCarNo != 1 )	//	1호차가 아닌 경우.
 				SendPktCh( GetChRx() - ChGap, buf, nSize );
@@ -819,7 +819,7 @@ int SendPacket( const char *sBuf, int nSize )
 	int nCh = ChTS1_1 + g_idxTrainSet * 2 + ((g_nCarNo + 1) % 2); // 현재 호차 채널
 
 	//========================================================================
-	while( ( HAL_GetTick() - nTxStamp) < 3 )	;	//	Tx 시작 후 완료까지 : 3msec
+	while( ( HAL_GetTick() - nTxStamp) <= 3 )	;	//	Tx 시작 후 완료까지 : 3msec
 	//========================================================================
 
 	vRadio_StartTx_Variable_Packet (
@@ -841,7 +841,7 @@ int SendPktCh	( int nCh, const char *sBuf, int nSize )
 	Dump("Tx", sBuf, 0x40);
 
 	//========================================================================
-	while( ( HAL_GetTick() - nTxStamp) < 3 )	;	//	Tx 시작 후 완료까지 : 3msec
+	while( ( HAL_GetTick() - nTxStamp) <= 3 )	;	//	Tx 시작 후 완료까지 : 3msec
 	//========================================================================
 
 	vRadio_StartTx_Variable_Packet (
