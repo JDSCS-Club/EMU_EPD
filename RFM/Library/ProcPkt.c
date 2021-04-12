@@ -411,7 +411,7 @@ int ProcPktHdr2( const RFMPkt *pRFPkt, int nSize  )
 
 			SendPktCh( GetChRx() + ChGap, buf, nSize );
 		}
-		else if( pHdr->nSrcCh == ( GetChRx() + 1 ) )
+		else if( pHdr->nSrcCh == ( GetChRx() + ChGap ) )
 		{
 			//	하위 채널로 중계.
 			//	1 <= 2 <- 3

@@ -233,11 +233,11 @@ enum eChannel
 	ChRFT			=	10,			//	* 송신기 - 917.5 MHz
 
 //	ChTS1_1
-	ChTS_base		=	11,			//	* CH11 : 1편성 ( 1호차 )
+	ChTS_base		=	11,			//	* CH11 : 수신기 Base 채널.
 
 	ChTS1_1			=	21,			//	* CH11 : 1편성 ( 1호차 ) - Offset ( + 10 )
 	
-	ChGap			=	4,			//	호차별 채널 간격.
+	ChGap			=	4,			//	호차별 채널 간격. ( 4 - 1 Mhz )
 
 //	ChTS1_1			=	11,			//	* CH11 : 1편성 ( 1호차 )
 	// ChTS1_2			=	12,			//	* CH12 : 1편성 ( 2호차 )
