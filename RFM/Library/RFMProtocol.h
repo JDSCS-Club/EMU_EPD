@@ -227,17 +227,18 @@ enum eChannel
 
 	ChResv			=	5,			//	* CH3 ~ 7 : Reserved
 
-	ChTx_1			=	8,			//	* CH8 : 송신기#1 - (Car No : 11)
-	ChTx_2			=	9,			//	* CH9 : 송신기#2 - (Car No : 12)
+	ChGap			=	4,			//	호차별 채널 간격. ( 4 - 1 Mhz )
 
-	ChRFT			=	10,			//	* 송신기 - 917.5 MHz
+	ChTx_1			=	8,			//	* CH8 : 송신기#1 - (Car No : 11)
+	ChTx_2			=	(ChTx_1+ChGap),		//	9,	//	* CH9 : 송신기#2 - (Car No : 12)
+
+//DEL	ChRFT			=	10,			//	* 송신기 - 917.5 MHz
 
 //	ChTS1_1
 	ChTS_base		=	11,			//	* CH11 : 수신기 Base 채널.
 
 	ChTS1_1			=	21,			//	* CH11 : 1편성 ( 1호차 ) - Offset ( + 10 )
 	
-	ChGap			=	4,			//	호차별 채널 간격. ( 4 - 1 Mhz )
 
 //	ChTS1_1			=	11,			//	* CH11 : 1편성 ( 1호차 )
 	// ChTS1_2			=	12,			//	* CH12 : 1편성 ( 2호차 )

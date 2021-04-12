@@ -159,9 +159,9 @@ int GetChRx( void )
 	{
 		//========================================================================
 		//	송신기 #1 / #2
-		//	ChTx_1			=	8,			//	* CH8 : 송신기#1 - (Car No : 11)
-		//	ChTx_2			=	9,			//	* CH9 : 송신기#2 - (Car No : 12)
-		return ChTx_1 + ( ( g_nCarNo + 1) % 2 );	// 현재 호차 채널
+		//	ChTx_1			=	8,				//	* CH8 : 송신기#1 - (Car No : 11)
+		//	ChTx_2			=	ChTx_1+ChGap,	//	* CH9 : 송신기#2 - (Car No : 12)
+		return ChTx_1 + ( ( g_nCarNo + 1) % 2 )*ChGap;	// 현재 호차 채널
 		//========================================================================
 	}
 	else if ( GetDevID() == DevRF900M )
@@ -196,7 +196,7 @@ int		GetChOtherRFT	( void )			//	타 송신기 채널.
 	//	ChTx_1			=	8,				//	* CH8 : 송신기#1 - (Car No : 11)
 	//	ChTx_2			=	9,				//	* CH9 : 송신기#2 - (Car No : 12)
 //	return ChTx_1 + ( g_nCarNo % 2 );		// Self 송신기 채널
-	return ChTx_1 + ( ( g_nCarNo ) % 2 );	// Other 송신기 채널
+	return ChTx_1 + ( ( g_nCarNo ) % 2 )*ChGap;	// Other 송신기 채널
 	//========================================================================
 }
 
@@ -1748,10 +1748,10 @@ void LoopProcRFM ( int nTick )
 		{
 			//========================================================================
 			//	송신기 상태정보
-			if( ChTx_1 + ( s_idxCh % 2 ) != GetChRx() )
+			if( ChTx_1 + ( s_idxCh % 2 )*ChGap != GetChRx() )
 			{
 				//	타 송신기에 상태정보 요청.
-				SendStatReq( ChTx_1 + ( s_idxCh % 2 ) );
+				SendStatReq( ChTx_1 + ( s_idxCh % 2 )*ChGap );
 			}
 		}
 
