@@ -102,9 +102,6 @@ Drivers/display/Adafruit_SSD1306.cpp
 # ASM sources
 ASM_SOURCES =  \
 startup_stm32f407xx.s \
-Library/speex/STM32/libspeex/gcc/filters_cortexM3.s \
-Library/speex/STM32/libspeex/gcc/ltp_cortexM3.s \
-Library/speex/STM32/libspeex/gcc/vq_cortexm3.s \
 
 
 #######################################
@@ -180,12 +177,6 @@ C_INCLUDES =  \
 -IMiddlewares/ST/STM32_USB_Device_Library/Core/Inc \
 -IUSB_DEVICE/App \
 -IUSB_DEVICE/Target \
--ILibrary/speex \
--ILibrary/speex/include \
--ILibrary/speex/STM32 \
--ILibrary/speex/STM32/include \
--ILibrary/speex/STM32/libspeex/gcc \
--ILibrary/speex/libspeex \
 
 
 # compile gcc flags
