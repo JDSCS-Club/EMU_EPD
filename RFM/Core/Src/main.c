@@ -105,8 +105,6 @@ static void MX_IWDG_Init(void);
 #include "radio_hal.h"			//	RF_NIRQ
 #include "si446x_api_lib.h"		//	si446x_part_info()
 
-#include "codec.h"				//	speex Codec
-
 #include "keypad.h"				//	RFM Keypad
 
 #include "audio.h"				//	MAX9860

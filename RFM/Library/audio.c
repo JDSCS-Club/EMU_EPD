@@ -46,20 +46,7 @@
 
 #include "audio.h"
 
-#if defined(USE_AUDIO_SPEEX_CODEC)
-
-#include "codec.h"
-//#ifdef HAVE_CONFIG_H
-//#include "config.h"
-//#endif
-
-#include <speex/speex.h>
-
-#else	//	defined(USE_AUDIO_SPEEX_CODEC)
-
 #define FRAME_SIZE 160
-
-#endif
 
 //========================================================================
 // Define
@@ -154,15 +141,6 @@ void AudioInit( void )
 
 	HAL_I2SEx_TransmitReceive_DMA( &hi2s3, (uint16_t*)sine_table, (uint16_t*)bufAudio, 256 );
 
-	//========================================================================
-	//	Speex Codec
-#if defined(USE_AUDIO_SPEEX_CODEC)
-	Speex_Init();
-#endif	//	defined(USE_AUDIO_SPEEX_CODEC)
-
-	//========================================================================
-	//	Speex Encoding -> Decoding
-
 	int i;
 	int index;
 
@@ -174,25 +152,6 @@ void AudioInit( void )
 	int tick_start, tick_end;
 
 	tick_start = HAL_GetTick();
-
-#if defined(USE_AUDIO_SPEEX_CODEC)
-	//========================================================================
-	//	Encoding
-
-    speex_bits_reset(&bits);
-
-	/* Encode the frame */
-	speex_encode_int(enc_state, &speex_sine_table[0], &bits);
-	/* Copy the bits to an array of char that can be decoded */
-	speex_bits_write(&bits, (char *)out_bytes, ENCODED_FRAME_SIZE);
-
-	//========================================================================
-	//	Decoding
-	/* Copy the encoded data into the bit-stream struct */
-	speex_bits_read_from(&bits, (char *)out_bytes, ENCODED_FRAME_SIZE);
-	/* Decode the data */
-	speex_decode_int(dec_state, &bits, &speex_sine_table[0] );
-#endif	//	defined(USE_AUDIO_SPEEX_CODEC)
 
 	tick_end = HAL_GetTick();
 
