@@ -312,7 +312,7 @@ typedef struct _RFMPktHdr2
 	};
 	uint8_t		nTS:6;			//	[5:0] TrainSet
 	uint8_t		bHdrID:2;		//	[7:6] 00 : Hdr#1 / 01 : Hdr#2
-	uint8_t		nSrcCh:6;		//	Source Channel ( 0 ~ 64 )
+	uint8_t		nSrcCh:6;		//	Source Channel ( 0 ~ 63 )
 	uint8_t		bRFT1:1;		//	송신기#1 전송 Flag
 	uint8_t		bRFT2:1;		//	송신기#2 전송 Flag
 	uint8_t		nSpare3;		//	Spare

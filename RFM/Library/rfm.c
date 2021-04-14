@@ -662,6 +662,13 @@ int cmd_ts      ( int argc, char * argv[] )
     //	ts [train set] ( 0 ~ 9 )
     int 		nTrainSet = 0;
 
+    if( argc <= 1 )
+    {
+        printf( "Train Set : %d\n", 100 + GetTrainSetIdx() );
+
+    	return 0;
+    }
+
     switch ( argc )
     {
     case 2:		sscanf( argv[1], "%d", &nTrainSet );	        //	cmd [channel]
@@ -673,6 +680,8 @@ int cmd_ts      ( int argc, char * argv[] )
    	printf( "%s(%d) - Train Set : %d\n", __func__, __LINE__, nTrainSet + 100 );
 
     SetTrainSetIdx( nTrainSet );
+
+    return 0;
 }
 
 //========================================================================
@@ -681,6 +690,13 @@ int cmd_ch      ( int argc, char * argv[] )
 {
     //	ch [channel] ( 0 ~ 9 )
     int 		nCh = 0;
+
+    if( argc <= 1 )
+    {
+        printf( "RF Channel: %d\n", GetChRx() );
+
+    	return 0;
+    }
 
     switch ( argc )
     {
@@ -695,6 +711,8 @@ int cmd_ch      ( int argc, char * argv[] )
     	printf( "%s(%d) - Channel : %d\n", __func__, __LINE__, nCh );
 
     SetTrainSetIdx( nCh );
+
+	return 0;
 }
 
 
@@ -704,6 +722,13 @@ int cmd_car     ( int argc, char * argv[] )
 {
     //	car [Car No] ( 0 ~ 9 )
     int 		nCar = 0;
+
+    if( argc <= 1 )
+    {
+        printf( "Car No : %d\n", GetCarNo() );
+
+        return 0;
+    }
 
     switch ( argc )
     {
@@ -717,6 +742,8 @@ int cmd_car     ( int argc, char * argv[] )
     printf( "%s(%d) - Car No : %d\n", __func__, __LINE__, nCar );
 
     SetCarNo( nCar );
+
+	return 0;
 }
 
 
