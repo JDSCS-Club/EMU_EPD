@@ -81,8 +81,6 @@ Core/Src/system_stm32f4xx.c \
 Drivers/radio/radio.c \
 Drivers/radio/radio_comm.c \
 Drivers/radio/radio_hal.c \
-Drivers/si4463/radio_si4463.c \
-Drivers/si4463/si4463.c \
 Drivers/radio/Si446x/si446x_api_lib.c \
 Drivers/radio/Si446x/si446x_nirq.c \
 Drivers/display/fonts/PHan_Lib.c \
@@ -181,7 +179,6 @@ C_INCLUDES =  \
 -IDrivers/CMSIS/Include \
 -IDrivers/radio \
 -IDrivers/radio/Si446x \
--IDrivers/si4463 \
 -IDrivers/display \
 -IDrivers/display/fonts \
 -IMiddlewares/ST/STM32_USB_Device_Library/Class/CDC/Inc \

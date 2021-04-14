@@ -122,11 +122,6 @@ void HAL_GPIO_EXTI_Callback ( uint16_t GPIO_Pin )
 {
     uint8_t st;
 
-    //========================================================================
-    //	Si4463 driver Interrupt
-    SI4463_INT_Callback( GPIO_Pin );	//	inline func
-    //========================================================================
-
 //    printf( " HAL_GPIO_EXTI_Callback\n" );
 
     st = HAL_GPIO_ReadPin ( RF_INT_GPIO_Port, RF_INT_Pin );
@@ -139,8 +134,6 @@ void HAL_GPIO_EXTI_Callback ( uint16_t GPIO_Pin )
         RF_NIRQ = FALSE;
     }
 }
-
-#include "radio_si4463.h"	//	si4463 driver
 
 //========================================================================
 void LoopProcMain( int nTick )

@@ -33,13 +33,6 @@ int		cmd_test3		( int argc, char *argv[] );
 int		cmd_test4		( int argc, char *argv[] );
 int		cmd_test4		( int argc, char *argv[] );
 
-int		cmd_test_rf1		( int argc, char *argv[] );
-int		cmd_test_rf2		( int argc, char *argv[] );
-int		cmd_test_rf3		( int argc, char *argv[] );
-int		cmd_test_rf_init	( int argc, char *argv[] );
-int		cmd_test_rf_vinit	( int argc, char *argv[] );
-int		cmd_test_rf_debug	( int argc, char *argv[] );
-
 int		cmd_ttest		( int argc, char *argv[] );
 int		cmd_md			( int argc, char *argv[] );
 int		cmd_mm			( int argc, char *argv[] );
@@ -49,9 +42,6 @@ int		cmd_diag		( int argc, char *argv[] );
 
 //========================================================================
 
-void	display_diag_RF	( void );
-int		cmd_diag_RF		( int argc, char *argv[] );
-
 void	display_diag_RF_WDS	( void );
 int		cmd_diag_RF_WDS		( int argc, char *argv[] );
 
@@ -60,7 +50,6 @@ int		cmd_rfwds1		( int argc, char *argv[] );
 int		cmd_rfwds2		( int argc, char *argv[] );
 int		cmd_rfwds3		( int argc, char *argv[] );
 int		cmd_rfwds_init	( int argc, char *argv[] );
-int		cmd_rfwds_vinit	( int argc, char *argv[] );
 int		cmd_rfwds_debug	( int argc, char *argv[] );
 
 int		cmd_diag_Audio	( int argc, char *argv[] );

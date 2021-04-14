@@ -49,8 +49,6 @@
 
 #include "serial.h"
 
-#include "radio_si4463.h"		//	RF-IC
-
 #include "radio.h"				//	RF-IC WDS
 
 #include "si446x_api_lib.h"		//	Pro2Cmd
@@ -116,10 +114,6 @@ int cmd_diag_proc( char *cmd )
 	{
 	case '1':	cmd_diag_Audio( 0, 0 );		break;
 	case '2':	cmd_diag_RF( 0, 0 );		break;
-		//		case '2':	cmd_test2( 0, 0 );			break;
-		//		case '3':	cmd_test3( 0, 0 );			break;
-		//		case '4':	cmd_test4( 0, 0 );			break;
-		//		case '5':	cmd_test5( 0, 0 );			break;
 	case 'q':
 	case 'Q':
 #if defined(USE_FREERTOS)
@@ -339,13 +333,7 @@ int cmd_diag_proc_RF( char *cmd )
 	{
 #if defined(_WIN32)
 #else
-		case '0':	RF_Info();					break;
-		case '1':	cmd_test_rf1( 0, 0 );		break;
-		case '2':	cmd_test_rf2( 0, 0 );		break;
-		case '3':	cmd_test_rf3( 0, 0 );		break;
-		case 'i':	cmd_test_rf_init( 0, 0 );	break;
-		case 'v':	cmd_test_rf_vinit( 0, 0 );	break;
-		case 'd':	cmd_test_rf_debug( 0, 0 );	break;
+		case 'i':	cmd_rfwds_init( 0, 0 );	break;
 #endif
 	case 'q':
 	case 'Q':
@@ -492,141 +480,6 @@ int	cmd_test5( int argc, char *argv[] )
 
 
 //========================================================================
-int	cmd_test_rf1( int argc, char *argv[] )
-//========================================================================
-{
-	printf( "%s(%d)\n", __func__, __LINE__ );
-
-	printf( "*  1 : RF Tx test.*\n" );
-
-#if defined(_WIN32)
-#else
-
-	//	Select Tx Mode
-	RF_Tx();
-
-	SI4463_Test();		//	RF-Test
-
-#endif
-
-	return 0;
-}
-
-
-//========================================================================
-int	cmd_test_rf2( int argc, char *argv[] )
-//========================================================================
-{
-	printf( "%s(%d)\n", __func__, __LINE__ );
-
-	printf( "*  1 : RF Rx test.*\n" );
-
-#if defined(_WIN32)
-#else
-
-	//	Select Rx Mode
-	RF_Rx();
-
-	SI4463_Test();		//	RF-Test
-
-#endif
-
-	return 0;
-}
-
-//========================================================================
-int	cmd_test_rf3( int argc, char *argv[] )
-//========================================================================
-{
-	printf( "%s(%d)\n", __func__, __LINE__ );
-
-	printf( "*  1 : RF Loopback ( Tx -> Rx ) test.*\n" );
-
-#if defined(_WIN32)
-#else
-
-	//	Select Rx Mode
-	RF_Loopback();
-
-	SI4463_Test();		//	RF-Test
-
-#endif
-
-	return 0;
-}
-
-//========================================================================
-int	cmd_test_rf_init( int argc, char *argv[] )
-//========================================================================
-{
-	printf( "%s(%d)\n", __func__, __LINE__ );
-
-//	int8_t ret;
-//	ret = SI4463_Init( &si4463 );
-
-#if defined(_WIN32)
-#else
-
-	RF_Init();
-
-#endif
-
-//	printf( "%s(%d) - ret(%d)\n", __func__, __LINE__, ret );
-
-	return 0;
-}
-
-//========================================================================
-int	cmd_test_rf_vinit( int argc, char *argv[] )
-//========================================================================
-{
-	printf( "%s(%d)\n", __func__, __LINE__ );
-
-#if defined(_WIN32)
-#else
-
-	int8_t ret;
-	ret = SI4463_VerifyInit( &si4463 );
-
-	printf( "%s(%d) - ret(%d)\n", __func__, __LINE__, ret );
-
-#endif
-
-	return 0;
-}
-
-//========================================================================
-int	cmd_test_rf_debug( int argc, char *argv[] )
-//========================================================================
-{
-	printf( "%s(%d)\n", __func__, __LINE__ );
-
-#if defined(_WIN32)
-#else
-
-	static int s_bEnableDebug = 0;
-
-	if ( s_bEnableDebug )
-	{
-		s_bEnableDebug = 0;
-		printf( "Disable Debug\n" );
-
-		SI4463_Debug( 0 );
-	}
-	else
-	{
-		s_bEnableDebug = 1;
-		printf( "Enable Debug\n" );
-
-		SI4463_Debug( 1 );
-	}
-	
-#endif
-
-	return 0;
-}
-
-//========================================================================
 int		cmd_rfwds_info	( int argc, char *argv[] )
 //========================================================================
 {
@@ -690,15 +543,6 @@ int		cmd_rfwds_init	( int argc, char *argv[] )
 	vRadio_Init();
 
 #endif
-
-	return 0;
-}
-
-//========================================================================
-int		cmd_rfwds_vinit	( int argc, char *argv[] )
-//========================================================================
-{
-	printf( "%s(%d)\n", __func__, __LINE__ );
 
 	return 0;
 }
