@@ -14,16 +14,7 @@
 
 #include "radio.h"				//	tRadioConfiguration
 
-#if defined(USE_IEEE802_15_4G)
-
-#include "radio_config_802_15_4g.h"
-
-#else
-
 #include "radio_config.h"		//	RadioConfiguration
-//#include "radio_config_Si4463_c2a.h"		//	RadioConfiguration
-
-#endif
 
 #include "radio_hal.h"			//	RF_NIRQ
 
@@ -166,25 +157,13 @@ U8 bRadio_Check_Tx_RX(void)
 			//        printf("tx\n");
 			//        printf("\n[tx]");
 			// Configure PKT_CONFIG1 for RX
-#if defined(USE_IEEE802_15_4G)
-			si446x_set_property(SI446X_PROP_GRP_ID_PKT, 1, SI446X_PROP_GRP_INDEX_PKT_CONFIG1, bPktConfig1ForRx);
-			// Start RX with Packet handler settings
-			vRadio_StartRX(pRadioConfiguration->Radio_ChannelNumber,
-				pRadioConfiguration->Radio_PacketLength);
-#else
 
-		//	수신기
-		vRadio_StartRX (
-			g_nChRx,	//g_idxTrainSet,	//	pRadioConfiguration->Radio_ChannelNumber,
-			pRadioConfiguration->Radio_PacketLength );
+			//	수신기
+			vRadio_StartRX (
+				g_nChRx,	//g_idxTrainSet,	//	pRadioConfiguration->Radio_ChannelNumber,
+				pRadioConfiguration->Radio_PacketLength );
 
-#endif
-
-#if OLD
-			return SI446X_CMD_GET_INT_STATUS_REP_PH_PEND_PACKET_SENT_PEND_BIT;
-#else
 			ret |= SI446X_CMD_GET_INT_STATUS_REP_PH_PEND_PACKET_SENT_PEND_BIT;
-#endif
 		}
 
 		if(Si446xCmd.GET_INT_STATUS.PH_PEND & SI446X_CMD_GET_INT_STATUS_REP_PH_PEND_PACKET_RX_PEND_BIT)
@@ -192,12 +171,7 @@ U8 bRadio_Check_Tx_RX(void)
 			/* Packet RX */
 
 			/* Get payload length */
-#if defined(USE_IEEE802_15_4G)
-			// TX FIFO may need to be written for ACK. Do it now to save time for the TX-RX turnaround
-			si446x_fifo_info(0x00 | SI446X_CMD_FIFO_INFO_ARG_FIFO_TX_BIT);
-#else
             si446x_fifo_info ( 0x00 );
-#endif
 
 //			si446x_read_rx_fifo(Si446xCmd.FIFO_INFO.RX_FIFO_COUNT, &customRadioPacket[0]);
         	s_idxRxPkt = ( s_idxRxPkt + 1 )%2;
@@ -215,31 +189,16 @@ U8 bRadio_Check_Tx_RX(void)
 
 			//      printf("rx");
 			// Configure PKT_CONFIG1 for RX
-#if defined(USE_IEEE802_15_4G)
-			si446x_set_property(SI446X_PROP_GRP_ID_PKT, 1, SI446X_PROP_GRP_INDEX_PKT_CONFIG1, bPktConfig1ForRx);
-			// Start RX with Packet handler settings
-			vRadio_StartRX(pRadioConfiguration->Radio_ChannelNumber,
-				pRadioConfiguration->Radio_PacketLength);
-#else
 			vRadio_StartRX (
 				g_nChRx, //g_idxTrainSet,	//				pRadioConfiguration->Radio_ChannelNumber,
 				pRadioConfiguration->Radio_PacketLength );
-#endif
 
-#if OLD
-			return SI446X_CMD_GET_INT_STATUS_REP_PH_PEND_PACKET_RX_PEND_BIT;
-#else
 			ret |= SI446X_CMD_GET_INT_STATUS_REP_PH_PEND_PACKET_RX_PEND_BIT;
-#endif
 		}
 
 	}
 
-#if OLD
-	return 0;
-#else
 	return ret;
-#endif
 }
 
 

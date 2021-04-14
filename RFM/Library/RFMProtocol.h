@@ -229,7 +229,7 @@ enum eChannel
 
 	ChGap			=	4,			//	호차별 채널 간격. ( 4 - 1 Mhz )
 
-	ChTx_1			=	8,			//	* CH8 : 송신기#1 - (Car No : 11)
+	ChTx_1			=	8,			//	* CH8 : 송신기#1 - (Car No : 11) - 915 + 0.25 * 8
 	ChTx_2			=	(ChTx_1+ChGap),		//	9,	//	* CH9 : 송신기#2 - (Car No : 12)
 
 //DEL	ChRFT			=	10,			//	* 송신기 - 917.5 MHz
