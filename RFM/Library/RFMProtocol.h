@@ -620,6 +620,10 @@ void	SendLightOff		( void );		//	조명제어 조명 Off
 void	SendRFCmd			( char *sCmd, int nRSSI );	//	원격 Command 명령 전송.
 void	SendRFCmdReset		( void );		//	Reset 명령 전송.
 void	SendRFCmdDFUMode	( void );		//	DFU Mode 명령 전송.
+
+void 	SendRFCmdCar		( int nCar );
+void 	SendRFCmdTS			( int nIdx );
+
 void	SendRFCmdUpgrade	( int bRetry );		//	Upgrade 명령 전송.
 
 void	SendUpgrData		( uint32_t nAddrTarget, int nPktTot, int nPktIdx, uint8_t *sBuf, int nSize );	//	Send Upgrade Data

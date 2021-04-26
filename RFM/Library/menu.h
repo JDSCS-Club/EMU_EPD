@@ -66,6 +66,9 @@ void 	ProcMenuDiag		( int idxItem );	//	Diag
 void	ProcMenuVer			( int idxItem );	//	Menu Version
 void	ProcMenuCmd			( int idxItem );	//	Command
 
+void	ProcMenuSetCmdTS		( int idxItem  );
+void	ProcMenuSetCmdCar		( int idxItem  );
+
 //========================================================================
 
 void	ProcLightOn			( void );

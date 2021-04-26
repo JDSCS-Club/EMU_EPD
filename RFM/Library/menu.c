@@ -253,10 +253,12 @@ Menu_t	g_MenuSetTxPwrList = {
 
 #if defined(USE_RFT_MENU_CMD)
 char *_sCmdList[] = {
-	" Reset",			//  Reset
-	" DFU Mode",		//  DFU Mode
-	" Upgrade ReTry",	//  Upgrade Re-Try
-	" Upgrade",			//  Upgrade
+	" Reset", //  Reset
+	//DEL	" DFU Mode",		//  DFU Mode
+	" TS Set",
+	" Car Set",
+	" Upgrade ReTry", //  Upgrade Re-Try
+	" Upgrade",		  //  Upgrade
 };
 
 Menu_t	g_MenuCmdList = {
@@ -266,6 +268,34 @@ Menu_t	g_MenuCmdList = {
 	ProcMenuCmd				//	Callback Function
 };
 #endif	//	defined(USE_RFT_MENU_CMD)
+
+//	호차 설정
+char *_sSetCmdCarList[] = {	" Car : 1",
+							" Car : 2",
+							" Car : 3",
+							" Car : 4",
+							" Car : 5",
+							" Car : 6",
+							" Car : 7",
+							" Car : 8",
+							" Car : 9",
+							" Car : 10",
+						};
+
+Menu_t	g_MenuSetCmdCarList = {
+	_sSetCmdCarList,
+	sizeof(_sSetCmdCarList)/sizeof(char *),		//	Item Count
+	0,						// 	curr Idx
+	ProcMenuSetCmdCar		//	Callback Function
+};
+
+//	편성 설정
+Menu_t	g_MenuSetCmdTSList = {
+	_sTrainSet,								//	편성 : 100, 편성 : 101, ...
+	sizeof(_sTrainSet)/sizeof(char *),		//	Item Count
+	0,						// 	curr Idx
+	ProcMenuSetCmdTS		//	Callback Function
+};
 
 //========================================================================
 //	Main Menu
@@ -660,15 +690,32 @@ void	ProcMenuVer( int idxItem  )
 void	ProcMenuCmd( int idxItem  )
 //========================================================================
 {
+	//	하위매뉴진입 : 편성 / 호차 설정.
+	switch ( idxItem )
+	{
+	case 1:		//	Train Set
+		SetActiveMenu( &g_MenuSetCmdTSList );
+		GetActiveMenu()->currIdx = 0;	//	메뉴 Index초기화.
+
+		UpdateLCDMenu();
+		return;
+	case 2:		//	Car Set
+		SetActiveMenu( &g_MenuSetCmdCarList );
+		GetActiveMenu()->currIdx = 0;	//	메뉴 Index초기화.
+
+		UpdateLCDMenu();
+		return;
+	}
+
 	LCDSetCursor( 20, 13 );
 	LCDPrintf( "[명령전송]" );
 
 	switch( idxItem )
 	{
 	case 0:		SendRFCmdReset();		break;		//	Reset 명령.
-	case 1:		SendRFCmdDFUMode();		break;		//	DFU Mode 명령.
-	case 2:		SendRFCmdUpgrade(1);	break;		//	Upgrade(Re-Try 명령.
-	case 3:		SendRFCmdUpgrade(0);	break;		//	Upgrade 명령.
+//DEL	case 1:		SendRFCmdDFUMode();		break;		//	DFU Mode 명령.
+	case 3:		SendRFCmdUpgrade(1);	break;		//	Upgrade(Re-Try 명령.
+	case 4:		SendRFCmdUpgrade(0);	break;		//	Upgrade 명령.
 	}
 
 	//  1초후 Main화면 갱신.
@@ -678,6 +725,42 @@ void	ProcMenuCmd( int idxItem  )
 	//  메뉴 Exit
 	SetActiveMenu( NULL );
 }
+
+
+//========================================================================
+void	ProcMenuSetCmdTS( int idxItem  )
+//========================================================================
+{
+	LCDSetCursor( 20, 13 );
+	LCDPrintf( "[명령전송]" );
+
+	SendRFCmdTS(idxItem);		//	편성설정.
+
+	//  1초후 Main화면 갱신.
+	HAL_Delay( 1000 );
+	UpdateLCDMain();
+
+	//  메뉴 Exit
+	SetActiveMenu( NULL );
+}
+
+//========================================================================
+void	ProcMenuSetCmdCar( int idxItem  )
+//========================================================================
+{
+	LCDSetCursor( 20, 13 );
+	LCDPrintf( "[명령전송]" );
+
+	SendRFCmdCar(idxItem + 1);		//	호차설정.
+
+	//  1초후 Main화면 갱신.
+	HAL_Delay( 1000 );
+	UpdateLCDMain();
+
+	//  메뉴 Exit
+	SetActiveMenu( NULL );
+}
+
 
 //========================================================================
 void 	ProcMenuMain( int idxItem )
