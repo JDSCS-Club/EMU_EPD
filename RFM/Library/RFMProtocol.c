@@ -232,6 +232,12 @@ void SendStat( int nDestCh )
 
 	//========================================================================
 	//	Send RF
+
+#if defined(USE_COMM_MODE_CH_GRP)	//	그룹주파수 모드. - [ 1, 2 ] [ 3, 4 ] ...
+	//	짝수 호차는 3msec Delay ( 송신시 충돌 방지 )
+	if( pStat->nCarNo % 2 == 0 ) HAL_Delay( 3 );
+#endif
+
 #if defined(USE_CH_ISO_DEV)
 	//	상태정보는 송신기로 전송.
 	int nCh;

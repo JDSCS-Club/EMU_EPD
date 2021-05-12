@@ -23,6 +23,7 @@ enum eAddrEEPRom
 	AddrEEPCarNo		=	0x0E,		//	Car Number
 	AddrEEPSpkVol		=	0x0F,		//	Spk Vol
 	AddrEEPTrainSet		=	0x10,		//	Train Number
+	AddrEEPCarMax		=	0x11,		//	Max Car Number
 
 	AddrEEPUpgrMGN1		=	0x20,		//	Upgrade Magic Num ( 0xAA )
 	AddrEEPUpgrMGN2		=	0x21,		//	Upgrade Magic Num ( 0x55 )
@@ -30,6 +31,8 @@ enum eAddrEEPRom
 	AddrEEPUpgrSize8	=	0x22,		//	Upgrade App Size 0x0000XX
 	AddrEEPUpgrSize16	=	0x23,		//	Upgrade App Size 0x00XX00
 	AddrEEPUpgrSize24	=	0x24,		//	Upgrade App Size 0xXX0000
+
+	AddrEEPCommMode		=	0x30,		//	Communication Mode ( 1 : 개별 주파수 / 2 : 그룹주파수 )
 };
 
 

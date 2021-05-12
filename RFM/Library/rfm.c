@@ -166,6 +166,10 @@ int GetChRx( void )
 	}
 	else if ( GetDevID() == DevRF900M )
 	{
+#if defined(USE_COMM_MODE_CH_GRP)
+		//	그룹주파수 모드. - [ 1, 2 ] [ 3, 4 ] ...
+		return ChTS1_1 + (( g_nCarNo - 1 )/2)*ChGap;	// 현재 호차 채널
+#else
 		//========================================================================
 		//	수신기.
 		//	ChTS1_1			=	11,			//	* CH11 : 1편성 ( 1호차 )
@@ -176,6 +180,7 @@ int GetChRx( void )
 		//	ChTS1_10		=	20,			//	* CH20 : 1편성 ( 10호차 )
 		return ChTS1_1 + ( g_nCarNo - 1 )*ChGap;	// 현재 호차 채널
 		//========================================================================
+#endif
 	}
 
 #else
@@ -1765,7 +1770,7 @@ void LoopProcRFM ( int nTick )
 		)
 	{
 		//	상태정보 요청.
-		if ( s_idxCh < MaxTrainSet )
+		if ( s_idxCh < MaxRFMNo )
 		{
 			//========================================================================
 			//	수신기 상태정보
@@ -1788,7 +1793,7 @@ void LoopProcRFM ( int nTick )
 //		    ReflashStat( nTick );	//	상태정보 갱신.
 //		}
 
-		s_idxCh = ( s_idxCh + 1 ) % ( MaxTrainSet + 2 );	//	MaxTrainSet : 10 + 2(송신기 2채널)
+		s_idxCh = ( s_idxCh + 1 ) % ( MaxRFMNo + 2 );	//	MaxRFMNo : 10 + 2(송신기 2채널)
 
 		oldTickStatReq = nTick;
 	}

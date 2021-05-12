@@ -59,6 +59,8 @@ enum eRFMConfig
 	RFTCarNo1		=	11,			//	송신기 #1 ( 11호차 )
 	RFTCarNo2		=	12,			//	송신기 #2 ( 12호차 )
 
+	MaxRFMNo		=	10,			//	1 ~ 10호차
+
 	MaxCarNo		=	13,			//	1 ~ 10호차 / 11(수신기#1) / 12(수신기#2)
 };
 
