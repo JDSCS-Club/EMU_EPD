@@ -186,6 +186,7 @@ char *_sSettingList[] = {
 	" Mic Vol",		//	Mic Volume
 	" Spk Vol",		//	Spk Volume
 	" RF Tx Pwr",	//	RF Tx Power
+	" RF Mode",		//	RF Mode
 };
 
 Menu_t	g_MenuSettingList = {
@@ -246,6 +247,18 @@ Menu_t	g_MenuSetTxPwrList = {
 };
 
 
+//	[RFMode : 1(1채널중계) / 2(2채널그룹)]",
+char *_sSetRFMode[] = { 	" RFMode 1",	//	1
+							" RFMode 2",	//	2
+						};
+
+Menu_t	g_MenuSetRFModeList = {
+	_sSetRFMode,
+	sizeof(_sSetRFMode)/sizeof(char *),		//	Item Count
+	0,							// 	curr Idx
+	ProcMenuSetRFMode			//	Callback Function
+};
+
 #endif	//	defined(USE_RFT_MENU_SETTING)
 
 //========================================================================
@@ -257,6 +270,7 @@ char *_sCmdList[] = {
 	//DEL	" DFU Mode",		//  DFU Mode
 	" TS Set",
 	" Car Set",
+	" RFMode Set",
 	" Upgrade ReTry", //  Upgrade Re-Try
 	" Upgrade",		  //  Upgrade
 };
@@ -295,6 +309,18 @@ Menu_t	g_MenuSetCmdTSList = {
 	sizeof(_sTrainSet)/sizeof(char *),		//	Item Count
 	0,						// 	curr Idx
 	ProcMenuSetCmdTS		//	Callback Function
+};
+
+//	RFMode 설정
+char *_sSetCmdRFModeList[] = {	" RFMode 1",
+								" RFMode 2",
+								};
+
+Menu_t	g_MenuSetCmdRFModeList = {
+	_sSetCmdRFModeList,
+	sizeof(_sSetCmdRFModeList)/sizeof(char *),		//	Item Count
+	0,						// 	curr Idx
+	ProcMenuSetCmdRFMode		//	Callback Function
 };
 
 //========================================================================
@@ -705,6 +731,12 @@ void	ProcMenuCmd( int idxItem  )
 
 		UpdateLCDMenu();
 		return;
+	case 3:		//	RFMode Set
+		SetActiveMenu( &g_MenuSetCmdRFModeList );
+		GetActiveMenu()->currIdx = 0;	//	메뉴 Index초기화.
+
+		UpdateLCDMenu();
+		return;
 	}
 
 	LCDSetCursor( 20, 13 );
@@ -714,8 +746,8 @@ void	ProcMenuCmd( int idxItem  )
 	{
 	case 0:		SendRFCmdReset();		break;		//	Reset 명령.
 //DEL	case 1:		SendRFCmdDFUMode();		break;		//	DFU Mode 명령.
-	case 3:		SendRFCmdUpgrade(1);	break;		//	Upgrade(Re-Try 명령.
-	case 4:		SendRFCmdUpgrade(0);	break;		//	Upgrade 명령.
+	case 4:		SendRFCmdUpgrade(1);	break;		//	Upgrade(Re-Try 명령.
+	case 5:		SendRFCmdUpgrade(0);	break;		//	Upgrade 명령.
 	}
 
 	//  1초후 Main화면 갱신.
@@ -752,6 +784,28 @@ void	ProcMenuSetCmdCar( int idxItem  )
 	LCDPrintf( "[명령전송]" );
 
 	SendRFCmdCar(idxItem + 1);		//	호차설정.
+
+	//  1초후 Main화면 갱신.
+	HAL_Delay( 1000 );
+	UpdateLCDMain();
+
+	//  메뉴 Exit
+	SetActiveMenu( NULL );
+}
+
+//========================================================================
+void	ProcMenuSetCmdRFMode( int idxItem  )
+//========================================================================
+{
+	LCDSetCursor( 20, 13 );
+	LCDPrintf( "[명령전송]" );
+
+	SendRFCmdRFMode(idxItem + 1);		//	RF Mode 설정.
+
+	HAL_Delay( 100 );	//	100 msec
+
+	//	RF Mode 설정 후 Reset 명령
+	SendRFCmdReset();
 
 	//  1초후 Main화면 갱신.
 	HAL_Delay( 1000 );
@@ -822,7 +876,7 @@ void 	ProcMenuMain( int idxItem )
 
 #endif	//	defined(USE_RFT_MENU_DIAG)
 
-#if defined(USE_RFT_MENU_RFTID)
+#if defined(USE_RFT_MENU_SELFTEST)
 
 	case eMenuIdxSelfTest:	//	4:		 //  송신기 ID
 
@@ -832,7 +886,7 @@ void 	ProcMenuMain( int idxItem )
 		UpdateLCDMenu();
 		break;
 
-#endif	//	defined(USE_RFT_MENU_DIAG)
+#endif	//	defined(USE_RFT_MENU_SELFTEST)
 
 
 #if defined(USE_RFT_MENU_DIAG)
@@ -1050,6 +1104,13 @@ void 	ProcMenuSetting( int idxItem )
 		UpdateLCDMenu();
 		break;
 
+	case 3:		//	RF Mode
+		SetActiveMenu( &g_MenuSetRFModeList );
+		GetActiveMenu()->currIdx = g_nRFMode - 1;	//	메뉴 Index초기화.
+
+		UpdateLCDMenu();
+		break;
+
 	default:
 		printf("%s(%d) - invalid menu(%d)\n", __func__, __LINE__, idxItem);
 		break;
@@ -1153,6 +1214,27 @@ void 	ProcMenuSetTxPwr( int idxItem )
 	SetActiveMenu( NULL );
 }
 
+
+//========================================================================
+void 	ProcMenuSetRFMode( int idxItem )
+//========================================================================
+{
+	LCDMenuUpDown( 0 );
+
+	switch( idxItem )
+	{
+	case 0:	SetRFMode(1);		break;
+	case 1:	SetRFMode(2);		break;
+	default:
+		printf("%s(%d) - invalid menu(%d)\n", __func__, __LINE__, idxItem);
+		break;
+	}
+	//  1초후 Main화면 갱신.
+	HAL_Delay( 1000 );
+	UpdateLCDMain();
+
+	SetActiveMenu( NULL );
+}
 
 //========================================================================
 void	ProcBtnOK( void )

@@ -127,6 +127,13 @@ user_command_t	user_command_table[] = {
 		cmd_hop},
 #endif	//	 defined(USE_HOP_MANUAL)
 
+#if defined(USE_RF_COMM_MODE)
+	{"rfmod",
+		"rfmod		-	RF Mode",
+		"rfmod -	rfmod [ 1:default / 1: 1Ch Group / 2: Group 2 Ch ]",
+		cmd_rfmod},
+#endif	//	defined(USE_RF_COMM_MODE)
+
 #if defined(_DIAG_H_)
 	{"diag",
 		"diag		-	diagnostic test",

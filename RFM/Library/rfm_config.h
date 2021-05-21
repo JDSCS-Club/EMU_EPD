@@ -25,6 +25,16 @@
 //			1 <- 3 <- 5 <- 7 <- 9
 #define		USE_COMM_MODE_CH_GRP			1		//	그룹주파수 모드. - [ 1, 2 ] [ 3, 4 ] ...
 
+#define		USE_RF_COMM_MODE				1		//	RF 통신 Mode
+
+enum eRFMode
+{
+	RFMode1			= 	1,				//
+	RFMode2			= 	2,				//	그룹주파수 모드.
+	RFModeDefault	=	RFMode1,
+	RFModeMax		=	2,
+};
+
 //========================================================================
 //	Audio 압축관련.
 #define		USE_AUDIO_INTERPOL_COMPRESS		1		//	보간압축사용.

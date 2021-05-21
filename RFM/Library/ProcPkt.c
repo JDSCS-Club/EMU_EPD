@@ -366,19 +366,21 @@ int ProcPktHdr2( const RFMPkt *pRFPkt, int nSize  )
 			RFMPkt	*pSendPkt = (RFMPkt *)buf;
 			pSendPkt->hdr2.nSrcCh = GetChRx();
 
-#if defined(USE_COMM_MODE_CH_GRP)	//	그룹주파수 모드. - [ 1, 2 ] [ 3, 4 ] ...
 
-			if ( g_nCarNo % 2 == 0 )	SendPktCh( GetChRx() + ChGap, buf, nSize ); //	짝수 Car
-			else						SendPktCh( GetChRx() - ChGap, buf, nSize ); //	홀수 Car
+			if( g_nRFMode == RFMode2 )//#if defined(USE_COMM_MODE_CH_GRP)	//	그룹주파수 모드. - [ 1, 2 ] [ 3, 4 ] ...
+			{
+				if ( g_nCarNo % 2 == 0 )	SendPktCh( GetChRx() + ChGap, buf, nSize ); //	짝수 Car
+				else						SendPktCh( GetChRx() - ChGap, buf, nSize ); //	홀수 Car
+			}
+			else	//#else
+			{
+				SendPktCh( GetChRx() + ChGap, buf, nSize );
 
-#else
-			SendPktCh( GetChRx() + ChGap, buf, nSize );
+	//DEL			HAL_Delay( 3 );		//	최소 Delay
 
-//DEL			HAL_Delay( 3 );		//	최소 Delay
-
-			if ( g_nCarNo != 1 )	//	1호차가 아닌 경우.
-				SendPktCh( GetChRx() - ChGap, buf, nSize );
-#endif
+				if ( g_nCarNo != 1 )	//	1호차가 아닌 경우.
+					SendPktCh( GetChRx() - ChGap, buf, nSize );
+			}//#endif
 		}
 		//	수신기로부터 Data 수신 시
 		else if( pHdr->nSrcCh == ( GetChRx() - ChGap ) )
@@ -403,11 +405,14 @@ int ProcPktHdr2( const RFMPkt *pRFPkt, int nSize  )
 			}
 #endif
 
-#if defined(USE_COMM_MODE_CH_GRP)	//	그룹주파수 모드. - [ 1, 2 ] [ 3, 4 ] ...
-			if ( g_nCarNo % 2 == 0 )	SendPktCh( GetChRx() + ChGap, buf, nSize ); //	짝수 Car
-#else
-			SendPktCh( GetChRx() + ChGap, buf, nSize );
-#endif
+			if( g_nRFMode == RFMode2 )//#if defined(USE_COMM_MODE_CH_GRP)	//	그룹주파수 모드. - [ 1, 2 ] [ 3, 4 ] ...
+			{
+				if ( g_nCarNo % 2 == 0 )	SendPktCh( GetChRx() + ChGap, buf, nSize ); //	짝수 Car
+			}
+			else	//	#else
+			{
+				SendPktCh( GetChRx() + ChGap, buf, nSize );
+			}//#endif
 		}
 		else if( pHdr->nSrcCh == ( GetChRx() + ChGap ) )
 		{
@@ -431,11 +436,14 @@ int ProcPktHdr2( const RFMPkt *pRFPkt, int nSize  )
 			}
 #endif
 
-#if defined(USE_COMM_MODE_CH_GRP)	//	그룹주파수 모드. - [ 1, 2 ] [ 3, 4 ] ...
-			if ( g_nCarNo % 2 == 1 )	SendPktCh( GetChRx() - ChGap, buf, nSize ); //	홀수 Car
-#else
-			SendPktCh( GetChRx() - ChGap, buf, nSize );
-#endif
+			if( g_nRFMode == RFMode2 )	//#if defined(USE_COMM_MODE_CH_GRP)	//	그룹주파수 모드. - [ 1, 2 ] [ 3, 4 ] ...
+			{
+				if ( g_nCarNo % 2 == 1 )	SendPktCh( GetChRx() - ChGap, buf, nSize ); //	홀수 Car
+			}
+			else//#else
+			{
+				SendPktCh( GetChRx() - ChGap, buf, nSize );
+			}//#endif
 		}
 	}
 #endif	//	defined(USE_HOPPING)

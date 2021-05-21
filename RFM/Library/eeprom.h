@@ -32,7 +32,7 @@ enum eAddrEEPRom
 	AddrEEPUpgrSize16	=	0x23,		//	Upgrade App Size 0x00XX00
 	AddrEEPUpgrSize24	=	0x24,		//	Upgrade App Size 0xXX0000
 
-	AddrEEPCommMode		=	0x30,		//	Communication Mode ( 1 : 개별 주파수 / 2 : 그룹주파수 )
+	AddrEEPRFMode		=	0x30,		//	Communication Mode ( 1 : 개별 주파수 / 2 : 그룹주파수 )
 };
 
 

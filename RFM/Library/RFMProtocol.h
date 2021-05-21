@@ -386,7 +386,7 @@ typedef struct _RFMPktStat
 	//	TEXT 20
 	uint16_t	rspID;			//	응답 ID
 	uint8_t		nManHop;		//	Manual Hopping 설정. ( 0:Default / 1:On / 2: Off )
-	uint8_t		nSpare23[1];	//	Spare
+	uint8_t		nRFMode;		//	RF Mode ( 1: One-to-One / 2: MODE_CH_GRP )
 	//--------------------------------------------------------------------------
 	//	TEXT 24
 	uint8_t		nDevFlag;		//	Device Flag ( DevFlagLight )
@@ -623,6 +623,7 @@ void	SendRFCmdDFUMode	( void );		//	DFU Mode 명령 전송.
 
 void 	SendRFCmdCar		( int nCar );
 void 	SendRFCmdTS			( int nIdx );
+void 	SendRFCmdRFMode		( int nRFMode );
 
 void	SendRFCmdUpgrade	( int bRetry );		//	Upgrade 명령 전송.
 

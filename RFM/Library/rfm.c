@@ -61,6 +61,10 @@ int		g_nStampRxPkt	=	0;					//	방송/통화 Stamp
 
 int		g_nRSSI			=	0;					//	RSSI Value
 
+#if defined(USE_RF_COMM_MODE)
+int		g_nRFMode		=	0;					//	RF Mode 무선 중계 모드. eRFMode ( RFMode1 / RFMode2 )
+#endif
+
 #if defined(USE_HOP_MANUAL)
 int		g_nManHopping	=	0;					//	On(1) / Off(2) / Unused(0 : Other)
 #endif	//	defined(USE_HOP_MANUAL)
@@ -166,21 +170,24 @@ int GetChRx( void )
 	}
 	else if ( GetDevID() == DevRF900M )
 	{
-#if defined(USE_COMM_MODE_CH_GRP)
-		//	그룹주파수 모드. - [ 1, 2 ] [ 3, 4 ] ...
-		return ChTS1_1 + (( g_nCarNo - 1 )/2)*ChGap;	// 현재 호차 채널
-#else
-		//========================================================================
-		//	수신기.
-		//	ChTS1_1			=	11,			//	* CH11 : 1편성 ( 1호차 )
-		//	ChTS1_2			=	12,			//	* CH12 : 1편성 ( 2호차 )
-		//
-		//		...
-		//
-		//	ChTS1_10		=	20,			//	* CH20 : 1편성 ( 10호차 )
-		return ChTS1_1 + ( g_nCarNo - 1 )*ChGap;	// 현재 호차 채널
-		//========================================================================
-#endif
+		if( g_nRFMode == RFMode2 )//#if defined(USE_COMM_MODE_CH_GRP)
+		{
+			//	그룹주파수 모드. - [ 1, 2 ] [ 3, 4 ] ...
+			return ChTS1_1 + (( g_nCarNo - 1 )/2)*ChGap;	// 현재 호차 채널
+		}
+		else	//	#else
+		{
+			//========================================================================
+			//	수신기.
+			//	ChTS1_1			=	11,			//	* CH11 : 1편성 ( 1호차 )
+			//	ChTS1_2			=	12,			//	* CH12 : 1편성 ( 2호차 )
+			//
+			//		...
+			//
+			//	ChTS1_10		=	20,			//	* CH20 : 1편성 ( 10호차 )
+			return ChTS1_1 + ( g_nCarNo - 1 )*ChGap;	// 현재 호차 채널
+			//========================================================================
+		}	//	#endif
 	}
 
 #else
@@ -370,6 +377,50 @@ void	SetTrainSetIdx	( int idxTrainSet )
 //    M24_HAL_WriteBytes( &hi2c1, 0xA0, 0x10, (uint8_t *)&idxTrainSet, 1 );
     M24_HAL_WriteBytes( &hi2c1, 0xA0, AddrEEPTrainSet, (uint8_t *)&idxTrainSet, 1 );
 }
+
+#if defined(USE_RF_COMM_MODE)
+
+//========================================================================
+int		GetRFMode	( void )
+//========================================================================
+{
+    uint8_t     nRFMode = 0;
+
+    if ( HAL_OK != HAL_I2C_IsDeviceReady( &hi2c1, (uint16_t)( 0x50 << 1 ), 2, 2 ) )
+    {
+        printf( "%s(%d) - EEPROM Error\n", __func__, __LINE__ );
+
+        return -1;
+    }
+
+    M24_HAL_ReadBytes( &hi2c1, 0xA0, AddrEEPRFMode, (uint8_t *)&nRFMode, 1 );
+
+    if ( nRFMode > RFModeMax || nRFMode < 1 ) nRFMode = RFModeDefault;	//	Default Hop Man
+
+    if ( GetDbg() > 0 )
+    	printf( "%s(%d) - %d\n", __func__, __LINE__, nRFMode );
+
+    return nRFMode;
+}
+
+//========================================================================
+void	SetRFMode	( int nRFMode )
+//========================================================================
+{
+    if ( HAL_OK != HAL_I2C_IsDeviceReady( &hi2c1, (uint16_t)( 0x50 << 1 ), 2, 2 ) )
+    {
+        printf( "%s(%d) - EEPROM Error\n", __func__, __LINE__ );
+
+        return ;
+    }
+
+    if ( GetDbg() > 0 )
+    	printf( "%s(%d) - %d\n", __func__, __LINE__, nRFMode );
+
+    M24_HAL_WriteBytes( &hi2c1, 0xA0, AddrEEPRFMode, (uint8_t *)&nRFMode, 1 );
+}
+
+#endif
 
 #if defined(USE_HOP_MANUAL)
 
@@ -771,7 +822,31 @@ int cmd_hop     ( int argc, char * argv[] )
 
     printf( "%s(%d) - Manual Hop : %d\n", __func__, __LINE__, nManHop );
 
+    g_nManHopping = nManHop;
     SetManHop( nManHop );
+}
+
+
+//========================================================================
+int cmd_rfmod     ( int argc, char * argv[] )
+//========================================================================
+{
+    int 		nRFMode = 0;
+
+    switch ( argc )
+    {
+    case 2:		sscanf( argv[1], "%d", &nRFMode );	        //	cmd [Car No]
+//	case 2:		sText = argv[1];						//	sscanf( argv[1], "%s", sText );		//	cmd [Text]
+        break;
+    }
+
+//  g_nManHopping;		//	On(1) / Off(2) / Unused(0 : Other)
+    if ( nRFMode < 1 || RFModeMax < nRFMode )  nRFMode = RFModeDefault;
+
+    printf( "%s(%d) - RFMode : %d\n", __func__, __LINE__, nRFMode );
+
+    g_nRFMode = nRFMode;
+    SetRFMode( nRFMode );
 }
 
 //========================================================================
@@ -1350,6 +1425,13 @@ int InitRFM( void )
 	}
 	//========================================================================
 
+#if defined(USE_RF_COMM_MODE)
+		//	g_nManHopping;		//	On(1) / Off(2) / Unused(0 : Other)
+		g_nRFMode	=	GetRFMode();	//	Hopping Diable
+
+		printf("%s(%d) - RFMode ( %d )\n", __func__, __LINE__, g_nRFMode );
+#endif	//	defined(USE_HOP_MANUAL)
+
 #if defined(USE_RFT_ONLY_RX_SPK_ON)
 
 	if ( GetDevID() == DevRF900T )
@@ -1822,7 +1904,12 @@ void UpdateStat( RFMPktStat *pStat )
 		//========================================================================
 		//	버전정보 갱신.
 
-#if defined(USE_HOP_MANUAL)
+#if defined( USE_COMM_MODE_CH_GRP )
+		sprintf(_sVerList[idx], "%02d:v%d/RF(%d)", idx,
+				pStat->ver_build,
+				pStat->nRFMode
+				);
+#elif defined( USE_HOP_MANUAL )
 		sprintf(_sVerList[idx], "%02d:v%d/hop(%d)", idx,
 				pStat->ver_build,
 				pStat->nManHop

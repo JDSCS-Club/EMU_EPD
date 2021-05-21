@@ -225,6 +225,7 @@ void SendStat( int nDestCh )
 	pStat->rspID		=	g_flagRspID;		//	Rsp ID Flag
 
 	pStat->nManHop		=	g_nManHopping;		//	Manual Hopping Setting
+	pStat->nRFMode		=	g_nRFMode;			//	RFMode
 
 	pStat->nDevFlag		=	g_nDevFlag;			//	Device Flag : 조명 상태 등.
 
@@ -233,10 +234,11 @@ void SendStat( int nDestCh )
 	//========================================================================
 	//	Send RF
 
-#if defined(USE_COMM_MODE_CH_GRP)	//	그룹주파수 모드. - [ 1, 2 ] [ 3, 4 ] ...
-	//	짝수 호차는 3msec Delay ( 송신시 충돌 방지 )
-	if( pStat->nCarNo % 2 == 0 ) HAL_Delay( 3 );
-#endif
+	if( g_nRFMode == RFMode2 )//#if defined(USE_COMM_MODE_CH_GRP)	//	그룹주파수 모드. - [ 1, 2 ] [ 3, 4 ] ...
+	{
+		//	짝수 호차는 3msec Delay ( 송신시 충돌 방지 )
+		if( pStat->nCarNo % 2 == 0 ) HAL_Delay( 3 );
+	}//#endif
 
 #if defined(USE_CH_ISO_DEV)
 	//	상태정보는 송신기로 전송.
@@ -542,6 +544,18 @@ void SendRFCmdTS( int nIdx )
 
 	char sBuf[100];
 	sprintf(sBuf, "ts %d", nIdx );
+
+	SendRFCmd( sBuf, 190 );
+}
+
+//==========================================================================
+void SendRFCmdRFMode( int nMode )
+//==========================================================================
+{
+	printf( "%s(%d)\n", __func__, __LINE__ );
+
+	char sBuf[100];
+	sprintf(sBuf, "rfmod %d", nMode );
 
 	SendRFCmd( sBuf, 190 );
 }

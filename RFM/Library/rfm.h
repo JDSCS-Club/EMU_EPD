@@ -86,6 +86,9 @@ extern int			g_nRSSI;			//	RSSI Value
 
 extern RFMDevStat	g_devStat[];		//	Device Status
 
+#if defined(USE_RF_COMM_MODE)
+extern int			g_nRFMode;			//	RF Mode 무선 중계 모드. eRFMode ( RFMode1 / RFMode2 )
+#endif
 
 #if defined(USE_HOP_MANUAL)
 extern int			g_nManHopping;		//	On(1) / Off(2) / Unused(0 : Other)
@@ -124,6 +127,11 @@ int		GetManHop		( void );
 void	SetManHop		( int nManHop );
 #endif	//	defined(USE_HOP_MANUAL)
 
+#if defined(USE_RF_COMM_MODE)
+void	SetRFMode		( int nRFMode );
+int		GetRFMode		( void );
+#endif	//	defined(USE_RF_COMM_MODE)
+
 
 //========================================================================
 //	GPIO Setting
@@ -155,6 +163,9 @@ int		cmd_rspid		( int argc, char * argv[] );
 int		cmd_OccPa		( int argc, char * argv[] );	//	대승객방송 시작/종료
 
 int		cmd_hop			( int argc, char * argv[] );	//	Hopping
+
+int		cmd_rfmod		( int argc, char * argv[] );	//	RFMode
+
 
 #if defined(USE_ENV_TEST)
 

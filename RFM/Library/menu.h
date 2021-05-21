@@ -59,6 +59,7 @@ void 	ProcMenuSetting		( int idxItem );	//	설정
 void 	ProcMenuSetMic		( int idxItem );
 void 	ProcMenuSetSpk		( int idxItem );
 void 	ProcMenuSetTxPwr	( int idxItem );
+void 	ProcMenuSetRFMode	( int idxItem );
 
 //========================================================================
 
@@ -66,8 +67,9 @@ void 	ProcMenuDiag		( int idxItem );	//	Diag
 void	ProcMenuVer			( int idxItem );	//	Menu Version
 void	ProcMenuCmd			( int idxItem );	//	Command
 
-void	ProcMenuSetCmdTS		( int idxItem  );
-void	ProcMenuSetCmdCar		( int idxItem  );
+void	ProcMenuSetCmdTS	( int idxItem  );
+void	ProcMenuSetCmdCar	( int idxItem  );
+void 	ProcMenuSetCmdRFMode( int idxItem );
 
 //========================================================================
 
