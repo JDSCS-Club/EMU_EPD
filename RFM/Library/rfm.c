@@ -1905,9 +1905,10 @@ void UpdateStat( RFMPktStat *pStat )
 		//	버전정보 갱신.
 
 #if defined( USE_COMM_MODE_CH_GRP )
-		sprintf(_sVerList[idx], "%02d:v%d/RF(%d)", idx,
+		sprintf(_sVerList[idx], "%02d:%d/R%d,%03d", idx,
 				pStat->ver_build,
-				pStat->nRFMode
+				pStat->nRFMode,
+				g_devStat[idx].nRSSI
 				);
 #elif defined( USE_HOP_MANUAL )
 		sprintf(_sVerList[idx], "%02d:v%d/hop(%d)", idx,
