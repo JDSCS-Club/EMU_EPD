@@ -665,7 +665,8 @@ int SendPktCh	( int nCh, const char *sBuf, int nSize )
 	Dump("Tx", sBuf, 0x40);
 
 	//========================================================================
-	while( ( HAL_GetTick() - nTxStamp) <= 3 )	;	//	Tx 시작 후 완료까지 : 3msec
+//	while( ( HAL_GetTick() - nTxStamp) <= 3 )	;	//	Tx 시작 후 완료까지 : 3msec
+	while( ( HAL_GetTick() - nTxStamp) <= 4 )	;	//	Tx 시작 후 완료까지 : 3msec
 	//========================================================================
 
 	vRadio_StartTx_Variable_Packet (
