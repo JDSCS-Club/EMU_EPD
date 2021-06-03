@@ -64,7 +64,8 @@ void 	ProcMenuSetRFMode	( int idxItem );
 //========================================================================
 
 void 	ProcMenuDiag		( int idxItem );	//	Diag
-void	ProcMenuVer			( int idxItem );	//	Menu Version
+void	ProcMenuVer			( int idxItem );	//	Menu Version	while( ( HAL_GetTick() - nTxStamp) <= 4 )	;	//	Tx 시작 후 완료까지 : 3msec
+
 void	ProcMenuCmd			( int idxItem );	//	Command
 
 void	ProcMenuSetCmdTS	( int idxItem  );

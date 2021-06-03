@@ -104,6 +104,8 @@ char	*StrRFMMode		( int nRFMMode );
 int 	GetChRx			( void );
 
 int		GetChOtherRFT	( void );			//	타 송신기 채널.
+
+int		GetChNearRFT	( int nMinRSSI );			//	가장 가까운 송신기 채널.
 int		GetChNearRFM	( void );			//	가장 가까운 수신기 채널.
 
 void	SetChPA			( int nCh );		//	수신기로 송신할 방송채널 설정.

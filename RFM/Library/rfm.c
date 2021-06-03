@@ -236,7 +236,7 @@ int		IsNearRFT	( void )			//	가까운 송신기 존재 유무 확인.
 
 
 //========================================================================
-int		GetChNearRFT	( void )			//	가장 가까운 송신기 채널.
+int		GetChNearRFT	( int nMinRSSI )			//	가장 가까운 송신기 채널.
 //========================================================================
 {
 	int nCh = 0;		//	Default
@@ -251,6 +251,12 @@ int		GetChNearRFT	( void )			//	가장 가까운 송신기 채널.
 			nCh = g_devStat[idx].stat.nChRx;		//	채널 설정.
 			nMaxRSSI = g_devStat[idx].nRSSI;
 		}
+	}
+
+	if ( nMinRSSI > nMaxRSSI )
+	{
+		//	RSSI값이 한계 이상 낮은경우 선택 X
+		nCh = 0;
 	}
 
 	return nCh;
@@ -873,7 +879,7 @@ int cmd_info    ( int argc, char * argv[] )
     printf( " - RF Channel: %d\n", GetChRx() );
     printf( " - Mode : %s(%d)\n", StrRFMMode( GetRFMMode() ), GetRFMMode()  );	//	Normal / Tx / Rx / Upgrade
     printf( " - GetChNearRFM() : %d\n", GetChNearRFM() );
-    printf( " - GetChNearRFT() : %d\n", GetChNearRFT() );
+    printf( " - GetChNearRFT() : %d\n", GetChNearRFT( 190 ) );
     printf( " - GetChPARFT() : %d\n", GetChPARFT() );
     printf( " - GetChPA() : %d\n", GetChPA() );
 }

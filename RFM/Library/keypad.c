@@ -312,7 +312,7 @@ void KeyPtt( int bValue )
 #if defined(USE_CH_ISO_DEV)
 		SetChPA( GetChNearRFM() );		//	가장 가까운 수신기 설정.
 
-		SetChPARFT( GetChNearRFT() );	//	가까운 송신기 설정.
+		SetChPARFT( GetChNearRFT( 190 ) );	//	가까운 송신기 설정.
 #endif
 
 		LCDSetCursor( 20, 13 );
@@ -348,7 +348,7 @@ void KeyPtt( int bValue )
 #if defined(USE_CH_ISO_DEV)
 		SetChPA( GetChNearRFM() );		//	가장 가까운 수신기 설정.
 
-		SetChPARFT( GetChNearRFT() );	//	가까운 송신기 설정.
+		SetChPARFT( GetChNearRFT( 190 ) );	//	가까운 송신기 설정.
 #endif
 
 		//  Green LED Off
@@ -372,7 +372,7 @@ void KeySos( int bValue )
 	if ( bValue )
 	{
 #if defined(USE_CH_ISO_DEV)
-		SetChPARFT( GetChNearRFT() );	//	가까운 송신기 설정.
+		SetChPARFT( GetChNearRFT( 190 ) );	//	가까운 송신기 설정.
 
 		SetChPA( GetChNearRFM() );		//	가장 가까운 수신기 설정.
 #endif
@@ -389,7 +389,7 @@ void KeySos( int bValue )
 	else
 	{
 #if defined(USE_CH_ISO_DEV)
-		SetChPARFT( GetChNearRFT() );	//	가까운 송신기 설정.
+		SetChPARFT( GetChNearRFT( 190 ) );	//	가까운 송신기 설정.
 
 		SetChPA( GetChNearRFM() );		//	가장 가까운 수신기 설정.
 #endif
