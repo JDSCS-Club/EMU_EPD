@@ -110,6 +110,9 @@ int		GetChNearRFM	( void );			//	가장 가까운 수신기 채널.
 
 #if defined(USE_ROUTE_REQ)
 
+extern int		g_nStampRouteRsp;		//	Route Rsp TimeStamp
+extern int		g_nIdxRouteFindNext;	//	Next호차 Find Index / Route Rsp 수신시 Reset
+
 void	SetChRFMUp		( int nCh );	//	가까운 수신기 채널 ( Up )
 int		GetChRFMUp		( void );		//	가까운 수신기 채널 ( Up )
 

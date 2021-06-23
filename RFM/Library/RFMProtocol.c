@@ -911,6 +911,9 @@ int	ProcPktRouteRsp		( const RFMPkt *pRFPkt )
 {
 	RFMPktRoute *pRouteRsp = &pRFPkt->dat.routeRsp;
 
+	g_nStampRouteRsp = HAL_GetTick();		//	응답 시간 저장.
+	g_nIdxRouteFindNext = 0;				//	Find Index 초기화.
+
 	if ( GetDbg() )		printf( "%s(%d) - %d\n", __func__, __LINE__, pRouteRsp->nSrcCh );
 
 	if ( GetDevID() == DevRF900M )

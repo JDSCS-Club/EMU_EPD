@@ -332,6 +332,9 @@ int		GetChPARFT( void )		//	가까운 송신기 채널(방송/통화용) 설정.
 int		g_nChRFMUp		=	0;		//	Default
 int		g_nChRFMDown	=	0;		//	Default
 
+int		g_nStampRouteRsp		=	0;	//	Route Rsp TimeStamp
+int		g_nIdxRouteFindNext		=	0;	//	Next호차 Find Index / Route Rsp 수신시 Reset
+
 //========================================================================
 void	SetChRFMUp( int nCh )	//	가까운 수신기 채널 ( Up )
 //========================================================================
@@ -1956,6 +1959,8 @@ void LoopProcRFM ( int nTick )
 #if defined(USE_ROUTE_REQ_RFM)	//	수신기 Route 요청.
 	static int oldTickRouteReq = 0;
 
+	static int s_ChkRsp = 0;
+
 	if	( 	GetDevID() == DevRF900M						//	수신기
 			&&	GetRFMMode() == RFMModeNormal			//	Normal모드 : 상태정보 요청.
 			)
@@ -1966,6 +1971,7 @@ void LoopProcRFM ( int nTick )
 			//	수신기 -> 수신기 : Route 정보 요청.
 			//	1 -> 2
 			//		 2 -> 3
+			//			  3 -> 4
 			if ( g_nCarNo != 10 )	//	10호차 Skip
 			{
 				//	다음번 수신기에 정보 요청
@@ -1975,6 +1981,31 @@ void LoopProcRFM ( int nTick )
 			}
 
 			oldTickRouteReq = nTick;			//	1초 이후 부터 시작.
+			s_ChkRsp = 1;
+		}
+
+		if( s_ChkRsp == 1
+				&& (nTick - oldTickRouteReq ) > 100		//	송신후 응답시간 ( 100 msec )
+				&& ( g_nCarNo != 9 && g_nCarNo != 10 )	//	다음호차 검색은 9/10호차 Skip
+				)
+		{
+			//	다음 호차검색
+
+			if ( ( nTick - g_nStampRouteRsp ) > TIMEOUT_RECV_ROUTE * 1000 )
+			{
+				//	Timeout 발생시.
+				//	다음호차부터  ~ 10까지 상태정보 전송 검색.
+
+				//	g_nIdxRouteFindNext	Index 증가하면서 10호차 까지 상태정보 검색.
+				//	[1] [2-X] ->[3] ->[4] ... -> [10]
+				SendRouteReq( GetChRx() + (2 + g_nIdxRouteFindNext) * ChGap );
+
+				if ( ( g_nCarNo + 2 + g_nIdxRouteFindNext ) > 10 )
+					g_nIdxRouteFindNext = 0;
+				else
+					g_nIdxRouteFindNext++;
+			}
+			s_ChkRsp = 0;
 		}
 	}
 
@@ -2095,6 +2126,8 @@ void ReloadStampStat( void )
 			g_devStat[idx].stampRx = nStamp;
 		}
 	}
+
+	g_nStampRouteRsp = HAL_GetTick();		//	Normal 모드로 전환시 응답 시간 Reset
 }
 
 
