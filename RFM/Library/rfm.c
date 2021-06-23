@@ -72,6 +72,12 @@ int		g_nManHopping	=	0;					//	On(1) / Off(2) / Unused(0 : Other)
 //	Device Stat
 RFMDevStat		g_devStat[ MaxCarNo ] = { 0, };
 
+//	Device Route Info
+#if defined(USE_ROUTE_REQ)	//	Route 정보.
+RFMDevRoute		g_devRoute[ MaxCarNo ] = { 0, };
+#endif
+
+
 //========================================================================
 
 //========================================================================
@@ -320,6 +326,46 @@ int		GetChPARFT( void )		//	가까운 송신기 채널(방송/통화용) 설정.
 	//	방송채널 설정.
 	return g_nChRFT;
 }
+
+#if defined(USE_ROUTE_REQ)
+
+int		g_nChRFMUp		=	0;		//	Default
+int		g_nChRFMDown	=	0;		//	Default
+
+//========================================================================
+void	SetChRFMUp( int nCh )	//	가까운 수신기 채널 ( Up )
+//========================================================================
+{
+	//	방송채널 설정.
+	g_nChRFMUp	= nCh;
+}
+
+//========================================================================
+int		GetChRFMUp( void )		//	가까운 수신기 채널 ( Up )
+//========================================================================
+{
+	//	방송채널 설정.
+	return g_nChRFMUp;
+}
+
+//========================================================================
+void	SetChRFMDown( int nCh )	//	가까운 수신기 채널 ( Down )
+//========================================================================
+{
+	//	방송채널 설정.
+	g_nChRFMDown	= nCh;
+}
+
+//========================================================================
+int		GetChRFMDown( void )	//	가까운 수신기 채널 ( Down )
+//========================================================================
+{
+	//	방송채널 설정.
+	return g_nChRFMDown;
+}
+
+
+#endif
 
 //========================================================================
 
@@ -882,6 +928,8 @@ int cmd_info    ( int argc, char * argv[] )
     printf( " - GetChNearRFT() : %d\n", GetChNearRFT( 190 ) );
     printf( " - GetChPARFT() : %d\n", GetChPARFT() );
     printf( " - GetChPA() : %d\n", GetChPA() );
+    printf( " - GetChRFMUp() : %d\n", GetChRFMUp() );
+    printf( " - GetChRFMDown() : %d\n", GetChRFMDown() );
 }
 
 
@@ -1254,7 +1302,6 @@ void RFM_I2SEx_TxRxCpltCallback( I2S_HandleTypeDef *hi2s )
 		}
 		//  */
 	}
-
 }
 
 
@@ -1852,40 +1899,87 @@ void LoopProcRFM ( int nTick )
 	static int oldTickStatReq = 0;
 	static int s_idxCh = 0;
 
-	if	( ( (nTick - oldTickStatReq) > TIME_STAT_REQ )	//	주기 : 200 msec
-			&&	GetDevID() == DevRF900T					//	송신기
+	if	( 	GetDevID() == DevRF900T						//	송신기
 			&&	GetRFMMode() == RFMModeNormal			//	Normal모드 : 상태정보 요청.
-		)
+			)
 	{
-		//	상태정보 요청.
-		if ( s_idxCh < MaxRFMNo )
+#if defined(USE_ROUTE_REQ_RFM)//	수신기에서 요청의 경우 송신기가 요청하지 않음.
+#else
+#if defined(USE_ROUTE_REQ)	//	송신기 : Route 정보 요청.
+		static int oldTickRouteReq = 0;
+
+		if( (nTick - oldTickRouteReq ) > (TIME_ROUTE_REQ * 1000) )
 		{
-			//========================================================================
-			//	수신기 상태정보
-			SendStatReq( ChTS1_1 + (s_idxCh*ChGap) );
+			//	송신기 -> 수신기 : Route 정보 요청.
+			SendRouteReq( GetChNearRFM() );		//	가까운 수신기로 Route정보 요청.
+
+			oldTickRouteReq = nTick + 1000;		//	1초 이후 부터 시작.
+			oldTickStatReq = nTick + 1000;		//	1초 이후 부터 시작.
 		}
 		else
+#endif		//	defined(USE_ROUTE_REQ)	//	송신기 : Route 정보 요청.
+#endif
+		if	( (nTick - oldTickStatReq) > TIME_STAT_REQ )	//	주기 : 300 msec
 		{
-			//========================================================================
-			//	송신기 상태정보
-			if( ChTx_1 + ( s_idxCh % 2 )*ChGap != GetChRx() )
+			//	상태정보 요청.
+			if ( s_idxCh < MaxRFMNo )
 			{
-				//	타 송신기에 상태정보 요청.
-				SendStatReq( ChTx_1 + ( s_idxCh % 2 )*ChGap );
+				//========================================================================
+				//	수신기 상태정보
+				SendStatReq( ChTS1_1 + (s_idxCh*ChGap) );
 			}
+			else
+			{
+				//========================================================================
+				//	송신기 상태정보
+				if( ChTx_1 + ( s_idxCh % 2 )*ChGap != GetChRx() )
+				{
+					//	타 송신기에 상태정보 요청.
+					SendStatReq( ChTx_1 + ( s_idxCh % 2 )*ChGap );
+				}
+			}
+
+	//		if ( s_idxCh == 0 )
+	//		{
+	//		    //	Reflash Status
+	//		    ReflashStat( nTick );	//	상태정보 갱신.
+	//		}
+
+			s_idxCh = ( s_idxCh + 1 ) % ( MaxRFMNo + 2 );	//	MaxRFMNo : 10 + 2(송신기 2채널)
+
+			oldTickStatReq = nTick;
 		}
-
-//		if ( s_idxCh == 0 )
-//		{
-//		    //	Reflash Status
-//		    ReflashStat( nTick );	//	상태정보 갱신.
-//		}
-
-		s_idxCh = ( s_idxCh + 1 ) % ( MaxRFMNo + 2 );	//	MaxRFMNo : 10 + 2(송신기 2채널)
-
-		oldTickStatReq = nTick;
 	}
 #endif
+
+
+#if defined(USE_ROUTE_REQ_RFM)	//	수신기 Route 요청.
+	static int oldTickRouteReq = 0;
+
+	if	( 	GetDevID() == DevRF900M						//	수신기
+			&&	GetRFMMode() == RFMModeNormal			//	Normal모드 : 상태정보 요청.
+			)
+	{
+
+		if( (nTick - oldTickRouteReq ) > (TIME_ROUTE_REQ * 1000) )
+		{
+			//	수신기 -> 수신기 : Route 정보 요청.
+			//	1 -> 2
+			//		 2 -> 3
+			if ( g_nCarNo != 10 )	//	10호차 Skip
+			{
+				//	다음번 수신기에 정보 요청
+				SendRouteReq( GetChRx() + ChGap );		//
+
+				//	Timeout 발생시 그 다음 수신기로 정보 요청.
+			}
+
+			oldTickRouteReq = nTick;			//	1초 이후 부터 시작.
+		}
+	}
+
+#endif
+
 }
 
 //========================================================================

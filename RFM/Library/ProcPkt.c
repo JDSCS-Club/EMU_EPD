@@ -374,16 +374,28 @@ int ProcPktHdr2( const RFMPkt *pRFPkt, int nSize  )
 			}
 			else	//#else
 			{
+				//	현재 동작중인 상위 / 하위 채널로 중계.
+#if defined(USE_ROUTE_REQ)
+				if( GetChRFMUp() )		SendPktCh( GetChRFMUp(), buf, nSize );
+
+				if( GetChRFMDown() )	SendPktCh( GetChRFMDown(), buf, nSize );
+
+#else
 				SendPktCh( GetChRx() + ChGap, buf, nSize );
 
 	//DEL			HAL_Delay( 3 );		//	최소 Delay
 
 				if ( g_nCarNo != 1 )	//	1호차가 아닌 경우.
 					SendPktCh( GetChRx() - ChGap, buf, nSize );
+#endif
 			}//#endif
 		}
 		//	수신기로부터 Data 수신 시
+#if defined(USE_ROUTE_REQ)
+		else if( pHdr->nSrcCh <= ( GetChRx() - ChGap ) )
+#else
 		else if( pHdr->nSrcCh == ( GetChRx() - ChGap ) )
+#endif
 		{
 			//	상위 채널로 중계.
 			//	1 -> 2 => 3
@@ -392,7 +404,7 @@ int ProcPktHdr2( const RFMPkt *pRFPkt, int nSize  )
 			RFMPkt	*pSendPkt = (RFMPkt *)buf;
 			pSendPkt->hdr2.nSrcCh = GetChRx();
 
-#if defined(USE_RFT_REG_TO_RFM)
+#if defined(USE_RFT_REG_TO_RFM)	//	송신기 가까운 수신기에 등록. (중계동작)
 			if ( GetChPARFT() == ChTx_1 && pSendPkt->hdr2.bRFT1 == 0 )
 			{
 				pSendPkt->hdr2.bRFT1 = 1;
@@ -403,7 +415,7 @@ int ProcPktHdr2( const RFMPkt *pRFPkt, int nSize  )
 				pSendPkt->hdr2.bRFT2 = 1;
 				SendPktCh( GetChPARFT(), buf, nSize );
 			}
-#endif
+#endif	//	defined(USE_RFT_REG_TO_RFM)
 
 			if( g_nRFMode == RFMode2 )//#if defined(USE_COMM_MODE_CH_GRP)	//	그룹주파수 모드. - [ 1, 2 ] [ 3, 4 ] ...
 			{
@@ -411,10 +423,19 @@ int ProcPktHdr2( const RFMPkt *pRFPkt, int nSize  )
 			}
 			else	//	#else
 			{
+#if defined(USE_ROUTE_REQ)
+				//	현재 동작중인 상위 채널로 중계
+				if( GetChRFMUp() )	SendPktCh( GetChRFMUp(), buf, nSize );
+#else
 				SendPktCh( GetChRx() + ChGap, buf, nSize );
+#endif
 			}//#endif
 		}
+#if defined(USE_ROUTE_REQ)
+		else if( pHdr->nSrcCh >= ( GetChRx() + ChGap ) )
+#else
 		else if( pHdr->nSrcCh == ( GetChRx() + ChGap ) )
+#endif
 		{
 			//	하위 채널로 중계.
 			//	1 <= 2 <- 3
@@ -423,7 +444,7 @@ int ProcPktHdr2( const RFMPkt *pRFPkt, int nSize  )
 			RFMPkt	*pSendPkt = (RFMPkt *)buf;
 			pSendPkt->hdr2.nSrcCh = GetChRx();
 
-#if defined(USE_RFT_REG_TO_RFM)
+#if defined(USE_RFT_REG_TO_RFM)	//	송신기 가까운 수신기에 등록. (중계동작)
 			if ( GetChPARFT() == ChTx_1 && pSendPkt->hdr2.bRFT1 == 0 )
 			{
 				pSendPkt->hdr2.bRFT1 = 1;
@@ -434,7 +455,7 @@ int ProcPktHdr2( const RFMPkt *pRFPkt, int nSize  )
 				pSendPkt->hdr2.bRFT2 = 1;
 				SendPktCh( GetChPARFT(), buf, nSize );
 			}
-#endif
+#endif	//	defined(USE_RFT_REG_TO_RFM)
 
 			if( g_nRFMode == RFMode2 )	//#if defined(USE_COMM_MODE_CH_GRP)	//	그룹주파수 모드. - [ 1, 2 ] [ 3, 4 ] ...
 			{
@@ -442,7 +463,13 @@ int ProcPktHdr2( const RFMPkt *pRFPkt, int nSize  )
 			}
 			else//#else
 			{
-				SendPktCh( GetChRx() - ChGap, buf, nSize );
+#if defined(USE_ROUTE_REQ)
+				//	현재 동작중인 하위 채널로 중계
+				if( GetChRFMDown() )	SendPktCh( GetChRFMDown(), buf, nSize );
+#else
+				if ( g_nCarNo != 1 )	//	1호차가 아닌 경우.
+					SendPktCh( GetChRx() - ChGap, buf, nSize );
+#endif
 			}//#endif
 		}
 	}
@@ -508,6 +535,8 @@ void CallbackRecvPacket( const char *pData, int nSize )
 	case PktCmd:		ProcPktCmd			( pRFPkt );		break;
 	case PktUpgr:		ProcPktUpgr			( pRFPkt );		break;
 	case PktUpgrStat:	ProcPktUpgrStat		( pRFPkt );		break;
+	case PktRouteReq:	ProcPktRouteReq		( pRFPkt );		break;
+	case PktRouteRsp:	ProcPktRouteRsp		( pRFPkt );		break;
 	default:
 //		printf( "%s(%d) - Invalid Value(%d)\n", __func__, __LINE__, pRFPkt->hdr.nPktCmd );
 		printf( "E\n" );	//	Packet Error

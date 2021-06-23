@@ -85,6 +85,18 @@ enum eRFMode
 #define		TIMEOUT_RECV_STATUS				4		//	상태정보 수신 Timeout. ( seconds )
 
 //========================================================================
+//	Route 상태정보		-	무정전장치 Routing 경로 설정. ( 중간에 고장난 수신기 Pass )
+#define		USE_ROUTE_REQ					1		//	Route 상태 정보
+
+#define		USE_ROUTE_REQ_RFM				1		//	수신기에서 Route 상태 정보 요청 ( Req : 1 -> 2 / Rsp : 1 <- 2 )
+
+#if defined(USE_ROUTE_REQ)
+#define		TIME_ROUTE_REQ					1//10		//	Route 상태정보 요청 주기 10초.
+
+#define		TIMEOUT_RECV_ROUTE				20		//	상태정보 수신 Timeout. ( seconds )
+#endif
+
+//========================================================================
 //	모니터링
 #define		USE_SHOW_PKT					1		//	패킷 상태 모니터링.
 #define		DEFAULT_EN_SHOW_PKT				0		//	패킷 상태 모니터링 - 초기값 Off(0)

@@ -192,6 +192,9 @@ enum ePktID
 
 	PktDevConn		=	0x19,		//	장치 노드 연결. ( Device Node Connection )
 
+	PktRouteReq		=	0x31,		//	Route Req
+	PktRouteRsp		=	0x32,		//	Route Rsp
+
 	//==========================================================================
 	//	Command
 	PktCmd			=	0x20,		//	Command ( nIDFlag(0) / nSeq(0) )
@@ -406,6 +409,37 @@ typedef struct _RFMDevStat
 
 
 //==========================================================================
+//	RFM Packet - Route Request / Response
+typedef struct _RFMPktRoute
+{
+	//--------------------------------------------------------------------------
+	//	Route 정보 요청/응답
+	//		1. 인접한 호차에 Route 요청. ( 2회 Retry )
+	//		2. 응답없을시 그다음 인접한 호차에 Route요청.
+	//--------------------------------------------------------------------------
+
+	//	TEXT 0
+	uint8_t		nSrcCh;			//	Source Channel
+	uint8_t		nSrcDev;		//	Source Device ( DevRF900M / DevRF900T )
+	uint8_t		nSpare1[3];		//	Spare
+
+	uint8_t		nTrainNo;		//	편성번호.
+	uint8_t		nCarNo;			//	열차번호.
+
+} RFMPktRoute;
+
+//==========================================================================
+//	RFM Packet - Route Data
+typedef struct _RFMDevRoute
+{
+	//--------------------------------------------------------------------------
+	RFMPktRoute	stat;
+	int			stampRx;	//	상태정보 수신 Timestamp
+	int			nRSSI;		//	RSSI 값.
+} RFMDevRoute;
+
+
+//==========================================================================
 //	RFM Packet - Device Node Connection
 typedef struct _RFMPktDevConn
 {
@@ -553,6 +587,9 @@ typedef struct _RFMPkt
 		RFMPktDevConn		devConn;				//	Device Node Connection
 		RFMPktUpgr			upgr;					//	Upgrade Binary Data
 		RFMPktUpgrStat		upgrStat;				//	Upgrade Status
+
+		RFMPktRoute			routeReq;				//	Route Req
+		RFMPktRoute			routeRsp;				//	Route Rsp
 	} dat;
 
 	//	Tail : Src Channel ( 1 Byte )
@@ -606,8 +643,12 @@ void	_MakePktHdr2		( RFMPkt *pPkt, int nPktCmd );
 
 //==========================================================================
 
-void	SendStat			( int nDestCh );
 void 	SendStatReq			( int nDestCh );
+void	SendStat			( int nDestCh );
+
+void 	SendRouteReq		( int nDestCh );
+void 	SendRouteRsp		( int nDestCh );
+
 
 void	SendPA				( int nStartStop );
 void	SendCall			( int nStartStop );
@@ -632,8 +673,11 @@ void	SendUpgrStat		( int nUpgrResult );	//	Send Upgrade Data
 
 //==========================================================================
 
-int		ProcPktStat			( const RFMPkt *pRFPkt );
 int		ProcPktStatReq		( const RFMPkt *pRFPkt );
+int		ProcPktStat			( const RFMPkt *pRFPkt );
+
+int		ProcPktRouteReq		( const RFMPkt *pRFPkt );
+int		ProcPktRouteRsp		( const RFMPkt *pRFPkt );
 
 int		ProcPktPA			( const RFMPkt *pRFPkt );
 int		ProcPktCall			( const RFMPkt *pRFPkt );

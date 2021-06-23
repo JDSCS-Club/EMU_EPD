@@ -108,6 +108,16 @@ int		GetChOtherRFT	( void );			//	타 송신기 채널.
 int		GetChNearRFT	( int nMinRSSI );			//	가장 가까운 송신기 채널.
 int		GetChNearRFM	( void );			//	가장 가까운 수신기 채널.
 
+#if defined(USE_ROUTE_REQ)
+
+void	SetChRFMUp		( int nCh );	//	가까운 수신기 채널 ( Up )
+int		GetChRFMUp		( void );		//	가까운 수신기 채널 ( Up )
+
+void	SetChRFMDown	( int nCh );	//	가까운 수신기 채널 ( Down )
+int		GetChRFMDown	( void );		//	가까운 수신기 채널 ( Down )
+
+#endif
+
 void	SetChPA			( int nCh );		//	수신기로 송신할 방송채널 설정.
 int		GetChPA			( void );
 

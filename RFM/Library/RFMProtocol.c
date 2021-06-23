@@ -64,8 +64,11 @@ void _MakePktHdr	( RFMPkt *pPkt, int addrSrc, int addrDest, int nLen, int nPktCm
 #if	defined(USE_HOPPING)
 
 	if ( nPktCmd == PktStat
+		|| nPktCmd == PktStatReq
 		|| nPktCmd == PktCmd
 		|| nPktCmd == PktUpgr
+		|| nPktCmd == PktRouteReq
+		|| nPktCmd == PktRouteRsp
 		)
 	{
 		//	상태정보의 경우 Seq / ID : 0x00
@@ -254,6 +257,65 @@ void SendStat( int nDestCh )
 	SendPacket( (U8 *)&stPkt, (U8)sizeof( RFMPktHdr ) + sizeof( RFMPktStat ) );
 #endif
 	//========================================================================
+}
+
+
+//========================================================================
+void SendRouteReq( int nDestCh )
+//========================================================================
+{
+	if ( GetDbg() )	printf( "%s(%d)\n", __func__, __LINE__ );
+
+	RFMPkt			stPkt;
+	RFMPktRoute		*pRouteReq;
+
+	memset( &stPkt, 0, sizeof( stPkt ) );
+	pRouteReq = (RFMPktRoute *)&stPkt.dat.routeReq;
+
+	//========================================================================
+	//	Packet Header
+	_MakePktHdr( &stPkt, GetDevID(), 0xFF, sizeof( RFMPktRoute ), PktRouteReq );
+
+	//========================================================================
+	//	Packet Body
+	pRouteReq->nSrcCh	=	GetChRx();			//	수신받을 채널
+	pRouteReq->nSrcDev	=	GetDevID();			//	RFT / RFM
+
+	pRouteReq->nCarNo	=	GetCarNo();			//	호차번호.
+	pRouteReq->nTrainNo	=	GetTrainSetIdx();	//	편성번호.
+
+	//========================================================================
+	//	Send RF
+	SendPktCh( nDestCh, (U8 *)&stPkt, (U8)sizeof( RFMPktHdr ) + sizeof( RFMPktRoute ) );
+}
+
+//========================================================================
+void SendRouteRsp( int nDestCh )
+//========================================================================
+{
+	if ( GetDbg() )	printf( "%s(%d)\n", __func__, __LINE__ );
+
+	RFMPkt			stPkt;
+	RFMPktRoute	*pRouteRsp;
+
+	memset( &stPkt, 0, sizeof( stPkt ) );
+	pRouteRsp = (RFMPktRoute *)&stPkt.dat.routeRsp;
+
+	//========================================================================
+	//	Packet Header
+	_MakePktHdr( &stPkt, GetDevID(), 0xFF, sizeof( RFMPktRoute ), PktRouteRsp );
+
+	//========================================================================
+	//	Packet Body
+	pRouteRsp->nSrcCh	=	GetChRx();			//	수신받을 채널
+	pRouteRsp->nSrcDev	=	GetDevID();			//	RFT / RFM
+
+	pRouteRsp->nCarNo	=	GetCarNo();			//	호차번호.
+	pRouteRsp->nTrainNo	=	GetTrainSetIdx();	//	편성번호.
+
+	//========================================================================
+	//	Send RF
+	SendPktCh( nDestCh, (U8 *)&stPkt, (U8)sizeof( RFMPktHdr ) + sizeof( RFMPktRoute ) );
 }
 
 
@@ -694,6 +756,36 @@ void	SendUpgrStat		( int nUpgrResult )	//	Send Upgrade Data
 //		Process Packet
 //==========================================================================
 
+
+//========================================================================
+int	ProcPktStatReq		( const RFMPkt *pRFPkt )
+//========================================================================
+{
+	if ( GetDbg() )		printf( "%s(%d)\n", __func__, __LINE__ );
+
+	RFMPktStatReq *pStatReq = &pRFPkt->dat.statReq;
+
+	//	수신기의 경우 송신기 상태정보 갱신.
+	//		-> 상태정보 요청한 송신기의 상태정보를 갱신한다.
+	if ( GetDevID() == DevRF900M )
+	{
+		int idx = pStatReq->nCarNo;
+
+		//========================================================================
+		//	장치 응답 Flag 설정.
+		SetStat( idx );		//	상태정보 설정.
+
+		//========================================================================
+		//	RSSI 갱신
+		g_devStat[idx].stat.nChRx = pStatReq->nSrcCh;
+		g_devStat[idx].nRSSI = g_nRSSI;
+	}
+
+	//	Source Channel로 상태정보 송신.
+	SendStat( pStatReq->nSrcCh );
+}
+
+
 //========================================================================
 int	ProcPktStat			( const RFMPkt *pRFPkt )
 //========================================================================
@@ -740,32 +832,125 @@ int	ProcPktStat			( const RFMPkt *pRFPkt )
 	//========================================================================
 }
 
+
 //========================================================================
-int	ProcPktStatReq		( const RFMPkt *pRFPkt )
+int	ProcPktRouteReq		( const RFMPkt *pRFPkt )
 //========================================================================
 {
-	if ( GetDbg() )		printf( "%s(%d)\n", __func__, __LINE__ );
+	//	Source Channel로 Route 응답.
+	RFMPktRoute *pRouteReq = &pRFPkt->dat.routeReq;
 
-	RFMPktStatReq *pStatReq = &pRFPkt->dat.statReq;
+	if ( GetDbg() )		printf( "%s(%d) - %d\n", __func__, __LINE__, pRouteReq->nSrcCh );
 
-	//	수신기의 경우 송신기 상태정보 갱신.
-	//		-> 상태정보 요청한 송신기의 상태정보를 갱신한다.
 	if ( GetDevID() == DevRF900M )
 	{
-		int idx = pStatReq->nCarNo;
+		//	수신기의 경우 Route경로 설정.
+		int idx = pRouteReq->nCarNo;
+
+		if( pRouteReq->nSrcDev == DevRF900M )
+		{
+			//	1. 인접한 송신기로 등록.
+
+			//	2. 가까운 수신기에 Route정보 요청.
+
+			if ( pRouteReq->nSrcCh < GetChRx() )
+			{
+				//	1 -> 2 ...
+				SetChRFMDown( pRouteReq->nSrcCh );
+
+#if defined(USE_ROUTE_REQ_RFM)
+				//	수신기에서 요청의 경우 다음수신기로 요청하지 않음.
+#else
+				//	다음 수신기로 Route 요청.
+				SendRouteReq( GetChRx() + ChGap );
+#endif
+			}
+			else if ( pRouteReq->nSrcCh > GetChRx() )
+			{
+				//	... 3 <- 4
+				SetChRFMUp( pRouteReq->nSrcCh );
+
+#if defined(USE_ROUTE_REQ_RFM)
+				//	수신기에서 요청의 경우 다음수신기로 요청하지 않음.
+#else
+				//	다음 수신기로 Route 요청.
+				if( g_nCarNo != 1 )	//	1호차가 아닌경우
+					SendRouteReq( GetChRx() - ChGap );
+#endif
+			}
+		}
+#if defined(USE_ROUTE_REQ_RFM)
+				//	수신기에서 요청의 경우 다음수신기로 요청하지 않음.
+#else
+		else if( pRouteReq->nSrcDev == DevRF900T )
+		{
+			//	송신기에서 전송시  상위 / 하위 수신기 확인.
+			//	1 <- 2 -> 3 ...
+
+			//	다음 수신기로 Route 요청.
+			SendRouteReq( GetChRx() + ChGap );
+
+			if( g_nCarNo != 1 )	//	1호차가 아닌경우
+				SendRouteReq( GetChRx() - ChGap );
+		}
+#endif
 
 		//========================================================================
-		//	장치 응답 Flag 설정.
-		SetStat( idx );		//	상태정보 설정.
-
-		//========================================================================
-		//	RSSI 갱신
-		g_devStat[idx].stat.nChRx = pStatReq->nSrcCh;
-		g_devStat[idx].nRSSI = g_nRSSI;
+		//	Route 정보 갱신
 	}
 
-	//	Source Channel로 상태정보 송신.
-	SendStat( pStatReq->nSrcCh );
+	//	Resp Delay
+//	HAL_Delay( 3 );	//	Route 응답 Delay
+	SendRouteRsp( pRouteReq->nSrcCh );
+}
+
+
+//========================================================================
+int	ProcPktRouteRsp		( const RFMPkt *pRFPkt )
+//========================================================================
+{
+	RFMPktRoute *pRouteRsp = &pRFPkt->dat.routeRsp;
+
+	if ( GetDbg() )		printf( "%s(%d) - %d\n", __func__, __LINE__, pRouteRsp->nSrcCh );
+
+	if ( GetDevID() == DevRF900M )
+	{
+		//	수신기의 경우 Route경로 설정.
+		int idx = pRouteRsp->nCarNo;
+
+		if( pRouteRsp->nSrcDev == DevRF900M )
+		{
+			//	1. 인접한 송신기로 등록.
+
+			//	2. 가까운 수신기에 Route정보 요청.
+
+			if ( pRouteRsp->nSrcCh < GetChRx() )
+			{
+				//	1 -> 2 ...
+				SetChRFMDown( pRouteRsp->nSrcCh );
+
+				//	다음 수신기로 Route 요청.
+			}
+			else if ( pRouteRsp->nSrcCh > GetChRx() )
+			{
+				//	... 3 <- 4
+				SetChRFMUp( pRouteRsp->nSrcCh );
+
+				//	다음 수신기로 Route 요청.
+			}
+		}
+
+		if( pRouteRsp->nSrcDev == DevRF900T )
+		{
+			//	송신기에서 전송시  상위 / 하위 수신기 확인.
+			//	1 <- 2 -> 3 ...
+
+			//	다음 수신기로 Route 요청.
+		}
+
+		//========================================================================
+		//	Route 정보 갱신
+	}
 }
 
 
