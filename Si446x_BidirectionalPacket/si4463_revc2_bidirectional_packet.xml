@@ -10,7 +10,7 @@
           <Value>915</Value>
         </DataItem>
         <DataItem Type="System.Windows.Forms.NumericUpDown" Name="nudChannelSpacing">
-          <Value>500</Value>
+          <Value>250</Value>
         </DataItem>
       </grbFequencyControl>
       <grbCrystalControl Type="System.Windows.Forms.GroupBox">
