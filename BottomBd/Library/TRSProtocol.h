@@ -22,6 +22,8 @@
 
 #include "typedef.h"
 
+#define		TRS_SD_BAT		1		//	배터리 정보 추가. 201006_대곡소사40R_TRS-무정전장치_인터페이스.xlsx
+
 //========================================================================
 // Define
 
@@ -82,6 +84,16 @@ typedef struct _SD_t
 	uint8_t			bOccPaStop:1;   	//
 	uint8_t			bSpare5_2:6;   		//
 	uint8_t			bSpare6;   			//	6
+#if defined(TRS_SD_BAT)
+	uint8_t			nSBATR1;   			//	7
+	uint8_t			nSBATR2;   			//	8
+	uint8_t			nSBATR3;   			//	9
+	uint8_t			nSBATR4;   			//	10
+	uint8_t			nSBATR5;   			//	11
+	uint8_t			nSBATR6;   			//	12
+	uint8_t			bSpare13;   		//	13
+	uint8_t			bSpare14;   		//	14
+#endif	//	defined(TRS_IF_BAT)
 	uint8_t			nWatchDog;   		//	7	:	Watchdog count ( 00 ~ FFh )
 } SD_t, *PSD_t;
 

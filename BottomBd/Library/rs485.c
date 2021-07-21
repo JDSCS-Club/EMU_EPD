@@ -156,6 +156,15 @@ void SendSD( const FRAME_SDR *pSdr )
 	sdfrm.sd.bOccPaStart	=	pSdr->sdr.bOccPaStart;
 	sdfrm.sd.bOccPaStop		=	pSdr->sdr.bOccPaStop;
 
+#if defined(TRS_SD_BAT)
+	sdfrm.sd.nSBATR1		=	95;		//	95 %
+	sdfrm.sd.nSBATR2		=	95;		//	95 %
+	sdfrm.sd.nSBATR3		=	95;		//	95 %
+	sdfrm.sd.nSBATR4		=	95;		//	95 %
+	sdfrm.sd.nSBATR5		=	95;		//	95 %
+	sdfrm.sd.nSBATR6		=	95;		//	95 %
+#endif
+
 	sdfrm.sd.nWatchDog		=	pSdr->sdr.nWatchDog;
 
 	sdfrm.nETX				=	eETX;	//	0x03;		//	ETX
