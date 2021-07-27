@@ -348,11 +348,17 @@ typedef struct _RFMPktStatReq
 	//	상태정보 요청.
 	//--------------------------------------------------------------------------
 	//	TEXT 0
-	uint8_t		nSrcCh;			//	Source Channel
-	uint8_t		nSpare1[3];		//	Spare
+	uint8_t		nSrcCh;			//	0	Source Channel
+	uint8_t		nSpare1[3];		//	1	Spare
 
-	uint8_t		nTrainNo;		//	편성번호.
-	uint8_t		nCarNo;			//	열차번호.
+	uint8_t		nTrainNo;		//	4	편성번호.
+	uint8_t		nCarNo;			//	5	열차번호.
+	uint8_t		nSpare6[2];		//	6	Spare
+
+#if defined(USE_ROUTE_NEAREST_RFM)
+	uint8_t		nNearCh;		//	8	가장가까운 송/수신기 채널.
+	uint8_t		nSpare9[3];		//	9	Spare
+#endif	//	defined(USE_ROUTE_NEAREST_RFM)
 
 } RFMPktStatReq;
 
@@ -403,8 +409,9 @@ typedef struct _RFMDevStat
 {
 	//--------------------------------------------------------------------------
 	RFMPktStat	stat;
-	int			stampRx;	//	상태정보 수신 Timestamp
-	int			nRSSI;		//	RSSI 값.
+	int			stampRx;		//	상태정보 수신 Timestamp
+	int			nRSSI;			//	RSSI 값.
+	int			nNearCh;		//	송신기 입장에서 가까운 수신기(RFM)채널.
 } RFMDevStat;
 
 

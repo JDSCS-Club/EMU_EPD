@@ -72,10 +72,6 @@ int		g_nManHopping	=	0;					//	On(1) / Off(2) / Unused(0 : Other)
 //	Device Stat
 RFMDevStat		g_devStat[ MaxCarNo ] = { 0, };
 
-//	Device Route Info
-#if defined(USE_ROUTE_REQ)	//	Route 정보.
-RFMDevRoute		g_devRoute[ MaxCarNo ] = { 0, };
-#endif
 
 
 //========================================================================
@@ -2100,7 +2096,8 @@ void ReflashStat( int nTick )
 
 			//========================================================================
 			//	Timeout 발생시 RSSI값 초기화.
-			g_devStat[idx].nRSSI = 0;
+			g_devStat[idx].nRSSI 	= 	0;
+			g_devStat[idx].nNearCh 	= 	0;	//	nNearCh 초기화.
 			//========================================================================
 		}
 	}

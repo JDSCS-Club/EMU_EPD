@@ -180,10 +180,16 @@ void SendStatReq( int nDestCh )
 
 	//========================================================================
 	//	Packet Body
-	pStatReq->nSrcCh	=	GetChRx();	//	수신받을 채널
+	pStatReq->nSrcCh	=	GetChRx();			//	수신받을 채널
 
 	pStatReq->nCarNo	=	GetCarNo();			//	호차번호.
 	pStatReq->nTrainNo	=	GetTrainSetIdx();	//	편성번호.
+
+#if defined(USE_ROUTE_NEAREST_RFM)
+
+	pStatReq->nNearCh	=	GetChNearRFM();		//	가장 가까운 수신기(RFM) 채널
+
+#endif	//	 defined(USE_ROUTE_NEAREST_RFM)
 
 	//========================================================================
 	//	Send RF
@@ -777,8 +783,12 @@ int	ProcPktStatReq		( const RFMPkt *pRFPkt )
 
 		//========================================================================
 		//	RSSI 갱신
-		g_devStat[idx].stat.nChRx = pStatReq->nSrcCh;
-		g_devStat[idx].nRSSI = g_nRSSI;
+		g_devStat[idx].stat.nChRx 	= pStatReq->nSrcCh;
+		g_devStat[idx].stampRx 		= HAL_GetTick();
+		g_devStat[idx].nRSSI 		= g_nRSSI;
+#if defined(USE_ROUTE_NEAREST_RFM)	//	수신기 -> 송신기 중계 연결. ( 가장가까운 수신기에서 송신기로 중계 )
+		g_devStat[idx].nNearCh 		= pStatReq->nNearCh;	//	송신기 입장에서 가까운 수신기(RFM)채널.
+#endif	//	defined(USE_ROUTE_NEAREST_RFM)
 	}
 
 	//	Source Channel로 상태정보 송신.

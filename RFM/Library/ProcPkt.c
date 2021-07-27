@@ -404,16 +404,30 @@ int ProcPktHdr2( const RFMPkt *pRFPkt, int nSize  )
 			RFMPkt	*pSendPkt = (RFMPkt *)buf;
 			pSendPkt->hdr2.nSrcCh = GetChRx();
 
-#if defined(USE_RFT_REG_TO_RFM)	//	송신기 가까운 수신기에 등록. (중계동작)
+#if defined(USE_ROUTE_NEAREST_RFM)	//	수신기 -> 송신기 중계 연결. ( 가장가까운 수신기에서 송신기로 중계 )
+			if ( g_devStat[RFTCarNo1].nNearCh == GetChRx()		//	송신기의 가까운 채널이 자신의 채널이면 송신기로 중계.
+					&& pSendPkt->hdr2.bRFT1 == 0 )
+			{
+				pSendPkt->hdr2.bRFT1 = 1;
+				SendPktCh( ChTx_1, buf, nSize );
+			}
+			else if ( g_devStat[RFTCarNo2].nNearCh == GetChRx()	//	송신기의 가까운 채널이 자신의 채널이면 송신기로 중계.
+					&& pSendPkt->hdr2.bRFT2 == 0 )
+			{
+				pSendPkt->hdr2.bRFT2 = 1;
+				SendPktCh( ChTx_2, buf, nSize );
+			}
+
+#elif defined(USE_RFT_REG_TO_RFM)	//	송신기 가까운 수신기에 등록. (중계동작)
 			if ( GetChPARFT() == ChTx_1 && pSendPkt->hdr2.bRFT1 == 0 )
 			{
 				pSendPkt->hdr2.bRFT1 = 1;
-				SendPktCh( GetChPARFT(), buf, nSize );
+				SendPktCh( ChTx_1, buf, nSize );
 			}
 			else if ( GetChPARFT() == ChTx_2 && pSendPkt->hdr2.bRFT2 == 0 )
 			{
 				pSendPkt->hdr2.bRFT2 = 1;
-				SendPktCh( GetChPARFT(), buf, nSize );
+				SendPktCh( ChTx_2, buf, nSize );
 			}
 #endif	//	defined(USE_RFT_REG_TO_RFM)
 
@@ -444,7 +458,21 @@ int ProcPktHdr2( const RFMPkt *pRFPkt, int nSize  )
 			RFMPkt	*pSendPkt = (RFMPkt *)buf;
 			pSendPkt->hdr2.nSrcCh = GetChRx();
 
-#if defined(USE_RFT_REG_TO_RFM)	//	송신기 가까운 수신기에 등록. (중계동작)
+#if defined(USE_ROUTE_NEAREST_RFM)	//	수신기 -> 송신기 중계 연결. ( 가장가까운 수신기에서 송신기로 중계 )
+			if ( g_devStat[RFTCarNo1].nNearCh == GetChRx()		//	송신기의 가까운 채널이 자신의 채널이면 송신기로 중계.
+					&& pSendPkt->hdr2.bRFT1 == 0 )
+			{
+				pSendPkt->hdr2.bRFT1 = 1;
+				SendPktCh( ChTx_1, buf, nSize );
+			}
+			else if ( g_devStat[RFTCarNo2].nNearCh == GetChRx()	//	송신기의 가까운 채널이 자신의 채널이면 송신기로 중계.
+					&& pSendPkt->hdr2.bRFT2 == 0 )
+			{
+				pSendPkt->hdr2.bRFT2 = 1;
+				SendPktCh( ChTx_2, buf, nSize );
+			}
+
+#elif defined(USE_RFT_REG_TO_RFM)	//	송신기 가까운 수신기에 등록. (중계동작)
 			if ( GetChPARFT() == ChTx_1 && pSendPkt->hdr2.bRFT1 == 0 )
 			{
 				pSendPkt->hdr2.bRFT1 = 1;

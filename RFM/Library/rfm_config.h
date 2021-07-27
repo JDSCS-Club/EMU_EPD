@@ -96,6 +96,9 @@ enum eRFMode
 #define		TIMEOUT_RECV_ROUTE				10		//	상태정보 수신 Timeout. ( seconds )
 #endif
 
+//	Route 수신기 -> 송신기
+#define		USE_ROUTE_NEAREST_RFM			1		//	수신기 -> 송신기 중계 연결. ( 가장가까운 수신기에서 송신기로 중계 )
+
 //========================================================================
 //	모니터링
 #define		USE_SHOW_PKT					1		//	패킷 상태 모니터링.
