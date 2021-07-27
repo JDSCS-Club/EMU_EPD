@@ -321,7 +321,7 @@ void KeyPtt( int bValue )
 		{
 			//	Maint Mode : 송신채널 표시.
 			char sBuf[20];
-			sprintf( sBuf, "방송중...(%d)", GetChPA() );
+			sprintf( sBuf, "방송중(%d/%d)", GetCh2Car(GetChPA()), GetChPA() );	//	Channel -> Car
 			LCDPrintf( sBuf );
 		}
 		else
@@ -379,7 +379,17 @@ void KeySos( int bValue )
 
 		//	송신중
 		LCDSetCursor( 20, 13 );
-		LCDPrintf( "통화중..." );
+		if ( IsMenuMaint() )
+		{
+			//	Maint Mode : 송신채널 표시.
+			char sBuf[20];
+			sprintf( sBuf, "통화중(%d/%d)", GetCh2Car(GetChPA()), GetChPA() );	//	Channel -> Car
+			LCDPrintf( sBuf );
+		}
+		else
+		{
+			LCDPrintf( "통화중..." );
+		}
 
 		SetRFMMode( RFMModeTx );
 

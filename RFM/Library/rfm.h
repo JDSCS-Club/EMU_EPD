@@ -124,6 +124,8 @@ int		GetChRFMDown	( void );		//	가까운 수신기 채널 ( Down )
 void	SetChPA			( int nCh );		//	수신기로 송신할 방송채널 설정.
 int		GetChPA			( void );
 
+int		GetCh2Car		( int nCh );		//	채널 -> 호차정보 변환.
+
 int		GetDevID		( void );
 void	SetDevID		( int nDevID );
 

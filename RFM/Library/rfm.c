@@ -305,6 +305,26 @@ int		GetChPA( void )
 	return g_nChPA;
 }
 
+//========================================================================
+int		GetCh2Car( int nCh )	//	채널 -> 호차정보 변환.
+//========================================================================
+{
+	//	채널 -> 호차정보.
+	int nCar;
+	if ( nCh == ChTx_1 )		nCar = RFTCarNo1;	//	송신기#1
+	else if ( nCh == ChTx_2 )	nCar = RFTCarNo2;	//	송신기#2
+	else
+	{
+		//	ChTS1_1 - 21	:	1호차.
+		//	1 ~ 10호차.
+		nCar = ( nCh - ChTS1_1 ) / ChGap + 1;
+	}
+
+	return nCar;
+}
+
+
+
 int		g_nChRFT	=	0;		//	Default
 
 //========================================================================
@@ -1727,7 +1747,17 @@ void LoopProcRFM ( int nTick )
 			{
 			case RFMModeRx:
 				LCDSetCursor( 20, 13 );
-				LCDPrintf( "수신중..." );
+				if ( IsMenuMaint() )
+				{
+					//	Maint Mode : 송신채널 표시.
+					char sBuf[20];
+					sprintf( sBuf, "수신중(%d/%d)", GetCh2Car(GetChNearRFM()), GetChNearRFM() );	//	Channel -> Car
+					LCDPrintf( sBuf );
+				}
+				else
+				{
+					LCDPrintf( "수신중..." );
+				}
 				break;
 
 			case RFMModeNormal:
