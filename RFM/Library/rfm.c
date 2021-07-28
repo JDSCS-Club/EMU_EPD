@@ -37,6 +37,8 @@
 
 #include "ProcPkt.h"				//	nTxPkt
 
+#include "adpcm.h"					//	ADPCM Codec
+
 //========================================================================
 // Define
 
@@ -1150,18 +1152,27 @@ int cmd_OccPa     ( int argc, char * argv[] )
 //	interpolation compress ( 보간압축 )
 #if defined( USE_AUDIO_INTERPOL_COMPRESS )	//	보간압축사용.
 
-//#define	AUDIO_COMPR_RATE	8	//	Audio 압축율.
-//#define	AUDIO_COMPR_RATE	6	//	Audio 압축율.
-#define	AUDIO_COMPR_RATE	4	//	Audio 압축율.
-//#define	AUDIO_COMPR_RATE	2	//	Audio 압축율.
-//#define	AUDIO_COMPR_RATE	1	//	Audio 압축율.
-
 #define	FRAME_ENC_SIZE		(I2S_DMA_LOOP_SIZE * AUDIO_COMPR_RATE)
 
 static int16_t	bufAudioEnc[FRAME_ENC_SIZE * 2];	//	Rx
 static int16_t	bufAudioDec[FRAME_ENC_SIZE * 2];	//	Tx
 
-#endif	//	defined( USE_AUDIO_INTERPOL_COMPRESS )	//	보간압축사용.
+#elif defined( USE_AUDIO_ADPCM )	//	ADPCM 사용. - 1/4 압축
+
+#define	FRAME_ENC_SIZE		(I2S_DMA_LOOP_SIZE * 4)		//	1/4 압축
+
+static int16_t	bufAudioEnc[FRAME_ENC_SIZE * 2];	//	Rx
+static int16_t	bufAudioDec[FRAME_ENC_SIZE * 2];	//	Tx
+
+signed short lowpass_Filter(signed short input)
+{
+	static signed short last_sample=0;
+	signed short retvalue = ((input + (last_sample * 7)) >> 3);
+	last_sample = retvalue;
+	return retvalue;
+}
+
+#endif	//
 //========================================================================
 
 static int bRxBuffering = 1;	//  Rx Buffering. ( Packet 4 ~ Packet 0)
@@ -1175,7 +1186,7 @@ void RFM_I2SEx_TxRxCpltCallback( I2S_HandleTypeDef *hi2s )
 	int16_t		*pAudioRx;
 
 	{
-#if defined( USE_AUDIO_INTERPOL_COMPRESS )	//	보간압축사용.
+#if defined( USE_AUDIO_INTERPOL_COMPRESS )	|| defined( USE_AUDIO_ADPCM ) //	보간압축사용 or ADPCM 사용.
 
 		pAudioTx = &bufAudioDec[FRAME_ENC_SIZE * idx];
 		pAudioRx = &bufAudioEnc[FRAME_ENC_SIZE * (( idx + 1 ) % 2)];
@@ -1189,7 +1200,7 @@ void RFM_I2SEx_TxRxCpltCallback( I2S_HandleTypeDef *hi2s )
 		idx = ( idx + 1 ) % 2;
 		pAudioTx = &bufAudioDec[FRAME_ENC_SIZE * idx];
 
-#else	//	defined( USE_AUDIO_INTERPOL_COMPRESS )	//	보간압축사용.
+#else
 
 		pAudioTx = &t_audio_buff[I2S_DMA_LOOP_SIZE * idx];
 		pAudioRx = &r_audio_buff[I2S_DMA_LOOP_SIZE * (( idx + 1 ) % 2)];
@@ -1229,7 +1240,25 @@ void RFM_I2SEx_TxRxCpltCallback( I2S_HandleTypeDef *hi2s )
 
 			qBufPut( &g_qBufAudioTx, (uint8_t *)r_audio_buff, ( I2S_DMA_LOOP_SIZE * 2 ) );
 
-#else	//	defined( USE_AUDIO_INTERPOL_COMPRESS )	//	보간압축사용.
+#elif defined( USE_AUDIO_ADPCM )	//	ADPCM 사용. - 1/4 압축
+
+			//	ADPCM : 16 bit -> 4 bit
+			int i;
+			uint8_t *pABuf = r_audio_buff;
+			for( i = 0; i < I2S_DMA_LOOP_SIZE*2; i++ )
+			{
+				//*
+				pABuf[i] = (uint8_t)((uint8_t)((ADPCM_Encode(lowpass_Filter((int16_t)pAudioRx[i*2])<<1)&(0x0F))<<4)
+								| (uint8_t)(ADPCM_Encode(lowpass_Filter((int16_t)pAudioRx[i*2+1])<<1)&0x0F));
+				/*/
+				pABuf[i] = (uint8_t)((uint8_t)((ADPCM_Encode((int16_t)pAudioRx[i*2])&(0x0F))<<4)
+								| (uint8_t)(ADPCM_Encode((int16_t)pAudioRx[i*2+1])&0x0F));
+				//	*/
+			}
+
+			qBufPut( &g_qBufAudioTx, (uint8_t *)r_audio_buff, ( I2S_DMA_LOOP_SIZE * 2 ) );
+
+#else	//
 			//========================================================================
 			//	Queue Put
 			qBufPut( &g_qBufAudioTx, (uint8_t *)pAudioRx, ( I2S_DMA_LOOP_SIZE * 2 ) );
@@ -1244,7 +1273,7 @@ void RFM_I2SEx_TxRxCpltCallback( I2S_HandleTypeDef *hi2s )
 
 		/*/
 
-#if defined( USE_AUDIO_INTERPOL_COMPRESS )	//	보간압축사용.
+#if defined( USE_AUDIO_INTERPOL_COMPRESS ) || defined( USE_AUDIO_ADPCM )	//	보간압축사용 or ACPCM 사용
 		memset( pAudioTx, 0, FRAME_ENC_SIZE * 2 );	//	Tx
 #else
 		memset( pAudioTx, 0, I2S_DMA_LOOP_SIZE * 2 );
@@ -1306,7 +1335,20 @@ void RFM_I2SEx_TxRxCpltCallback( I2S_HandleTypeDef *hi2s )
 			//		outBuf[ i ] = bufAudioDec[i / AUDIO_COMPR_RATE];
 				}
 
-#else	//	defined( USE_AUDIO_INTERPOL_COMPRESS )	//	보간압축사용.
+#elif defined( USE_AUDIO_ADPCM )	//	ADPCM 사용. - 1/4 압축
+
+				qBufGet( &g_qBufAudioRx, (uint8_t*)t_audio_buff, ( I2S_DMA_LOOP_SIZE * 2 ) );
+
+				uint8_t *pABuf = t_audio_buff;
+				//	Decoding : 4 bit -> 16 bit
+				int i;
+				for( i = 0; i < FRAME_ENC_SIZE/2; i++ )
+				{
+					pAudioTx[i*2] = (uint16_t)ADPCM_Decode((uint8_t)((pABuf[i]&(0xF0)))>>4);
+					pAudioTx[i*2+1] = (uint16_t)ADPCM_Decode((uint8_t)(pABuf[i]&0x0F));
+				}
+
+#else	//
 
 				qBufGet( &g_qBufAudioRx, (uint8_t*)pAudioTx, ( I2S_DMA_LOOP_SIZE * 2 ) );
 
@@ -1454,8 +1496,8 @@ int InitRFM( void )
 		}
 
 		//========================================================================
-#if defined(USE_AUDIO_INTERPOL_COMPRESS)
-		//	보간압축 사용시 음량 Level 조절.
+#if defined(USE_AUDIO_INTERPOL_COMPRESS) || defined( USE_AUDIO_ADPCM )
+		//	보간압축 or ADPCM 사용시 음량 Level 조절.
 		WriteI2CCodec( 0x0B, 0x60 );	//  10 ( +18 dB )
 #endif
 

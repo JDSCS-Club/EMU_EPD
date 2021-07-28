@@ -37,7 +37,20 @@ enum eRFMode
 
 //========================================================================
 //	Audio 압축관련.
-#define		USE_AUDIO_INTERPOL_COMPRESS		1		//	보간압축사용.
+//#define		USE_AUDIO_INTERPOL_COMPRESS		1		//	보간압축사용.
+
+#if defined( USE_AUDIO_INTERPOL_COMPRESS )	//	보간압축사용.
+
+//#define	AUDIO_COMPR_RATE	8	//	Audio 압축율.
+//#define	AUDIO_COMPR_RATE	6	//	Audio 압축율.
+#define	AUDIO_COMPR_RATE	4	//	Audio 압축율.
+//#define	AUDIO_COMPR_RATE	2	//	Audio 압축율.
+//#define	AUDIO_COMPR_RATE	1	//	Audio 압축율.
+
+#endif	//	defined( USE_AUDIO_INTERPOL_COMPRESS )	//	보간압축사용.
+
+#define		USE_AUDIO_ADPCM						1		//	ADPCM 압축 사용. 1/4 압축.
+
 
 //========================================================================
 //	RF 설정.
