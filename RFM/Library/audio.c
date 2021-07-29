@@ -340,16 +340,16 @@ void InitCodecMAX9860   ( void )
 
 	//========================================================================
 	//	Set Speaker Volume
-//    WriteI2CCodec( 0x09, 0x0C );	//  0x0C ( -3 )
-//    WriteI2CCodec( 0x09, 0x1E );	//  0x0C ( -12 )
-//    WriteI2CCodec( 0x09, 0x2A );	//  0x0C ( -18 )
-//    WriteI2CCodec( 0x09, 0x30 );	//  0x0C ( -21 )
+//	WriteI2CCodec( 0x09, 0x0C );	//  0x0C ( -3 )
+//	WriteI2CCodec( 0x09, 0x1E );	//  0x0C ( -12 )
+//	WriteI2CCodec( 0x09, 0x2A );	//  0x0C ( -18 )
+//	WriteI2CCodec( 0x09, 0x30 );	//  0x0C ( -21 )
 
 //	//	sine 파 출력 검사. ( I2S Data 영역 검사 )
 //	WriteI2CCodec( 0x09, 0x36 );	//  0x0C ( -24 )
 
-//    WriteI2CCodec( 0x09, 0x3E );	//  0x0C ( -28 )
-//            WriteI2CCodec( 0x0B, 0x20 );	//  01 ( +6 dB )
+//	WriteI2CCodec( 0x09, 0x3E );	//  0x0C ( -28 )
+//	WriteI2CCodec( 0x0B, 0x20 );	//  01 ( +6 dB )
 }
 
 //========================================================================
@@ -486,24 +486,13 @@ void	AudioSpkVol	    ( int nSpkVol )
     {
         // Power DAC / ADC Disable
 //        WriteI2CCodec( 0x10, 0x00 );	//powered on, DAC on, both ADC(Left) Enable
-        switch ( nSpkVol )
+
+    	switch ( nSpkVol )
         {
-        case 0:
-            WriteI2CCodec( 0x09, 0xBA );	//  Mute ( 0xBC )
-//            WriteI2CCodec( 0x0B, 0x00 );	//  00 ( 0 dB )
-            break;
-        case 1:
-            WriteI2CCodec( 0x09, 0x0C );	//  0x0C ( -3 )
-//            WriteI2CCodec( 0x0B, 0x20 );	//  01 ( +6 dB )
-            break;
-        case 2:
-            WriteI2CCodec( 0x09, 0x06 );	//  0x02 ( 0 dB ) DAC adjustment, this would require testing and/or a better understanding of the overall system
-//            WriteI2CCodec( 0x0B, 0x40 );	//  10 ( +12 dB )
-            break;
-        case 3:
-            WriteI2CCodec( 0x09, 0x00 );	//  0x02 ( +3 )
-//            WriteI2CCodec( 0x0B, 0x60 );	//  10 ( +18 dB )
-            break;
+        case 0:		WriteI2CCodec( 0x09, 0xBA );	break;	//  Mute ( 0xBC )
+        case 1:		WriteI2CCodec( 0x09, 0x0C );	break;	//  0x0C ( -3 )
+        case 2:		WriteI2CCodec( 0x09, 0x06 );	break;	//  0x02 ( 0 dB ) DAC adjustment, this would require testing and/or a better understanding of the overall system
+        case 3:		WriteI2CCodec( 0x09, 0x00 );	break;	//  0x02 ( +3 )
         }
 
         // Power DAC / ADC Enable

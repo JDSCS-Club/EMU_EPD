@@ -1359,6 +1359,11 @@ void RFM_I2SEx_TxRxCpltCallback( I2S_HandleTypeDef *hi2s )
 				printf ( "B" );	 //  버퍼링시작 ( Buffering )
 				//  Data
 				bRxBuffering = 1;
+
+#if defined( USE_AUDIO_ADPCM )	//	ADPCM 사용. - 1/4 압축
+				ADPCM_ClearDecodeBuf();
+#endif
+
 			}
 		}
 		//  */
@@ -1514,20 +1519,8 @@ int InitRFM( void )
 		SetDevID( DevRF900M );	 //  수신기.
 
 		//  수신기 스피커 레벨 변경.
-//#if defined(USE_AUDIO_INTERPOL_COMPRESS)
-//		//	보간압축 사용시 음량 Level 조절.
-////		WriteI2CCodec( 0x09, 0x06 );	//  0x12 ( 0 )
-//		WriteI2CCodec( 0x09, 0x00 );	//  0x00 ( +3 )
-//		WriteI2CCodec( 0x0B, 0x60 );	//  10 ( +18 dB )
-//
-//#else
-//		WriteI2CCodec( 0x09, 0x12 );	//  0x12 ( -6 )
-
 		//	20.09.01 - 2호선 24칸차량설정.
 		WriteI2CCodec( 0x09, 0x06 );	//  0x06 ( 0 )
-
-		//		WriteI2CCodec( 0x09, 0x1A );	//  0x1A ( -10 )
-//#endif
 
 #if defined(USE_HOP_MANUAL)
 		//	g_nManHopping;		//	On(1) / Off(2) / Unused(0 : Other)
@@ -1800,11 +1793,6 @@ void LoopProcRFM ( int nTick )
 				{
 					LCDPrintf( "수신중..." );
 				}
-				//========================================================================
-				//	송신기 음성 수신시에 Codec 재설정 : 음성 수신 짧게 반복시 Codec이 죽는현상 디버깅.
-				InitCodecMAX9860();
-				//========================================================================
-
 				break;
 
 			case RFMModeNormal:

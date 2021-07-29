@@ -34,5 +34,8 @@
 uint8_t ADPCM_Encode(int32_t sample);
 int16_t ADPCM_Decode(uint8_t code);
 
+void	ADPCM_ClearEncodeBuf( void );
+void	ADPCM_ClearDecodeBuf( void );
+
 #endif /* __ADPCM_H*/
 /******************* (C) COPYRIGHT 2009 STMicroelectronics *****END OF FILE****/

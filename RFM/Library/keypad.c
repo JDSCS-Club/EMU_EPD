@@ -25,7 +25,7 @@
 
 #include "menu.h"				//	g_bEnMenuMaint
 
-//#include "audio.h"				//	Audio Function
+#include "audio.h"				//	Audio Function	g_qBufAudioTx
 
 //========================================================================
 // Define
@@ -315,6 +315,11 @@ void KeyPtt( int bValue )
 		SetChPARFT( GetChNearRFT( 190 ) );	//	가까운 송신기 설정.
 #endif
 
+#if defined( USE_AUDIO_ADPCM )	//	ADPCM 사용. - 1/4 압축
+		ADPCM_ClearEncodeBuf();			//	인코딩 버퍼 Clear
+		qBufClear( &g_qBufAudioTx );	//	Tx Buffer Clear
+#endif
+
 		LCDSetCursor( 20, 13 );
 
 		if ( IsMenuMaint() )
@@ -375,6 +380,11 @@ void KeySos( int bValue )
 		SetChPARFT( GetChNearRFT( 190 ) );	//	가까운 송신기 설정.
 
 		SetChPA( GetChNearRFM() );		//	가장 가까운 수신기 설정.
+#endif
+
+#if defined( USE_AUDIO_ADPCM )	//	ADPCM 사용. - 1/4 압축
+		ADPCM_ClearEncodeBuf();			//	인코딩 버퍼 Clear
+		qBufClear( &g_qBufAudioTx );	//	Tx Buffer Clear
 #endif
 
 		//	송신중
