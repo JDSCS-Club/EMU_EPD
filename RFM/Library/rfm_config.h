@@ -58,6 +58,9 @@ enum eRFMode
 //	장치별 Channel 구분. Data 충돌 방지.
 #define		USE_CH_ISO_DEV					1		//	장치별 수신 채널 분리. ( Channel Isolation Each Device )
 
+
+#define		USE_ODD_TS_CH_SHIFT				1		//	홀수 편성 채널 Shift.
+
 //========================================================================
 //	패킷 설정.
 #define		USE_HOPPING						1		//	Hopping

@@ -51,7 +51,7 @@ int		g_nDevFlag		=	DevFlagNone;		//  Device Flag ( Light )
 int		g_idxTrainSet	=	0;	  				//  Train Set Index
 int		g_nCarNo		=	0;	  				//  Car Number
 
-int		g_nChRx			=	ChTS1_1;			//  RF Rx Channel
+int		g_nChRx			=	_ChTS1_1;			//  RF Rx Channel
 
 int	 	g_nSpkLevel		=	DefaultSpkVol;		//  Default (1) - 0(Mute) / 1 / 2(Normal) / 3
 
@@ -289,7 +289,7 @@ int		GetChNearRFM	( void )			//	가장 가까운 수신기 채널.
 
 //========================================================================
 //	방송채널 : 송신기에서 수신기로 송신할 방송채널 설정.
-int		g_nChPA	=	ChTS1_1;		//	Default
+int		g_nChPA	=	_ChTS1_1;		//	Default
 
 //========================================================================
 void	SetChPA( int nCh )
@@ -410,6 +410,19 @@ int		LoadTrainSetIdx	( void )
 
     if ( GetDbg() > 0 )
     	printf( "%s(%d) - %d\n", __func__, __LINE__, idxTrainSet );
+
+    //========================================================================
+#if defined(USE_ODD_TS_CH_SHIFT)
+    if( (idxTrainSet%2) == 1 )
+    {
+    	//	홀수 편성 채널 ( Shift ChGap/2 )
+    	ChTx_1		=	ChTx_1 + (ChGap/2);
+    	ChTx_2		=	ChTx_2 + (ChGap/2);
+        ChTS1_1		= 	ChTS1_1 + (ChGap/2);
+    }
+#endif
+    //========================================================================
+
 
     return idxTrainSet;
 }
