@@ -212,7 +212,7 @@ void HAL_I2SEx_TxRxCpltCallback( I2S_HandleTypeDef *hi2s )
 	{
 		//	Default Loopback
 		//	pAudioTable = sine_table;
-		memcpy( &bufAudio[0], &bufAudio[I2S_DMA_LOOP_SIZE], I2S_DMA_LOOP_SIZE * 2 );
+		memcpy( (void *)&bufAudio[0], (void *)&bufAudio[I2S_DMA_LOOP_SIZE], I2S_DMA_LOOP_SIZE * 2 );
 		HAL_I2SEx_TransmitReceive_DMA( &hi2s3, (uint16_t*)bufAudio, (uint16_t*)&bufAudio[I2S_DMA_LOOP_SIZE], I2S_DMA_LOOP_SIZE );
 	}
 }
@@ -360,7 +360,7 @@ void Default_I2SEx_TxRxCpltCallback( I2S_HandleTypeDef *hi2s )
 
 	//========================================================================
 	//	Loopback
-	memcpy( &bufAudio[0], &bufAudio[I2S_DMA_LOOP_SIZE], I2S_DMA_LOOP_SIZE * 2 );
+	memcpy( (void *)&bufAudio[0], (void *)&bufAudio[I2S_DMA_LOOP_SIZE], I2S_DMA_LOOP_SIZE * 2 );
 	HAL_I2SEx_TransmitReceive_DMA( &hi2s3, (uint16_t*)bufAudio, (uint16_t*)&bufAudio[I2S_DMA_LOOP_SIZE], I2S_DMA_LOOP_SIZE );
 }
 

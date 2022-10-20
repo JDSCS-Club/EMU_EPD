@@ -1480,6 +1480,27 @@
             </file>
         </group>
         <group>
+            <name>radio</name>
+            <group>
+                <name>Si446x</name>
+                <file>
+                    <name>$PROJ_DIR$\..\Drivers\radio\Si446x\si446x_api_lib.c</name>
+                </file>
+                <file>
+                    <name>$PROJ_DIR$\..\Drivers\radio\Si446x\si446x_nirq.c</name>
+                </file>
+            </group>
+            <file>
+                <name>$PROJ_DIR$\..\Drivers\radio\radio.c</name>
+            </file>
+            <file>
+                <name>$PROJ_DIR$\..\Drivers\radio\radio_comm.c</name>
+            </file>
+            <file>
+                <name>$PROJ_DIR$\..\Drivers\radio\radio_hal.c</name>
+            </file>
+        </group>
+        <group>
             <name>STM32F4xx_HAL_Driver</name>
             <file>
                 <name>$PROJ_DIR$\..\Drivers\STM32F4xx_HAL_Driver\Src\stm32f4xx_hal.c</name>

@@ -28,7 +28,7 @@
  *****************************************************************************/
 typedef struct
 {
-    U8   *Radio_ConfigurationArray;
+    const U8   *Radio_ConfigurationArray;
 
     U8   Radio_ChannelNumber;
     U8   Radio_PacketLength;

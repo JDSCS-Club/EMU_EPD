@@ -668,7 +668,7 @@
             <data>
                 <extensions></extensions>
                 <cmdline></cmdline>
-                <hasPrio>48</hasPrio>
+                <hasPrio>1</hasPrio>
                 <buildSequence>inputOutputBased</buildSequence>
             </data>
         </settings>
@@ -1127,6 +1127,27 @@
             <name>CMSIS</name>
             <file>
                 <name>$PROJ_DIR$\..\Core\Src\system_stm32f4xx.c</name>
+            </file>
+        </group>
+        <group>
+            <name>radio</name>
+            <group>
+                <name>Si446x</name>
+                <file>
+                    <name>$PROJ_DIR$\..\Drivers\radio\Si446x\si446x_api_lib.c</name>
+                </file>
+                <file>
+                    <name>$PROJ_DIR$\..\Drivers\radio\Si446x\si446x_nirq.c</name>
+                </file>
+            </group>
+            <file>
+                <name>$PROJ_DIR$\..\Drivers\radio\radio.c</name>
+            </file>
+            <file>
+                <name>$PROJ_DIR$\..\Drivers\radio\radio_comm.c</name>
+            </file>
+            <file>
+                <name>$PROJ_DIR$\..\Drivers\radio\radio_hal.c</name>
             </file>
         </group>
         <group>

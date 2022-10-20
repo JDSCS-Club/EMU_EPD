@@ -33,7 +33,7 @@
 const SEGMENT_VARIABLE(Radio_Configuration_Data_Array[], U8, SEG_CODE) = \
 		RADIO_CONFIGURATION_DATA_ARRAY;
 
-SEGMENT_VARIABLE(RadioConfiguration, tRadioConfiguration, SEG_CODE) = \
+ SEGMENT_VARIABLE(RadioConfiguration, tRadioConfiguration, SEG_CODE) = \
 		RADIO_CONFIGURATION_DATA;
 
 //const SEGMENT_VARIABLE_SEGMENT_POINTER(pRadioConfiguration, tRadioConfiguration, SEG_CODE, SEG_CODE) = \

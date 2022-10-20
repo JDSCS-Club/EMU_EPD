@@ -161,6 +161,10 @@ void	RF_RSSI			( void );
 
 void	PrintVerInfo	( void );
 
+
+void ReflashStat( int nTick );
+void ReloadStampStat( void );
+
 //========================================================================
 //	Command
 

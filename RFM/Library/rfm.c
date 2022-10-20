@@ -1257,7 +1257,7 @@ void RFM_I2SEx_TxRxCpltCallback( I2S_HandleTypeDef *hi2s )
 
 			//	ADPCM : 16 bit -> 4 bit
 			int i;
-			uint8_t *pABuf = r_audio_buff;
+			uint8_t *pABuf = (uint8_t *)r_audio_buff;
 			for( i = 0; i < I2S_DMA_LOOP_SIZE*2; i++ )
 			{
 				//*
@@ -1352,7 +1352,7 @@ void RFM_I2SEx_TxRxCpltCallback( I2S_HandleTypeDef *hi2s )
 
 				qBufGet( &g_qBufAudioRx, (uint8_t*)t_audio_buff, ( I2S_DMA_LOOP_SIZE * 2 ) );
 
-				uint8_t *pABuf = t_audio_buff;
+				uint8_t *pABuf = (uint8_t *)t_audio_buff;
 				//	Decoding : 4 bit -> 16 bit
 				int i;
 				for( i = 0; i < FRAME_ENC_SIZE/2; i++ )

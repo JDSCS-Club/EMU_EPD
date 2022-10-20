@@ -337,7 +337,7 @@ int ProcPktHdr2( const RFMPkt *pRFPkt, int nSize  )
 {
 	//	편성번호가 다른경우 Skip
 
-	RFMPktHdr2 *pHdr = &pRFPkt->hdr2;
+	const RFMPktHdr2 *pHdr = &pRFPkt->hdr2;
 
 	char buf[64];
 
@@ -705,7 +705,7 @@ int SendPacket( const char *sBuf, int nSize )
 
 	vRadio_StartTx_Variable_Packet (
 		nCh,	//g_idxTrainSet,	//		pRadioConfiguration->Radio_ChannelNumber,
-		&sBuf[0],
+		(U8 *)&sBuf[0],
 		pRadioConfiguration->Radio_PacketLength );
 
 	//========================================================================
@@ -728,7 +728,7 @@ int SendPktCh	( int nCh, const char *sBuf, int nSize )
 
 	vRadio_StartTx_Variable_Packet (
 		nCh,	//		pRadioConfiguration->Radio_ChannelNumber,
-		&sBuf[0],
+		(U8 *)&sBuf[0],
 		pRadioConfiguration->Radio_PacketLength );
 
 	//========================================================================

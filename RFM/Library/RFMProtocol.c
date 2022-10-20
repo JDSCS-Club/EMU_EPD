@@ -776,7 +776,7 @@ int	ProcPktStatReq		( const RFMPkt *pRFPkt )
 {
 	if ( GetDbg() )		printf( "%s(%d)\n", __func__, __LINE__ );
 
-	RFMPktStatReq *pStatReq = &pRFPkt->dat.statReq;
+	const RFMPktStatReq *pStatReq = &pRFPkt->dat.statReq;
 
 	//	수신기의 경우 송신기 상태정보 갱신.
 	//		-> 상태정보 요청한 송신기의 상태정보를 갱신한다.
@@ -810,7 +810,7 @@ int	ProcPktStat			( const RFMPkt *pRFPkt )
 	if ( GetDbg() )		printf( "%s(%d)\n", __func__, __LINE__ );
 
 	int nRspID = pRFPkt->dat.stat.nCarNo;
-	RFMPktStat *pStat = &pRFPkt->dat.stat;
+	const RFMPktStat *pStat = &pRFPkt->dat.stat;
 	//	상태정보 수신.
 //		printf ( "[Stat] Car:%d\n", pRFPkt->dat.stat.nCarNo );
 
@@ -855,7 +855,7 @@ int	ProcPktRouteReq		( const RFMPkt *pRFPkt )
 //========================================================================
 {
 	//	Source Channel로 Route 응답.
-	RFMPktRoute *pRouteReq = &pRFPkt->dat.routeReq;
+	const RFMPktRoute *pRouteReq = &pRFPkt->dat.routeReq;
 
 	if ( GetDbg() )		printf( "%s(%d) - %d\n", __func__, __LINE__, pRouteReq->nSrcCh );
 
@@ -926,7 +926,7 @@ int	ProcPktRouteReq		( const RFMPkt *pRFPkt )
 int	ProcPktRouteRsp		( const RFMPkt *pRFPkt )
 //========================================================================
 {
-	RFMPktRoute *pRouteRsp = &pRFPkt->dat.routeRsp;
+	const RFMPktRoute *pRouteRsp = &pRFPkt->dat.routeRsp;
 
 	g_nStampRouteRsp = HAL_GetTick();		//	응답 시간 저장.
 	g_nIdxRouteFindNext = 0;				//	Find Index 초기화.
@@ -981,7 +981,7 @@ int	ProcPktCtrlPaCall	( const RFMPkt *pRFPkt )
 	if ( GetDbg() )		printf( "%s(%d)\n", __func__, __LINE__ );
 
 	//	방송/통화 시작 종료 명령.
-	RFMPktCtrlPACall	*pCtrl = &pRFPkt->dat.pacall;
+	const RFMPktCtrlPACall	*pCtrl = &pRFPkt->dat.pacall;
 
 	switch ( pCtrl->nStartStop )
 	{
@@ -1116,7 +1116,7 @@ int	ProcPktDevConn			( const RFMPkt *pRFPkt )
 	//	Device Node Connection
 	if ( GetDbg() )		printf( "%s(%d)\n", __func__, __LINE__ );
 
-	RFMPktDevConn	*pConn = &pRFPkt->dat.devConn;
+	const RFMPktDevConn	*pConn = &pRFPkt->dat.devConn;
 
 	if( GetDevID() == DevRF900T )
 	{
@@ -1206,7 +1206,7 @@ int	ProcPktUpgr			( const RFMPkt *pRFPkt )
 
 	//========================================================================
 	//	Data Flash영역에 Write
-	RFMPktUpgr	*pUpgr = &pRFPkt->dat.upgr;
+	const RFMPktUpgr	*pUpgr = &pRFPkt->dat.upgr;
 
 	if ( pUpgr->baseAddr < 0x08080000 || 0x080FFFFF < pUpgr->baseAddr )
 	{

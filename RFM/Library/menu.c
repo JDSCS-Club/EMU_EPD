@@ -10,8 +10,6 @@
 
 #include "QBuf.h"
 
-#include "Adafruit_SSD1306.h"		//  LCD Display
-
 #include "RFMProtocol.h"			//  SendStat()
 
 #include "audio.h"					//  g_bufAudioRFRx
@@ -29,6 +27,43 @@
 #include "radio.h"					//	pRadioConfiguration
 
 #include "ProcPkt.h"				//	g_flagRspID
+
+
+//#define RFM_IAR_BUILD   0               //      IAR Compiler Build
+
+#if defined(RFM_IAR_BUILD)
+
+void    LCDPrintfXY             ( int x, int y, char *str ){}
+void    LCDClearMain            ( void ){}
+void    LCDPrintf               ( char * str ){}
+void    LCDSetCursor            ( int x, int y ){}
+void    LCDEnableDebug		( int bEnable ){}  		//  print LCD Display
+void    LCDSpeaker              ( int nLevel ){}
+void    LCDLight                ( int bOnOff ){}
+void    LCDClear                ( void ){}
+void    LCDBattery              ( int nLevel ){}
+int     LCDInit                 ( void ){ return 1; }
+void    LCDDrawRect             ( int x, int y, int w, int h, int color ) {} //  Clear LCD Display
+void    LCDMenu                 ( void ){}
+void    LCDMenuUpDown           ( int nUpDown ){} //  0( Off ) / 1( ▲Up ) / 2( ▼Down ) / 3( ▲Up/▼Down ) 
+
+//#define         LCDCleanMain    ()
+//#/define         LCDPrintf       ()
+//#define         LCDSetCursor    ()
+//#define         LCDEnableDebug  ()
+//#define         LCDSpeaker      ()
+//#define         LCDLight        ()
+//#define         LCDClear        ()
+//#define         LCDBattery      ()
+//#define         LCDInit         ()
+//#define         LCDDrawRect     ()
+//#define         LCDMenu         ()
+
+#else
+
+#include "Adafruit_SSD1306.h"		//  LCD Display
+
+#endif
 
 
 //========================================================================
