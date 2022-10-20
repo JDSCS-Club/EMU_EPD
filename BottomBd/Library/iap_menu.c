@@ -41,7 +41,6 @@
 /* Private macro -------------------------------------------------------------*/
 /* Private variables ---------------------------------------------------------*/
 pFunction JumpToApplication;
-uint32_t JumpAddress;
 uint32_t FlashProtection = 0;
 uint8_t aFileName[FILE_NAME_LENGTH];
 
@@ -147,6 +146,7 @@ int SerialUpload(void)
   */
 void Main_Menu(void)
 {
+	uint32_t JumpAddress;
   uint8_t key = 0;
 
   Serial_PutString((uint8_t *)"\r\n======================================================================");
