@@ -158,10 +158,10 @@ void setRS485Inactive(GPIO_PinState state){ HAL_GPIO_WritePin(RE_GPIO_Port, RE_P
 //
 //--------------------------------------------------------------------------------------------//
 
-bool getVccRfIn(void){ return HAL_GPIO_ReadPin(VCC_RF_IN_Port, VCC_RF_IN); }
-bool getAmpFault(void){ return HAL_GPIO_ReadPin(AMP_FAULT_Port, AMP_FAULT); }
-bool getVccLedIn(void){ return HAL_GPIO_ReadPin(VCC_LED_IN_Port, VCC_LED_IN); }
-bool getVccAudioIn(void){ return HAL_GPIO_ReadPin(VCC_AUDIO_IN_Port, VCC_AUDIO_IN); }
+bool getVccRfIn(void){ return HAL_GPIO_ReadPin(VCC_RF_IN_GPIO_Port, VCC_RF_IN_Pin); }
+bool getAmpFault(void){ return HAL_GPIO_ReadPin(AMP_FAULT_GPIO_Port, AMP_FAULT_Pin); }
+bool getVccLedIn(void){ return HAL_GPIO_ReadPin(VCC_LED_IN_GPIO_Port, VCC_LED_IN_Pin); }
+bool getVccAudioIn(void){ return HAL_GPIO_ReadPin(VCC_AUDIO_IN_GPIO_Port, VCC_AUDIO_IN_Pin); }
 //--------------------------------------------------------------------------------------------//
 //
 //--------------------------------------------------------------------------------------------//

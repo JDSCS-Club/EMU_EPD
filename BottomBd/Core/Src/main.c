@@ -127,8 +127,6 @@ PUTCHAR_PROTOTYPE
   * @brief  The application entry point.
   * @retval int
   */
-
-
 int main(void)
 {
   /* USER CODE BEGIN 1 */
@@ -179,13 +177,13 @@ int main(void)
 
 #else	//	Application
 
-  //	UART Interrupt ÏÑ§Ï†ï.
-  //	UART Queue Ï¥àÍ∏∞Ìôî.
+  //	UART Interrupt º≥¡§.
+  //	UART Queue √ ±‚»≠.
   SerialInitQueue();
 
 //  SerialInit( &huart1, NULL, NULL, NULL );	//	Console Interrupt
 
-  //	UART Interrupt ÏÑ§Ï†ï.
+  //	UART Interrupt º≥¡§.
   SerialInit( &huart1, &huart2, &huart3, &huart5 );
 //  SerialInit( &huart1, NULL, NULL, NULL );//&huart2, &huart3, &huart5 );
   InitRS485();		//	Init RS485
@@ -287,7 +285,7 @@ int main(void)
 	setAmpMute(true);
 	setAmpMute(true);
 
-	setAmpSd(true); //AMP Ï¥àÍ∏∞ ÏÑ§Ï†ïÌïòÎäî Î∂ÄÎ∂Ñ.
+	setAmpSd(true); //AMP √ ±‚ º≥¡§«œ¥¬ ∫Œ∫–.
 
 
   while (1)
@@ -341,8 +339,8 @@ int main(void)
 			//=============================================================================
             checkSerial(&huart1);       //  Debug
             checkSerial(&huart2);       //  RFM
-            checkSerial(&huart3);       //  RS485 Line Ï≤¥ÌÅ¨.
-            checkSerial(&huart5);       //  RS485 Line Ï≤¥ÌÅ¨.
+            checkSerial(&huart3);       //  RS485 Line √º≈©.
+            checkSerial(&huart5);       //  RS485 Line √º≈©.
             //=============================================================================
 		}
 
@@ -751,6 +749,20 @@ static void MX_GPIO_Init(void)
   __HAL_RCC_GPIOA_CLK_ENABLE();
   __HAL_RCC_GPIOB_CLK_ENABLE();
 
+  /*Configure GPIO pin Output Level */
+  HAL_GPIO_WritePin(GPIOC, RE_Pin|SD_Pin|MUTE_Pin|LED_CTL_Pin, GPIO_PIN_RESET);
+
+  /*Configure GPIO pin Output Level */
+  HAL_GPIO_WritePin(GPIOA, RE1_Pin|OVERRIDE_Pin, GPIO_PIN_RESET);
+
+  /*Configure GPIO pin Output Level */
+  HAL_GPIO_WritePin(DI_CTL_GPIO_Port, DI_CTL_Pin, GPIO_PIN_SET);
+
+  /*Configure GPIO pin Output Level */
+  HAL_GPIO_WritePin(GPIOB, LED_75_Pin|RF_LED_Pin, GPIO_PIN_SET);
+
+  /*Configure GPIO pin Output Level */
+  HAL_GPIO_WritePin(GPIOB, LED_100_RED_Pin|LED_100_GREEN_Pin, GPIO_PIN_RESET);
 
   /*Configure GPIO pins : MASTER_IN_Pin CHARGER_DET_Pin VCC_IN_Pin */
   GPIO_InitStruct.Pin = MASTER_IN_Pin|CHARGER_DET_Pin|VCC_IN_Pin;
@@ -765,15 +777,6 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
 
-  /*Configure GPIO pins : RE_Pin SD_Pin MUTE_Pin LED_CTL_Pin */
-  GPIO_InitStruct.Pin = MUTE_Pin;
-  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
-  GPIO_InitStruct.Pull = GPIO_PULLDOWN;
-  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
-  HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
-
-
-
   /*Configure GPIO pins : RE1_Pin DI_CTL_Pin OVERRIDE_Pin */
   GPIO_InitStruct.Pin = RE1_Pin|DI_CTL_Pin|OVERRIDE_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
@@ -781,13 +784,11 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
 
-  /*Configure GPIO pins : RE1_Pin DI_CTL_Pin OVERRIDE_Pin */
-  GPIO_InitStruct.Pin = VCC_RF_IN|AMP_FAULT|VCC_LED_IN|VCC_AUDIO_IN;
+  /*Configure GPIO pins : VCC_AUDIO_IN_Pin VCC_LED_IN_Pin AMP_FAULT_Pin VCC_RF_IN_Pin */
+  GPIO_InitStruct.Pin = VCC_AUDIO_IN_Pin|VCC_LED_IN_Pin|AMP_FAULT_Pin|VCC_RF_IN_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
-  GPIO_InitStruct.Pull = GPIO_PULLDOWN;
-  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
   HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
-
 
   /*Configure GPIO pins : LIGHT_ON_Pin ST_BY_Pin */
   GPIO_InitStruct.Pin = LIGHT_ON_Pin|ST_BY_Pin;
@@ -813,31 +814,6 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
-
-
-  /*Configure GPIO pin Output Level */
-    HAL_GPIO_WritePin(GPIOC, RE_Pin|LED_CTL_Pin, GPIO_PIN_RESET);
-
-    HAL_GPIO_WritePin(GPIOC, SD_Pin, GPIO_PIN_SET);
-
-
-    HAL_GPIO_WritePin(GPIOC, MUTE_Pin, GPIO_PIN_RESET);
-
-
-
-    /*Configure GPIO pin Output Level */
-    HAL_GPIO_WritePin(GPIOA, RE1_Pin|OVERRIDE_Pin, GPIO_PIN_RESET);
-
-    /*Configure GPIO pin Output Level */
-    HAL_GPIO_WritePin(DI_CTL_GPIO_Port, DI_CTL_Pin, GPIO_PIN_SET);
-
-    /*Configure GPIO pin Output Level */
-    HAL_GPIO_WritePin(GPIOB, LED_75_Pin|RF_LED_Pin, GPIO_PIN_SET);
-
-    /*Configure GPIO pin Output Level */
-    HAL_GPIO_WritePin(GPIOB, LED_100_RED_Pin|LED_100_GREEN_Pin, GPIO_PIN_RESET);
-
-
 
 }
 

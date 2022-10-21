@@ -43,14 +43,8 @@ extern "C" {
 
 /* Exported constants --------------------------------------------------------*/
 /* USER CODE BEGIN EC */
-
-#if defined(USE_BOOTLOADER)
-#else	//	Application
-
-extern ADC_HandleTypeDef hadc1;
-extern ADC_HandleTypeDef hadc2;
-
-#endif
+//extern ADC_HandleTypeDef hadc1;
+//extern ADC_HandleTypeDef hadc2;
 
 extern I2C_HandleTypeDef hi2c2;
 
@@ -59,9 +53,6 @@ extern UART_HandleTypeDef huart1;		//	Console
 extern UART_HandleTypeDef huart2;		//	RFM
 extern UART_HandleTypeDef huart3;		//	RS485
 
-//extern UART_HandleTypeDef UartHandle;
-
-#define	UartHandle huart2			//	UartHandle->UART2(RFM)
 
 /* USER CODE END EC */
 
@@ -76,6 +67,7 @@ void Error_Handler(void);
 /* USER CODE BEGIN EFP */
 
 /* USER CODE END EFP */
+#define NOT(a)		(~a & 0x0001)
 
 /* Private defines -----------------------------------------------------------*/
 #define MASTER_IN_Pin GPIO_PIN_13
@@ -94,6 +86,14 @@ void Error_Handler(void);
 #define RE1_GPIO_Port GPIOA
 #define DI_CTL_Pin GPIO_PIN_1
 #define DI_CTL_GPIO_Port GPIOA
+#define VCC_AUDIO_IN_Pin GPIO_PIN_4
+#define VCC_AUDIO_IN_GPIO_Port GPIOA
+#define VCC_LED_IN_Pin GPIO_PIN_5
+#define VCC_LED_IN_GPIO_Port GPIOA
+#define AMP_FAULT_Pin GPIO_PIN_6
+#define AMP_FAULT_GPIO_Port GPIOA
+#define VCC_RF_IN_Pin GPIO_PIN_7
+#define VCC_RF_IN_GPIO_Port GPIOA
 #define LIGHT_ON_Pin GPIO_PIN_4
 #define LIGHT_ON_GPIO_Port GPIOC
 #define ST_BY_Pin GPIO_PIN_5

@@ -85,30 +85,27 @@ void Error_Handler(void);
 #define RE1_Pin GPIO_PIN_0
 #define RE1_GPIO_Port GPIOA
 #define DI_CTL_Pin GPIO_PIN_1
-
-
-
-
-
 #define DI_CTL_GPIO_Port GPIOA
-
+#define VCC_AUDIO_IN_Pin GPIO_PIN_4
+#define VCC_AUDIO_IN_GPIO_Port GPIOA
+#define VCC_LED_IN_Pin GPIO_PIN_5
+#define VCC_LED_IN_GPIO_Port GPIOA
+#define AMP_FAULT_Pin GPIO_PIN_6
+#define AMP_FAULT_GPIO_Port GPIOA
+#define VCC_RF_IN_Pin GPIO_PIN_7
+#define VCC_RF_IN_GPIO_Port GPIOA
 #define LIGHT_ON_Pin GPIO_PIN_4
 #define LIGHT_ON_GPIO_Port GPIOC
-
 #define ST_BY_Pin GPIO_PIN_5
 #define ST_BY_GPIO_Port GPIOC
-
 #define POP_UP_Pin GPIO_PIN_0
 #define POP_UP_GPIO_Port GPIOB
-
 #define AUDIO_ON_Pin GPIO_PIN_1
 #define AUDIO_ON_GPIO_Port GPIOB
-
 #define SDL2_Pin GPIO_PIN_10
 #define SDL2_GPIO_Port GPIOB
 #define SDA2_Pin GPIO_PIN_11
 #define SDA2_GPIO_Port GPIOB
-
 #define DEV_ID3_Pin GPIO_PIN_12
 #define DEV_ID3_GPIO_Port GPIOB
 #define DEV_ID2_Pin GPIO_PIN_13
@@ -117,41 +114,22 @@ void Error_Handler(void);
 #define DEV_ID1_GPIO_Port GPIOB
 #define DEV_ID0_Pin GPIO_PIN_15
 #define DEV_ID0_GPIO_Port GPIOB
-
 #define SD_Pin GPIO_PIN_7
 #define SD_GPIO_Port GPIOC
-
 #define MUTE_Pin GPIO_PIN_8
 #define MUTE_GPIO_Port GPIOC
-
 #define LED_CTL_Pin GPIO_PIN_9
 #define LED_CTL_GPIO_Port GPIOC
-
 #define OVERRIDE_Pin GPIO_PIN_12
 #define OVERRIDE_GPIO_Port GPIOA
-
 #define LED_75_Pin GPIO_PIN_3
 #define LED_75_GPIO_Port GPIOB
-
 #define RF_LED_Pin GPIO_PIN_5
 #define RF_LED_GPIO_Port GPIOB
-
 #define LED_100_RED_Pin GPIO_PIN_6
 #define LED_100_RED_GPIO_Port GPIOB
 #define LED_100_GREEN_Pin GPIO_PIN_7
 #define LED_100_GREEN_GPIO_Port GPIOB
-
-#define VCC_RF_IN_Port GPIOA
-#define VCC_RF_IN GPIO_PIN_7
-
-#define AMP_FAULT_Port GPIOA
-#define AMP_FAULT GPIO_PIN_6
-
-#define VCC_LED_IN_Port GPIOA
-#define VCC_LED_IN GPIO_PIN_5
-
-#define VCC_AUDIO_IN_Port GPIOA
-#define VCC_AUDIO_IN GPIO_PIN_4
 /* USER CODE BEGIN Private defines */
 
 /* USER CODE END Private defines */
