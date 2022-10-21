@@ -58,6 +58,7 @@
 
 #include "occpa.h"				//	OCC PA
 
+#include "naranja_boron.h"
 //========================================================================
 uint16_t onBCCCheck(unsigned char *payload, int crc_length)
 //========================================================================
@@ -98,7 +99,7 @@ uint8_t check_Bcc( unsigned char *payload, int length )
 {
 	uint16_t bcc16;
 	bcc16 = ( *( payload + length - 1 ) << 8 ) | *( payload + length );
-	if ( onBCCCheck( payload, length+1 ) == bcc16 )
+	if ( onBCCCheck( payload+1, length-3 ) == bcc16 )
 	{
 		return 1;
 	}
@@ -107,6 +108,35 @@ uint8_t check_Bcc( unsigned char *payload, int length )
 		return 0;
 	}
 }
+
+/******************************************************************************
+	### BCC Check [TEXT~ETX] ###
+
+	Input	: *pDat->수신 데이터 / nLen->수신 데이터 길이
+	Output	: BCCOK->TRUE[1] / BCCNG->FALSE[0]
+******************************************************************************/
+int IsBCCOK(BYTE *pDat,int nLen)
+{
+	BYTE nBCC[2];
+	int i;
+
+	nBCC[0] = nBCC[1] = 0x00;
+
+	for(i=0;i<nLen;i++)
+	{
+		nBCC[(i&0x01)] ^= pDat[i];
+	}
+
+	if(nBCC[0] != pDat[nLen] || nBCC[1] != pDat[nLen+1])
+	{
+		return FALSE;
+	}
+	else
+	{
+		return TRUE;
+	}
+}
+
 
 //========================================================================
 int	SendRS485 ( char *bufTx, int nSize )
@@ -145,6 +175,7 @@ int	SendRS485 ( char *bufTx, int nSize )
 void SendSD( const FRAME_SDR *pSdr )
 //========================================================================
 {
+
 	FRAME_SD sdfrm;
 	memset( &sdfrm, 0, sizeof( sdfrm ) );
 
@@ -153,8 +184,8 @@ void SendSD( const FRAME_SDR *pSdr )
 
 	sdfrm.sd.c0x22			=	0x22;
 
-	sdfrm.sd.bOccPaStart	=	pSdr->sdr.bOccPaStart;
-	sdfrm.sd.bOccPaStop		=	pSdr->sdr.bOccPaStop;
+	//sdfrm.sd.bOccPaStart	=	pSdr->sdr.bOccPaStart;
+	//sdfrm.sd.bOccPaStop		=	pSdr->sdr.bOccPaStop;
 
 #if defined(TRS_SD_BAT)
 	sdfrm.sd.nSBATR1		=	95;		//	95 %
@@ -164,6 +195,19 @@ void SendSD( const FRAME_SDR *pSdr )
 	sdfrm.sd.nSBATR5		=	95;		//	95 %
 	sdfrm.sd.nSBATR6		=	95;		//	95 %
 #endif
+
+    //sdfrm.sd.bSpare1[0]     =        1bit = SPK 감지. // 2bit = 수신 감도 상태.// 3bit = 배터리 .
+    sdfrm.sd.bSpare1[0]     = 1; //uSpk_Stat;
+    sdfrm.sd.bSpare1[0]     = sdfrm.sd.bSpare1[0] | (0<<1);//uRssi_NgFlag;
+    sdfrm.sd.bSpare1[0]     |= (0x00 << 2);
+
+
+    sdfrm.sd.bDate[0] = pSdr->sdr.bYY_02;
+    sdfrm.sd.bDate[1] = pSdr->sdr.bMM_03;
+    sdfrm.sd.bDate[2] = pSdr->sdr.bDD_04;
+    sdfrm.sd.bDate[3] = pSdr->sdr.bhh_05;
+    sdfrm.sd.bDate[4] = pSdr->sdr.bmm_06;
+    sdfrm.sd.bDate[5] = pSdr->sdr.bss_07;
 
 	sdfrm.sd.nWatchDog		=	pSdr->sdr.nWatchDog;
 
@@ -205,10 +249,12 @@ void ProcessFrameSD( const uint8_t *pBuf, int nLen )
 void ProcessFrameSDR( const uint8_t *pBuf, int nLen )
 //========================================================================
 {
+
+
 	//========================================================================
 	//	SD 상태정보 응답.
 	SendSD( (FRAME_SDR *)pBuf );
-
+/*
 	printf( "%s(%d)\n", __func__, __LINE__ );
 
 	static int s_bOccPaStart = 0;
@@ -259,6 +305,7 @@ void ProcessFrameSDR( const uint8_t *pBuf, int nLen )
 
 		s_bOccPaActive = pSdr->bOccPaActive;
 	}
+*/
 
 
 	//========================================================================
@@ -273,11 +320,13 @@ void ProcessFrame( const uint8_t *pBuf, int nLen )
 
 	if ( nLen == sizeof( FRAME_SDR ) && pSdr->sdr.cSDR == eSDR )
 	{
+		//HAL_Delay(10);
 //		printf( "[%d] %s(%d) - SDR Recv ( %d )\n", HAL_GetTick(),  __func__, __LINE__, length );
 		ProcessFrameSDR( pBuf, nLen );
 	}
 	else if ( nLen == sizeof( FRAME_SD ) && pSd->sd.cSD == eSD )
 	{
+
 //		printf( "[%d] %s(%d) - SD Recv ( %d )\n", HAL_GetTick(), __func__, __LINE__, length );
 //		ProcessFrameSD( pbuf, length );
 	}
@@ -330,72 +379,87 @@ void Dump( char *sTitle, char *sBuf, int nSize )
 void LoopProcRS485(void)
 //========================================================================
 {
+
+	  int nTick;
+	  static s_nTick_F = 0;
+	  static s_nTick_R = 0;
+	  static s_RxnTick;
+
+	  static s_RxOkFlag =0;
+	  static s_RxOkLen =0;
+
+	  int s_EtxLen = 0;
+
 	int idx;
 
 	//=============================================================================
 	//
 	char	c;
 
+	nTick = HAL_GetTick();
+
 	while (qcount(&g_qUart3) > 0)
 	{
+
+		s_nTick_F = nTick;
+
+		// 통신 중간에 타임 아웃시 카운터 클리어 하는 부분 추가.
+		if ( (s_nTick_F - s_nTick_R) >= 5){  length = 0; }
+		s_nTick_R = s_nTick_F;
+
 		c = qget(&g_qUart3);
 		//		printf( "0x%02X ", c );
 
-				//=============================================================================
-				//	Check STX
-		if (c == eSTX && nFlagRxState == FlagNone)
+		rxbuffer[length++] = c;		//	Buffering
+
+		s_EtxLen = (sizeof(FRAME_SDR) - 3);
+
+		switch(length)
 		{
-			//			printf( "[STX] " );
-			nFlagRxState = FlagFindSTX;
-			length = 0;
+			case 1: if(rxbuffer[0] != 0x02) length = 0; break;
+			case 2: if(rxbuffer[1] != 0x21) length = 0; break;
+			case 3: if(rxbuffer[2] != 0x11) length = 0; break;
+			default:
+				if(length >= sizeof(FRAME_SDR))
+				{
+					if(rxbuffer[s_EtxLen] == 0x03 && IsBCCOK(&rxbuffer[1],(length-3)))
+					{
+						s_RxOkFlag = 1;
+						s_RxOkLen = length;
+
+						s_RxnTick = nTick;
+
+						length = 0;
+					}
+					else
+					{
+						printf( "[%d] %s(%d) - Invalid packet(%d)\n", HAL_GetTick(), __func__, __LINE__, length );
+
+						//Dump( "Rx : ", rxbuffer, length );
+
+						//===========================================================================
+						init_queue(&g_qUart3);		//	Queue Clear
+						//===========================================================================
+
+						//	최대 패킷 사이즈보다 큰경우. -> Clear Buffer
+						length = 0;
+
+					}
+
+				}
 		}
-		else if (c == eETX && nFlagRxState == FlagFindSTX &&
-			((length == (sizeof(FRAME_SDR) - 3)) ||	//	SDR ETX
-			(length == (sizeof(FRAME_SD) - 3))		//	SD ETX
-				)
-			)
-		{
-			//			printf( "[ETX] " );
-			nFlagRxState = FlagFindETX;
-		}
+	}
 
-		if (nFlagRxState == FlagFindSTX || nFlagRxState == FlagFindETX)
-		{
-			rxbuffer[length++] = c;		//	Buffering
-	//			printf( "[%02X] ", c );
-		}
 
-		//	Check SDR / SD Frame
-		if (nFlagRxState == FlagFindETX)
-		{
-			//			printf( "length(%d)\n", length );
-			if (length == sizeof(FRAME_SDR) ||
-				length == sizeof(FRAME_SD))
-			{
-				//				printf( "found frame(%d)\n", length );
-				ProcessFrame(rxbuffer, length);
+	// RX 수신 OK 하면.
+	if ( ((nTick - s_RxnTick) >= 10) && (s_RxOkFlag == 1))
+	{
+		s_RxOkFlag = 0;
+		s_RxnTick = nTick;
 
-				length = 0;
-				nFlagRxState = FlagNone;
-			}
-		}
+		ProcessFrame(rxbuffer, s_RxOkLen);
 
-		if (length >= sizeof(FRAME_SDR))
-		{
-			printf( "[%d] %s(%d) - Invalid packet(%d)\n", HAL_GetTick(), __func__, __LINE__, length );
-
-			Dump( "Rx : ", rxbuffer, length );
-
-			//===========================================================================
-			init_queue(&g_qUart3);		//	Queue Clear
-			//===========================================================================
-
-			//	최대 패킷 사이즈보다 큰경우. -> Clear Buffer
-			length = 0;
-			nFlagRxState = FlagNone;
-
-		}
-	}	//while (qcount(&g_qRS485) > 0)
+	}
 
 //#else
 //

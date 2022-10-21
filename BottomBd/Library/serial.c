@@ -199,13 +199,15 @@ void HAL_UART_RxCpltCallback( UART_HandleTypeDef *huart )
 		//	Debug Console
 		g_nStampRx1 = HAL_GetTick();
 
+		//	입력내용 콘솔로 출력.
+		//		HAL_UART_Transmit( huart, (uint8_t *)&dataRx1[0], 1, 0xFFFF );
+
+				HAL_UART_Receive_IT( huart, dataRx1, 1 );
+
 		//	문자 Queue에 쌓기.
 		qput( &g_qUart1, dataRx1[0] );
 
-		//	입력내용 콘솔로 출력.
-//		HAL_UART_Transmit( huart, (uint8_t *)&dataRx1[0], 1, 0xFFFF );
 
-		HAL_UART_Receive_IT( huart, dataRx1, 1 );
 	}
 	//===========================================================================
 	else if ( huart->Instance == USART2 && phuart2 )
@@ -213,9 +215,11 @@ void HAL_UART_RxCpltCallback( UART_HandleTypeDef *huart )
 		//	RS232 - RFM
 		g_nStampRx2 = HAL_GetTick();
 
+		HAL_UART_Receive_IT( huart, dataRx2, 1 );
+
 		qput( &g_qUart2, dataRx2[0] );
 
-		HAL_UART_Receive_IT( huart, dataRx2, 1 );
+
 	}
 	//===========================================================================
 	else if ( huart->Instance == USART3 && phuart3 )
@@ -223,9 +227,10 @@ void HAL_UART_RxCpltCallback( UART_HandleTypeDef *huart )
 		//	RS485
 		g_nStampRx3 = HAL_GetTick();
 
+		HAL_UART_Receive_IT( huart, dataRx3, 1 );
+
 		qput( &g_qUart3, dataRx3[0] );
 
-		HAL_UART_Receive_IT( huart, dataRx3, 1 );
 	}
 	//===========================================================================
 	else if ( huart->Instance == UART5 && phuart5 )
@@ -233,9 +238,11 @@ void HAL_UART_RxCpltCallback( UART_HandleTypeDef *huart )
 		//	RS485
 		g_nStampRx5 = HAL_GetTick();
 
+		HAL_UART_Receive_IT( huart, dataRx5, 1 );
+
 		qput( &g_qUart5, dataRx5[0] );
 
-		HAL_UART_Receive_IT( huart, dataRx5, 1 );
+
 	}
 
 	//===========================================================================

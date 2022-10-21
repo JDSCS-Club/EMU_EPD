@@ -54,7 +54,7 @@ void I2C_BusScan( I2C_HandleTypeDef *phi2c )
 	printf( "Scanning I2C bus:\r\n" );
 	HAL_StatusTypeDef result;
 	uint8_t i;
-	for ( i = 1; i < 128; i++ )
+	for ( i = 1; i < 126; i++ )
 	{
 		/*
 		 * the HAL wants a left aligned i2c address
@@ -93,9 +93,12 @@ void I2C_BusScan( I2C_HandleTypeDef *phi2c )
 int MB85_HAL_WriteBytes( I2C_HandleTypeDef *hi2c, uint16_t DevAddress, uint16_t MemAddress, uint8_t *pData, uint16_t TxBufferSize )
 //========================================================================
 {
-	while ( HAL_I2C_Mem_Write( hi2c, (uint16_t)DevAddress, (uint16_t)MemAddress, I2C_MEMADD_SIZE_16BIT, pData, (uint16_t)TxBufferSize, 1000 ) != HAL_OK );
+	int TimeOut;
 
-	HAL_Delay(5);
+	TimeOut = 0;
+	while ( HAL_I2C_Mem_Write( hi2c, (uint16_t)DevAddress, (uint16_t)MemAddress, I2C_MEMADD_SIZE_8BIT, pData, (uint16_t)TxBufferSize, 1000 ) != HAL_OK && TimeOut < 10 ) TimeOut++;
+
+	HAL_Delay(30);
 
 	return 1;
 }
@@ -108,7 +111,7 @@ int MB85_HAL_ReadBytes( I2C_HandleTypeDef *hi2c, uint16_t DevAddress, uint16_t M
 	int TimeOut;
 
 	TimeOut = 0;
-	while ( HAL_I2C_Mem_Read( hi2c, (uint16_t)DevAddress, (uint16_t)MemAddress, I2C_MEMADD_SIZE_16BIT, pData, (uint16_t)RxBufferSize, 1000 ) != HAL_OK && TimeOut < 10 ) TimeOut++;
+	while ( HAL_I2C_Mem_Read( hi2c, (uint16_t)DevAddress, (uint16_t)MemAddress, I2C_MEMADD_SIZE_8BIT, pData, (uint16_t)RxBufferSize, 1000 ) != HAL_OK && TimeOut < 10 ) TimeOut++;
 
 	return 1;
 }
@@ -132,6 +135,8 @@ void TestNVRAM( I2C_HandleTypeDef *hi2c )
 
 	MB85_HAL_ReadBytes(hi2c, 0xA0, 0x100, (uint8_t *)c, 3);
 	printf("%s - 0x%02X, 0x%02X, 0x%02X\r\n", __func__, c[0],c[1],c[2]);
+
+
 }
 
 

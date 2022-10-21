@@ -127,6 +127,8 @@ PUTCHAR_PROTOTYPE
   * @brief  The application entry point.
   * @retval int
   */
+
+
 int main(void)
 {
   /* USER CODE BEGIN 1 */
@@ -219,8 +221,74 @@ int main(void)
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
 
+  int sCnt = 0;
   int nTick;
-  static s_nTick;
+  //static s_nTick;
+
+  static int s_nTick;
+  static int s_nOccCnt;
+  static int s_currentCnt;
+
+  static int s_RssNgCleanCnt;
+
+  static int s_I2c_Cnt = 0;
+
+  uint8_t     nTbuf[10];
+  uint8_t     nRbuf[10];
+
+  printf( "*********OCC Function*********\n" );
+  printf( "*********Design by DS-Jang (2022-10-14)\n" );
+
+  HAL_StatusTypeDef result;
+
+
+	result = HAL_I2C_IsDeviceReady( &hi2c2, (uint16_t)(0xD8), 2, 2 );
+
+	if ( HAL_OK == result )
+	{
+	  printf( "-0xD8 AMP_SEt_OK \n" );
+	}
+	else
+	{
+	  printf( "-0xD8 AMP_SEt_NG(%2x)\n",result);
+	}
+
+
+	nRbuf[0] = 0xFF;
+
+	if(MB85_HAL_ReadBytes(&hi2c2,0xD8,0x00,(uint8_t *)nRbuf,1))
+	{
+		printf( "-0x00 Read Test(%02X) \n",nRbuf[0]);
+	}
+	else
+	{
+		printf( "-0x00 Read Test(0x00-0x00) NG \n" );
+	}
+
+	nRbuf[0] = 0xFF;
+
+	if(MB85_HAL_ReadBytes(&hi2c2,0xD8,0x01,(uint8_t *)nRbuf,1))
+	{
+		printf( "-0x01 Read Test(%02X) \n",nRbuf[0] );
+	}
+	else
+	{
+		printf( "-0x01 Read Test(0x00-0x01) NG \n" );
+
+	}
+
+
+
+	nTbuf[0] = 0x09;
+	MB85_HAL_WriteBytes(&hi2c2, 0xD8, 0x0C, (uint8_t *)nTbuf, 1);
+
+
+
+	setAmpMute(true);
+	setAmpMute(true);
+
+	setAmpSd(true); //AMP 초기 설정하는 부분.
+
 
   while (1)
   {
@@ -234,7 +302,7 @@ int main(void)
 		LoopProcRS485();	//	RS485
 		//=============================================================================
 
-		processOverrideOn();
+		//processOverrideOn();
 		processRfLed();
 		processChargeLed();
 		processLightLed();
@@ -242,12 +310,33 @@ int main(void)
 
 		processTestDebug();
 		//	  Uart3_Process();
+        if ( (nTick - s_nOccCnt) >= 100)
+        {
+            s_nOccCnt = nTick;
 
-		if ( (nTick - s_nTick) >= 1000 )
+            //processOverrideOn();
+
+            ONTD_Function();
+
+        }
+
+
+		if ( (nTick - s_nTick) >= 1000)
 		{
 //			printf("[%d]\n", nTick);
 			s_nTick = nTick;
 			processGetBatVol();			//	ADC
+
+
+			if(getAmpFault())
+			{
+
+				//printf( "getAmpOk \n" );
+			}
+			else
+			{
+				//printf( "getAmpFault \n" );
+			}
 
 			//=============================================================================
             checkSerial(&huart1);       //  Debug
@@ -256,6 +345,28 @@ int main(void)
             checkSerial(&huart5);       //  RS485 Line 체크.
             //=============================================================================
 		}
+
+        if ( (nTick - s_currentCnt) >= 5000)
+        {
+            s_currentCnt = nTick;
+
+             //processCurrentVal();
+
+
+            // uSpk_Stat = AMP_SPK_CHECK();
+
+        }
+
+
+        if ( (nTick - s_RssNgCleanCnt) >= 15000)
+        {
+
+            uRssi_NgFlag = 0;
+
+
+             s_RssNgCleanCnt = nTick;
+
+        }
 
 //		HAL_Delay(1);
   }
@@ -640,20 +751,6 @@ static void MX_GPIO_Init(void)
   __HAL_RCC_GPIOA_CLK_ENABLE();
   __HAL_RCC_GPIOB_CLK_ENABLE();
 
-  /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(GPIOC, RE_Pin|SD_Pin|MUTE_Pin|LED_CTL_Pin, GPIO_PIN_RESET);
-
-  /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(GPIOA, RE1_Pin|OVERRIDE_Pin, GPIO_PIN_RESET);
-
-  /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(DI_CTL_GPIO_Port, DI_CTL_Pin, GPIO_PIN_SET);
-
-  /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(GPIOB, LED_75_Pin|RF_LED_Pin, GPIO_PIN_SET);
-
-  /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(GPIOB, LED_100_RED_Pin|LED_100_GREEN_Pin, GPIO_PIN_RESET);
 
   /*Configure GPIO pins : MASTER_IN_Pin CHARGER_DET_Pin VCC_IN_Pin */
   GPIO_InitStruct.Pin = MASTER_IN_Pin|CHARGER_DET_Pin|VCC_IN_Pin;
@@ -668,12 +765,29 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
 
+  /*Configure GPIO pins : RE_Pin SD_Pin MUTE_Pin LED_CTL_Pin */
+  GPIO_InitStruct.Pin = MUTE_Pin;
+  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+  GPIO_InitStruct.Pull = GPIO_PULLDOWN;
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+  HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
+
+
+
   /*Configure GPIO pins : RE1_Pin DI_CTL_Pin OVERRIDE_Pin */
   GPIO_InitStruct.Pin = RE1_Pin|DI_CTL_Pin|OVERRIDE_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
+
+  /*Configure GPIO pins : RE1_Pin DI_CTL_Pin OVERRIDE_Pin */
+  GPIO_InitStruct.Pin = VCC_RF_IN|AMP_FAULT|VCC_LED_IN|VCC_AUDIO_IN;
+  GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
+  GPIO_InitStruct.Pull = GPIO_PULLDOWN;
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+  HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
+
 
   /*Configure GPIO pins : LIGHT_ON_Pin ST_BY_Pin */
   GPIO_InitStruct.Pin = LIGHT_ON_Pin|ST_BY_Pin;
@@ -699,6 +813,31 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
+
+
+  /*Configure GPIO pin Output Level */
+    HAL_GPIO_WritePin(GPIOC, RE_Pin|LED_CTL_Pin, GPIO_PIN_RESET);
+
+    HAL_GPIO_WritePin(GPIOC, SD_Pin, GPIO_PIN_SET);
+
+
+    HAL_GPIO_WritePin(GPIOC, MUTE_Pin, GPIO_PIN_RESET);
+
+
+
+    /*Configure GPIO pin Output Level */
+    HAL_GPIO_WritePin(GPIOA, RE1_Pin|OVERRIDE_Pin, GPIO_PIN_RESET);
+
+    /*Configure GPIO pin Output Level */
+    HAL_GPIO_WritePin(DI_CTL_GPIO_Port, DI_CTL_Pin, GPIO_PIN_SET);
+
+    /*Configure GPIO pin Output Level */
+    HAL_GPIO_WritePin(GPIOB, LED_75_Pin|RF_LED_Pin, GPIO_PIN_SET);
+
+    /*Configure GPIO pin Output Level */
+    HAL_GPIO_WritePin(GPIOB, LED_100_RED_Pin|LED_100_GREEN_Pin, GPIO_PIN_RESET);
+
+
 
 }
 

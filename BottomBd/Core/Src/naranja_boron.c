@@ -41,7 +41,10 @@ uint16_t u16BatVol = 0;
 uint16_t u16CntBatVol = 0;
 uint32_t u16BatVolSum = 0;
 //--------------------------------------------------------------------------------------------//
-//
+uint8_t uDI_getMasterIn;
+uint8_t uSpk_Stat;
+uint8_t uRssi_NgFlag;
+
 //--------------------------------------------------------------------------------------------//
 /**
   * @brief  75% LED
@@ -154,6 +157,14 @@ void setRS485Inactive(GPIO_PinState state){ HAL_GPIO_WritePin(RE_GPIO_Port, RE_P
 //--------------------------------------------------------------------------------------------//
 //
 //--------------------------------------------------------------------------------------------//
+
+bool getVccRfIn(void){ return HAL_GPIO_ReadPin(VCC_RF_IN_Port, VCC_RF_IN); }
+bool getAmpFault(void){ return HAL_GPIO_ReadPin(AMP_FAULT_Port, AMP_FAULT); }
+bool getVccLedIn(void){ return HAL_GPIO_ReadPin(VCC_LED_IN_Port, VCC_LED_IN); }
+bool getVccAudioIn(void){ return HAL_GPIO_ReadPin(VCC_AUDIO_IN_Port, VCC_AUDIO_IN); }
+//--------------------------------------------------------------------------------------------//
+//
+//--------------------------------------------------------------------------------------------//
 /**
   * @brief  set LED CTR pin
   */
@@ -174,15 +185,192 @@ bool getAudioOn(void){ return HAL_GPIO_ReadPin(AUDIO_ON_GPIO_Port, AUDIO_ON_Pin)
   * @brief  set Amp mute
   */
 void setAmpMute(bool state){ HAL_GPIO_WritePin(MUTE_GPIO_Port, MUTE_Pin, state); }
-void ampMuteOn(void){ HAL_GPIO_WritePin(MUTE_GPIO_Port, MUTE_Pin, false); }
-void ampMuteOff(void){ HAL_GPIO_WritePin(MUTE_GPIO_Port, MUTE_Pin, true); }
+
+void ampMuteOn(void)
+{
+	uint8_t     nTbuf[10];
+	uint8_t     nRbuf[10];
+
+	HAL_StatusTypeDef result;
+
+	//HAL_GPIO_WritePin(MUTE_GPIO_Port, MUTE_Pin, false);
+	result = HAL_I2C_IsDeviceReady( &hi2c2, (uint16_t)(0xD8), 2, 2 );
+
+	if ( HAL_OK == result  )
+	{
+		////////////////////////////////////////////////////////////////////////
+		nTbuf[0] = 0X1F;
+
+
+		if(MB85_HAL_WriteBytes(&hi2c2,0xD8,0x0C,(uint8_t *)nTbuf,1))
+		{
+			printf(" ampMuteOn OK \n");
+		}
+		else
+		{
+			printf( "ampMuteOn NG \n" );
+		}
+
+	}
+
+
+}
+
+
+void ampMuteOff(void)
+{
+	uint8_t     nTbuf[10];
+	uint8_t     nRbuf[10];
+
+
+	HAL_StatusTypeDef result;
+
+	//HAL_GPIO_WritePin(MUTE_GPIO_Port, MUTE_Pin, true);
+
+	result = HAL_I2C_IsDeviceReady( &hi2c2, (uint16_t)(0xD8), 2, 2 );
+
+	if ( HAL_OK == result  )
+	{
+
+		////////////////////////////////////////////////////////////////////////
+		nTbuf[0] = 0x09;
+
+		if(MB85_HAL_WriteBytes(&hi2c2,0xD8,0x0C,(uint8_t *)nTbuf,1))
+		{
+			printf("-0xDA-0x0C Write Test(0x0D-0x%02X) OK \n",nTbuf[0] );
+		}
+		else
+		{
+			printf( "-0xDA-0x0C Write Test(0x08-0xbe) NG \n" );
+		}
+
+		////////////////////////////////////////////////////////////////////////
+		nRbuf[0] = 0xFF;
+
+		if(MB85_HAL_ReadBytes(&hi2c2,0xD8,0x06,(uint8_t *)nRbuf,1))
+		{
+			printf("-0xDA-0x0C Read Test(0x00-0x%02X) OK \n",nRbuf[0] );
+		}
+		else
+		{
+			printf( "-0x00 Read Test(0x00-0x00) NG \n" );
+		}
+
+	}
+
+}
 //--------------------------------------------------------------------------------------------//
 //
 //--------------------------------------------------------------------------------------------//
 /**
   * @brief  set Amp SD
   */
-void setAmpSd(bool state){ HAL_GPIO_WritePin(SD_GPIO_Port, SD_Pin, state); }
+void setAmpSd(bool state)
+{
+	  uint8_t     nTbuf[10];
+	  uint8_t     nRbuf[10];
+
+	  HAL_StatusTypeDef result;
+
+
+	HAL_GPIO_WritePin(SD_GPIO_Port, SD_Pin, state); //
+
+
+	setAmpMute(true);
+
+	if(state == true)
+	{
+
+
+		result = HAL_I2C_IsDeviceReady( &hi2c2, (uint16_t)(0xD8), 2, 2 );
+
+		if ( HAL_OK == result  )
+		{
+				////////////////////////////////////////////////////////////////////////
+				nTbuf[0] = 0x9F;
+
+
+				if(MB85_HAL_WriteBytes(&hi2c2,0xD8,0x0C,(uint8_t *)nTbuf,1))
+				{
+					printf("-0xDA-0x0C Write Test(0x0C-0x%02X) OK \n",nTbuf[0] );
+				}
+				else
+				{
+					printf( "-0xDA-0x0C Write Test(0x08-0xbe) NG \n" );
+				}
+
+
+				////////////////////////////////////////////////////////////////////////
+				nTbuf[0] = 0xBE;
+
+				if(MB85_HAL_WriteBytes(&hi2c2,0xD8,0x08,(uint8_t *)nTbuf,1))
+				{
+					printf("-0xDA-0x0C Write Test(0x08-0x%02X) OK \n",nTbuf[0] );
+				}
+				else
+				{
+					printf( "-0xDA-0x0C Write Test(0x08-0xbe) NG \n" );
+				}
+
+
+				////////////////////////////////////////////////////////////////////////
+				nTbuf[0] = 0x0C;
+
+				if(MB85_HAL_WriteBytes(&hi2c2,0xD8,0x0A,(uint8_t *)nTbuf,1))
+				{
+					printf("-0xDA-0x0C Write Test(0x0A-0x%02X) OK \n",nTbuf[0] );
+				}
+				else
+				{
+					printf( "-0xDA-0x0C Write Test(0x08-0xbe) NG \n" );
+				}
+				////////////////////////////////////////////////////////////////////////
+				nTbuf[0] = 0xD0;
+
+				if(MB85_HAL_WriteBytes(&hi2c2,0xD8,0x0b,(uint8_t *)nTbuf,1))
+				{
+					printf("-0xDA-0x0C Write Test(0x0b-0x%02X) OK \n",nTbuf[0] );
+				}
+				else
+				{
+					printf( "-0xDA-0x0C Write Test(0x08-0xbe) NG \n" );
+				}
+
+/*
+				////////////////////////////////////////////////////////////////////////
+				nTbuf[0] = 0x09;
+
+				if(MB85_HAL_WriteBytes(&hi2c2,0xD8,0x0C,(uint8_t *)nTbuf,1))
+				{
+					printf("-0xDA-0x0C Write Test(0x0D-0x%02X) OK \n",nTbuf[0] );
+				}
+				else
+				{
+					printf( "-0xDA-0x0C Write Test(0x08-0xbe) NG \n" );
+				}
+
+*/
+				////////////////////////////////////////////////////////////////////////
+				nRbuf[0] = 0xFF;
+
+				if(MB85_HAL_ReadBytes(&hi2c2,0xD8,0x00,(uint8_t *)nRbuf,1))
+				{
+					printf("-0xDA-0x0C Read Test(0x00-0x%02X) OK \n",nRbuf[0] );
+				}
+				else
+				{
+					printf( "-0x00 Read Test(0x00-0x00) NG \n" );
+				}
+
+
+		}
+
+
+	}
+
+	//setAmpMute(false);
+
+}
 //--------------------------------------------------------------------------------------------//
 //
 //--------------------------------------------------------------------------------------------//
@@ -225,7 +413,31 @@ ChargeRateState getChargeRateState(void)
   */
 void processOverrideOn(void)
 {
-	setOverrideOn(getMasterIn());
+    static int sDataVal = 0;
+    static int sDateValRe = 0;
+
+    static int sCnt = 0;
+
+	setOverrideOn(uDI_getMasterIn);
+
+
+    sDataVal = uDI_getMasterIn;
+
+    if(sDataVal != sDateValRe)
+    {
+
+      sCnt++;
+
+      if(sCnt > 5 )
+      {
+        sCnt = 0;
+        sDateValRe = sDataVal;
+
+      }
+
+       cmd_occ(2);
+
+    }
 }
 //--------------------------------------------------------------------------------------------//
 //
@@ -312,15 +524,45 @@ void processChargeLed(void)
   */
 void processLightLed(void)
 {
-	if(getMasterIn())
+    static int sCnnt = 0;
+
+
+
+	if(uDI_getMasterIn)
 	{
+         sCnnt++;
+
 		//	방공등 Off
 		bool bLightOn = getLightOn();
+
 		if(bLightOn)
+        {
 			ledCtrOn();
+
+
+//             if(!(sCnnt%5000))
+//            {
+//                printf("---ledCtrOn \n\r" );
+//            }
+
+        }
 		else
+        {
 			ledCtrOff();
+
+//             if(!(sCnnt%5000))
+//            {
+//                printf("---ledCtrOff \n\r" );
+//            }
+
+        }
+
 		bCurLedCtr = bLightOn;
+
+
+
+
+
 	}
 	else
 	{
@@ -343,7 +585,10 @@ void processAudioAmpProcess(void)
 		if(bCurAmpOnOff != bAmpOnOff)
 		{
 			bCurAmpOnOff = bAmpOnOff;
-			setAmpSd(true);
+			//setAmpSd(true);
+
+			HAL_GPIO_WritePin(SD_GPIO_Port, SD_Pin, true); // SD
+
 			u16AmpSettingTick = 500;
 		}
 
@@ -366,7 +611,9 @@ void processAudioAmpProcess(void)
 		if(bAmpSettingDetected)
 		{
 			bAmpSettingDetected = false;
-			setAmpSd(false);
+			//setAmpSd(false);
+
+			//HAL_GPIO_WritePin(SD_GPIO_Port, SD_Pin, false); // SD
 		}
 	}
 }
@@ -423,3 +670,229 @@ void processTestDebug(void)
 //--------------------------------------------------------------------------------------------//
 //
 //--------------------------------------------------------------------------------------------//
+//--------------------------------------------------------------------------------------------//
+// 전류 센서 측정 하는 부분.
+// 최종 기능 업데이트시 적용 필요.   ( LED가 동작무 부하일때 측정중지하는 부분 필요 -  무부하일때 측정값 틀어짐 확인)
+//--------------------------------------------------------------------------------------------//
+
+void processCurrentVal(void)
+{
+       uint8_t     nRbuf[10];
+       int sData_val = 0;
+
+
+
+    if(bCurLedCtr) // 전류 센서 값은 LED 동작 중일 때만 동작 한다.
+    {
+        nRbuf[0] = 0x41;
+        nRbuf[1] = 0x27;
+
+        if(MB85_HAL_WriteBytes(&hi2c2,0x80,0x00,(uint8_t *)nRbuf,2))
+        {
+            printf("++++++++++++ Write Calibration Register  ++++++++++++ \n\r" );
+        }
+        else
+        {
+            printf( "++Write Test NG \n\r" );
+        }
+
+
+        nRbuf[0] = 0xFF;
+        nRbuf[1] = 0xFF;
+         if(MB85_HAL_ReadBytes(&hi2c2,0x80,0x01,(uint8_t *)nRbuf,2))
+        {
+            //printf("++ INA226 OK \n\r");
+
+             printf( "++ Read Shunt Register (%02X,%02X) \n\r",nRbuf[0],nRbuf[1] );
+        }
+        else
+        {
+            printf( "++ INA226 NG \n\r" );
+        }
+
+
+
+         if(MB85_HAL_ReadBytes(&hi2c2,0x80,0x02,(uint8_t *)nRbuf,2))
+        {
+            //printf("++ INA226 OK \n\r");
+
+             sData_val = ((nRbuf[0] << 8) | nRbuf[1]) / 800;
+
+             printf( "++ Read Bus Voltage Register (%d) n\r",sData_val );
+        }
+        else
+        {
+            printf( "++ INA226 NG \n\r" );
+        }
+
+
+
+        /////////////////////////////////////IC  상태를 전류 측정 상태로 변경 하는 값.
+            nRbuf[0] = 0x0A;
+            nRbuf[1] = 0x00;
+
+            if(MB85_HAL_WriteBytes(&hi2c2,0x80,0x05,(uint8_t *)nRbuf,2))
+            {
+                printf("++ Write V-C Change \n\r" );
+            }
+            else
+            {
+                printf( "++Write Calibration NG \n\r" );
+            }
+      /////////////////////////////////////
+
+         if(MB85_HAL_ReadBytes(&hi2c2,0x80,0x04,(uint8_t *)nRbuf,2))
+        {
+
+             sData_val = ((nRbuf[0] << 8) | nRbuf[1]) / 33;
+
+            printf( "++ Read Current Register(%2d) \n\r",sData_val );
+        }
+        else
+        {
+            printf( "++ INA226 Read NG \n\r");
+        }
+
+
+
+
+        if(MB85_HAL_ReadBytes(&hi2c2,0x80,0x03,(uint8_t *)nRbuf,2))
+        {
+            //printf("++ INA226 OK \n\r");
+
+             printf( "++ Read Power Register(%02X,%02X) \n\r",nRbuf[0],nRbuf[1] );
+        }
+        else
+        {
+            printf( "++ INA226 NG \n\r" );
+
+        }
+
+
+
+    }
+
+
+
+}
+
+
+/*****************************************************************************
+* @brief -
+* @param -
+* @retval-
+******************************************************************************/
+
+uint8_t AMP_SPK_CHECK(void)
+{
+
+    uint8_t     nRbuf_1[2];
+    uint8_t     nRbuf_2[2];
+
+    uint8_t     nTbuf[2];
+
+
+    uint8_t sSpkData;
+
+    setAmpMute(false);
+
+    HAL_GPIO_WritePin(SD_GPIO_Port, SD_Pin, true); // SD
+
+    HAL_GPIO_WritePin(SD_GPIO_Port, SD_Pin, true); // SD
+
+
+    nTbuf[0] = 0x09;
+   MB85_HAL_WriteBytes(&hi2c2, 0xD8, 0x0C, (uint8_t *)nTbuf, 1);
+
+
+
+    //ampMuteOff();
+    nTbuf[0] = 0x0F;
+    if(MB85_HAL_WriteBytes(&hi2c2,0xD8,0x0B,(uint8_t *)nTbuf,1))
+	{
+		printf("-0xDA-0x0C Write Test(0x0b-0x%02X) OK \n",nTbuf[0] );
+	}
+
+
+
+    nRbuf_1[0] = 0xFF;
+    nRbuf_2[0] = 0xFF;
+
+    MB85_HAL_ReadBytes(&hi2c2, 0xD8, 0x07, (uint8_t *)nRbuf_1, 1);
+    printf("+++++ D8  getAmp1 Spk read :%02X\r\n", (nRbuf_1[0]));
+
+
+
+    /*
+     MB85_HAL_ReadBytes(&hi2c2, 0xDA, 0x06, (uint8_t *)nRbuf_1, 1);
+    printf("+++++ DA  getAmp1 Spk read :%02X\r\n", (nRbuf_1[0]));
+
+     MB85_HAL_ReadBytes(&hi2c2, 0xDC, 0x06, (uint8_t *)nRbuf_1, 1);
+    printf("+++++ DC  getAmp1 Spk read :%02X\r\n", (nRbuf_1[0]));
+
+     MB85_HAL_ReadBytes(&hi2c2, 0xDE, 0x06, (uint8_t *)nRbuf_1, 1);
+    printf("+++++ DC  getAmp1 Spk read :%02X\r\n", (nRbuf_1[0]));
+    */
+//
+
+
+
+		MB85_HAL_ReadBytes(&hi2c2,0xD8,0x02,(uint8_t *)nRbuf_1,1);
+		MB85_HAL_ReadBytes(&hi2c2,0xD8,0x03,(uint8_t *)nRbuf_2,1);
+
+
+
+    printf("+++++ getAmp1 Spk read :%02X - %02X \r\n", (nRbuf_1[0]), (nRbuf_2[0]));
+
+    sSpkData  = (nRbuf_1[0] & 0x80) == 0x80 ? 1 : 0;
+    sSpkData |= (nRbuf_2[0] & 0x80) == 0x80 ? 1 : 0;
+
+
+    //ampMuteOn();
+
+    //HAL_GPIO_WritePin(SD_GPIO_Port, SD_Pin, false); // SD
+    //setAmpMute(false);
+
+    //HAL_GPIO_WritePin(SD_GPIO_Port, SD_Pin, false); // SD
+     return sSpkData;
+
+}
+
+
+//--------------------------------------------------------------------------------------------//
+//
+//--------------------------------------------------------------------------------------------//
+/*****************************************************************************
+* @brief -
+* @param -
+* @retval-
+******************************************************************************/
+
+
+void ONTD_Function(void)
+{
+    static int sMasterCnt = 0;
+
+    ONTD(getMasterIn(),&uDI_getMasterIn,3,&sMasterCnt);
+
+}
+
+
+
+/*****************************************************************************
+* @brief -
+* @param -
+* @retval-
+******************************************************************************/
+void ONTD(uint8_t IN,uint8_t *OUT,uint8_t MS,int *CLK )
+{
+	uint8_t CE;
+
+	if(!IN){*CLK = 0; *OUT = 0;}
+	CE = NOT(*OUT) && IN;
+	if(CE)
+	{
+		if(MS == *CLK) {*OUT = 1;}
+		else *CLK = *CLK+1;
+	}
+}

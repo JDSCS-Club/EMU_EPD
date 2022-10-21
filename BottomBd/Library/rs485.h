@@ -41,6 +41,8 @@ void 	SendSD				( const FRAME_SDR *pSdr );		//  Send SD Data
 
 int 	cmd_sd				( int argc, char *argv[] );		//	Send SD
 
+void Dump( char *sTitle, char *sBuf, int nSize );
+
 //===========================================================================
 #if __cplusplus
 };	//	extern "C"
