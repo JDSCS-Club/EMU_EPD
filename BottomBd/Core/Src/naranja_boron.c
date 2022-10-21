@@ -305,7 +305,7 @@ void setAmpSd(bool state)
 
 				if(MB85_HAL_WriteBytes(&hi2c2,0xD8,0x08,(uint8_t *)nTbuf,1))
 				{
-					printf("-Gain Select (0xD8-0x%02X) OK \n",nTbuf[0] );
+//					printf("-Gain Select (0xD8-0x%02X) OK \n",nTbuf[0] );
 				}
 				else
 				{
@@ -319,7 +319,7 @@ void setAmpSd(bool state)
 
 				if(MB85_HAL_WriteBytes(&hi2c2,0xD8,0x0A,(uint8_t *)nTbuf,1))
 				{
-					printf("- Clip_OTW Configuration (0xD8-0x%02X) OK \n",nTbuf[0] );
+//					printf("- Clip_OTW Configuration (0xD8-0x%02X) OK \n",nTbuf[0] );
 				}
 				else
 				{
@@ -331,7 +331,7 @@ void setAmpSd(bool state)
 
 				if(MB85_HAL_WriteBytes(&hi2c2,0xD8,0x0B,(uint8_t *)nTbuf,1))
 				{
-					printf("-Load Diagnostics (0xD8-0x%02X) OK \n",nTbuf[0] );
+//					printf("-Load Diagnostics (0xD8-0x%02X) OK \n",nTbuf[0] );
 				}
 				else
 				{
@@ -379,7 +379,7 @@ void setAmpSd(bool state)
                 HAL_Delay(30);
 				if(MB85_HAL_WriteBytes(&hi2c2,0xD8,0x0C,(uint8_t *)nTbuf,1))
 				{
-					printf("-play mode (0xD8-0x%02X) OK \n",nTbuf[0] );
+//					printf("-play mode (0xD8-0x%02X) OK \n",nTbuf[0] );
 				}
 				else
 				{
@@ -388,7 +388,7 @@ void setAmpSd(bool state)
 		}
 	}
         
-     HAL_Delay(150);
+   HAL_Delay(150);
     
    // setAmpMute(false);
 
@@ -835,14 +835,16 @@ void processCurrentVal(void)
 
 uint8_t AMP_SPK_CHECK(void)
 {
+    static uint8_t	s_StatSpk1;
+    static uint8_t	s_StatSpk2;
 
     uint8_t     nRbuf_1[2];
     uint8_t     nRbuf_2[2];
 
     uint8_t     nTbuf[2];
+    uint8_t 	sSpkData;
 
-
-    uint8_t sSpkData;
+/*
 
     setAmpMute(true);
 HAL_Delay(100);
@@ -851,6 +853,7 @@ HAL_Delay(100);
     HAL_GPIO_WritePin(SD_GPIO_Port, SD_Pin, true); // SD
 
     HAL_GPIO_WritePin(SD_GPIO_Port, SD_Pin, true); // SD
+//    */
     
     
 
@@ -873,8 +876,8 @@ HAL_Delay(100);
 ////    
 //    ampMuteOn();
      
-    HAL_Delay(100);
-
+//    HAL_Delay(100);
+    HAL_Delay(50);
 
 
 //    nRbuf_1[0] = 0xFF;
@@ -884,27 +887,29 @@ HAL_Delay(100);
 //    printf("+++++ D8  getAmp1 Spk read :%02X\r\n", (nRbuf_1[0]));
 
 
+//	*/
 
 	MB85_HAL_ReadBytes(&hi2c2,0xD8,0x02,(uint8_t *)nRbuf_1,1);
     
 	MB85_HAL_ReadBytes(&hi2c2,0xD8,0x03,(uint8_t *)nRbuf_2,1);
 
+	if ( nRbuf_1[0] != s_StatSpk1 || nRbuf_2[0] != s_StatSpk2 )
+	{
+	    printf("+++++ getAmp1 Spk read :%02X - %02X \r\n", (nRbuf_1[0]), (nRbuf_2[0]));
 
+	    sSpkData  = (nRbuf_1[0] & 0x80) == 0x80 ? 1 : 0;
 
-    printf("+++++ getAmp1 Spk read :%02X - %02X \r\n", (nRbuf_1[0]), (nRbuf_2[0]));
+	    sSpkData  |= (nRbuf_2[0] & 0x08) == 0x08 ? (0x01<<1) : 0;
 
-    sSpkData  = (nRbuf_1[0] & 0x80) == 0x80 ? 1 : 0;
+	    printf("+++++ getAmp1 Spk Retun : %02X \n",sSpkData);
+
+	    s_StatSpk1 = nRbuf_1[0];
+	    s_StatSpk2 = nRbuf_2[0];
+	}
     
-    sSpkData  |= (nRbuf_2[0] & 0x08) == 0x08 ? (0x01<<1) : 0;
-
-    
-    printf("+++++ getAmp1 Spk Retun : %02X \n",sSpkData);
-    
-HAL_Delay(50);
+//HAL_Delay(50);
 
 //    ampMuteOn();
-
-     
          
     //HAL_GPIO_WritePin(SD_GPIO_Port, SD_Pin, false); // SD
     //setAmpMute(false);
