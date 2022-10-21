@@ -1099,7 +1099,7 @@ int cmd_OccPa     ( int argc, char * argv[] )
 	//========================================================================
     //	occ [1(start)/0(stop)]	-	대승객방송
 
-	printf("%s(%d)\n", __func__, __LINE__ );
+//	printf("%s(%d)\n", __func__, __LINE__ );
 
 	//	대승객방송 시작/종료
     int 		nOnOff 	= 0;
@@ -1112,7 +1112,8 @@ int cmd_OccPa     ( int argc, char * argv[] )
 
     if ( nOnOff == 1 )
     {
-    	printf("%s(%d) - Start\n", __func__, __LINE__ );
+//    	printf("%s(%d) - Start\n", __func__, __LINE__ );
+    	printf("[Start][OCC]\n");
 
     	//	OCC Mode
     	SetRFMMode( RFMModeOcc );
@@ -1135,7 +1136,8 @@ int cmd_OccPa     ( int argc, char * argv[] )
     }
     else
     {
-    	printf("%s(%d) - Stop\n", __func__, __LINE__ );
+//    	printf("%s(%d) - Stop\n", __func__, __LINE__ );
+    	printf("[Stop][OCC]\n");
 
     	//	Normal Mode
     	SetRFMMode( RFMModeNormal );
