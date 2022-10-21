@@ -50,18 +50,14 @@
 /* USER CODE END PM */
 
 /* Private variables ---------------------------------------------------------*/
-
-#if defined(USE_BOOTLOADER)
-#else	//	Application
-
 ADC_HandleTypeDef hadc1;
 ADC_HandleTypeDef hadc2;
 
-TIM_HandleTypeDef htim2;
-
-#endif	//	Application
-
 I2C_HandleTypeDef hi2c2;
+
+IWDG_HandleTypeDef hiwdg;
+
+TIM_HandleTypeDef htim2;
 
 UART_HandleTypeDef huart5;
 UART_HandleTypeDef huart1;
@@ -83,6 +79,7 @@ static void MX_ADC2_Init(void);
 static void MX_TIM2_Init(void);
 static void MX_USART2_UART_Init(void);
 static void MX_UART5_Init(void);
+static void MX_IWDG_Init(void);
 /* USER CODE BEGIN PFP */
 
 /* USER CODE END PFP */
@@ -159,6 +156,7 @@ int main(void)
   MX_TIM2_Init();
   MX_USART2_UART_Init();
   MX_UART5_Init();
+  MX_IWDG_Init();
   /* USER CODE BEGIN 2 */
 
 #if defined(USE_BOOTLOADER)
@@ -297,7 +295,7 @@ int main(void)
 
 	setAmpSd(true); //AMP �ʱ� �����ϴ� �κ�.
 
-	//	초기 구동시 Mute On
+	//	초기 구동?�� Mute On
 	ampMuteOn();
 
 
@@ -349,7 +347,7 @@ int main(void)
 #else
             s_nOccCnt = nTick;
                 
-            // 1?�차 �?10 ?�차�? ?�?�객 ?�작 ?�도�??�정.
+            // 1?�차 �??10 ?�차�?? ?�??�객 ?�작 ?�도�???�정.
             if(getRS485Id() == 0x01 ||
                getRS485Id() == 0x0A )
             {
@@ -414,7 +412,7 @@ int main(void)
         if ( (nTick - s_RssNgCleanCnt) >= 15000)
         {
                     
-            if(uRssi_NgFlag) // 10초에 ?�번 체크 ?�서 RSSI 고장?? ?�다�?1 감소 ?�다.
+            if(uRssi_NgFlag) // 10초에 ?�번 체크 ?�서 RSSI 고장?? ?�다�??1 감소 ?�다.
             {
                uRssi_NgFlag--;
             }
@@ -453,9 +451,10 @@ void SystemClock_Config(void)
   /** Initializes the RCC Oscillators according to the specified parameters
   * in the RCC_OscInitTypeDef structure.
   */
-  RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSI;
+  RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSI|RCC_OSCILLATORTYPE_LSI;
   RCC_OscInitStruct.HSIState = RCC_HSI_ON;
   RCC_OscInitStruct.HSICalibrationValue = RCC_HSICALIBRATION_DEFAULT;
+  RCC_OscInitStruct.LSIState = RCC_LSI_ON;
   RCC_OscInitStruct.PLL.PLLState = RCC_PLL_NONE;
   if (HAL_RCC_OscConfig(&RCC_OscInitStruct) != HAL_OK)
   {
@@ -480,28 +479,6 @@ void SystemClock_Config(void)
   {
     Error_Handler();
   }
-        /**Configure the Systick interrupt time 
-
-    */
-
-  HAL_SYSTICK_Config(HAL_RCC_GetHCLKFreq()/1000);
-
-
-
-    /**Configure the Systick 
-
-    */
-
-  HAL_SYSTICK_CLKSourceConfig(SYSTICK_CLKSOURCE_HCLK);
-
-
-
-  /* SysTick_IRQn interrupt configuration */
-
-  HAL_NVIC_SetPriority(SysTick_IRQn, 0, 0);
-
-
-          
 }
 
 /**
@@ -611,11 +588,11 @@ static void MX_ADC2_Init(void)
   */
 static void MX_I2C2_Init(void)
 {
-    GPIO_InitTypeDef   GPIO_InitStructure;
+
   /* USER CODE BEGIN I2C2_Init 0 */
 
   /* USER CODE END I2C2_Init 0 */
- __HAL_RCC_GPIOB_CLK_ENABLE();
+
   /* USER CODE BEGIN I2C2_Init 1 */
  GPIO_InitStructure.Pin = SDL2_Pin|SDA2_Pin;
  GPIO_InitStructure.Mode = GPIO_MODE_AF_OD;
@@ -638,7 +615,6 @@ HAL_GPIO_WritePin(SDL2_GPIO_Port, SDA2_Pin, GPIO_PIN_SET);
   hi2c2.Init.OwnAddress2 = 0;
   hi2c2.Init.GeneralCallMode = I2C_GENERALCALL_DISABLE;
   hi2c2.Init.NoStretchMode = I2C_NOSTRETCH_DISABLE;
-      
   if (HAL_I2C_Init(&hi2c2) != HAL_OK)
   {
     Error_Handler();
@@ -646,6 +622,34 @@ HAL_GPIO_WritePin(SDL2_GPIO_Port, SDA2_Pin, GPIO_PIN_SET);
   /* USER CODE BEGIN I2C2_Init 2 */
 
   /* USER CODE END I2C2_Init 2 */
+
+}
+
+/**
+  * @brief IWDG Initialization Function
+  * @param None
+  * @retval None
+  */
+static void MX_IWDG_Init(void)
+{
+
+  /* USER CODE BEGIN IWDG_Init 0 */
+
+  /* USER CODE END IWDG_Init 0 */
+
+  /* USER CODE BEGIN IWDG_Init 1 */
+
+  /* USER CODE END IWDG_Init 1 */
+  hiwdg.Instance = IWDG;
+  hiwdg.Init.Prescaler = IWDG_PRESCALER_128;
+  hiwdg.Init.Reload = 4000;
+  if (HAL_IWDG_Init(&hiwdg) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  /* USER CODE BEGIN IWDG_Init 2 */
+
+  /* USER CODE END IWDG_Init 2 */
 
 }
 
