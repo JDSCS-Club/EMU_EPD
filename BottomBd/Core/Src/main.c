@@ -297,6 +297,10 @@ int main(void)
 
 	setAmpSd(true); //AMP �ʱ� �����ϴ� �κ�.
 
+	//	초기 구동시 Mute On
+	ampMuteOn();
+
+
   while (1)
   {
     /* USER CODE END WHILE */

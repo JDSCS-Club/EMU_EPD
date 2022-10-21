@@ -87,11 +87,7 @@ int cmd_occ(int argc)
     else
     {
         bOnOff = 0;
-        
     }
-         
-
-	
 
 //    switch ( argc )
 //    {
@@ -111,10 +107,7 @@ int cmd_occ(int argc)
         {
             sOccFlag = 0;
         }
-            
-                
         RFMOccPaStop();
-            
     }
 
 	return 0;

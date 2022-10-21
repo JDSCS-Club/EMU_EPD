@@ -234,42 +234,17 @@ void SendSD_5( const FRAME_SDR *pSdr,int nCh )			//	CH5 - TRS
 //========================================================================
 {
 
-	FRAME_SD sdfrm;
+	FRAME_TRSD sdfrm;
 	memset( &sdfrm, 0, sizeof( sdfrm ) );
 
 	sdfrm.nSTX				=	eSTX;	//	0x02;		//	STX
-	sdfrm.sd.cSD			=	eSDTrs;					//	SD
 
-	sdfrm.sd.c0x22			=	0x22;
+	TRSD_t	*pSd = &sdfrm.sd;
 
-	//sdfrm.sd.bOccPaStart	=	pSdr->sdr.bOccPaStart;
-	//sdfrm.sd.bOccPaStop		=	pSdr->sdr.bOccPaStop;
-//
-//#if defined(TRS_SD_BAT)
-//	sdfrm.sd.nSBATR1		=	95;		//	95 %
-//	sdfrm.sd.nSBATR2		=	95;		//	95 %
-//	sdfrm.sd.nSBATR3		=	95;		//	95 %
-//	sdfrm.sd.nSBATR4		=	95;		//	95 %
-//	sdfrm.sd.nSBATR5		=	95;		//	95 %
-//	sdfrm.sd.nSBATR6		=	95;		//	95 %
-//#endif
-//
-//    //sdfrm.sd.bSpare1[0]     =        1bit = SPK 감지. // 2bit = 수신 감도 상태.// 3bit = 배터리 .
-//    sdfrm.sd.bSpare1[0]     = 1; //uSpk_Stat;
-//    sdfrm.sd.bSpare1[0]     = sdfrm.sd.bSpare1[0] | (0<<1);//uRssi_NgFlag;
-//    sdfrm.sd.bSpare1[0]     |= (0x00 << 2);
-//
-//
-//    sdfrm.sd.bDate[0] = pSdr->sdr.bYY_02;
-//    sdfrm.sd.bDate[1] = pSdr->sdr.bMM_03;
-//    sdfrm.sd.bDate[2] = pSdr->sdr.bDD_04;
-//    sdfrm.sd.bDate[3] = pSdr->sdr.bhh_05;
-//    sdfrm.sd.bDate[4] = pSdr->sdr.bmm_06;
-//    sdfrm.sd.bDate[5] = pSdr->sdr.bss_07;
-//
-//
-//
-//	sdfrm.sd.nWatchDog		=	pSdr->sdr.nWatchDog;
+	pSd->cSD				=	eSDTrs;					//	SD
+
+	pSd->c0x22				=	0x22;
+	pSd->bRFMFault			=	(g_bRFMOk)?0:1;			//	RFM 모듈통신상태.
 
 	sdfrm.nETX				=	eETX;	//	0x03;		//	ETX
 
@@ -313,11 +288,63 @@ void ProcessFrameSDR( const uint8_t *pBuf, int nLen,int nCh )
     
     if(nCh == 3)
     {
+    	//	CH3		-	TCMS
+
+    	//	SD 전송.
         SendSD_3( (FRAME_SDR *)pBuf, nCh);
+
+    	//========================================================================
+    	//	SDR 처리
+    	const FRAME_SDR	*pFrameSdr = (const FRAME_SDR *)pBuf;
+    	const SDR_t		*pSdr = &pFrameSdr->sdr;
+
+    	static int s_nTrainNo = -1;
+
+    	//	편성번호값에 따른 편성번호 설정.
+    	if ( pSdr->bTrainNoVld )
+    	{
+    		//	열차번호 설정
+    		if ( s_nTrainNo != pSdr->nTrainNo )
+			{
+    	    	printf("Set Train No: %d\n", pSdr->nTrainNo );
+
+    	    	char sBuf[256];
+    	    	sprintf(sBuf, "ts %d\r", pSdr->nTrainNo );
+
+    	    	printf(sBuf);
+
+    	    	//	RFMBase -> RFM 명령 전송 : UART2
+    	    	HAL_UART_Transmit( &huart2, (uint8_t *)sBuf, strlen(sBuf), 100 );
+			}
+    	}
+
     }
     else if(nCh == 5)
     {
+    	//	CH5		-	TRS
+
         SendSD_5( (FRAME_SDR *)pBuf, nCh);
+
+    	//========================================================================
+    	//	SDR 처리
+    	const FRAME_TRSDR	*pFrameSdr = (const FRAME_TRSDR *)pBuf;
+    	const TRSDR_t		*pSdr = &pFrameSdr->sdr;
+
+    	static int s_nTrsStat = -1;
+
+    	if( s_nTrsStat != pSdr->bTRSFault )
+    	{
+    		if ( pSdr->bTRSFault )
+    		{
+    			printf("TRS SD : TRS Fault\n");
+    		}
+    		else
+    		{
+    			printf("TRS SD : TRS OK\n");
+    		}
+
+    		s_nTrsStat = pSdr->bTRSFault;
+    	}
     }
     
 /*
@@ -727,15 +754,12 @@ void LoopProcRS485_5ch(void)
 				{
 					printf( "[%d] %s(%d) - Invalid packet(%d)\n", HAL_GetTick(), __func__, __LINE__, length_5 );
 
-
-
 					//===========================================================================
 					init_queue(&g_qUart5);		//	Queue Clear
 					//===========================================================================
 
 					//	최대 패킷 사이즈보다 큰경우. -> Clear Buffer
 					length_5 = 0;
-
 				}
 			}
 		}
@@ -748,9 +772,7 @@ void LoopProcRS485_5ch(void)
 		s_RxnTick = nTick;
 
 		ProcessFrame(rxbuffer_5, s_RxOkLen,5);
-
 	}
-
 }
 
 //========================================================================
