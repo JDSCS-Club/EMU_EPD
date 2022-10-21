@@ -33,12 +33,14 @@ extern uint16_t u16Led75UnderFlickerTick;
 extern uint16_t u16Led100UnderFlickerTick;
 extern uint16_t u16AmpSettingTick;
 
-//--------------------------------------------------------------------------------------------//
 extern uint8_t uDI_getMasterIn;
 extern uint8_t uSpk_Stat;
 extern uint8_t uRssi_NgFlag;
 
 extern bool bAmpSettingDetected;
+extern uint8_t uAudioPlayFlag;
+//--------------------------------------------------------------------------------------------//
+//
 //--------------------------------------------------------------------------------------------//
 extern void processOverrideOn(void);
 extern void processRfLed(void);
@@ -48,6 +50,7 @@ extern void processAudioAmpProcess(void);
 extern void processGetBatVol(void);
 extern void processTestDebug(void);
 //--------------------------------------------------------------------------------------------//
+
 extern void processCurrentVal(void);
 //--------------------------------------------------------------------------------------------//
 extern bool getVccRfIn(void);
@@ -60,6 +63,7 @@ extern void ONTD(uint8_t IN,uint8_t *OUT,uint8_t MS,int *CLK );
 extern void ONTD_Function(void);
 
 extern uint8_t AMP_SPK_CHECK(void);
+
 //--------------------------------------------------------------------------------------------//
 //
 //--------------------------------------------------------------------------------------------//

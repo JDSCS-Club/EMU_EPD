@@ -42,9 +42,7 @@
 
 //========================================================================
 //	printf disable
-#if defined(USE_BOOTLOADER)
-#define		printf(arg, ...)
-#endif	//	 defined(USE_BOOTLOADER)
+
 //========================================================================
 
 //========================================================================
@@ -96,11 +94,18 @@ int MB85_HAL_WriteBytes( I2C_HandleTypeDef *hi2c, uint16_t DevAddress, uint16_t 
 	int TimeOut;
 
 	TimeOut = 0;
-	while ( HAL_I2C_Mem_Write( hi2c, (uint16_t)DevAddress, (uint16_t)MemAddress, I2C_MEMADD_SIZE_8BIT, pData, (uint16_t)TxBufferSize, 1000 ) != HAL_OK && TimeOut < 10 ) TimeOut++;
+	while ( HAL_I2C_Mem_Write( hi2c, (uint16_t)DevAddress, (uint16_t)MemAddress, I2C_MEMADD_SIZE_8BIT, pData, (uint16_t)TxBufferSize, 10 ) != HAL_OK && TimeOut < 5 ) TimeOut++;
 
 	HAL_Delay(30);
 
-	return 1;
+	 if(TimeOut == 5)
+    {
+        return 0;
+    }
+    else
+    {
+        return 1;
+    }
 }
 
 
@@ -111,13 +116,19 @@ int MB85_HAL_ReadBytes( I2C_HandleTypeDef *hi2c, uint16_t DevAddress, uint16_t M
 	int TimeOut;
 
 	TimeOut = 0;
-	while ( HAL_I2C_Mem_Read( hi2c, (uint16_t)DevAddress, (uint16_t)MemAddress, I2C_MEMADD_SIZE_8BIT, pData, (uint16_t)RxBufferSize, 1000 ) != HAL_OK && TimeOut < 10 ) TimeOut++;
+	while ( HAL_I2C_Mem_Read( hi2c, (uint16_t)DevAddress, (uint16_t)MemAddress, I2C_MEMADD_SIZE_8BIT, pData, (uint16_t)RxBufferSize, 10 ) != HAL_OK && TimeOut < 5 ) TimeOut++;
 
-	return 1;
+    if(TimeOut == 5)
+    {
+        return 0;
+    }
+    else
+    {
+        return 1;
+    }
 }
 
-#if defined(USE_BOOTLOADER)
-#else	//	Application
+
 
 
 //========================================================================
@@ -219,4 +230,4 @@ int cmd_nvramDump		( int argc, char * argv[] )
 	}
 }
 
-#endif	//	Application
+

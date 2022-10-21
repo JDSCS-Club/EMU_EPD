@@ -43,8 +43,14 @@ extern "C" {
 
 /* Exported constants --------------------------------------------------------*/
 /* USER CODE BEGIN EC */
-//extern ADC_HandleTypeDef hadc1;
-//extern ADC_HandleTypeDef hadc2;
+
+#if defined(USE_BOOTLOADER)
+#else	//	Application
+
+extern ADC_HandleTypeDef hadc1;
+extern ADC_HandleTypeDef hadc2;
+
+#endif
 
 extern I2C_HandleTypeDef hi2c2;
 
@@ -53,6 +59,9 @@ extern UART_HandleTypeDef huart1;		//	Console
 extern UART_HandleTypeDef huart2;		//	RFM
 extern UART_HandleTypeDef huart3;		//	RS485
 
+//extern UART_HandleTypeDef UartHandle;
+
+#define	UartHandle huart2			//	UartHandle->UART2(RFM)
 
 /* USER CODE END EC */
 

@@ -19,9 +19,7 @@
 #include "occpa.h"
 
 #include "main.h"		//	huart2
-
 #include "naranja_boron.h"
-
 #include "serial.h"
 
 //========================================================================
@@ -40,7 +38,7 @@ void RFMOccPaStart( void )
 	//	RFMBase -> RFM 명령 전송 : UART2
 	printf("%s(%d)\n", __func__, __LINE__ );
 
-	HAL_UART_Transmit( &huart2, (uint8_t *)sCmdOccPaStart, strlen(sCmdOccPaStart), 0xFFFF );
+	HAL_UART_Transmit( &huart2, (uint8_t *)sCmdOccPaStart, strlen(sCmdOccPaStart), 100 );
 }
 
 //========================================================================
@@ -50,7 +48,7 @@ void RFMOccPaStop( void )
 	//	RFMBase -> RFM 명령 전송 : UART2
 	printf("%s(%d)\n", __func__, __LINE__ );
 
-	HAL_UART_Transmit( &huart2, (uint8_t *)sCmdOccPaStop, strlen(sCmdOccPaStop), 0xFFFF );
+	HAL_UART_Transmit( &huart2, (uint8_t *)sCmdOccPaStop, strlen(sCmdOccPaStop), 100 );
 }
 
 
@@ -64,36 +62,36 @@ int cmd_occ(int argc)
     //	occ [0/1]
 
     static int		bOnOff = 0;
-
-    static int sCnt = 0;
-
+        
+    static int sCnt = 0;    
+     
     static int sOccFlag = 0;
-
+        
     static int sProCnt = 0;
-
-
+        
+            
     if(!uDI_getMasterIn) //접점이 ON 되면 동작.
     {
-
+        
         bOnOff = 1;
-
+            
          sOccFlag = 1;
-
+            
         sCnt++;
-
+            
         if(!(sCnt%10))
         {
-            printf("---Master Input \n\r" );
+            printf("---Master Input \n\r" ); 
         }
     }
     else
     {
         bOnOff = 0;
-
+        
     }
+         
 
-
-
+	
 
 //    switch ( argc )
 //    {
@@ -105,18 +103,18 @@ int cmd_occ(int argc)
     {
 		RFMOccPaStart();
     }
-    else if ( (bOnOff == 0) && (sOccFlag == 1) )
+    else if ( (bOnOff == 0) && (sOccFlag == 1) )	
     {
         sProCnt++;
-
+        
         if(sProCnt > 3)
         {
             sOccFlag = 0;
         }
-
-
+            
+                
         RFMOccPaStop();
-
+            
     }
 
 	return 0;

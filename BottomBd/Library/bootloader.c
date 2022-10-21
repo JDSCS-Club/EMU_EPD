@@ -64,7 +64,7 @@
 typedef  void (*pFunction)(void);
 
 pFunction	Jump_To_Application;
-uint32_t	JumpAddress;
+uint32_t	mJumpAddress;
 
 #if 0
 
@@ -77,7 +77,7 @@ void JumpToSTBootloader(void)
 #define SYS_MEM_ADDRESS     ((uint32_t)0x1FFF0000)
 
   pFunction JumpToApplication;
-  uint32_t JumpAddress;
+  uint32_t sJumpAddress;
 
   //========================================================================
   //	Disable Watchdog
@@ -97,8 +97,8 @@ void JumpToSTBootloader(void)
 #endif
 
   /* Jump to system memory */
-  JumpAddress = *(__IO uint32_t*) (SYS_MEM_ADDRESS + 4);
-  JumpToApplication = (pFunction) JumpAddress;
+  sJumpAddress = *(__IO uint32_t*) (SYS_MEM_ADDRESS + 4);
+  JumpToApplication = (pFunction) sJumpAddress;
   /* Initialize user application's Stack Pointer */
   __set_MSP(*(__IO uint32_t*) SYS_MEM_ADDRESS);
   JumpToApplication();
@@ -312,8 +312,8 @@ void BootLoaderTask(void)
 			)
 		{
 			printf(" Jump App\n");
-			JumpAddress = *(__IO uint32_t*) (ADDR_FLASH_APP + 4);
-			Jump_To_Application = (pFunction) JumpAddress;
+			mJumpAddress = *(__IO uint32_t*) (ADDR_FLASH_APP + 4);
+			Jump_To_Application = (pFunction) mJumpAddress;
 //			vPortEnterCritical();
 			HAL_DeInit();
 			/* Initialize user application's Stack Pointer */
@@ -334,8 +334,8 @@ void BootLoaderTask(void)
 			)
 		{
 			printf(" Jump App\n");
-			JumpAddress = *(__IO uint32_t*) (ADDR_FLASH_APP + 4);
-			Jump_To_Application = (pFunction) JumpAddress;
+			mJumpAddress = *(__IO uint32_t*) (ADDR_FLASH_APP + 4);
+			Jump_To_Application = (pFunction) mJumpAddress;
 			//========================================================================
 			//	De-Initialize
 	//		HAL_TIM_Base_Stop( &htim2 );

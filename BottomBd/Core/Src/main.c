@@ -211,6 +211,7 @@ int main(void)
 //=============================================================================
 #else	//	Application
 //=============================================================================
+  setAmpMute(true);
 
   TestNVRAM( &hi2c2 );
 
@@ -220,13 +221,14 @@ int main(void)
   /* USER CODE BEGIN WHILE */
 
   int sCnt = 0;
+  
   int nTick;
-  //static s_nTick;
-
+      
+  
   static int s_nTick;
   static int s_nOccCnt;
   static int s_currentCnt;
-
+      
   static int s_RssNgCleanCnt;
 
   static int s_I2c_Cnt = 0;
@@ -234,10 +236,15 @@ int main(void)
   uint8_t     nTbuf[10];
   uint8_t     nRbuf[10];
 
-  printf( "*********OCC Function*********\n" );
-  printf( "*********Design by DS-Jang (2022-10-14)\n" );
 
-  HAL_StatusTypeDef result;
+
+
+    printf( "*********OCC Function(ID %02X)*********\n",getRS485Id() );
+    printf( "*********Design by DS-Jang (2022-10-18)\n" );
+        
+    
+        
+    HAL_StatusTypeDef result;
 
 
 	result = HAL_I2C_IsDeviceReady( &hi2c2, (uint16_t)(0xD8), 2, 2 );
@@ -272,21 +279,23 @@ int main(void)
 	else
 	{
 		printf( "-0x01 Read Test(0x00-0x01) NG \n" );
-
 	}
 
 
+//    nTbuf[0] = 0x9F;
+//
+//    if(MB85_HAL_WriteBytes(&hi2c2,0xD8,0x0C,(uint8_t *)nTbuf,1))
+//    {
+//        printf("-0xD8-0x9F Write Test(0x0C-0x%02X) OK \n",nTbuf[0] );
+//    }
+//    else
+//    {
+//        printf( "-0xD8-0x9F Write Test(0x08-0xbe) NG \n" );
+//    }
 
-	nTbuf[0] = 0x09;
-	MB85_HAL_WriteBytes(&hi2c2, 0xD8, 0x0C, (uint8_t *)nTbuf, 1);
-
-
-
-	setAmpMute(true);
-	setAmpMute(true);
+       
 
 	setAmpSd(true); //AMP √ ±‚ º≥¡§«œ¥¬ ∫Œ∫–.
-
 
   while (1)
   {
@@ -297,10 +306,12 @@ int main(void)
 
 		//=============================================================================
 		LoopProcCLI();		//	CLI ( Command Line Interface )
-		LoopProcRS485();	//	RS485
+		LoopProcRS485_3ch();	//	RS485
+        LoopProcRS485_5ch();	//	RS485
+        LoopProcRS485_2ch();    // Console
 		//=============================================================================
 
-		//processOverrideOn();
+		
 		processRfLed();
 		processChargeLed();
 		processLightLed();
@@ -308,24 +319,31 @@ int main(void)
 
 		processTestDebug();
 		//	  Uart3_Process();
+
+
         if ( (nTick - s_nOccCnt) >= 100)
         {
             s_nOccCnt = nTick;
-
-            //processOverrideOn();
-
+                
+            // 1?∏Ï∞® Î∞?10 ?∏Ï∞®Îß? ?Ä?πÍ∞ù ?ôÏûë ?òÎèÑÎ°??òÏ†ï.
+            if(getRS485Id() == 0x01 ||
+               getRS485Id() == 0x0A )
+            {
+                processOverrideOn();
+            }
+                
             ONTD_Function();
-
+           
         }
-
-
+            
+                
 		if ( (nTick - s_nTick) >= 1000)
 		{
 //			printf("[%d]\n", nTick);
 			s_nTick = nTick;
 			processGetBatVol();			//	ADC
-
-
+            
+                
 			if(getAmpFault())
 			{
 
@@ -343,28 +361,47 @@ int main(void)
             checkSerial(&huart5);       //  RS485 Line √º≈©.
             //=============================================================================
 		}
-
+            
         if ( (nTick - s_currentCnt) >= 5000)
         {
             s_currentCnt = nTick;
-
+                
              //processCurrentVal();
-
-
-            // uSpk_Stat = AMP_SPK_CHECK();
-
+                 
+                
+             if(uAudioPlayFlag == false)
+             {
+                 
+                if(AMP_SPK_CHECK())
+                {
+                    if(uSpk_Stat < 6)
+                    {
+                        uSpk_Stat++;
+                    }
+                }
+             }
+            
         }
-
-
+            
+        
         if ( (nTick - s_RssNgCleanCnt) >= 15000)
         {
-
-            uRssi_NgFlag = 0;
-
-
+                    
+            if(uRssi_NgFlag) // 10Ï¥àÏóê ?úÎ≤à Ï≤¥ÌÅ¨ ?¥ÏÑú RSSI Í≥†Ïû•?? ?àÎã§Î©?1 Í∞êÏÜå ?úÎã§.
+            {
+               uRssi_NgFlag--;
+            }
+            
+            if(uSpk_Stat)
+            {
+                uSpk_Stat--;
+            }
+            
+                
              s_RssNgCleanCnt = nTick;
-
+             
         }
+                
 
 //		HAL_Delay(1);
   }
@@ -416,6 +453,28 @@ void SystemClock_Config(void)
   {
     Error_Handler();
   }
+        /**Configure the Systick interrupt time 
+
+    */
+
+  HAL_SYSTICK_Config(HAL_RCC_GetHCLKFreq()/1000);
+
+
+
+    /**Configure the Systick 
+
+    */
+
+  HAL_SYSTICK_CLKSourceConfig(SYSTICK_CLKSOURCE_HCLK);
+
+
+
+  /* SysTick_IRQn interrupt configuration */
+
+  HAL_NVIC_SetPriority(SysTick_IRQn, 0, 0);
+
+
+          
 }
 
 /**
@@ -525,13 +584,23 @@ static void MX_ADC2_Init(void)
   */
 static void MX_I2C2_Init(void)
 {
-
+    GPIO_InitTypeDef   GPIO_InitStructure;
   /* USER CODE BEGIN I2C2_Init 0 */
 
   /* USER CODE END I2C2_Init 0 */
-
+ __HAL_RCC_GPIOB_CLK_ENABLE();
   /* USER CODE BEGIN I2C2_Init 1 */
+ GPIO_InitStructure.Pin = SDL2_Pin|SDA2_Pin;
+ GPIO_InitStructure.Mode = GPIO_MODE_AF_OD;
+ GPIO_InitStructure.Speed = GPIO_SPEED_FREQ_HIGH;
 
+ __GPIOB_CLK_ENABLE();
+ HAL_GPIO_Init(SDL2_GPIO_Port, &GPIO_InitStructure);
+ 
+ HAL_GPIO_WritePin(SDL2_GPIO_Port, SDL2_Pin, GPIO_PIN_SET);
+HAL_GPIO_WritePin(SDL2_GPIO_Port, SDA2_Pin, GPIO_PIN_SET);
+    
+   // HAL_GPIO_Init(GPIOB, &GPIO_InitStructure);
   /* USER CODE END I2C2_Init 1 */
   hi2c2.Instance = I2C2;
   hi2c2.Init.ClockSpeed = 100000;
@@ -542,6 +611,7 @@ static void MX_I2C2_Init(void)
   hi2c2.Init.OwnAddress2 = 0;
   hi2c2.Init.GeneralCallMode = I2C_GENERALCALL_DISABLE;
   hi2c2.Init.NoStretchMode = I2C_NOSTRETCH_DISABLE;
+      
   if (HAL_I2C_Init(&hi2c2) != HAL_OK)
   {
     Error_Handler();

@@ -24,24 +24,28 @@ extern "C" {
 
 void	InitRS485			( void );
 
-void	LoopProcRS485		( void );
+void	LoopProcRS485_3ch   ( void );
+void    LoopProcRS485_5ch   ( void );
+void    LoopProcRS485_2ch   ( void );
 
 
 void	vRs485Task			( void *pvParameters );
 
 void	ProcessFrameSD		( const uint8_t *pbuf, int length );
-void	ProcessFrameSDR		( const uint8_t *pbuf, int length );
+void	ProcessFrameSDR		( const uint8_t *pbuf, int length,int nCh );
 
-void	ProcessFrame		( const uint8_t *pbuf, int length );
+void	ProcessFrame		( const uint8_t *pbuf, int length,int nCh );
 
 uint8_t	GetRspDevIdMin		( void );		//	응답 Device중 가장 낮은 ID return.
 
-void 	SendSD				( const FRAME_SDR *pSdr );		//  Send SD Data
-
+void 	SendSD_3			( const FRAME_SDR *pSdr,int nCh );		//  Send SD Data
+void 	SendSD_5			( const FRAME_SDR *pSdr,int nCh );		//  Send SD Data
 
 int 	cmd_sd				( int argc, char *argv[] );		//	Send SD
 
 void Dump( char *sTitle, char *sBuf, int nSize );
+
+int	SendRS485 ( char *bufTx, int nSize,int nCh );
 
 //===========================================================================
 #if __cplusplus
