@@ -23,6 +23,8 @@
 //#define		TRS_SD_BAT		1		//	배터리 정보 추가. 201006_대곡소사40R_TRS-무정전장치_인터페이스.xlsx
 //#define Line_4 	1
 
+#pragma pack(1)		//	1Byte Align
+
 //========================================================================
 // Define
 
@@ -61,7 +63,7 @@ typedef struct _SDR_t
 	uint8_t			bTrainNoVld:1;		//	8
 	uint8_t			bSpare8_1:7;		//
 	uint8_t			nTrainNo;			//	편성번호
-	uint8_t			nSpare10[3];		//	10 ~ 12
+	uint8_t			nSpare10[2];		//	10 ~ 11
 
 } SDR_t, *PSDR_t;
 

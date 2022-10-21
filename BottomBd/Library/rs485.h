@@ -26,7 +26,7 @@ void	InitRS485			( void );
 
 void	LoopProcRS485_3ch   ( void );
 void    LoopProcRS485_5ch   ( void );
-void    LoopProcRS485_2ch   ( void );
+void    LoopProcRFM_2ch   	( void );
 
 
 void	vRs485Task			( void *pvParameters );

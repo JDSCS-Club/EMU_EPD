@@ -248,7 +248,7 @@ void SendSD_5( const FRAME_SDR *pSdr,int nCh )			//	CH5 - TRS
 
 	sdfrm.nETX				=	eETX;	//	0x03;		//	ETX
 
-	uint16_t u16BCC = onBCCCheck( (char *)&sdfrm, sizeof(FRAME_SD) - 2 );
+	uint16_t u16BCC = onBCCCheck( (char *)&sdfrm, sizeof(FRAME_TRSD) - 2 );
 
 	sdfrm.nBCC1				=	(u16BCC >> 8) & 0xFF;	//	BCC 1
 	sdfrm.nBCC2				=	(u16BCC & 0xFF);		//	BCC 2
@@ -256,7 +256,7 @@ void SendSD_5( const FRAME_SDR *pSdr,int nCh )			//	CH5 - TRS
 	uint32_t nTxStart, nTxEnd;
 
 	nTxStart = HAL_GetTick();
-	SendRS485((char *) &sdfrm, sizeof( FRAME_SD ),nCh );
+	SendRS485((char *) &sdfrm, sizeof( FRAME_TRSD ),nCh );
 	nTxEnd = HAL_GetTick();
 
 	//Dump( "Rx : ", pSdr, sizeof( FRAME_SDR ) );
@@ -414,11 +414,12 @@ void ProcessFrame( const uint8_t *pBuf, int nLen,int nCh )
 	if ( nLen == sizeof( FRAME_SDR ) && pSdr->sdr.cSDR == eSDRTcms )
 	{
 		//HAL_Delay(10);
-//		printf( "[%d] %s(%d) - SDR Recv ( %d )\n", HAL_GetTick(),  __func__, __LINE__, length );
+		printf( "[%d] %s(%d) - TCMS SDR Recv ( %d )\n", HAL_GetTick(),  __func__, __LINE__, nLen );
 		ProcessFrameSDR( pBuf, nLen, 3 );
 	}
     else if ( nLen == sizeof( FRAME_TRSDR ) && pSdr->sdr.cSDR == eSDRTrs )
     {
+		printf( "[%d] %s(%d) - TRS SDR Recv ( %d )\n", HAL_GetTick(),  __func__, __LINE__, nLen );
         ProcessFrameSDR( pBuf, nLen, 5 );
     }
 //	else if ( nLen == sizeof( FRAME_SD ) && pSd->sd.cSD == eSD )
@@ -484,7 +485,7 @@ void Dump( char *sTitle, char *sBuf, int nSize )
 
 
 //========================================================================
-void LoopProcRS485_3ch(void)
+void LoopProcRS485_3ch(void)		//	TCMS
 //========================================================================
 {
 
@@ -519,11 +520,12 @@ void LoopProcRS485_3ch(void)
 		s_nTick_F = nTick;
 
 		// 통신 중간에 타임 아웃시 카운터 클리어 하는 부분 추가.
-		if ( (s_nTick_F - s_nTick_R) >= 5){  length = 0; }
+		if ( (s_nTick_F - s_nTick_R) >= 5){  length = 0; printf("C"); }
+//		if ( (s_nTick_F - s_nTick_R) >= 1000){  length = 0; printf("C"); }
 		s_nTick_R = s_nTick_F;
 
 		c = qget(&g_qUart3);
-				printf( "0x%02X ", c );
+//				printf( "0x%02X ", c );
 
 		rxbuffer[length++] = c;		//	Buffering
 
@@ -537,8 +539,9 @@ void LoopProcRS485_3ch(void)
 		default:
 			if(length >= sizeof(FRAME_SDR))
 			{
-				if(rxbuffer[s_EtxLen] == 0x03 && IsBCCOK(&rxbuffer[1],(length-3)))
+				if(rxbuffer[s_EtxLen] == 0x03 )//&& IsBCCOK(&rxbuffer[1],(length-3)))
 				{
+//					printf("OK");
 					s_RxOkFlag = 1;
 					s_RxOkLen = length;
 
@@ -550,7 +553,7 @@ void LoopProcRS485_3ch(void)
 				}
 				else
 				{
-					printf( "[%d] %s(%d) - Invalid packet(%d)\n", HAL_GetTick(), __func__, __LINE__, length );
+					printf( "[%d] %s(%d) - Invalid packet(%d) / framesize(%d)\n", HAL_GetTick(), __func__, __LINE__, length, sizeof(FRAME_SDR) );
 
 					//===========================================================================
 					init_queue(&g_qUart3);		//	Queue Clear
@@ -560,10 +563,12 @@ void LoopProcRS485_3ch(void)
 					length = 0;
 				}
 			}
+			break;
 		}
 	}
 
 	// RX 수신 OK 하면.
+//	if ( s_RxOkFlag == 1)
 	if ( ((nTick - s_RxnTick) >= 10) && (s_RxOkFlag == 1))
 	{
 		s_RxOkFlag = 0;
@@ -573,123 +578,13 @@ void LoopProcRS485_3ch(void)
 	}
 
 	//=============================================================================
-//
-//    nTick_2 = HAL_GetTick();
-//
-//	while (qcount(&g_qUart2) > 0)
-//	{
-//
-//		s_2_nTick_F = nTick_2;
-//
-//		// 통신 중간에 타임 아웃시 카운터 클리어 하는 부분 추가.
-//		if ( (s_2_nTick_F - s_2_nTick_R) >= 5){  length_2 = 0; }
-//		s_2_nTick_R = s_2_nTick_F;
-//
-//		d = qget(&g_qUart2);
-//		//		printf( "0x%02X ", c );
-//
-//		rxbuffer_2[length_2++] = d;		//	Buffering
-//
-//
-//		switch(length_2)
-//		{
-//			case 1:  break;
-//			
-//			default:
-//                
-//				if(length >= 7 )
-//				{
-//                    if (strncmp((char*)(rxbuffer_2), "RSSI_NG", 7) == 0)
-//                    {
-//                        uRssi_NgFlag = 1;
-//                    }
-//                    else
-//                    {
-//                    
-//                        init_queue(&g_qUart2);		//	Queue Clear
-//                    }
-//					
-//				}
-//        }
-//            
-//	}
-	
 
-//#else
-//
-//	char c;
-//	char buf[50];
-//	memset(buf, 0, sizeof(buf));
-//	//	STX
-//	HAL_StatusTypeDef status;
-//	status = HAL_UART_Receive(&huart3, &c, 1, 2000);	// timeout);
-//
-//	if (status != HAL_OK)
-//	{
-//		printf(">%02X<", status);
-//		if (status == HAL_BUSY || status == HAL_ERROR)
-//		{
-//			resetSerial(&huart3);
-//		}
-////		continue;
-//
-//		return;
-//	}
-//
-//	if (c != eSTX) return; //continue;
-//	buf[0] = eSTX;
-//	//	Addr
-//
-//	status = HAL_UART_Receive(&huart3, &c, 1, 2000);	// timeout);
-//	if (status != HAL_OK)
-//	{
-//		printf(">%02X<", status);
-//		if (status == HAL_BUSY || status == HAL_ERROR)
-//		{
-//			resetSerial(&huart3);
-//		}
-//		return; //continue;
-//	}
-//
-//	if (c != 0x40) return; //continue;
-//	buf[1] = 0x40;
-//
-//	//	Data
-//	status = HAL_UART_Receive(&huart3, &buf[2], 26, 2000);	// timeout);
-//
-//	if (status != HAL_OK)
-//	{
-//		printf(">%02X<", status);
-//		if (status == HAL_BUSY || status == HAL_ERROR)
-//		{
-//			resetSerial(&huart3);
-//		}
-//		return; //continue;
-//	}
-//	printf("[SDR] ");
-//
-//	printf("[ ");
-//	for (idx = 0; idx < sizeof(FRAME_SDR); idx++)
-//	{
-//		printf("%02X ", buf[idx]);
-//	}
-//	printf("]\n");
-//
-//	//	check ETX
-//	if (buf[25] == eETX)
-//	{
-//		ProcessFrame(buf, sizeof(FRAME_SDR));
-//	}
-//
-//#endif
-//
 }
 
 //========================================================================
-void LoopProcRS485_5ch(void)
+void LoopProcRS485_5ch(void)		//	TRS
 //========================================================================
 {
-
 	  int nTick;
 	  static int s_nTick_F = 0;
 	  static int s_nTick_R = 0;
@@ -721,15 +616,16 @@ void LoopProcRS485_5ch(void)
 		s_nTick_F = nTick;
 
 		// 통신 중간에 타임 아웃시 카운터 클리어 하는 부분 추가.
-		if ( (s_nTick_F - s_nTick_R) >= 5){  length_5 = 0; }
+		if ( (s_nTick_F - s_nTick_R) >= 5){  length_5 = 0; printf("C"); }
+//		if ( (s_nTick_F - s_nTick_R) >= 100){  length_5 = 0; printf("C"); }
 		s_nTick_R = s_nTick_F;
 
 		c = qget(&g_qUart5);
-				printf( "0x%02X ", c );
+//				printf( "0x%02X ", c );
 
 		rxbuffer_5[length_5++] = c;		//	Buffering
 
-		s_EtxLen = (sizeof(FRAME_SDR) - 3);
+		s_EtxLen = (sizeof(FRAME_TRSDR) - 3);
 
 		switch(length_5)
 		{
@@ -737,9 +633,9 @@ void LoopProcRS485_5ch(void)
 		case 2: if(rxbuffer_5[1] != 0x22) length_5 = 0; break;
 		case 3: if(rxbuffer_5[2] != 0x11) length_5 = 0; break;
 		default:
-			if(length_5 >= sizeof(FRAME_SDR))
+			if(length_5 >= sizeof(FRAME_TRSDR))
 			{
-				if(rxbuffer_5[s_EtxLen] == 0x03 && IsBCCOK(&rxbuffer_5[1],(length_5-3)))
+				if(rxbuffer_5[s_EtxLen] == 0x03)// && IsBCCOK(&rxbuffer_5[1],(length_5-3)))
 				{
 					s_RxOkFlag = 1;
 					s_RxOkLen = length_5;
@@ -752,7 +648,7 @@ void LoopProcRS485_5ch(void)
 				}
 				else
 				{
-					printf( "[%d] %s(%d) - Invalid packet(%d)\n", HAL_GetTick(), __func__, __LINE__, length_5 );
+					printf( "[%d] %s(%d) - Invalid packet(%d) FrameSize(%d)\n", HAL_GetTick(), __func__, __LINE__, length_5, sizeof(FRAME_TRSDR) );
 
 					//===========================================================================
 					init_queue(&g_qUart5);		//	Queue Clear
@@ -776,7 +672,7 @@ void LoopProcRS485_5ch(void)
 }
 
 //========================================================================
-void LoopProcRS485_2ch(void)
+void LoopProcRFM_2ch(void)
 //========================================================================
 {
 

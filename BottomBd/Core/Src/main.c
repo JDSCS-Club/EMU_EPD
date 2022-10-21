@@ -312,7 +312,7 @@ int main(void)
 		LoopProcCLI();		//	CLI ( Command Line Interface )
 		LoopProcRS485_3ch();	//	RS485
         LoopProcRS485_5ch();	//	RS485
-        LoopProcRS485_2ch();    // Console
+        LoopProcRFM_2ch();    // Console
 		//=============================================================================
 
 		
