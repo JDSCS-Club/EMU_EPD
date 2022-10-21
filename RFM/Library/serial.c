@@ -39,6 +39,7 @@
 #endif	//	stm32f207
 //=============================================================================
 
+#include "rfm.h"		//	GetDevID()
 #include "QBuf.h"		//	Queue_t
 
 Queue_t		g_qDebug, g_qRS485;
@@ -106,6 +107,19 @@ PUTCHAR_PROTOTYPE
 		}
 	}
 	//	*/
+	//========================================================================
+	//	USB Serial - RFM 송신기/수신기
+	if ( 1 )//g_nDevID != DevNone && g_nDevID == DevRF900T )
+	{
+		if ( ch == '\n' )
+		{
+			CDC_Transmit_FS( (uint8_t *)"\n\r", 2 );
+		}
+		else
+		{
+			CDC_Transmit_FS( (uint8_t *)&ch, 1 );
+		}
+	}
 	//========================================================================
 
 	return ch;

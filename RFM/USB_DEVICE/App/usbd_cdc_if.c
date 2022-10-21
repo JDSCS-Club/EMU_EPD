@@ -24,6 +24,8 @@
 
 /* USER CODE BEGIN INCLUDE */
 
+#include "serial.h"			//	g_qDebug
+
 /* USER CODE END INCLUDE */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -265,8 +267,16 @@ static int8_t CDC_Receive_FS(uint8_t* Buf, uint32_t *Len)
 
 #if 1
 
+	//	CLI Interface
+	uint8_t *pStr = Buf;
+	int i = 0;
+	for ( i = 0; i < *Len; i++ )
+	{
+		qput( &g_qDebug, *pStr++ );
+	}
+
 	//	Loopback
-	CDC_Transmit_FS(Buf, *Len);
+//	CDC_Transmit_FS(Buf, *Len);
 
 #endif
 
