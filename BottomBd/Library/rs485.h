@@ -42,6 +42,7 @@ void 	SendSD_3			( const FRAME_SDR *pSdr,int nCh );		//  Send SD Data
 void 	SendSD_5			( const FRAME_SDR *pSdr,int nCh );		//  Send SD Data
 
 int 	cmd_sd				( int argc, char *argv[] );		//	Send SD
+int 	cmd_sd2				( int argc, char *argv[] );		//	Send SD2
 
 void Dump( char *sTitle, char *sBuf, int nSize );
 

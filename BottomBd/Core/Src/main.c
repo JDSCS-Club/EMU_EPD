@@ -177,13 +177,13 @@ int main(void)
 
 #else	//	Application
 
-  //	UART Interrupt ����.
-  //	UART Queue �ʱ�ȭ.
+  //	UART Interrupt ����.
+  //	UART Queue �ʱ�ȭ.
   SerialInitQueue();
 
 //  SerialInit( &huart1, NULL, NULL, NULL );	//	Console Interrupt
 
-  //	UART Interrupt ����.
+  //	UART Interrupt ����.
   SerialInit( &huart1, &huart2, &huart3, &huart5 );
 //  SerialInit( &huart1, NULL, NULL, NULL );//&huart2, &huart3, &huart5 );
   InitRS485();		//	Init RS485
@@ -295,7 +295,7 @@ int main(void)
 
        
 
-	setAmpSd(true); //AMP �ʱ� �����ϴ� �κ�.
+	setAmpSd(true); //AMP �ʱ� �����ϴ� �κ�.
 
   while (1)
   {
@@ -323,9 +323,29 @@ int main(void)
 
         if ( (nTick - s_nOccCnt) >= 100)
         {
+
+#if defined(SIL_RFM)
+        	static int s_bMstIn = 0;
+        	int bMstIn = getMasterIn();
+
+        	if ( s_bMstIn != bMstIn )
+        	{
+        		//	Active Low
+        		if ( bMstIn )
+        		{
+        			RFMOccPaStop();
+        		}
+        		else
+        		{
+        			RFMOccPaStart();
+        		}
+        	}
+    		s_bMstIn = bMstIn;
+
+#else
             s_nOccCnt = nTick;
                 
-            // 1?�차 �?10 ?�차�? ?�?�객 ?�작 ?�도�??�정.
+            // 1?�차 �?10 ?�차�? ?�?�객 ?�작 ?�도�??�정.
             if(getRS485Id() == 0x01 ||
                getRS485Id() == 0x0A )
             {
@@ -333,7 +353,7 @@ int main(void)
             }
                 
             ONTD_Function();
-           
+#endif
         }
             
                 
@@ -361,7 +381,10 @@ int main(void)
             checkSerial(&huart5);       //  RS485 Line üũ.
             //=============================================================================
 		}
-            
+
+#if defined(SIL_RFM)
+		//	SIL - SPK Check Disable
+#else
         if ( (nTick - s_currentCnt) >= 5000)
         {
             s_currentCnt = nTick;
@@ -382,12 +405,12 @@ int main(void)
              }
             
         }
-            
+#endif
         
         if ( (nTick - s_RssNgCleanCnt) >= 15000)
         {
                     
-            if(uRssi_NgFlag) // 10초에 ?�번 체크 ?�서 RSSI 고장?? ?�다�?1 감소 ?�다.
+            if(uRssi_NgFlag) // 10초에 ?�번 체크 ?�서 RSSI 고장?? ?�다�?1 감소 ?�다.
             {
                uRssi_NgFlag--;
             }

@@ -117,6 +117,10 @@ user_command_t	user_command_table[] = {
 		"sd			-	Send SD ( Status Data )",
 		(char *)0,
 		cmd_sd,},
+	{"sd2",
+		"sd2		-	Send SD2 ( Status Data )",
+		(char *)0,
+		cmd_sd2,},
 #endif
 
 #if defined(OCC_PA_H)

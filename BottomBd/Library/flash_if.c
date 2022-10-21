@@ -252,8 +252,7 @@ uint32_t FLASH_If_WriteProtectionConfig(uint32_t protectionstate)
   * @}
   */
 
-#if defined(USE_BOOTLOADER)
-#else	//	Application
+
 
 //========================================================================
 int cmd_flRead( int argc, char *argv[] )
@@ -347,6 +346,6 @@ int cmd_flErase( int argc, char *argv[] )
 	return 1;
 }
 
-#endif	//	Application
+
 
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/

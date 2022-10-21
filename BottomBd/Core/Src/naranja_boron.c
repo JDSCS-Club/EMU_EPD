@@ -41,7 +41,11 @@ uint16_t u16BatVol = 0;
 uint16_t u16CntBatVol = 0;
 uint32_t u16BatVolSum = 0;
 
+#if defined(SIL_RFM)
+uint8_t uDI_getMasterIn = 1;	//	Default:1	/	방공등GPIO -> 대승객GPIO로 사용.
+#else
 uint8_t uDI_getMasterIn;
+#endif
 uint8_t uSpk_Stat;
 uint8_t uRssi_NgFlag;
 
@@ -209,7 +213,6 @@ void ampMuteOn(void)
 		////////////////////////////////////////////////////////////////////////
 		nTbuf[0] = 0X1F;
 
-
 		if(MB85_HAL_WriteBytes(&hi2c2,0xD8,0x0C,(uint8_t *)nTbuf,1))
 		{
 			printf(" ampMuteOn OK \n");
@@ -218,10 +221,7 @@ void ampMuteOn(void)
 		{
 			printf( "ampMuteOn NG \n" );
 		}
-
 	}
-
-
 }
 
 
@@ -229,7 +229,6 @@ void ampMuteOff(void)
 {
 	uint8_t     nTbuf[10];
 	uint8_t     nRbuf[10];
-
 
 	HAL_StatusTypeDef result;
 
@@ -239,9 +238,7 @@ void ampMuteOff(void)
 
 	if ( HAL_OK == result  )
 	{
-
 		////////////////////////////////////////////////////////////////////////
-
 
         nTbuf[0] = 0x00;
             
@@ -267,9 +264,7 @@ void ampMuteOff(void)
 		{
 			printf( "-0x00 Read Test(0xD8-0x06) NG \n" );
 		}
-
 	}
-
 }
 //--------------------------------------------------------------------------------------------//
 //
@@ -277,6 +272,7 @@ void ampMuteOff(void)
 /**
   * @brief  set Amp SD
   */
+int		g_bSpkOn	=	0;		//	스피커On 상태.		-	OK(1) / Fault(0)
 void setAmpSd(bool state)
 {
 	  uint8_t     nTbuf[10];
@@ -291,20 +287,16 @@ void setAmpSd(bool state)
         
     //HAL_GPIO_WritePin(LED_CTL_GPIO_Port, LED_CTL_Pin, state); //
     //HAL_GPIO_WritePin(LED_CTL_GPIO_Port, LED_CTL_Pin, state); //
-    
-        
+
     setAmpMute(true);
 
 	if(state == true)
 	{
-
-
 		result = HAL_I2C_IsDeviceReady( &hi2c2, (uint16_t)(0xD8), 2, 2 );
 
 		if ( HAL_OK == result  )
 		{
 				////////////////////////////////////////////////////////////////////////
-
 
 				////////////////////////////////////////////////////////////////////////
 				//nTbuf[0] = 0xBE;
@@ -319,7 +311,6 @@ void setAmpSd(bool state)
 				{
 					printf( "-Gain Select (0xD8-0x08) NG \n" );
 				}
-
 
 				////////////////////////////////////////////////////////////////////////
 //				nTbuf[0] = 0x0C;
@@ -346,8 +337,6 @@ void setAmpSd(bool state)
 				{
 					printf( "-Load Diagnostics (0xD8-0x0B) NG \n" );
 				}
-
-
 
                 HAL_Delay(30);
 
@@ -396,10 +385,7 @@ void setAmpSd(bool state)
 				{
 					printf( "-play mode (0xD8-0x0C) NG \n" );
 				}
-
 		}
-
-
 	}
         
      HAL_Delay(150);
@@ -441,6 +427,35 @@ ChargeRateState getChargeRateState(void)
 	else
 		return CHARGE_RATE_UNKNOWN;
 }
+
+/*
+uint8_t getChargeRate(void)		//	Battery 0 ~ 100 %
+{
+	if(getChargerDet())
+	{
+		return 100;	//	CHARGE_RATE_100;
+	}
+
+	if(u16BatVol < VOLTAGE_BAT_75)
+	{
+		return ( 75 * u16BatVol / VOLTAGE_BAT_75 );
+//		return CHARGE_RATE_75_UNDER;
+	}
+	else if(u16BatVol >= VOLTAGE_BAT_75 && u16BatVol < VOLTAGE_BAT_100)
+	{
+		return 75 + ( 25 * (u16BatVol - VOLTAGE_BAT_75) / ( VOLTAGE_BAT_100 - VOLTAGE_BAT_75) );
+//		return CHARGE_RATE_100_UNDER;
+	}
+	else if(u16BatVol >= VOLTAGE_BAT_100)
+	{
+		return 100;
+//		return CHARGE_RATE_100_UNDER;
+	}
+	else
+		return 0;	//CHARGE_RATE_UNKNOWN;
+}
+*/
+
 //--------------------------------------------------------------------------------------------//
 //
 //--------------------------------------------------------------------------------------------//
@@ -481,12 +496,18 @@ void processOverrideOn(void)
 /**
   * @brief	process RF LED
   */
+int		g_bRFMOk	=	0;		//	무정전 모듈 동작상태.		-	OK(1) / Fault(0)
 void processRfLed(void)
 {
 	if(getStandBy())
+	{
 		rfLedOn();
+		g_bRFMOk = 1;			//	무정전 모듈 동작상태.
+	}
 	else
+	{
 		rfLedOff();
+	}
 }
 //--------------------------------------------------------------------------------------------//
 //

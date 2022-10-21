@@ -66,8 +66,10 @@ void Error_Handler(void);
 
 /* USER CODE BEGIN EFP */
 
-/* USER CODE END EFP */
 #define NOT(a)		(~a & 0x0001)
+#define SIL_RFM		1						//	무정전 SIL 프로토콜		-	TCMS( CH3 ) / TRS( CH5 )
+
+/* USER CODE END EFP */
 
 /* Private defines -----------------------------------------------------------*/
 #define MASTER_IN_Pin GPIO_PIN_13
