@@ -50,14 +50,20 @@
 /* USER CODE END PM */
 
 /* Private variables ---------------------------------------------------------*/
+
+#if defined(USE_BOOTLOADER)
+#else	//	Application
+
 ADC_HandleTypeDef hadc1;
 ADC_HandleTypeDef hadc2;
+
+TIM_HandleTypeDef htim2;
+#endif	//	Application
 
 I2C_HandleTypeDef hi2c2;
 
 IWDG_HandleTypeDef hiwdg;
 
-TIM_HandleTypeDef htim2;
 
 UART_HandleTypeDef huart5;
 UART_HandleTypeDef huart1;
@@ -116,6 +122,17 @@ PUTCHAR_PROTOTYPE
 }
 
 #endif	//	Bootloader
+
+
+
+//========================================================================
+void LoopProcMain( int nTick )
+//========================================================================
+{
+	//	Watchdog Reload
+	__HAL_IWDG_RELOAD_COUNTER(&hiwdg);
+
+}
 
 
 /* USER CODE END 0 */
@@ -295,7 +312,7 @@ int main(void)
 
 	setAmpSd(true); //AMP �ʱ� �����ϴ� �κ�.
 
-	//	초기 구동?�� Mute On
+	//	�ʱ� ������ Mute On
 	ampMuteOn();
 
 
@@ -311,6 +328,9 @@ int main(void)
 		LoopProcRS485_3ch();	//	RS485
         LoopProcRS485_5ch();	//	RS485
         LoopProcRFM_2ch();    // Console
+
+        //	Loop Proc Main Watchdog Count Reload
+		LoopProcMain( nTick );
 		//=============================================================================
 
 		
@@ -347,7 +367,7 @@ int main(void)
 #else
             s_nOccCnt = nTick;
                 
-            // 1?�차 �??10 ?�차�?? ?�??�객 ?�작 ?�도�???�정.
+            // 1?�차 �??10 ?�차�?? ?�??�객 ?�작 ?�도�???�정.
             if(getRS485Id() == 0x01 ||
                getRS485Id() == 0x0A )
             {
@@ -384,7 +404,7 @@ int main(void)
             //=============================================================================
 		}
 
-#if defined(SIL_RFM)
+#if 0	//	defined(SIL_RFM)
 		//	SIL - SPK Check Disable
 #else
         if ( (nTick - s_currentCnt) >= 5000)
@@ -412,7 +432,7 @@ int main(void)
         if ( (nTick - s_RssNgCleanCnt) >= 15000)
         {
                     
-            if(uRssi_NgFlag) // 10초에 ?�번 체크 ?�서 RSSI 고장?? ?�다�??1 감소 ?�다.
+            if(uRssi_NgFlag) // 10초에 ?�번 체크 ?�서 RSSI 고장?? ?�다�??1 감소 ?�다.
             {
                uRssi_NgFlag--;
             }
@@ -479,6 +499,28 @@ void SystemClock_Config(void)
   {
     Error_Handler();
   }
+        /**Configure the Systick interrupt time 
+
+    */
+
+  HAL_SYSTICK_Config(HAL_RCC_GetHCLKFreq()/1000);
+
+
+
+    /**Configure the Systick 
+
+    */
+
+  HAL_SYSTICK_CLKSourceConfig(SYSTICK_CLKSOURCE_HCLK);
+
+
+
+  /* SysTick_IRQn interrupt configuration */
+
+  HAL_NVIC_SetPriority(SysTick_IRQn, 0, 0);
+
+
+          
 }
 
 /**
@@ -590,7 +632,8 @@ static void MX_I2C2_Init(void)
 {
 
   /* USER CODE BEGIN I2C2_Init 0 */
-
+    GPIO_InitTypeDef   GPIO_InitStructure;
+ __HAL_RCC_GPIOB_CLK_ENABLE();
   /* USER CODE END I2C2_Init 0 */
 
   /* USER CODE BEGIN I2C2_Init 1 */
