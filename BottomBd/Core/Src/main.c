@@ -124,14 +124,16 @@ PUTCHAR_PROTOTYPE
 #endif	//	Bootloader
 
 
-
+int g_bEnIWDGStat = 1;		//	WatchDog Stat Enable
 //========================================================================
 void LoopProcMain( int nTick )
 //========================================================================
 {
-	//	Watchdog Reload
-	__HAL_IWDG_RELOAD_COUNTER(&hiwdg);
-
+	if ( g_bEnIWDGStat )
+	{
+		//	Watchdog Reload
+		__HAL_IWDG_RELOAD_COUNTER(&hiwdg);
+	}
 }
 
 

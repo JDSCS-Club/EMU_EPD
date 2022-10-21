@@ -69,7 +69,7 @@ int cmd_wr		( int argc, char *argv[] );
 int cmd_rd		( int argc, char *argv[] );
 
 int cmd_rfm		( int argc, char *argv[] );
-
+int cmd_WDGStOff( int argc, char *argv[] );
 
 //========================================================================
 

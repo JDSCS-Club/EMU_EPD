@@ -135,12 +135,16 @@ void HAL_GPIO_EXTI_Callback ( uint16_t GPIO_Pin )
     }
 }
 
+int g_bEnIWDGStat = 1;		//	WatchDog Stat Enable
 //========================================================================
 void LoopProcMain( int nTick )
 //========================================================================
 {
-	//	Watchdog Reload
-	__HAL_IWDG_RELOAD_COUNTER(&hiwdg);
+	if ( g_bEnIWDGStat )
+	{
+		//	Watchdog Reload
+		__HAL_IWDG_RELOAD_COUNTER(&hiwdg);
+	}
 
 //	static int s_nTick = 0;
 //

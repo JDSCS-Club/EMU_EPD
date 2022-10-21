@@ -111,6 +111,10 @@ user_command_t	user_command_table[] = {
 		"rfm		-	To rfm command",
 		(char *)0,
 		cmd_rfm},
+	{"wdtstoff",
+		"wdtstoff	-	Watchdog Status Signal Off",
+		(char *)0,
+		cmd_WDGStOff,},
 
 #if defined(_RS485_H_)
 	{"sd",
@@ -702,6 +706,14 @@ int cmd_reset(int argc, char *argv[])
 	return 0;
 }
 
+
+//========================================================================
+extern int g_bEnIWDGStat;	//	WatchDog Stat Enable
+int	cmd_WDGStOff(int argc, char *argv[])
+{
+	g_bEnIWDGStat = 0;
+}
+//========================================================================
 
 //========================================================================
 int cmd_wr( int argc, char *argv[] )

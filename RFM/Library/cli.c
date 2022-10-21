@@ -115,7 +115,10 @@ user_command_t	user_command_table[] = {
 		"reset		-	restart system",
 		(char *)0,
 		cmd_reset,},
-
+	{"wdtstoff",
+		"wdtstoff	-	Watchdog Status Signal Off",
+		(char *)0,
+		cmd_WDGStOff,},
 #if defined(USE_HOP_MANUAL)
 
 #endif	//	defined(USE_HOP_MANUAL)
@@ -844,6 +847,14 @@ int cmd_reset(int argc, char *argv[])
   	NVIC_SystemReset();
 	return 0;
 }
+
+//========================================================================
+extern int g_bEnIWDGStat;	//	WatchDog Stat Enable
+int	cmd_WDGStOff(int argc, char *argv[])
+{
+	g_bEnIWDGStat = 0;
+}
+//========================================================================
 
 /*
 //========================================================================

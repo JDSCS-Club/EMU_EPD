@@ -64,6 +64,7 @@ int cmd_help	( int argc, char *argv[] );
 int cmd_reset	( int argc, char *argv[] );
 int cmd_uptime	( int argc, char *argv[] );
 int cmd_ver		( int argc, char *argv[] );
+int cmd_WDGStOff( int argc, char *argv[] );
 
 //========================================================================
 
