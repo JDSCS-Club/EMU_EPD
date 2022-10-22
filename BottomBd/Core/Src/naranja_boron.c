@@ -40,6 +40,7 @@ bool bAmpSettingDetected = false;
 uint16_t u16BatVol = 0;
 uint16_t u16CntBatVol = 0;
 uint32_t u16BatVolSum = 0;
+uint16_t u16Adc1 = 0;			//	Battery ADC
 
 #if defined(SIL_RFM)
 uint8_t uDI_getMasterIn = 1;	//	Default:1	/	방공등GPIO -> 대승객GPIO로 사용.
@@ -95,7 +96,23 @@ bool getChargerDet(void){ return HAL_GPIO_ReadPin(CHARGER_DET_GPIO_Port, CHARGER
 /**
   * @brief  get Charge rate
   */
-uint8_t getChargeRate(void){ return (Get_Adc1_Value() * 100) / ADC_MAX_DATA; }
+uint8_t getChargeRate(void)
+{
+	int nRate = (Get_Adc1_Value() * 100) / ADC_MAX_DATA + 10;
+
+	if( nRate > 100 )
+	{
+		return 100;
+	}
+	else if ( nRate <= 11 )
+	{
+		return 0;
+	}
+	else
+	{
+		return nRate;
+	}
+}
 //--------------------------------------------------------------------------------------------//
 //
 //--------------------------------------------------------------------------------------------//
@@ -418,6 +435,20 @@ ChargeRateState getChargeRateState(void)
 	if(getChargerDet())
 		return CHARGE_RATE_100;
 
+#if 1	//	RFM_SIL - SIL인증용.
+
+	int nRate = getChargeRate();
+
+	if(nRate < 75)
+		return CHARGE_RATE_75_UNDER;
+	else if(nRate >= 75 && nRate < 97)
+		return CHARGE_RATE_100_UNDER;
+	else if(nRate >= 97)
+		return CHARGE_RATE_100_UNDER;
+	else
+		return CHARGE_RATE_UNKNOWN;
+
+#else
 	if(u16BatVol < VOLTAGE_BAT_75)
 		return CHARGE_RATE_75_UNDER;
 	else if(u16BatVol >= VOLTAGE_BAT_75 && u16BatVol < VOLTAGE_BAT_100)
@@ -426,6 +457,7 @@ ChargeRateState getChargeRateState(void)
 		return CHARGE_RATE_100_UNDER;
 	else
 		return CHARGE_RATE_UNKNOWN;
+#endif
 }
 
 /*
@@ -673,6 +705,8 @@ void processGetBatVol(void)
 {
 	u16CntBatVol++;
 	uint16_t batVol = getAdc1Vol();
+	u16Adc1 = batVol;
+
 	if(getVccIn())
 	{
 		batVol-=VOLTAGE_CHARGE_BAT;
