@@ -71,6 +71,8 @@ int cmd_rd		( int argc, char *argv[] );
 int cmd_rfm		( int argc, char *argv[] );
 int cmd_WDGStOff( int argc, char *argv[] );
 
+int cmd_battery( int argc, char *argv[] );		//	베터리 잔량
+
 //========================================================================
 
 #endif	/* _CLI_H_ */

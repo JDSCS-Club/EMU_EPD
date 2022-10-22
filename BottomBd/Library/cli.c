@@ -115,7 +115,11 @@ user_command_t	user_command_table[] = {
 		"wdtstoff	-	Watchdog Status Signal Off",
 		(char *)0,
 		cmd_WDGStOff,},
-
+	{"bat",
+		"bat		-	Battery Charge Rate",
+		(char *)0,
+		cmd_battery,},
+		//cmd_battery
 #if defined(_RS485_H_)
 	{"sd",
 		"sd			-	Send SD ( Status Data )",
@@ -714,6 +718,16 @@ int	cmd_WDGStOff(int argc, char *argv[])
 	g_bEnIWDGStat = 0;
 }
 //========================================================================
+
+
+//========================================================================
+int	cmd_battery(int argc, char *argv[])
+{
+	//	배터리 잔량 출력.
+	printf("[Battery] Charge Rate : %d %%\n", getChargeRate() );
+}
+//========================================================================
+
 
 //========================================================================
 int cmd_wr( int argc, char *argv[] )

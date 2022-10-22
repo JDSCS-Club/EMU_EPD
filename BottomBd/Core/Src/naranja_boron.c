@@ -590,26 +590,19 @@ void processLightLed(void)
 		//	방공등 Off
 		bool bLightOn = getLightOn();
 
-		if(bLightOn)
-        {
-			ledCtrOn();
-
-//             if(!(sCnnt%5000))
-//            {
-//                printf("---ledCtrOn \n\r" );
-//            }
-        }
-		else
-        {
-			ledCtrOff();
-
-//             if(!(sCnnt%5000))
-//            {
-//                printf("---ledCtrOff \n\r" );
-//            }
-
-        }
-
+		if ( bCurLedCtr != bLightOn )
+		{
+			if(bLightOn)
+	        {
+				ledCtrOn();
+				printf("[LEDOn]\n");
+	        }
+			else
+	        {
+				ledCtrOff();
+				printf("[LEDOff]\n");
+	        }
+		}
 		bCurLedCtr = bLightOn;
 	}
 	else
