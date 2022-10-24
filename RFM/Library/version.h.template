@@ -20,8 +20,8 @@
 //========================================================================
 // Define
 
-#define	APP_MAIN_VER	1
-#define	APP_SUB_VER		1
+#define	APP_MAIN_VER	2
+#define	APP_SUB_VER		0
 #define	APP_DETAIL_VER	0
 #define	APP_BUILD_VER	$WCREV$
 

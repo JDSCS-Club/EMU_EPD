@@ -18,6 +18,7 @@
 #include <string.h>
 #include <stdarg.h>
 
+#include "version.h"
 
 //=============================================================================
 #if defined(_WIN32)
@@ -205,9 +206,9 @@ void SendSD_3( const FRAME_SDR *pSdr,int nCh )		//	CH3 - TCMS
 	pSd->nBatVal			=	getChargeRate();		//	베터리 잔량 0 ~ 100 %
 
 	pSd->nVerX0_00			=	0;		//	v01.01
-	pSd->nVer0X_00			=	1;
-	pSd->nVer00_X0			=	0;
-	pSd->nVer00_0X			=	1;
+	pSd->nVer0X_00			=	APP_MAIN_VER;	//	2;
+	pSd->nVer00_X0			=	0;;
+	pSd->nVer00_0X			=	APP_SUB_VER;	//	0;
 
 	sdfrm.nETX				=	eETX;	//	0x03;		//	ETX
 

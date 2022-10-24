@@ -443,8 +443,8 @@ ChargeRateState getChargeRateState(void)
 		return CHARGE_RATE_75_UNDER;
 	else if(nRate >= 75 && nRate < 97)
 		return CHARGE_RATE_100_UNDER;
-	else if(nRate >= 97)
-		return CHARGE_RATE_100_UNDER;
+	else if(nRate >= 99)
+		return CHARGE_RATE_100;	//CHARGE_RATE_100_UNDER;
 	else
 		return CHARGE_RATE_UNKNOWN;
 
