@@ -1,19 +1,27 @@
-20:25:45 **** Build of configuration Release for project BottomBd ****
+20:34:59 **** Clean-only build of configuration Debug for project BottomBd ****
+make -j8 clean 
+rm -rf ./Library/QBuf.cyclo ./Library/QBuf.d ./Library/QBuf.o ./Library/QBuf.su ./Library/VerInfo.cyclo ./Library/VerInfo.d ./Library/VerInfo.o ./Library/VerInfo.su ./Library/adc.cyclo ./Library/adc.d ./Library/adc.o ./Library/adc.su ./Library/bootloader.cyclo ./Library/bootloader.d ./Library/bootloader.o ./Library/bootloader.su ./Library/cli.cyclo ./Library/cli.d ./Library/cli.o ./Library/cli.su ./Library/flash_if.cyclo ./Library/flash_if.d ./Library/flash_if.o ./Library/flash_if.su ./Library/iap_common.cyclo ./Library/iap_common.d ./Library/iap_common.o ./Library/iap_common.su ./Library/iap_menu.cyclo ./Library/iap_menu.d ./Library/iap_menu.o ./Library/iap_menu.su ./Library/nvram.cyclo ./Library/nvram.d ./Library/nvram.o ./Library/nvram.su ./Library/occpa.cyclo ./Library/occpa.d ./Library/occpa.o ./Library/occpa.su ./Library/rs485.cyclo ./Library/rs485.d ./Library/rs485.o ./Library/rs485.su ./Library/serial.cyclo ./Library/serial.d ./Library/serial.o ./Library/serial.su ./Library/version.cyclo ./Library/version.d ./Library/version.o ./Library/version.su ./Library/ymodem.cyclo ./Library/ymodem.d ./Library/ymodem.o ./Library/ymodem.su
+rm -rf ./Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal.cyclo ./Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal.d ./Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal.o ./Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal.su ./Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_adc.cyclo ./Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_adc.d ./Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_adc.o ./Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_adc.su ./Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_adc_ex.cyclo ./Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_adc_ex.d ./Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_adc_ex.o ./Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_adc_ex.su ./Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_cortex.cyclo ./Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_cortex.d ./Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_cortex.o ./Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_cortex.su ./Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_dma.cyclo ./Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_dma.d ./Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_dma.o ./Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_dma.su ./Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_exti.cyclo ./Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_exti.d ./Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_exti.o ./Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_exti.su ./Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_flash.cyclo ./Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_flash.d ./Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_flash.o ./Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_flash.su ./Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_flash_ex.cyclo ./Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_flash_ex.d ./Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_flash_ex.o ./Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_flash_ex.su ./Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_gpio.cyclo ./Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_gpio.d ./Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_gpio.o ./Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_gpio.su ./Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_gpio_ex.cyclo ./Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_gpio_ex.d ./Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_gpio_ex.o ./Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_gpio_ex.su ./Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_i2c.cyclo ./Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_i2c.d ./Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_i2c.o ./Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_i2c.su ./Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_iwdg.cyclo ./Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_iwdg.d ./Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_iwdg.o ./Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_iwdg.su ./Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_pwr.cyclo ./Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_pwr.d ./Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_pwr.o ./Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_pwr.su ./Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_rcc.cyclo ./Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_rcc.d ./Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_rcc.o ./Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_rcc.su ./Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_rcc_ex.cyclo ./Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_rcc_ex.d ./Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_rcc_ex.o ./Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_rcc_ex.su ./Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_tim.cyclo ./Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_tim.d ./Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_tim.o ./Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_tim.su ./Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_tim_ex.cyclo ./Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_tim_ex.d ./Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_tim_ex.o ./Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_tim_ex.su ./Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_uart.cyclo ./Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_uart.d ./Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_uart.o ./Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_uart.su
+rm -rf ./Core/Startup/startup_stm32f103rctx.d ./Core/Startup/startup_stm32f103rctx.o
+rm -rf ./Core/Src/main.cyclo ./Core/Src/main.d ./Core/Src/main.o ./Core/Src/main.su ./Core/Src/naranja_boron.cyclo ./Core/Src/naranja_boron.d ./Core/Src/naranja_boron.o ./Core/Src/naranja_boron.su ./Core/Src/stm32f1xx_hal_msp.cyclo ./Core/Src/stm32f1xx_hal_msp.d ./Core/Src/stm32f1xx_hal_msp.o ./Core/Src/stm32f1xx_hal_msp.su ./Core/Src/stm32f1xx_it.cyclo ./Core/Src/stm32f1xx_it.d ./Core/Src/stm32f1xx_it.o ./Core/Src/stm32f1xx_it.su ./Core/Src/syscalls.cyclo ./Core/Src/syscalls.d ./Core/Src/syscalls.o ./Core/Src/syscalls.su ./Core/Src/sysmem.cyclo ./Core/Src/sysmem.d ./Core/Src/sysmem.o ./Core/Src/sysmem.su ./Core/Src/system_stm32f1xx.cyclo ./Core/Src/system_stm32f1xx.d ./Core/Src/system_stm32f1xx.o ./Core/Src/system_stm32f1xx.su
+rm -rf BottomBd.bin BottomBd.elf BottomBd.hex BottomBd.list BottomBd.map default.size.stdout
+ 
+20:34:59 **** Incremental Build of configuration Debug for project BottomBd ****
 make -j8 all 
 "C:/D/SW2_Team/EMU_EPD/BottomBd\Version.bat" "C:/D/SW2_Team/EMU_EPD/BottomBd" "C:/D/SW2_Team/EMU_EPD/BottomBd\Library\version.h.template" "C:/D/SW2_Team/EMU_EPD/BottomBd\Library\version.h"
 C:/D/SW2_Team/EMU_EPD/BottomBd C:/D/SW2_Team/EMU_EPD/BottomBd\Library\version.h.template C:/D/SW2_Team/EMU_EPD/BottomBd\Library\version.h
 START Process
-46
+47
 END Process
  
-arm-none-eabi-gcc "../Library/QBuf.c" -mcpu=cortex-m3 -std=gnu11 -DSTM32F103xE -DUSE_HAL_DRIVER -c -I../Drivers/CMSIS/Device/ST/STM32F1xx/Include -I../Drivers/CMSIS/Include -I../Core/Inc -I../Drivers/STM32F1xx_HAL_Driver/Inc/Legacy -I../Drivers/STM32F1xx_HAL_Driver/Inc -I../Library -O3 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Library/QBuf.d" -MT"Library/QBuf.o" --specs=nano.specs -mfloat-abi=soft -mthumb -o "Library/QBuf.o"
-arm-none-eabi-gcc "../Library/VerInfo.c" -mcpu=cortex-m3 -std=gnu11 -DSTM32F103xE -DUSE_HAL_DRIVER -c -I../Drivers/CMSIS/Device/ST/STM32F1xx/Include -I../Drivers/CMSIS/Include -I../Core/Inc -I../Drivers/STM32F1xx_HAL_Driver/Inc/Legacy -I../Drivers/STM32F1xx_HAL_Driver/Inc -I../Library -O3 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Library/VerInfo.d" -MT"Library/VerInfo.o" --specs=nano.specs -mfloat-abi=soft -mthumb -o "Library/VerInfo.o"
-arm-none-eabi-gcc "../Library/adc.c" -mcpu=cortex-m3 -std=gnu11 -DSTM32F103xE -DUSE_HAL_DRIVER -c -I../Drivers/CMSIS/Device/ST/STM32F1xx/Include -I../Drivers/CMSIS/Include -I../Core/Inc -I../Drivers/STM32F1xx_HAL_Driver/Inc/Legacy -I../Drivers/STM32F1xx_HAL_Driver/Inc -I../Library -O3 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Library/adc.d" -MT"Library/adc.o" --specs=nano.specs -mfloat-abi=soft -mthumb -o "Library/adc.o"
-arm-none-eabi-gcc "../Library/bootloader.c" -mcpu=cortex-m3 -std=gnu11 -DSTM32F103xE -DUSE_HAL_DRIVER -c -I../Drivers/CMSIS/Device/ST/STM32F1xx/Include -I../Drivers/CMSIS/Include -I../Core/Inc -I../Drivers/STM32F1xx_HAL_Driver/Inc/Legacy -I../Drivers/STM32F1xx_HAL_Driver/Inc -I../Library -O3 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Library/bootloader.d" -MT"Library/bootloader.o" --specs=nano.specs -mfloat-abi=soft -mthumb -o "Library/bootloader.o"
-arm-none-eabi-gcc "../Library/cli.c" -mcpu=cortex-m3 -std=gnu11 -DSTM32F103xE -DUSE_HAL_DRIVER -c -I../Drivers/CMSIS/Device/ST/STM32F1xx/Include -I../Drivers/CMSIS/Include -I../Core/Inc -I../Drivers/STM32F1xx_HAL_Driver/Inc/Legacy -I../Drivers/STM32F1xx_HAL_Driver/Inc -I../Library -O3 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Library/cli.d" -MT"Library/cli.o" --specs=nano.specs -mfloat-abi=soft -mthumb -o "Library/cli.o"
-arm-none-eabi-gcc "../Library/flash_if.c" -mcpu=cortex-m3 -std=gnu11 -DSTM32F103xE -DUSE_HAL_DRIVER -c -I../Drivers/CMSIS/Device/ST/STM32F1xx/Include -I../Drivers/CMSIS/Include -I../Core/Inc -I../Drivers/STM32F1xx_HAL_Driver/Inc/Legacy -I../Drivers/STM32F1xx_HAL_Driver/Inc -I../Library -O3 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Library/flash_if.d" -MT"Library/flash_if.o" --specs=nano.specs -mfloat-abi=soft -mthumb -o "Library/flash_if.o"
-arm-none-eabi-gcc "../Library/iap_common.c" -mcpu=cortex-m3 -std=gnu11 -DSTM32F103xE -DUSE_HAL_DRIVER -c -I../Drivers/CMSIS/Device/ST/STM32F1xx/Include -I../Drivers/CMSIS/Include -I../Core/Inc -I../Drivers/STM32F1xx_HAL_Driver/Inc/Legacy -I../Drivers/STM32F1xx_HAL_Driver/Inc -I../Library -O3 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Library/iap_common.d" -MT"Library/iap_common.o" --specs=nano.specs -mfloat-abi=soft -mthumb -o "Library/iap_common.o"
-arm-none-eabi-gcc "../Library/iap_menu.c" -mcpu=cortex-m3 -std=gnu11 -DSTM32F103xE -DUSE_HAL_DRIVER -c -I../Drivers/CMSIS/Device/ST/STM32F1xx/Include -I../Drivers/CMSIS/Include -I../Core/Inc -I../Drivers/STM32F1xx_HAL_Driver/Inc/Legacy -I../Drivers/STM32F1xx_HAL_Driver/Inc -I../Library -O3 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Library/iap_menu.d" -MT"Library/iap_menu.o" --specs=nano.specs -mfloat-abi=soft -mthumb -o "Library/iap_menu.o"
+arm-none-eabi-gcc "../Library/QBuf.c" -mcpu=cortex-m3 -std=gnu11 -g3 -DSTM32F103xE -DUSE_HAL_DRIVER -DDEBUG -c -I../Drivers/CMSIS/Device/ST/STM32F1xx/Include -I../Drivers/CMSIS/Include -I../Core/Inc -I../Drivers/STM32F1xx_HAL_Driver/Inc/Legacy -I../Drivers/STM32F1xx_HAL_Driver/Inc -I../Library -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Library/QBuf.d" -MT"Library/QBuf.o" --specs=nano.specs -mfloat-abi=soft -mthumb -o "Library/QBuf.o"
+arm-none-eabi-gcc "../Library/VerInfo.c" -mcpu=cortex-m3 -std=gnu11 -g3 -DSTM32F103xE -DUSE_HAL_DRIVER -DDEBUG -c -I../Drivers/CMSIS/Device/ST/STM32F1xx/Include -I../Drivers/CMSIS/Include -I../Core/Inc -I../Drivers/STM32F1xx_HAL_Driver/Inc/Legacy -I../Drivers/STM32F1xx_HAL_Driver/Inc -I../Library -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Library/VerInfo.d" -MT"Library/VerInfo.o" --specs=nano.specs -mfloat-abi=soft -mthumb -o "Library/VerInfo.o"
+arm-none-eabi-gcc "../Library/adc.c" -mcpu=cortex-m3 -std=gnu11 -g3 -DSTM32F103xE -DUSE_HAL_DRIVER -DDEBUG -c -I../Drivers/CMSIS/Device/ST/STM32F1xx/Include -I../Drivers/CMSIS/Include -I../Core/Inc -I../Drivers/STM32F1xx_HAL_Driver/Inc/Legacy -I../Drivers/STM32F1xx_HAL_Driver/Inc -I../Library -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Library/adc.d" -MT"Library/adc.o" --specs=nano.specs -mfloat-abi=soft -mthumb -o "Library/adc.o"
+arm-none-eabi-gcc "../Library/bootloader.c" -mcpu=cortex-m3 -std=gnu11 -g3 -DSTM32F103xE -DUSE_HAL_DRIVER -DDEBUG -c -I../Drivers/CMSIS/Device/ST/STM32F1xx/Include -I../Drivers/CMSIS/Include -I../Core/Inc -I../Drivers/STM32F1xx_HAL_Driver/Inc/Legacy -I../Drivers/STM32F1xx_HAL_Driver/Inc -I../Library -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Library/bootloader.d" -MT"Library/bootloader.o" --specs=nano.specs -mfloat-abi=soft -mthumb -o "Library/bootloader.o"
+arm-none-eabi-gcc "../Library/cli.c" -mcpu=cortex-m3 -std=gnu11 -g3 -DSTM32F103xE -DUSE_HAL_DRIVER -DDEBUG -c -I../Drivers/CMSIS/Device/ST/STM32F1xx/Include -I../Drivers/CMSIS/Include -I../Core/Inc -I../Drivers/STM32F1xx_HAL_Driver/Inc/Legacy -I../Drivers/STM32F1xx_HAL_Driver/Inc -I../Library -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Library/cli.d" -MT"Library/cli.o" --specs=nano.specs -mfloat-abi=soft -mthumb -o "Library/cli.o"
+arm-none-eabi-gcc "../Library/flash_if.c" -mcpu=cortex-m3 -std=gnu11 -g3 -DSTM32F103xE -DUSE_HAL_DRIVER -DDEBUG -c -I../Drivers/CMSIS/Device/ST/STM32F1xx/Include -I../Drivers/CMSIS/Include -I../Core/Inc -I../Drivers/STM32F1xx_HAL_Driver/Inc/Legacy -I../Drivers/STM32F1xx_HAL_Driver/Inc -I../Library -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Library/flash_if.d" -MT"Library/flash_if.o" --specs=nano.specs -mfloat-abi=soft -mthumb -o "Library/flash_if.o"
+arm-none-eabi-gcc "../Library/iap_common.c" -mcpu=cortex-m3 -std=gnu11 -g3 -DSTM32F103xE -DUSE_HAL_DRIVER -DDEBUG -c -I../Drivers/CMSIS/Device/ST/STM32F1xx/Include -I../Drivers/CMSIS/Include -I../Core/Inc -I../Drivers/STM32F1xx_HAL_Driver/Inc/Legacy -I../Drivers/STM32F1xx_HAL_Driver/Inc -I../Library -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Library/iap_common.d" -MT"Library/iap_common.o" --specs=nano.specs -mfloat-abi=soft -mthumb -o "Library/iap_common.o"
+arm-none-eabi-gcc "../Library/iap_menu.c" -mcpu=cortex-m3 -std=gnu11 -g3 -DSTM32F103xE -DUSE_HAL_DRIVER -DDEBUG -c -I../Drivers/CMSIS/Device/ST/STM32F1xx/Include -I../Drivers/CMSIS/Include -I../Core/Inc -I../Drivers/STM32F1xx_HAL_Driver/Inc/Legacy -I../Drivers/STM32F1xx_HAL_Driver/Inc -I../Library -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Library/iap_menu.d" -MT"Library/iap_menu.o" --specs=nano.specs -mfloat-abi=soft -mthumb -o "Library/iap_menu.o"
 ../Library/flash_if.c: In function 'cmd_flRead':
 ../Library/flash_if.c:267:3: warning: implicit declaration of function 'sscanf' [-Wimplicit-function-declaration]
   267 |   sscanf( argv[1], "%x", &nAddr );  // nAddr
@@ -124,23 +132,6 @@ arm-none-eabi-gcc "../Library/iap_menu.c" -mcpu=cortex-m3 -std=gnu11 -DSTM32F103
       |                              |                          |
       |                              unsigned int               uint32_t {aka long unsigned int}
       |                           %08lX
-../Library/bootloader.c: In function 'BootLoaderTask':
-../Library/bootloader.c:193:3: warning: implicit declaration of function 'FLASH_If_EraseSectors'; did you mean 'FLASH_If_Erase'? [-Wimplicit-function-declaration]
-  193 |   FLASH_If_EraseSectors( ADDR_FLASH_APP, ADDR_FLASH_IMGBOOT );
-      |   ^~~~~~~~~~~~~~~~~~~~~
-      |   FLASH_If_Erase
-../Library/bootloader.c:128:25: warning: unused variable 'flash1' [-Wunused-variable]
-  128 |  FLASH_EraseInitTypeDef flash1;
-      |                         ^~~~~~
-../Library/bootloader.c:118:20: warning: variable 'rremain' set but not used [-Wunused-but-set-variable]
-  118 |  int  readnum = 0, rremain = 0;
-      |                    ^~~~~~~
-../Library/bootloader.c:115:13: warning: unused variable 'k' [-Wunused-variable]
-  115 |  int  i, j, k;
-      |             ^
-../Library/bootloader.c:115:7: warning: unused variable 'i' [-Wunused-variable]
-  115 |  int  i, j, k;
-      |       ^
 ../Library/cli.c:138:3: warning: initialization of 'int (*)(int,  char **)' from incompatible pointer type 'int (*)(int)' [-Wincompatible-pointer-types]
   138 |   cmd_occ},
       |   ^~~~~~~
@@ -163,6 +154,23 @@ arm-none-eabi-gcc "../Library/iap_menu.c" -mcpu=cortex-m3 -std=gnu11 -DSTM32F103
 ../Library/cli.c:374:9: warning: cast from pointer to integer of different size [-Wpointer-to-int-cast]
   374 |    *p = (char)NULL;
       |         ^
+../Library/bootloader.c: In function 'BootLoaderTask':
+../Library/bootloader.c:193:3: warning: implicit declaration of function 'FLASH_If_EraseSectors'; did you mean 'FLASH_If_Erase'? [-Wimplicit-function-declaration]
+  193 |   FLASH_If_EraseSectors( ADDR_FLASH_APP, ADDR_FLASH_IMGBOOT );
+      |   ^~~~~~~~~~~~~~~~~~~~~
+      |   FLASH_If_Erase
+../Library/bootloader.c:128:25: warning: unused variable 'flash1' [-Wunused-variable]
+  128 |  FLASH_EraseInitTypeDef flash1;
+      |                         ^~~~~~
+../Library/bootloader.c:118:20: warning: variable 'rremain' set but not used [-Wunused-but-set-variable]
+  118 |  int  readnum = 0, rremain = 0;
+      |                    ^~~~~~~
+../Library/bootloader.c:115:13: warning: unused variable 'k' [-Wunused-variable]
+  115 |  int  i, j, k;
+      |             ^
+../Library/bootloader.c:115:7: warning: unused variable 'i' [-Wunused-variable]
+  115 |  int  i, j, k;
+      |       ^
 ../Library/cli.c: In function 'cmd_battery':
 ../Library/cli.c:727:44: warning: implicit declaration of function 'getChargeRate' [-Wimplicit-function-declaration]
   727 |  printf("[Battery] Charge Rate : %d %%\n", getChargeRate() );
@@ -175,13 +183,22 @@ arm-none-eabi-gcc "../Library/iap_menu.c" -mcpu=cortex-m3 -std=gnu11 -DSTM32F103
 ../Library/cli.c:728:1: warning: control reaches end of non-void function [-Wreturn-type]
   728 | }
       | ^
-arm-none-eabi-gcc "../Library/nvram.c" -mcpu=cortex-m3 -std=gnu11 -DSTM32F103xE -DUSE_HAL_DRIVER -c -I../Drivers/CMSIS/Device/ST/STM32F1xx/Include -I../Drivers/CMSIS/Include -I../Core/Inc -I../Drivers/STM32F1xx_HAL_Driver/Inc/Legacy -I../Drivers/STM32F1xx_HAL_Driver/Inc -I../Library -O3 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Library/nvram.d" -MT"Library/nvram.o" --specs=nano.specs -mfloat-abi=soft -mthumb -o "Library/nvram.o"
-arm-none-eabi-gcc "../Library/occpa.c" -mcpu=cortex-m3 -std=gnu11 -DSTM32F103xE -DUSE_HAL_DRIVER -c -I../Drivers/CMSIS/Device/ST/STM32F1xx/Include -I../Drivers/CMSIS/Include -I../Core/Inc -I../Drivers/STM32F1xx_HAL_Driver/Inc/Legacy -I../Drivers/STM32F1xx_HAL_Driver/Inc -I../Library -O3 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Library/occpa.d" -MT"Library/occpa.o" --specs=nano.specs -mfloat-abi=soft -mthumb -o "Library/occpa.o"
-arm-none-eabi-gcc "../Library/rs485.c" -mcpu=cortex-m3 -std=gnu11 -DSTM32F103xE -DUSE_HAL_DRIVER -c -I../Drivers/CMSIS/Device/ST/STM32F1xx/Include -I../Drivers/CMSIS/Include -I../Core/Inc -I../Drivers/STM32F1xx_HAL_Driver/Inc/Legacy -I../Drivers/STM32F1xx_HAL_Driver/Inc -I../Library -O3 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Library/rs485.d" -MT"Library/rs485.o" --specs=nano.specs -mfloat-abi=soft -mthumb -o "Library/rs485.o"
-arm-none-eabi-gcc "../Library/serial.c" -mcpu=cortex-m3 -std=gnu11 -DSTM32F103xE -DUSE_HAL_DRIVER -c -I../Drivers/CMSIS/Device/ST/STM32F1xx/Include -I../Drivers/CMSIS/Include -I../Core/Inc -I../Drivers/STM32F1xx_HAL_Driver/Inc/Legacy -I../Drivers/STM32F1xx_HAL_Driver/Inc -I../Library -O3 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Library/serial.d" -MT"Library/serial.o" --specs=nano.specs -mfloat-abi=soft -mthumb -o "Library/serial.o"
-arm-none-eabi-gcc "../Library/version.c" -mcpu=cortex-m3 -std=gnu11 -DSTM32F103xE -DUSE_HAL_DRIVER -c -I../Drivers/CMSIS/Device/ST/STM32F1xx/Include -I../Drivers/CMSIS/Include -I../Core/Inc -I../Drivers/STM32F1xx_HAL_Driver/Inc/Legacy -I../Drivers/STM32F1xx_HAL_Driver/Inc -I../Library -O3 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Library/version.d" -MT"Library/version.o" --specs=nano.specs -mfloat-abi=soft -mthumb -o "Library/version.o"
-arm-none-eabi-gcc "../Library/ymodem.c" -mcpu=cortex-m3 -std=gnu11 -DSTM32F103xE -DUSE_HAL_DRIVER -c -I../Drivers/CMSIS/Device/ST/STM32F1xx/Include -I../Drivers/CMSIS/Include -I../Core/Inc -I../Drivers/STM32F1xx_HAL_Driver/Inc/Legacy -I../Drivers/STM32F1xx_HAL_Driver/Inc -I../Library -O3 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Library/ymodem.d" -MT"Library/ymodem.o" --specs=nano.specs -mfloat-abi=soft -mthumb -o "Library/ymodem.o"
-arm-none-eabi-gcc "../Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal.c" -mcpu=cortex-m3 -std=gnu11 -DSTM32F103xE -DUSE_HAL_DRIVER -c -I../Drivers/CMSIS/Device/ST/STM32F1xx/Include -I../Drivers/CMSIS/Include -I../Core/Inc -I../Drivers/STM32F1xx_HAL_Driver/Inc/Legacy -I../Drivers/STM32F1xx_HAL_Driver/Inc -I../Library -O3 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal.d" -MT"Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal.o" --specs=nano.specs -mfloat-abi=soft -mthumb -o "Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal.o"
+arm-none-eabi-gcc "../Library/nvram.c" -mcpu=cortex-m3 -std=gnu11 -g3 -DSTM32F103xE -DUSE_HAL_DRIVER -DDEBUG -c -I../Drivers/CMSIS/Device/ST/STM32F1xx/Include -I../Drivers/CMSIS/Include -I../Core/Inc -I../Drivers/STM32F1xx_HAL_Driver/Inc/Legacy -I../Drivers/STM32F1xx_HAL_Driver/Inc -I../Library -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Library/nvram.d" -MT"Library/nvram.o" --specs=nano.specs -mfloat-abi=soft -mthumb -o "Library/nvram.o"
+arm-none-eabi-gcc "../Library/occpa.c" -mcpu=cortex-m3 -std=gnu11 -g3 -DSTM32F103xE -DUSE_HAL_DRIVER -DDEBUG -c -I../Drivers/CMSIS/Device/ST/STM32F1xx/Include -I../Drivers/CMSIS/Include -I../Core/Inc -I../Drivers/STM32F1xx_HAL_Driver/Inc/Legacy -I../Drivers/STM32F1xx_HAL_Driver/Inc -I../Library -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Library/occpa.d" -MT"Library/occpa.o" --specs=nano.specs -mfloat-abi=soft -mthumb -o "Library/occpa.o"
+../Library/occpa.c: In function 'RFMOccPaStart':
+../Library/occpa.c:41:57: warning: implicit declaration of function 'strlen' [-Wimplicit-function-declaration]
+   41 |  HAL_UART_Transmit( &huart2, (uint8_t *)sCmdOccPaStart, strlen(sCmdOccPaStart), 100 );
+      |                                                         ^~~~~~
+../Library/occpa.c:41:57: warning: incompatible implicit declaration of built-in function 'strlen'
+../Library/occpa.c:24:1: note: include '<string.h>' or provide a declaration of 'strlen'
+   23 | #include "serial.h"
+  +++ |+#include <string.h>
+   24 | 
+../Library/occpa.c: In function 'RFMOccPaStop':
+../Library/occpa.c:51:56: warning: incompatible implicit declaration of built-in function 'strlen'
+   51 |  HAL_UART_Transmit( &huart2, (uint8_t *)sCmdOccPaStop, strlen(sCmdOccPaStop), 100 );
+      |                                                        ^~~~~~
+../Library/occpa.c:51:56: note: include '<string.h>' or provide a declaration of 'strlen'
 ../Library/nvram.c: In function 'cmd_nvramRead':
 ../Library/nvram.c:173:1: warning: control reaches end of non-void function [-Wreturn-type]
   173 | }
@@ -194,6 +211,21 @@ arm-none-eabi-gcc "../Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal.c" -mcpu=co
 ../Library/nvram.c:231:1: warning: control reaches end of non-void function [-Wreturn-type]
   231 | }
       | ^
+arm-none-eabi-gcc "../Library/rs485.c" -mcpu=cortex-m3 -std=gnu11 -g3 -DSTM32F103xE -DUSE_HAL_DRIVER -DDEBUG -c -I../Drivers/CMSIS/Device/ST/STM32F1xx/Include -I../Drivers/CMSIS/Include -I../Core/Inc -I../Drivers/STM32F1xx_HAL_Driver/Inc/Legacy -I../Drivers/STM32F1xx_HAL_Driver/Inc -I../Library -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Library/rs485.d" -MT"Library/rs485.o" --specs=nano.specs -mfloat-abi=soft -mthumb -o "Library/rs485.o"
+arm-none-eabi-gcc "../Library/serial.c" -mcpu=cortex-m3 -std=gnu11 -g3 -DSTM32F103xE -DUSE_HAL_DRIVER -DDEBUG -c -I../Drivers/CMSIS/Device/ST/STM32F1xx/Include -I../Drivers/CMSIS/Include -I../Core/Inc -I../Drivers/STM32F1xx_HAL_Driver/Inc/Legacy -I../Drivers/STM32F1xx_HAL_Driver/Inc -I../Library -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Library/serial.d" -MT"Library/serial.o" --specs=nano.specs -mfloat-abi=soft -mthumb -o "Library/serial.o"
+arm-none-eabi-gcc "../Library/version.c" -mcpu=cortex-m3 -std=gnu11 -g3 -DSTM32F103xE -DUSE_HAL_DRIVER -DDEBUG -c -I../Drivers/CMSIS/Device/ST/STM32F1xx/Include -I../Drivers/CMSIS/Include -I../Core/Inc -I../Drivers/STM32F1xx_HAL_Driver/Inc/Legacy -I../Drivers/STM32F1xx_HAL_Driver/Inc -I../Library -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Library/version.d" -MT"Library/version.o" --specs=nano.specs -mfloat-abi=soft -mthumb -o "Library/version.o"
+arm-none-eabi-gcc "../Library/ymodem.c" -mcpu=cortex-m3 -std=gnu11 -g3 -DSTM32F103xE -DUSE_HAL_DRIVER -DDEBUG -c -I../Drivers/CMSIS/Device/ST/STM32F1xx/Include -I../Drivers/CMSIS/Include -I../Core/Inc -I../Drivers/STM32F1xx_HAL_Driver/Inc/Legacy -I../Drivers/STM32F1xx_HAL_Driver/Inc -I../Library -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Library/ymodem.d" -MT"Library/ymodem.o" --specs=nano.specs -mfloat-abi=soft -mthumb -o "Library/ymodem.o"
+arm-none-eabi-gcc "../Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal.c" -mcpu=cortex-m3 -std=gnu11 -g3 -DSTM32F103xE -DUSE_HAL_DRIVER -DDEBUG -c -I../Drivers/CMSIS/Device/ST/STM32F1xx/Include -I../Drivers/CMSIS/Include -I../Core/Inc -I../Drivers/STM32F1xx_HAL_Driver/Inc/Legacy -I../Drivers/STM32F1xx_HAL_Driver/Inc -I../Library -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal.d" -MT"Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal.o" --specs=nano.specs -mfloat-abi=soft -mthumb -o "Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal.o"
+arm-none-eabi-gcc "../Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_adc.c" -mcpu=cortex-m3 -std=gnu11 -g3 -DSTM32F103xE -DUSE_HAL_DRIVER -DDEBUG -c -I../Drivers/CMSIS/Device/ST/STM32F1xx/Include -I../Drivers/CMSIS/Include -I../Core/Inc -I../Drivers/STM32F1xx_HAL_Driver/Inc/Legacy -I../Drivers/STM32F1xx_HAL_Driver/Inc -I../Library -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_adc.d" -MT"Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_adc.o" --specs=nano.specs -mfloat-abi=soft -mthumb -o "Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_adc.o"
+../Library/version.c: In function 'Version_History':
+../Library/version.c:41:2: warning: implicit declaration of function 'printf' [-Wimplicit-function-declaration]
+   41 |  printf( "-----------------------------\r\n" );
+      |  ^~~~~~
+../Library/version.c:41:2: warning: incompatible implicit declaration of built-in function 'printf'
+../Library/version.c:19:1: note: include '<stdio.h>' or provide a declaration of 'printf'
+   18 | #include "VerInfo.h"  // VER_INFO structure
+  +++ |+#include <stdio.h>
+   19 | 
 ../Library/rs485.c: In function 'SendRS485':
 ../Library/rs485.c:157:6: warning: variable 'ret' set but not used [-Wunused-but-set-variable]
   157 |  int ret;
@@ -201,6 +233,62 @@ arm-none-eabi-gcc "../Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal.c" -mcpu=co
 ../Library/rs485.c:156:6: warning: unused variable 'idx' [-Wunused-variable]
   156 |  int idx;
       |      ^~~
+../Library/serial.c: In function 'checkSerial':
+../Library/serial.c:290:28: warning: format '%X' expects argument of type 'unsigned int', but argument 2 has type 'USART_TypeDef *' [-Wformat=]
+  290 |   printf("UART Inst : 0x%08X\n", uart->Instance );
+      |                         ~~~^     ~~~~~~~~~~~~~~
+      |                            |         |
+      |                            |         USART_TypeDef *
+      |                            unsigned int
+../Library/serial.c:291:30: warning: format '%x' expects argument of type 'unsigned int', but argument 2 has type 'uint32_t' {aka 'volatile long unsigned int'} [-Wformat=]
+  291 |   printf("UART > err code : %x tStat: %x rStat: %x SR: %x DR %x \n", uart->ErrorCode, uart->gState, uart->RxState, uart->Instance->SR, uart->Instance->DR);
+      |                             ~^                                       ~~~~~~~~~~~~~~~
+      |                              |                                           |
+      |                              unsigned int                                uint32_t {aka volatile long unsigned int}
+      |                             %lx
+../Library/serial.c:291:57: warning: format '%x' expects argument of type 'unsigned int', but argument 5 has type 'uint32_t' {aka 'volatile long unsigned int'} [-Wformat=]
+  291 |   printf("UART > err code : %x tStat: %x rStat: %x SR: %x DR %x \n", uart->ErrorCode, uart->gState, uart->RxState, uart->Instance->SR, uart->Instance->DR);
+      |                                                        ~^                                                          ~~~~~~~~~~~~~~~~~~
+      |                                                         |                                                                        |
+      |                                                         unsigned int                                                             uint32_t {aka volatile long unsigned int}
+      |                                                        %lx
+../Library/serial.c:291:63: warning: format '%x' expects argument of type 'unsigned int', but argument 6 has type 'uint32_t' {aka 'volatile long unsigned int'} [-Wformat=]
+  291 |   printf("UART > err code : %x tStat: %x rStat: %x SR: %x DR %x \n", uart->ErrorCode, uart->gState, uart->RxState, uart->Instance->SR, uart->Instance->DR);
+      |                                                              ~^                                                                        ~~~~~~~~~~~~~~~~~~
+      |                                                               |                                                                                      |
+      |                                                               unsigned int                                                                           uint32_t {aka volatile long unsigned int}
+      |                                                              %lx
+../Library/serial.c:292:25: warning: format '%x' expects argument of type 'unsigned int', but argument 2 has type 'uint32_t' {aka 'volatile long unsigned int'} [-Wformat=]
+  292 |   printf("UART > BRR : %x CR1: %x CR2: %x CR3: %x GTPR %x \n", uart->Instance->BRR, uart->Instance->CR1, uart->Instance->CR2, uart->Instance->CR3, uart->Instance->GTPR);
+      |                        ~^                                      ~~~~~~~~~~~~~~~~~~~
+      |                         |                                                    |
+      |                         unsigned int                                         uint32_t {aka volatile long unsigned int}
+      |                        %lx
+../Library/serial.c:292:33: warning: format '%x' expects argument of type 'unsigned int', but argument 3 has type 'uint32_t' {aka 'volatile long unsigned int'} [-Wformat=]
+  292 |   printf("UART > BRR : %x CR1: %x CR2: %x CR3: %x GTPR %x \n", uart->Instance->BRR, uart->Instance->CR1, uart->Instance->CR2, uart->Instance->CR3, uart->Instance->GTPR);
+      |                                ~^                                                   ~~~~~~~~~~~~~~~~~~~
+      |                                 |                                                                 |
+      |                                 unsigned int                                                      uint32_t {aka volatile long unsigned int}
+      |                                %lx
+../Library/serial.c:292:41: warning: format '%x' expects argument of type 'unsigned int', but argument 4 has type 'uint32_t' {aka 'volatile long unsigned int'} [-Wformat=]
+  292 |   printf("UART > BRR : %x CR1: %x CR2: %x CR3: %x GTPR %x \n", uart->Instance->BRR, uart->Instance->CR1, uart->Instance->CR2, uart->Instance->CR3, uart->Instance->GTPR);
+      |                                        ~^                                                                ~~~~~~~~~~~~~~~~~~~
+      |                                         |                                                                              |
+      |                                         unsigned int                                                                   uint32_t {aka volatile long unsigned int}
+      |                                        %lx
+../Library/serial.c:292:49: warning: format '%x' expects argument of type 'unsigned int', but argument 5 has type 'uint32_t' {aka 'volatile long unsigned int'} [-Wformat=]
+  292 |   printf("UART > BRR : %x CR1: %x CR2: %x CR3: %x GTPR %x \n", uart->Instance->BRR, uart->Instance->CR1, uart->Instance->CR2, uart->Instance->CR3, uart->Instance->GTPR);
+      |                                                ~^                                                                             ~~~~~~~~~~~~~~~~~~~
+      |                                                 |                                                                                           |
+      |                                                 unsigned int                                                                                uint32_t {aka volatile long unsigned int}
+      |                                                %lx
+../Library/serial.c:292:57: warning: format '%x' expects argument of type 'unsigned int', but argument 6 has type 'uint32_t' {aka 'volatile long unsigned int'} [-Wformat=]
+  292 |   printf("UART > BRR : %x CR1: %x CR2: %x CR3: %x GTPR %x \n", uart->Instance->BRR, uart->Instance->CR1, uart->Instance->CR2, uart->Instance->CR3, uart->Instance->GTPR);
+      |                                                        ~^                                                                                          ~~~~~~~~~~~~~~~~~~~~
+      |                                                         |                                                                                                        |
+      |                                                         unsigned int                                                                                             uint32_t {aka volatile long unsigned int}
+      |                                                        %lx
+arm-none-eabi-gcc "../Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_adc_ex.c" -mcpu=cortex-m3 -std=gnu11 -g3 -DSTM32F103xE -DUSE_HAL_DRIVER -DDEBUG -c -I../Drivers/CMSIS/Device/ST/STM32F1xx/Include -I../Drivers/CMSIS/Include -I../Core/Inc -I../Drivers/STM32F1xx_HAL_Driver/Inc/Legacy -I../Drivers/STM32F1xx_HAL_Driver/Inc -I../Library -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_adc_ex.d" -MT"Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_adc_ex.o" --specs=nano.specs -mfloat-abi=soft -mthumb -o "Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_adc_ex.o"
 ../Library/rs485.c: In function 'SendSD_3':
 ../Library/rs485.c:206:19: warning: implicit declaration of function 'getChargeRate' [-Wimplicit-function-declaration]
   206 |  pSd->nBatVal   = getChargeRate();  // ë² í„°ë¦? ?ž”?Ÿ‰ 0 ~ 100 %
@@ -241,19 +329,10 @@ arm-none-eabi-gcc "../Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal.c" -mcpu=co
 ../Library/rs485.c:280:15: warning: unused variable 'pSd' [-Wunused-variable]
   280 |  const SD_t  *pSd = &pFrameSd->sd;
       |               ^~~
-../Library/version.c: In function 'Version_History':
 ../Library/rs485.c: In function 'ProcessFrameSDR':
 ../Library/rs485.c:287:9: warning: type defaults to 'int' in declaration of 'sOccFlag' [-Wimplicit-int]
   287 |  static sOccFlag = 0;
       |         ^~~~~~~~
-../Library/version.c:41:2: warning: implicit declaration of function 'printf' [-Wimplicit-function-declaration]
-   41 |  printf( "-----------------------------\r\n" );
-      |  ^~~~~~
-../Library/version.c:41:2: warning: incompatible implicit declaration of built-in function 'printf'
-../Library/version.c:19:1: note: include '<stdio.h>' or provide a declaration of 'printf'
-   18 | #include "VerInfo.h"  // VER_INFO structure
-  +++ |+#include <stdio.h>
-   19 | 
 ../Library/rs485.c: In function 'ProcessFrame':
 ../Library/rs485.c:436:14: warning: format '%d' expects argument of type 'int', but argument 2 has type 'uint32_t' {aka 'long unsigned int'} [-Wformat=]
   436 |   printf( "[%d] %s(%d) - TCMS SDR Recv ( %d )\n", HAL_GetTick(),  __func__, __LINE__, nLen );
@@ -282,6 +361,7 @@ arm-none-eabi-gcc "../Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal.c" -mcpu=co
   569 |      Dump( "Rx : ", rxbuffer, length );
       |                     ^~~~~~~~
       |                     |
+arm-none-eabi-gcc "../Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_cortex.c" -mcpu=cortex-m3 -std=gnu11 -g3 -DSTM32F103xE -DUSE_HAL_DRIVER -DDEBUG -c -I../Drivers/CMSIS/Device/ST/STM32F1xx/Include -I../Drivers/CMSIS/Include -I../Core/Inc -I../Drivers/STM32F1xx_HAL_Driver/Inc/Legacy -I../Drivers/STM32F1xx_HAL_Driver/Inc -I../Library -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_cortex.d" -MT"Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_cortex.o" --specs=nano.specs -mfloat-abi=soft -mthumb -o "Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_cortex.o"
       |                     uint8_t * {aka unsigned char *}
 ../Library/rs485.c:492:32: note: expected 'char *' but argument is of type 'uint8_t *' {aka 'unsigned char *'}
   492 | void Dump( char *sTitle, char *sBuf, int nSize )
@@ -310,28 +390,15 @@ arm-none-eabi-gcc "../Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal.c" -mcpu=co
 ../Library/rs485.c:524:10: warning: unused variable 'nTick_2' [-Wunused-variable]
   524 |      int nTick_2;
       |          ^~~~~~~
-../Library/serial.c: In function 'checkSerial':
 ../Library/rs485.c:521:6: warning: unused variable 'idx' [-Wunused-variable]
   521 |  int idx;
       |      ^~~
-../Library/serial.c:290:28: warning: format '%X' expects argument of type 'unsigned int', but argument 2 has type 'USART_TypeDef *' [-Wformat=]
-  290 |   printf("UART Inst : 0x%08X\n", uart->Instance );
-      |                         ~~~^     ~~~~~~~~~~~~~~
-      |                            |         |
-      |                            |         USART_TypeDef *
-      |                            unsigned int
 ../Library/rs485.c: In function 'LoopProcRS485_5ch':
 ../Library/rs485.c:664:21: warning: pointer targets in passing argument 2 of 'Dump' differ in signedness [-Wpointer-sign]
   664 |      Dump( "Rx : ", rxbuffer_5, length_5 );
       |                     ^~~~~~~~~~
       |                     |
       |                     uint8_t * {aka unsigned char *}
-../Library/serial.c:291:30: warning: format '%x' expects argument of type 'unsigned int', but argument 2 has type 'uint32_t' {aka 'volatile long unsigned int'} [-Wformat=]
-  291 |   printf("UART > err code : %x tStat: %x rStat: %x SR: %x DR %x \n", uart->ErrorCode, uart->gState, uart->RxState, uart->Instance->SR, uart->Instance->DR);
-      |                             ~^                                       ~~~~~~~~~~~~~~~
-      |                              |                                           |
-      |                              unsigned int                                uint32_t {aka volatile long unsigned int}
-      |                             %lx
 ../Library/rs485.c:492:32: note: expected 'char *' but argument is of type 'uint8_t *' {aka 'unsigned char *'}
   492 | void Dump( char *sTitle, char *sBuf, int nSize )
       |                          ~~~~~~^~~~
@@ -341,18 +408,6 @@ arm-none-eabi-gcc "../Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal.c" -mcpu=co
       |                 |                                                |
       |                 int                                              uint32_t {aka long unsigned int}
       |                %ld
-../Library/serial.c:291:57: warning: format '%x' expects argument of type 'unsigned int', but argument 5 has type 'uint32_t' {aka 'volatile long unsigned int'} [-Wformat=]
-  291 |   printf("UART > err code : %x tStat: %x rStat: %x SR: %x DR %x \n", uart->ErrorCode, uart->gState, uart->RxState, uart->Instance->SR, uart->Instance->DR);
-      |                                                        ~^                                                          ~~~~~~~~~~~~~~~~~~
-      |                                                         |                                                                        |
-      |                                                         unsigned int                                                             uint32_t {aka volatile long unsigned int}
-      |                                                        %lx
-../Library/serial.c:291:63: warning: format '%x' expects argument of type 'unsigned int', but argument 6 has type 'uint32_t' {aka 'volatile long unsigned int'} [-Wformat=]
-  291 |   printf("UART > err code : %x tStat: %x rStat: %x SR: %x DR %x \n", uart->ErrorCode, uart->gState, uart->RxState, uart->Instance->SR, uart->Instance->DR);
-      |                                                              ~^                                                                        ~~~~~~~~~~~~~~~~~~
-      |                                                               |                                                                                      |
-      |                                                               unsigned int                                                                           uint32_t {aka volatile long unsigned int}
-      |                                                              %lx
 ../Library/rs485.c:670:45: warning: format '%d' expects argument of type 'int', but argument 5 has type 'uint32_t' {aka 'long unsigned int'} [-Wformat=]
   670 |      printf( "[%d] %s(%d) - Invalid packet(%d) FrameSize(%d)\n", HAL_GetTick(), __func__, __LINE__, length_5, sizeof(FRAME_TRSDR) );
       |                                            ~^                                                       ~~~~~~~~
@@ -371,32 +426,6 @@ arm-none-eabi-gcc "../Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal.c" -mcpu=co
 ../Library/rs485.c:620:10: warning: unused variable 'nTick_2' [-Wunused-variable]
   620 |      int nTick_2;
       |          ^~~~~~~
-../Library/serial.c:292:25: warning: format '%x' expects argument of type 'unsigned int', but argument 2 has type 'uint32_t' {aka 'volatile long unsigned int'} [-Wformat=]
-  292 |   printf("UART > BRR : %x CR1: %x CR2: %x CR3: %x GTPR %x \n", uart->Instance->BRR, uart->Instance->CR1, uart->Instance->CR2, uart->Instance->CR3, uart->Instance->GTPR);
-      |                        ~^                                      ~~~~~~~~~~~~~~~~~~~
-      |                         |                                                    |
-      |                         unsigned int                                         uint32_t {aka volatile long unsigned int}
-      |                        %lx
-../Library/serial.c:292:33: warning: format '%x' expects argument of type 'unsigned int', but argument 3 has type 'uint32_t' {aka 'volatile long unsigned int'} [-Wformat=]
-  292 |   printf("UART > BRR : %x CR1: %x CR2: %x CR3: %x GTPR %x \n", uart->Instance->BRR, uart->Instance->CR1, uart->Instance->CR2, uart->Instance->CR3, uart->Instance->GTPR);
-      |                                ~^                                                   ~~~~~~~~~~~~~~~~~~~
-      |                                 |                                                                 |
-      |                                 unsigned int                                                      uint32_t {aka volatile long unsigned int}
-      |                                %lx
-../Library/occpa.c: In function 'RFMOccPaStart':
-../Library/occpa.c:41:57: warning: implicit declaration of function 'strlen' [-Wimplicit-function-declaration]
-   41 |  HAL_UART_Transmit( &huart2, (uint8_t *)sCmdOccPaStart, strlen(sCmdOccPaStart), 100 );
-      |                                                         ^~~~~~
-../Library/occpa.c:41:57: warning: incompatible implicit declaration of built-in function 'strlen'
-../Library/occpa.c:24:1: note: include '<string.h>' or provide a declaration of 'strlen'
-   23 | #include "serial.h"
-  +++ |+#include <string.h>
-   24 | 
-../Library/occpa.c: In function 'RFMOccPaStop':
-../Library/occpa.c:51:56: warning: incompatible implicit declaration of built-in function 'strlen'
-   51 |  HAL_UART_Transmit( &huart2, (uint8_t *)sCmdOccPaStop, strlen(sCmdOccPaStop), 100 );
-      |                                                        ^~~~~~
-../Library/occpa.c:51:56: note: include '<string.h>' or provide a declaration of 'strlen'
 ../Library/rs485.c:617:6: warning: unused variable 'idx' [-Wunused-variable]
   617 |  int idx;
       |      ^~~
@@ -424,31 +453,12 @@ arm-none-eabi-gcc "../Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal.c" -mcpu=co
 ../Library/rs485.c:708:6: warning: unused variable 'idx' [-Wunused-variable]
   708 |  int idx;
       |      ^~~
-../Library/serial.c:292:41: warning: format '%x' expects argument of type 'unsigned int', but argument 4 has type 'uint32_t' {aka 'volatile long unsigned int'} [-Wformat=]
-  292 |   printf("UART > BRR : %x CR1: %x CR2: %x CR3: %x GTPR %x \n", uart->Instance->BRR, uart->Instance->CR1, uart->Instance->CR2, uart->Instance->CR3, uart->Instance->GTPR);
-      |                                        ~^                                                                ~~~~~~~~~~~~~~~~~~~
-      |                                         |                                                                              |
-      |                                         unsigned int                                                                   uint32_t {aka volatile long unsigned int}
-      |                                        %lx
 ../Library/rs485.c:706:8: warning: variable 's_EtxLen' set but not used [-Wunused-but-set-variable]
   706 |    int s_EtxLen = 0;
       |        ^~~~~~~~
 ../Library/rs485.c:704:15: warning: unused variable 's_RxOkLen' [-Wunused-variable]
   704 |    static int s_RxOkLen =0;
       |               ^~~~~~~~~
-../Library/serial.c:292:49: warning: format '%x' expects argument of type 'unsigned int', but argument 5 has type 'uint32_t' {aka 'volatile long unsigned int'} [-Wformat=]
-  292 |   printf("UART > BRR : %x CR1: %x CR2: %x CR3: %x GTPR %x \n", uart->Instance->BRR, uart->Instance->CR1, uart->Instance->CR2, uart->Instance->CR3, uart->Instance->GTPR);
-      |                                                ~^                                                                             ~~~~~~~~~~~~~~~~~~~
-      |                                                 |                                                                                           |
-      |                                                 unsigned int                                                                                uint32_t {aka volatile long unsigned int}
-      |                                                %lx
-../Library/serial.c:292:57: warning: format '%x' expects argument of type 'unsigned int', but argument 6 has type 'uint32_t' {aka 'volatile long unsigned int'} [-Wformat=]
-  292 |   printf("UART > BRR : %x CR1: %x CR2: %x CR3: %x GTPR %x \n", uart->Instance->BRR, uart->Instance->CR1, uart->Instance->CR2, uart->Instance->CR3, uart->Instance->GTPR);
-      |                                                        ~^                                                                                          ~~~~~~~~~~~~~~~~~~~~
-      |                                                         |                                                                                                        |
-      |                                                         unsigned int                                                                                             uint32_t {aka volatile long unsigned int}
-      |                                                        %lx
-arm-none-eabi-gcc "../Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_adc.c" -mcpu=cortex-m3 -std=gnu11 -DSTM32F103xE -DUSE_HAL_DRIVER -c -I../Drivers/CMSIS/Device/ST/STM32F1xx/Include -I../Drivers/CMSIS/Include -I../Core/Inc -I../Drivers/STM32F1xx_HAL_Driver/Inc/Legacy -I../Drivers/STM32F1xx_HAL_Driver/Inc -I../Library -O3 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_adc.d" -MT"Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_adc.o" --specs=nano.specs -mfloat-abi=soft -mthumb -o "Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_adc.o"
 At top level:
 ../Library/rs485.c:704:15: warning: 's_RxOkLen' defined but not used [-Wunused-variable]
 ../Library/rs485.c:712:14: warning: 's_2_nTick_F' defined but not used [-Wunused-variable]
@@ -479,7 +489,6 @@ At top level:
 ../Library/ymodem.c:707:3: warning: implicit declaration of function 'SerialInit' [-Wimplicit-function-declaration]
   707 |   SerialInit( NULL, NULL, NULL, NULL );
       |   ^~~~~~~~~~
-arm-none-eabi-gcc "../Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_adc_ex.c" -mcpu=cortex-m3 -std=gnu11 -DSTM32F103xE -DUSE_HAL_DRIVER -c -I../Drivers/CMSIS/Device/ST/STM32F1xx/Include -I../Drivers/CMSIS/Include -I../Core/Inc -I../Drivers/STM32F1xx_HAL_Driver/Inc/Legacy -I../Drivers/STM32F1xx_HAL_Driver/Inc -I../Library -O3 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_adc_ex.d" -MT"Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_adc_ex.o" --specs=nano.specs -mfloat-abi=soft -mthumb -o "Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_adc_ex.o"
 ../Library/ymodem.c:732:9: warning: implicit declaration of function 'SerialDownload' [-Wimplicit-function-declaration]
   732 |   ret = SerialDownload();
       |         ^~~~~~~~~~~~~~
@@ -489,26 +498,73 @@ arm-none-eabi-gcc "../Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_adc_ex.c" -
 ../Library/ymodem.c:759:1: warning: control reaches end of non-void function [-Wreturn-type]
   759 | }
       | ^
-arm-none-eabi-gcc "../Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_cortex.c" -mcpu=cortex-m3 -std=gnu11 -DSTM32F103xE -DUSE_HAL_DRIVER -c -I../Drivers/CMSIS/Device/ST/STM32F1xx/Include -I../Drivers/CMSIS/Include -I../Core/Inc -I../Drivers/STM32F1xx_HAL_Driver/Inc/Legacy -I../Drivers/STM32F1xx_HAL_Driver/Inc -I../Library -O3 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_cortex.d" -MT"Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_cortex.o" --specs=nano.specs -mfloat-abi=soft -mthumb -o "Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_cortex.o"
-arm-none-eabi-gcc "../Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_dma.c" -mcpu=cortex-m3 -std=gnu11 -DSTM32F103xE -DUSE_HAL_DRIVER -c -I../Drivers/CMSIS/Device/ST/STM32F1xx/Include -I../Drivers/CMSIS/Include -I../Core/Inc -I../Drivers/STM32F1xx_HAL_Driver/Inc/Legacy -I../Drivers/STM32F1xx_HAL_Driver/Inc -I../Library -O3 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_dma.d" -MT"Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_dma.o" --specs=nano.specs -mfloat-abi=soft -mthumb -o "Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_dma.o"
-arm-none-eabi-gcc "../Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_exti.c" -mcpu=cortex-m3 -std=gnu11 -DSTM32F103xE -DUSE_HAL_DRIVER -c -I../Drivers/CMSIS/Device/ST/STM32F1xx/Include -I../Drivers/CMSIS/Include -I../Core/Inc -I../Drivers/STM32F1xx_HAL_Driver/Inc/Legacy -I../Drivers/STM32F1xx_HAL_Driver/Inc -I../Library -O3 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_exti.d" -MT"Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_exti.o" --specs=nano.specs -mfloat-abi=soft -mthumb -o "Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_exti.o"
-arm-none-eabi-gcc "../Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_flash.c" -mcpu=cortex-m3 -std=gnu11 -DSTM32F103xE -DUSE_HAL_DRIVER -c -I../Drivers/CMSIS/Device/ST/STM32F1xx/Include -I../Drivers/CMSIS/Include -I../Core/Inc -I../Drivers/STM32F1xx_HAL_Driver/Inc/Legacy -I../Drivers/STM32F1xx_HAL_Driver/Inc -I../Library -O3 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_flash.d" -MT"Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_flash.o" --specs=nano.specs -mfloat-abi=soft -mthumb -o "Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_flash.o"
-arm-none-eabi-gcc "../Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_flash_ex.c" -mcpu=cortex-m3 -std=gnu11 -DSTM32F103xE -DUSE_HAL_DRIVER -c -I../Drivers/CMSIS/Device/ST/STM32F1xx/Include -I../Drivers/CMSIS/Include -I../Core/Inc -I../Drivers/STM32F1xx_HAL_Driver/Inc/Legacy -I../Drivers/STM32F1xx_HAL_Driver/Inc -I../Library -O3 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_flash_ex.d" -MT"Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_flash_ex.o" --specs=nano.specs -mfloat-abi=soft -mthumb -o "Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_flash_ex.o"
-arm-none-eabi-gcc "../Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_gpio.c" -mcpu=cortex-m3 -std=gnu11 -DSTM32F103xE -DUSE_HAL_DRIVER -c -I../Drivers/CMSIS/Device/ST/STM32F1xx/Include -I../Drivers/CMSIS/Include -I../Core/Inc -I../Drivers/STM32F1xx_HAL_Driver/Inc/Legacy -I../Drivers/STM32F1xx_HAL_Driver/Inc -I../Library -O3 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_gpio.d" -MT"Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_gpio.o" --specs=nano.specs -mfloat-abi=soft -mthumb -o "Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_gpio.o"
-arm-none-eabi-gcc "../Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_gpio_ex.c" -mcpu=cortex-m3 -std=gnu11 -DSTM32F103xE -DUSE_HAL_DRIVER -c -I../Drivers/CMSIS/Device/ST/STM32F1xx/Include -I../Drivers/CMSIS/Include -I../Core/Inc -I../Drivers/STM32F1xx_HAL_Driver/Inc/Legacy -I../Drivers/STM32F1xx_HAL_Driver/Inc -I../Library -O3 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_gpio_ex.d" -MT"Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_gpio_ex.o" --specs=nano.specs -mfloat-abi=soft -mthumb -o "Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_gpio_ex.o"
-arm-none-eabi-gcc "../Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_i2c.c" -mcpu=cortex-m3 -std=gnu11 -DSTM32F103xE -DUSE_HAL_DRIVER -c -I../Drivers/CMSIS/Device/ST/STM32F1xx/Include -I../Drivers/CMSIS/Include -I../Core/Inc -I../Drivers/STM32F1xx_HAL_Driver/Inc/Legacy -I../Drivers/STM32F1xx_HAL_Driver/Inc -I../Library -O3 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_i2c.d" -MT"Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_i2c.o" --specs=nano.specs -mfloat-abi=soft -mthumb -o "Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_i2c.o"
-arm-none-eabi-gcc "../Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_iwdg.c" -mcpu=cortex-m3 -std=gnu11 -DSTM32F103xE -DUSE_HAL_DRIVER -c -I../Drivers/CMSIS/Device/ST/STM32F1xx/Include -I../Drivers/CMSIS/Include -I../Core/Inc -I../Drivers/STM32F1xx_HAL_Driver/Inc/Legacy -I../Drivers/STM32F1xx_HAL_Driver/Inc -I../Library -O3 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_iwdg.d" -MT"Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_iwdg.o" --specs=nano.specs -mfloat-abi=soft -mthumb -o "Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_iwdg.o"
-arm-none-eabi-gcc "../Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_pwr.c" -mcpu=cortex-m3 -std=gnu11 -DSTM32F103xE -DUSE_HAL_DRIVER -c -I../Drivers/CMSIS/Device/ST/STM32F1xx/Include -I../Drivers/CMSIS/Include -I../Core/Inc -I../Drivers/STM32F1xx_HAL_Driver/Inc/Legacy -I../Drivers/STM32F1xx_HAL_Driver/Inc -I../Library -O3 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_pwr.d" -MT"Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_pwr.o" --specs=nano.specs -mfloat-abi=soft -mthumb -o "Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_pwr.o"
-arm-none-eabi-gcc "../Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_rcc.c" -mcpu=cortex-m3 -std=gnu11 -DSTM32F103xE -DUSE_HAL_DRIVER -c -I../Drivers/CMSIS/Device/ST/STM32F1xx/Include -I../Drivers/CMSIS/Include -I../Core/Inc -I../Drivers/STM32F1xx_HAL_Driver/Inc/Legacy -I../Drivers/STM32F1xx_HAL_Driver/Inc -I../Library -O3 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_rcc.d" -MT"Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_rcc.o" --specs=nano.specs -mfloat-abi=soft -mthumb -o "Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_rcc.o"
-arm-none-eabi-gcc "../Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_rcc_ex.c" -mcpu=cortex-m3 -std=gnu11 -DSTM32F103xE -DUSE_HAL_DRIVER -c -I../Drivers/CMSIS/Device/ST/STM32F1xx/Include -I../Drivers/CMSIS/Include -I../Core/Inc -I../Drivers/STM32F1xx_HAL_Driver/Inc/Legacy -I../Drivers/STM32F1xx_HAL_Driver/Inc -I../Library -O3 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_rcc_ex.d" -MT"Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_rcc_ex.o" --specs=nano.specs -mfloat-abi=soft -mthumb -o "Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_rcc_ex.o"
-arm-none-eabi-gcc "../Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_tim.c" -mcpu=cortex-m3 -std=gnu11 -DSTM32F103xE -DUSE_HAL_DRIVER -c -I../Drivers/CMSIS/Device/ST/STM32F1xx/Include -I../Drivers/CMSIS/Include -I../Core/Inc -I../Drivers/STM32F1xx_HAL_Driver/Inc/Legacy -I../Drivers/STM32F1xx_HAL_Driver/Inc -I../Library -O3 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_tim.d" -MT"Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_tim.o" --specs=nano.specs -mfloat-abi=soft -mthumb -o "Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_tim.o"
-arm-none-eabi-gcc "../Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_tim_ex.c" -mcpu=cortex-m3 -std=gnu11 -DSTM32F103xE -DUSE_HAL_DRIVER -c -I../Drivers/CMSIS/Device/ST/STM32F1xx/Include -I../Drivers/CMSIS/Include -I../Core/Inc -I../Drivers/STM32F1xx_HAL_Driver/Inc/Legacy -I../Drivers/STM32F1xx_HAL_Driver/Inc -I../Library -O3 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_tim_ex.d" -MT"Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_tim_ex.o" --specs=nano.specs -mfloat-abi=soft -mthumb -o "Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_tim_ex.o"
-arm-none-eabi-gcc "../Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_uart.c" -mcpu=cortex-m3 -std=gnu11 -DSTM32F103xE -DUSE_HAL_DRIVER -c -I../Drivers/CMSIS/Device/ST/STM32F1xx/Include -I../Drivers/CMSIS/Include -I../Core/Inc -I../Drivers/STM32F1xx_HAL_Driver/Inc/Legacy -I../Drivers/STM32F1xx_HAL_Driver/Inc -I../Library -O3 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_uart.d" -MT"Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_uart.o" --specs=nano.specs -mfloat-abi=soft -mthumb -o "Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_uart.o"
-arm-none-eabi-gcc -mcpu=cortex-m3 -c -x assembler-with-cpp -MMD -MP -MF"Core/Startup/startup_stm32f103rctx.d" -MT"Core/Startup/startup_stm32f103rctx.o" --specs=nano.specs -mfloat-abi=soft -mthumb -o "Core/Startup/startup_stm32f103rctx.o" "../Core/Startup/startup_stm32f103rctx.s"
-arm-none-eabi-gcc "../Core/Src/naranja_boron.c" -mcpu=cortex-m3 -std=gnu11 -DSTM32F103xE -DUSE_HAL_DRIVER -c -I../Drivers/CMSIS/Device/ST/STM32F1xx/Include -I../Drivers/CMSIS/Include -I../Core/Inc -I../Drivers/STM32F1xx_HAL_Driver/Inc/Legacy -I../Drivers/STM32F1xx_HAL_Driver/Inc -I../Library -O3 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Core/Src/naranja_boron.d" -MT"Core/Src/naranja_boron.o" --specs=nano.specs -mfloat-abi=soft -mthumb -o "Core/Src/naranja_boron.o"
-arm-none-eabi-gcc "../Core/Src/stm32f1xx_hal_msp.c" -mcpu=cortex-m3 -std=gnu11 -DSTM32F103xE -DUSE_HAL_DRIVER -c -I../Drivers/CMSIS/Device/ST/STM32F1xx/Include -I../Drivers/CMSIS/Include -I../Core/Inc -I../Drivers/STM32F1xx_HAL_Driver/Inc/Legacy -I../Drivers/STM32F1xx_HAL_Driver/Inc -I../Library -O3 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Core/Src/stm32f1xx_hal_msp.d" -MT"Core/Src/stm32f1xx_hal_msp.o" --specs=nano.specs -mfloat-abi=soft -mthumb -o "Core/Src/stm32f1xx_hal_msp.o"
-arm-none-eabi-gcc "../Core/Src/stm32f1xx_it.c" -mcpu=cortex-m3 -std=gnu11 -DSTM32F103xE -DUSE_HAL_DRIVER -c -I../Drivers/CMSIS/Device/ST/STM32F1xx/Include -I../Drivers/CMSIS/Include -I../Core/Inc -I../Drivers/STM32F1xx_HAL_Driver/Inc/Legacy -I../Drivers/STM32F1xx_HAL_Driver/Inc -I../Library -O3 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Core/Src/stm32f1xx_it.d" -MT"Core/Src/stm32f1xx_it.o" --specs=nano.specs -mfloat-abi=soft -mthumb -o "Core/Src/stm32f1xx_it.o"
-arm-none-eabi-gcc "../Core/Src/syscalls.c" -mcpu=cortex-m3 -std=gnu11 -DSTM32F103xE -DUSE_HAL_DRIVER -c -I../Drivers/CMSIS/Device/ST/STM32F1xx/Include -I../Drivers/CMSIS/Include -I../Core/Inc -I../Drivers/STM32F1xx_HAL_Driver/Inc/Legacy -I../Drivers/STM32F1xx_HAL_Driver/Inc -I../Library -O3 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Core/Src/syscalls.d" -MT"Core/Src/syscalls.o" --specs=nano.specs -mfloat-abi=soft -mthumb -o "Core/Src/syscalls.o"
+arm-none-eabi-gcc "../Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_dma.c" -mcpu=cortex-m3 -std=gnu11 -g3 -DSTM32F103xE -DUSE_HAL_DRIVER -DDEBUG -c -I../Drivers/CMSIS/Device/ST/STM32F1xx/Include -I../Drivers/CMSIS/Include -I../Core/Inc -I../Drivers/STM32F1xx_HAL_Driver/Inc/Legacy -I../Drivers/STM32F1xx_HAL_Driver/Inc -I../Library -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_dma.d" -MT"Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_dma.o" --specs=nano.specs -mfloat-abi=soft -mthumb -o "Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_dma.o"
+arm-none-eabi-gcc "../Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_exti.c" -mcpu=cortex-m3 -std=gnu11 -g3 -DSTM32F103xE -DUSE_HAL_DRIVER -DDEBUG -c -I../Drivers/CMSIS/Device/ST/STM32F1xx/Include -I../Drivers/CMSIS/Include -I../Core/Inc -I../Drivers/STM32F1xx_HAL_Driver/Inc/Legacy -I../Drivers/STM32F1xx_HAL_Driver/Inc -I../Library -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_exti.d" -MT"Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_exti.o" --specs=nano.specs -mfloat-abi=soft -mthumb -o "Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_exti.o"
+arm-none-eabi-gcc "../Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_flash.c" -mcpu=cortex-m3 -std=gnu11 -g3 -DSTM32F103xE -DUSE_HAL_DRIVER -DDEBUG -c -I../Drivers/CMSIS/Device/ST/STM32F1xx/Include -I../Drivers/CMSIS/Include -I../Core/Inc -I../Drivers/STM32F1xx_HAL_Driver/Inc/Legacy -I../Drivers/STM32F1xx_HAL_Driver/Inc -I../Library -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_flash.d" -MT"Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_flash.o" --specs=nano.specs -mfloat-abi=soft -mthumb -o "Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_flash.o"
+arm-none-eabi-gcc "../Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_flash_ex.c" -mcpu=cortex-m3 -std=gnu11 -g3 -DSTM32F103xE -DUSE_HAL_DRIVER -DDEBUG -c -I../Drivers/CMSIS/Device/ST/STM32F1xx/Include -I../Drivers/CMSIS/Include -I../Core/Inc -I../Drivers/STM32F1xx_HAL_Driver/Inc/Legacy -I../Drivers/STM32F1xx_HAL_Driver/Inc -I../Library -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_flash_ex.d" -MT"Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_flash_ex.o" --specs=nano.specs -mfloat-abi=soft -mthumb -o "Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_flash_ex.o"
+arm-none-eabi-gcc "../Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_gpio.c" -mcpu=cortex-m3 -std=gnu11 -g3 -DSTM32F103xE -DUSE_HAL_DRIVER -DDEBUG -c -I../Drivers/CMSIS/Device/ST/STM32F1xx/Include -I../Drivers/CMSIS/Include -I../Core/Inc -I../Drivers/STM32F1xx_HAL_Driver/Inc/Legacy -I../Drivers/STM32F1xx_HAL_Driver/Inc -I../Library -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_gpio.d" -MT"Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_gpio.o" --specs=nano.specs -mfloat-abi=soft -mthumb -o "Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_gpio.o"
+arm-none-eabi-gcc "../Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_gpio_ex.c" -mcpu=cortex-m3 -std=gnu11 -g3 -DSTM32F103xE -DUSE_HAL_DRIVER -DDEBUG -c -I../Drivers/CMSIS/Device/ST/STM32F1xx/Include -I../Drivers/CMSIS/Include -I../Core/Inc -I../Drivers/STM32F1xx_HAL_Driver/Inc/Legacy -I../Drivers/STM32F1xx_HAL_Driver/Inc -I../Library -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_gpio_ex.d" -MT"Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_gpio_ex.o" --specs=nano.specs -mfloat-abi=soft -mthumb -o "Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_gpio_ex.o"
+arm-none-eabi-gcc "../Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_i2c.c" -mcpu=cortex-m3 -std=gnu11 -g3 -DSTM32F103xE -DUSE_HAL_DRIVER -DDEBUG -c -I../Drivers/CMSIS/Device/ST/STM32F1xx/Include -I../Drivers/CMSIS/Include -I../Core/Inc -I../Drivers/STM32F1xx_HAL_Driver/Inc/Legacy -I../Drivers/STM32F1xx_HAL_Driver/Inc -I../Library -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_i2c.d" -MT"Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_i2c.o" --specs=nano.specs -mfloat-abi=soft -mthumb -o "Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_i2c.o"
+arm-none-eabi-gcc "../Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_iwdg.c" -mcpu=cortex-m3 -std=gnu11 -g3 -DSTM32F103xE -DUSE_HAL_DRIVER -DDEBUG -c -I../Drivers/CMSIS/Device/ST/STM32F1xx/Include -I../Drivers/CMSIS/Include -I../Core/Inc -I../Drivers/STM32F1xx_HAL_Driver/Inc/Legacy -I../Drivers/STM32F1xx_HAL_Driver/Inc -I../Library -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_iwdg.d" -MT"Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_iwdg.o" --specs=nano.specs -mfloat-abi=soft -mthumb -o "Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_iwdg.o"
+arm-none-eabi-gcc "../Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_pwr.c" -mcpu=cortex-m3 -std=gnu11 -g3 -DSTM32F103xE -DUSE_HAL_DRIVER -DDEBUG -c -I../Drivers/CMSIS/Device/ST/STM32F1xx/Include -I../Drivers/CMSIS/Include -I../Core/Inc -I../Drivers/STM32F1xx_HAL_Driver/Inc/Legacy -I../Drivers/STM32F1xx_HAL_Driver/Inc -I../Library -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_pwr.d" -MT"Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_pwr.o" --specs=nano.specs -mfloat-abi=soft -mthumb -o "Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_pwr.o"
+arm-none-eabi-gcc "../Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_rcc.c" -mcpu=cortex-m3 -std=gnu11 -g3 -DSTM32F103xE -DUSE_HAL_DRIVER -DDEBUG -c -I../Drivers/CMSIS/Device/ST/STM32F1xx/Include -I../Drivers/CMSIS/Include -I../Core/Inc -I../Drivers/STM32F1xx_HAL_Driver/Inc/Legacy -I../Drivers/STM32F1xx_HAL_Driver/Inc -I../Library -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_rcc.d" -MT"Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_rcc.o" --specs=nano.specs -mfloat-abi=soft -mthumb -o "Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_rcc.o"
+arm-none-eabi-gcc "../Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_rcc_ex.c" -mcpu=cortex-m3 -std=gnu11 -g3 -DSTM32F103xE -DUSE_HAL_DRIVER -DDEBUG -c -I../Drivers/CMSIS/Device/ST/STM32F1xx/Include -I../Drivers/CMSIS/Include -I../Core/Inc -I../Drivers/STM32F1xx_HAL_Driver/Inc/Legacy -I../Drivers/STM32F1xx_HAL_Driver/Inc -I../Library -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_rcc_ex.d" -MT"Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_rcc_ex.o" --specs=nano.specs -mfloat-abi=soft -mthumb -o "Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_rcc_ex.o"
+arm-none-eabi-gcc "../Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_tim.c" -mcpu=cortex-m3 -std=gnu11 -g3 -DSTM32F103xE -DUSE_HAL_DRIVER -DDEBUG -c -I../Drivers/CMSIS/Device/ST/STM32F1xx/Include -I../Drivers/CMSIS/Include -I../Core/Inc -I../Drivers/STM32F1xx_HAL_Driver/Inc/Legacy -I../Drivers/STM32F1xx_HAL_Driver/Inc -I../Library -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_tim.d" -MT"Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_tim.o" --specs=nano.specs -mfloat-abi=soft -mthumb -o "Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_tim.o"
+arm-none-eabi-gcc "../Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_tim_ex.c" -mcpu=cortex-m3 -std=gnu11 -g3 -DSTM32F103xE -DUSE_HAL_DRIVER -DDEBUG -c -I../Drivers/CMSIS/Device/ST/STM32F1xx/Include -I../Drivers/CMSIS/Include -I../Core/Inc -I../Drivers/STM32F1xx_HAL_Driver/Inc/Legacy -I../Drivers/STM32F1xx_HAL_Driver/Inc -I../Library -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_tim_ex.d" -MT"Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_tim_ex.o" --specs=nano.specs -mfloat-abi=soft -mthumb -o "Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_tim_ex.o"
+arm-none-eabi-gcc "../Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_uart.c" -mcpu=cortex-m3 -std=gnu11 -g3 -DSTM32F103xE -DUSE_HAL_DRIVER -DDEBUG -c -I../Drivers/CMSIS/Device/ST/STM32F1xx/Include -I../Drivers/CMSIS/Include -I../Core/Inc -I../Drivers/STM32F1xx_HAL_Driver/Inc/Legacy -I../Drivers/STM32F1xx_HAL_Driver/Inc -I../Library -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_uart.d" -MT"Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_uart.o" --specs=nano.specs -mfloat-abi=soft -mthumb -o "Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_uart.o"
+arm-none-eabi-gcc -mcpu=cortex-m3 -g3 -DDEBUG -c -x assembler-with-cpp -MMD -MP -MF"Core/Startup/startup_stm32f103rctx.d" -MT"Core/Startup/startup_stm32f103rctx.o" --specs=nano.specs -mfloat-abi=soft -mthumb -o "Core/Startup/startup_stm32f103rctx.o" "../Core/Startup/startup_stm32f103rctx.s"
+arm-none-eabi-gcc "../Core/Src/main.c" -mcpu=cortex-m3 -std=gnu11 -g3 -DSTM32F103xE -DUSE_HAL_DRIVER -DDEBUG -c -I../Drivers/CMSIS/Device/ST/STM32F1xx/Include -I../Drivers/CMSIS/Include -I../Core/Inc -I../Drivers/STM32F1xx_HAL_Driver/Inc/Legacy -I../Drivers/STM32F1xx_HAL_Driver/Inc -I../Library -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Core/Src/main.d" -MT"Core/Src/main.o" --specs=nano.specs -mfloat-abi=soft -mthumb -o "Core/Src/main.o"
+arm-none-eabi-gcc "../Core/Src/naranja_boron.c" -mcpu=cortex-m3 -std=gnu11 -g3 -DSTM32F103xE -DUSE_HAL_DRIVER -DDEBUG -c -I../Drivers/CMSIS/Device/ST/STM32F1xx/Include -I../Drivers/CMSIS/Include -I../Core/Inc -I../Drivers/STM32F1xx_HAL_Driver/Inc/Legacy -I../Drivers/STM32F1xx_HAL_Driver/Inc -I../Library -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Core/Src/naranja_boron.d" -MT"Core/Src/naranja_boron.o" --specs=nano.specs -mfloat-abi=soft -mthumb -o "Core/Src/naranja_boron.o"
+arm-none-eabi-gcc "../Core/Src/stm32f1xx_hal_msp.c" -mcpu=cortex-m3 -std=gnu11 -g3 -DSTM32F103xE -DUSE_HAL_DRIVER -DDEBUG -c -I../Drivers/CMSIS/Device/ST/STM32F1xx/Include -I../Drivers/CMSIS/Include -I../Core/Inc -I../Drivers/STM32F1xx_HAL_Driver/Inc/Legacy -I../Drivers/STM32F1xx_HAL_Driver/Inc -I../Library -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Core/Src/stm32f1xx_hal_msp.d" -MT"Core/Src/stm32f1xx_hal_msp.o" --specs=nano.specs -mfloat-abi=soft -mthumb -o "Core/Src/stm32f1xx_hal_msp.o"
+arm-none-eabi-gcc "../Core/Src/stm32f1xx_it.c" -mcpu=cortex-m3 -std=gnu11 -g3 -DSTM32F103xE -DUSE_HAL_DRIVER -DDEBUG -c -I../Drivers/CMSIS/Device/ST/STM32F1xx/Include -I../Drivers/CMSIS/Include -I../Core/Inc -I../Drivers/STM32F1xx_HAL_Driver/Inc/Legacy -I../Drivers/STM32F1xx_HAL_Driver/Inc -I../Library -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Core/Src/stm32f1xx_it.d" -MT"Core/Src/stm32f1xx_it.o" --specs=nano.specs -mfloat-abi=soft -mthumb -o "Core/Src/stm32f1xx_it.o"
+arm-none-eabi-gcc "../Core/Src/syscalls.c" -mcpu=cortex-m3 -std=gnu11 -g3 -DSTM32F103xE -DUSE_HAL_DRIVER -DDEBUG -c -I../Drivers/CMSIS/Device/ST/STM32F1xx/Include -I../Drivers/CMSIS/Include -I../Core/Inc -I../Drivers/STM32F1xx_HAL_Driver/Inc/Legacy -I../Drivers/STM32F1xx_HAL_Driver/Inc -I../Library -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Core/Src/syscalls.d" -MT"Core/Src/syscalls.o" --specs=nano.specs -mfloat-abi=soft -mthumb -o "Core/Src/syscalls.o"
+../Core/Src/main.c: In function 'main':
+../Core/Src/main.c:205:3: warning: implicit declaration of function 'SerialInitQueue' [-Wimplicit-function-declaration]
+  205 |   SerialInitQueue();
+      |   ^~~~~~~~~~~~~~~
+../Core/Src/main.c:210:3: warning: implicit declaration of function 'SerialInit' [-Wimplicit-function-declaration]
+  210 |   SerialInit( &huart1, &huart2, &huart3, &huart5 );
+      |   ^~~~~~~~~~
+../Core/Src/main.c:212:3: warning: implicit declaration of function 'InitRS485' [-Wimplicit-function-declaration]
+  212 |   InitRS485();  // Init RS485
+      |   ^~~~~~~~~
+../Core/Src/main.c:218:35: warning: passing argument 4 of 'setvbuf' makes integer from pointer without a cast [-Wint-conversion]
+  218 |   setvbuf ( stdout, NULL, _IONBF, NULL ); // No Buffer
+      |                                   ^~~~
+      |                                   |
+      |                                   void *
+In file included from ../Core/Inc/main.h:35,
+                 from ../Core/Src/main.c:21:
+c:\st\stm32cubeide_1.6.1\stm32cubeide\plugins\com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.10.3-2021.10.win32_1.0.200.202301161003\tools\arm-none-eabi\include\stdio.h:195:55: note: expected 'size_t' {aka 'unsigned int'} but argument is of type 'void *'
+  195 | int setvbuf (FILE *__restrict, char *__restrict, int, size_t);
+      |                                                       ^~~~~~
+../Core/Src/main.c:223:14: warning: format '%d' expects argument of type 'int', but argument 2 has type 'uint32_t' {aka 'long unsigned int'} [-Wformat=]
+  223 |   printf( "[%d]Start\n", HAL_GetTick() );    // xTaskGetTickCount() );
+      |             ~^           ~~~~~~~~~~~~~
+      |              |           |
+      |              int         uint32_t {aka long unsigned int}
+      |             %ld
+../Core/Src/main.c:237:3: warning: implicit declaration of function 'setAmpMute' [-Wimplicit-function-declaration]
+  237 |   setAmpMute(true);
+      |   ^~~~~~~~~~
+../Core/Src/main.c:239:3: warning: implicit declaration of function 'TestNVRAM' [-Wimplicit-function-declaration]
+  239 |   TestNVRAM( &hi2c2 );
+      |   ^~~~~~~~~
+../Core/Src/main.c:271:57: warning: implicit declaration of function 'getRS485Id' [-Wimplicit-function-declaration]
+  271 |     printf( "*********OCC Function(ID %02X)*********\n",getRS485Id() );
+      |                                                         ^~~~~~~~~~
+../Core/Src/main.c:293:5: warning: implicit declaration of function 'MB85_HAL_ReadBytes' [-Wimplicit-function-declaration]
+  293 |  if(MB85_HAL_ReadBytes(&hi2c2,0xD8,0x00,(uint8_t *)nRbuf,1))
+      |     ^~~~~~~~~~~~~~~~~~
+../Core/Src/main.c:327:2: warning: implicit declaration of function 'setAmpSd' [-Wimplicit-function-declaration]
+  327 |  setAmpSd(true); //AMP ï¿½Ê±ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½Îºï¿½.
+      |  ^~~~~~~~
+../Core/Src/main.c:330:2: warning: implicit declaration of function 'ampMuteOn' [-Wimplicit-function-declaration]
+  330 |  ampMuteOn();
+      |  ^~~~~~~~~
+../Core/Src/main.c:342:3: warning: implicit declaration of function 'LoopProcRS485_3ch' [-Wimplicit-function-declaration]
+  342 |   LoopProcRS485_3ch(); // RS485
+      |   ^~~~~~~~~~~~~~~~~
 ../Core/Src/naranja_boron.c: In function 'ampMuteOn':
 ../Core/Src/naranja_boron.c:236:6: warning: implicit declaration of function 'MB85_HAL_WriteBytes' [-Wimplicit-function-declaration]
   236 |   if(MB85_HAL_WriteBytes(&hi2c2,0xD8,0x0C,(uint8_t *)nTbuf,1))
@@ -516,6 +572,16 @@ arm-none-eabi-gcc "../Core/Src/syscalls.c" -mcpu=cortex-m3 -std=gnu11 -DSTM32F10
 ../Core/Src/naranja_boron.c:224:14: warning: unused variable 'nRbuf' [-Wunused-variable]
   224 |  uint8_t     nRbuf[10];
       |              ^~~~~
+../Core/Src/main.c:343:9: warning: implicit declaration of function 'LoopProcRS485_5ch' [-Wimplicit-function-declaration]
+  343 |         LoopProcRS485_5ch(); // RS485
+      |         ^~~~~~~~~~~~~~~~~
+../Core/Src/main.c:344:9: warning: implicit declaration of function 'LoopProcRFM_2ch' [-Wimplicit-function-declaration]
+  344 |         LoopProcRFM_2ch();    // Console
+      |         ^~~~~~~~~~~~~~~
+../Core/Src/main.c:369:22: warning: implicit declaration of function 'getVccIn'; did you mean 'getVccRfIn'? [-Wimplicit-function-declaration]
+  369 |          if(s_vcc != getVccIn())
+      |                      ^~~~~~~~
+      |                      getVccRfIn
 ../Core/Src/naranja_boron.c: In function 'ampMuteOff':
 ../Core/Src/naranja_boron.c:279:6: warning: implicit declaration of function 'MB85_HAL_ReadBytes' [-Wimplicit-function-declaration]
   279 |   if(MB85_HAL_ReadBytes(&hi2c2,0xD8,0x06,(uint8_t *)nRbuf,1))
@@ -532,28 +598,55 @@ arm-none-eabi-gcc "../Core/Src/syscalls.c" -mcpu=cortex-m3 -std=gnu11 -DSTM32F10
 ../Core/Src/naranja_boron.c:877:17: warning: unused variable 'nTbuf' [-Wunused-variable]
   877 |     uint8_t     nTbuf[2];
       |                 ^~~~~
-arm-none-eabi-gcc "../Core/Src/sysmem.c" -mcpu=cortex-m3 -std=gnu11 -DSTM32F103xE -DUSE_HAL_DRIVER -c -I../Drivers/CMSIS/Device/ST/STM32F1xx/Include -I../Drivers/CMSIS/Include -I../Core/Inc -I../Drivers/STM32F1xx_HAL_Driver/Inc/Legacy -I../Drivers/STM32F1xx_HAL_Driver/Inc -I../Library -O3 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Core/Src/sysmem.d" -MT"Core/Src/sysmem.o" --specs=nano.specs -mfloat-abi=soft -mthumb -o "Core/Src/sysmem.o"
-arm-none-eabi-gcc "../Core/Src/system_stm32f1xx.c" -mcpu=cortex-m3 -std=gnu11 -DSTM32F103xE -DUSE_HAL_DRIVER -c -I../Drivers/CMSIS/Device/ST/STM32F1xx/Include -I../Drivers/CMSIS/Include -I../Core/Inc -I../Drivers/STM32F1xx_HAL_Driver/Inc/Legacy -I../Drivers/STM32F1xx_HAL_Driver/Inc -I../Library -O3 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Core/Src/system_stm32f1xx.d" -MT"Core/Src/system_stm32f1xx.o" --specs=nano.specs -mfloat-abi=soft -mthumb -o "Core/Src/system_stm32f1xx.o"
-../Core/Src/naranja_boron.c:951:13: warning: 'sSpkData' may be used uninitialized in this function [-Wmaybe-uninitialized]
-  951 |      return sSpkData;
-      |             ^~~~~~~~
-arm-none-eabi-gcc -o "BottomBd.elf" @"objects.list"   -mcpu=cortex-m3 -T"C:\D\SW2_Team\EMU_EPD\BottomBd\STM32F103RCTX_App_FLASH.ld" --specs=nosys.specs -Wl,-Map="BottomBd.map" -Wl,--gc-sections -static --specs=nano.specs -mfloat-abi=soft -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
-c:\st\stm32cubeide_1.6.1\stm32cubeide\plugins\com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.10.3-2021.10.win32_1.0.200.202301161003\tools\arm-none-eabi\bin\ld.exe: ./Core/Startup/startup_stm32f103rctx.o: in function `LoopFillZerobss':
-(.text.Reset_Handler+0x2e): undefined reference to `main'
-c:\st\stm32cubeide_1.6.1\stm32cubeide\plugins\com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.10.3-2021.10.win32_1.0.200.202301161003\tools\arm-none-eabi\bin\ld.exe: ./Core/Src/stm32f1xx_it.o: in function `ADC1_2_IRQHandler':
-stm32f1xx_it.c:(.text.ADC1_2_IRQHandler+0x14): undefined reference to `hadc1'
-c:\st\stm32cubeide_1.6.1\stm32cubeide\plugins\com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.10.3-2021.10.win32_1.0.200.202301161003\tools\arm-none-eabi\bin\ld.exe: stm32f1xx_it.c:(.text.ADC1_2_IRQHandler+0x18): undefined reference to `hadc2'
-c:\st\stm32cubeide_1.6.1\stm32cubeide\plugins\com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.10.3-2021.10.win32_1.0.200.202301161003\tools\arm-none-eabi\bin\ld.exe: ./Core/Src/stm32f1xx_it.o: in function `TIM2_IRQHandler':
-stm32f1xx_it.c:(.text.TIM2_IRQHandler+0x3c): undefined reference to `htim2'
-c:\st\stm32cubeide_1.6.1\stm32cubeide\plugins\com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.10.3-2021.10.win32_1.0.200.202301161003\tools\arm-none-eabi\bin\ld.exe: ./Core/Src/stm32f1xx_it.o: in function `USART1_IRQHandler':
-stm32f1xx_it.c:(.text.USART1_IRQHandler+0x8): undefined reference to `huart1'
-c:\st\stm32cubeide_1.6.1\stm32cubeide\plugins\com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.10.3-2021.10.win32_1.0.200.202301161003\tools\arm-none-eabi\bin\ld.exe: ./Core/Src/stm32f1xx_it.o: in function `USART2_IRQHandler':
-stm32f1xx_it.c:(.text.USART2_IRQHandler+0x8): undefined reference to `huart2'
-c:\st\stm32cubeide_1.6.1\stm32cubeide\plugins\com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.10.3-2021.10.win32_1.0.200.202301161003\tools\arm-none-eabi\bin\ld.exe: ./Core/Src/stm32f1xx_it.o: in function `USART3_IRQHandler':
-stm32f1xx_it.c:(.text.USART3_IRQHandler+0x8): undefined reference to `huart3'
-c:\st\stm32cubeide_1.6.1\stm32cubeide\plugins\com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.10.3-2021.10.win32_1.0.200.202301161003\tools\arm-none-eabi\bin\ld.exe: ./Core/Src/stm32f1xx_it.o: in function `UART5_IRQHandler':
-stm32f1xx_it.c:(.text.UART5_IRQHandler+0x8): undefined reference to `huart5'
-collect2.exe: error: ld returned 1 exit status
-make[1]: *** [makefile:72: BottomBd.elf] Error 1
-make: *** [makefile:65: all] Error 2
-"make -j8 all" terminated with exit code 2. Build might be incomplete.
+../Core/Src/main.c:373:46: warning: implicit declaration of function 'getMasterIn' [-Wimplicit-function-declaration]
+  373 |           printf("Timer_getMasterIn():%d\n", getMasterIn());
+      |                                              ^~~~~~~~~~~
+../Core/Src/main.c:421:8: warning: implicit declaration of function 'RFMOccPaStart' [-Wimplicit-function-declaration]
+  421 |        RFMOccPaStart();
+      |        ^~~~~~~~~~~~~
+../Core/Src/main.c:428:8: warning: implicit declaration of function 'RFMOccPaStop' [-Wimplicit-function-declaration]
+  428 |        RFMOccPaStop();
+      |        ^~~~~~~~~~~~
+arm-none-eabi-gcc "../Core/Src/sysmem.c" -mcpu=cortex-m3 -std=gnu11 -g3 -DSTM32F103xE -DUSE_HAL_DRIVER -DDEBUG -c -I../Drivers/CMSIS/Device/ST/STM32F1xx/Include -I../Drivers/CMSIS/Include -I../Core/Inc -I../Drivers/STM32F1xx_HAL_Driver/Inc/Legacy -I../Drivers/STM32F1xx_HAL_Driver/Inc -I../Library -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Core/Src/sysmem.d" -MT"Core/Src/sysmem.o" --specs=nano.specs -mfloat-abi=soft -mthumb -o "Core/Src/sysmem.o"
+../Core/Src/main.c:476:13: warning: implicit declaration of function 'checkSerial' [-Wimplicit-function-declaration]
+  476 |             checkSerial(&huart1);       //  Debug
+      |             ^~~~~~~~~~~
+../Core/Src/main.c:265:15: warning: unused variable 'nTbuf' [-Wunused-variable]
+  265 |   uint8_t     nTbuf[10];
+      |               ^~~~~
+../Core/Src/main.c:257:14: warning: unused variable 's_I2c_Cnt' [-Wunused-variable]
+  257 |   static int s_I2c_Cnt = 0;
+      |              ^~~~~~~~~
+../Core/Src/main.c:246:7: warning: unused variable 'sCnt' [-Wunused-variable]
+  246 |   int sCnt = 0;
+      |       ^~~~
+At top level:
+../Core/Src/main.c:257:14: warning: 's_I2c_Cnt' defined but not used [-Wunused-variable]
+  257 |   static int s_I2c_Cnt = 0;
+      |              ^~~~~~~~~
+arm-none-eabi-gcc "../Core/Src/system_stm32f1xx.c" -mcpu=cortex-m3 -std=gnu11 -g3 -DSTM32F103xE -DUSE_HAL_DRIVER -DDEBUG -c -I../Drivers/CMSIS/Device/ST/STM32F1xx/Include -I../Drivers/CMSIS/Include -I../Core/Inc -I../Drivers/STM32F1xx_HAL_Driver/Inc/Legacy -I../Drivers/STM32F1xx_HAL_Driver/Inc -I../Library -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Core/Src/system_stm32f1xx.d" -MT"Core/Src/system_stm32f1xx.o" --specs=nano.specs -mfloat-abi=soft -mthumb -o "Core/Src/system_stm32f1xx.o"
+arm-none-eabi-gcc -o "BottomBd.elf" @"objects.list"   -mcpu=cortex-m3 -T"C:\D\SW2_Team\EMU_EPD\BottomBd\STM32F103RCTX_FLASH.ld" --specs=nosys.specs -Wl,-Map="BottomBd.map" -Wl,--gc-sections -static --specs=nano.specs -mfloat-abi=soft -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
+Finished building target: BottomBd.elf
+ 
+arm-none-eabi-size   BottomBd.elf 
+arm-none-eabi-objdump -h -S  BottomBd.elf  > "BottomBd.list"
+arm-none-eabi-objcopy  -O ihex  BottomBd.elf  "BottomBd.hex"
+   text	   data	    bss	    dec	    hex	filename
+  52224	    432	   5048	  57704	   e168	BottomBd.elf
+arm-none-eabi-objcopy  -O binary  BottomBd.elf  "BottomBd.bin"
+Finished building: default.size.stdout
+ 
+Finished building: BottomBd.hex
+Finished building: BottomBd.bin
+ 
+ 
+Finished building: BottomBd.list
+ 
+"C:/D/SW2_Team/EMU_EPD/BottomBd\_Make.bat" "C:/D/SW2_Team/EMU_EPD/BottomBd/" "Debug"
+47
+gen "bin\BootRFMBase_230710_v1.47.hex"
+copy "Debug\BottomBd.bin" "bin\RFMBase_230710_v1.47.bin"
+        1°³ ÆÄÀÏÀÌ º¹»çµÇ¾ú½À´Ï´Ù.
+copy "Debug\BottomBd.hex" "bin\RFMBase_230710_v1.47.hex"
+        1°³ ÆÄÀÏÀÌ º¹»çµÇ¾ú½À´Ï´Ù.
+ 
