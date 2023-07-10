@@ -109,6 +109,8 @@ PUTCHAR_PROTOTYPE
 	//	*/
 	//========================================================================
 	//	USB Serial - RFM 송신기/수신기
+#if defined(USE_BOOTLOADER)
+#else	//	Application
 	if ( 1 )//g_nDevID != DevNone && g_nDevID == DevRF900T )
 	{
 		if ( ch == '\n' )
@@ -120,6 +122,7 @@ PUTCHAR_PROTOTYPE
 			CDC_Transmit_FS( (uint8_t *)&ch, 1 );
 		}
 	}
+#endif
 	//========================================================================
 
 	return ch;
