@@ -63,7 +63,8 @@ typedef struct _SDR_t
 	uint8_t			bTrainNoVld:1;		//	8
 	uint8_t			bSpare8_1:7;		//
 	uint8_t			nTrainNo;			//	편성번호
-	uint8_t			nSpare10[2];		//	10 ~ 11
+	uint8_t			nOCC_StartFlag;
+	uint8_t			nSpare;		//	10 ~ 11
 
 } SDR_t, *PSDR_t;
 
@@ -96,6 +97,7 @@ typedef struct _SD_t
 	uint8_t			nVerX0_00:4;		//	10	: 	Ver X0.00
 	uint8_t			nVer00_0X:4;		//		: 	Ver 00.0X
 	uint8_t			nVer00_X0:4;		//	11	: 	Ver 00.X0
+	uint8_t         nOCC_RunStatus;     //  12  :   대승객 방송 동작 상태.
 } SD_t, *PSD_t;
 
 

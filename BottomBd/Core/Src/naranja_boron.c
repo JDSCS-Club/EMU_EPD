@@ -71,6 +71,7 @@ void led75Off(void){ HAL_GPIO_WritePin(LED_75_GPIO_Port, LED_75_Pin, true); }
 bool getLed100Red(void){ return HAL_GPIO_ReadPin(LED_100_RED_GPIO_Port, LED_100_RED_Pin); }
 void setLed100Red(bool state){ HAL_GPIO_WritePin(LED_100_RED_GPIO_Port, LED_100_RED_Pin, state); }
 void toggleLed100Red(void){ HAL_GPIO_TogglePin(LED_100_RED_GPIO_Port, LED_100_RED_Pin); }
+
 void led100RedOn(void){ HAL_GPIO_WritePin(LED_100_RED_GPIO_Port, LED_100_RED_Pin, false); }
 void led100RedOff(void){ HAL_GPIO_WritePin(LED_100_RED_GPIO_Port, LED_100_RED_Pin, true); }
 //--------------------------------------------------------------------------------------------//
@@ -81,6 +82,8 @@ void led100RedOff(void){ HAL_GPIO_WritePin(LED_100_RED_GPIO_Port, LED_100_RED_Pi
   */
 bool getLed100Green(void){ return HAL_GPIO_ReadPin(LED_100_GREEN_GPIO_Port, LED_100_GREEN_Pin); }
 void setLed100Green(bool state){ HAL_GPIO_WritePin(LED_100_GREEN_GPIO_Port, LED_100_GREEN_Pin, state); }
+void toggleLed100Grn(void){ HAL_GPIO_TogglePin(LED_100_GREEN_GPIO_Port, LED_100_GREEN_Pin); }
+
 void led100GreenOn(void){ HAL_GPIO_WritePin(LED_100_GREEN_GPIO_Port, LED_100_GREEN_Pin, false); }
 void led100GreenOff(void){ HAL_GPIO_WritePin(LED_100_GREEN_GPIO_Port, LED_100_GREEN_Pin, true); }
 //--------------------------------------------------------------------------------------------//
@@ -443,7 +446,7 @@ ChargeRateState getChargeRateState(void)
 		return CHARGE_RATE_75_UNDER;
 	else if(nRate >= 75 && nRate < 97)
 		return CHARGE_RATE_100_UNDER;
-	else if(nRate >= 99)
+	else if(nRate >= 98)
 		return CHARGE_RATE_100;	//CHARGE_RATE_100_UNDER;
 	else
 		return CHARGE_RATE_UNKNOWN;
@@ -583,16 +586,19 @@ void processChargeLed(void)
 			{
 				u16Led100UnderFlickerTick = 500;
 				led75On();
-				toggleLed100Red();
+				//toggleLed100Red();
+				toggleLed100Grn();
 				led100GreenOff();
 			}
 			break;
 		}
 		case CHARGE_RATE_100:
 		{
-			led75Off();
-			led100RedOff();
+			//led75Off();
+			//led100RedOff();
+			led75On();
 			led100GreenOn();
+			led100RedOn();
 			break;
 		}
 		default:

@@ -58,11 +58,14 @@ ADC_HandleTypeDef hadc1;
 ADC_HandleTypeDef hadc2;
 
 TIM_HandleTypeDef htim2;
+
+IWDG_HandleTypeDef hiwdg;
+
 #endif	//	Application
 
 I2C_HandleTypeDef hi2c2;
 
-IWDG_HandleTypeDef hiwdg;
+
 
 
 UART_HandleTypeDef huart5;
@@ -131,8 +134,11 @@ void LoopProcMain( int nTick )
 {
 	if ( g_bEnIWDGStat )
 	{
+#if defined(USE_BOOTLOADER)
+#else	//	Application
 		//	Watchdog Reload
 		__HAL_IWDG_RELOAD_COUNTER(&hiwdg);
+#endif
 	}
 }
 
@@ -249,6 +255,12 @@ int main(void)
   static int s_RssNgCleanCnt;
 
   static int s_I2c_Cnt = 0;
+  static int sVccInFlag = 0;
+  static int sVccOff_TimeCnt = 0;
+
+  static int s_bMstIn = 0;
+  static int s_vcc = 0;
+
 
   uint8_t     nTbuf[10];
   uint8_t     nRbuf[10];
@@ -349,22 +361,84 @@ int main(void)
         {
 
 #if defined(SIL_RFM)
-        	static int s_bMstIn = 0;
-        	int bMstIn = getMasterIn();
 
-        	if ( s_bMstIn != bMstIn )
+        	 s_nOccCnt = nTick;
+
+
+
+        	if(s_vcc != getVccIn())
         	{
-        		//	Active Low
-        		if ( bMstIn )
+        		s_vcc = getVccIn();
+        		printf("Timer_getVccIn():%d\n", getVccIn());
+        		printf("Timer_getMasterIn():%d\n", getMasterIn());
+        	}
+
+
+
+        	if(getVccIn() == 1) //차량 전원이 ON 일때만 동작.
+        	{
+        		sVccInFlag++;
+
+        		if(sVccInFlag > 15)
         		{
-        			RFMOccPaStop();
-        		}
-        		else
-        		{
-        			RFMOccPaStart();
+
+					int bMstIn = getMasterIn();
+
+					if ( bMstIn )
+					{
+						sVccOff_TimeCnt++;
+					}
+					else
+					{
+						sVccOff_TimeCnt = 0;
+					}
+
+					if ( (s_bMstIn != bMstIn) && ((sVccOff_TimeCnt > 5) || (sVccOff_TimeCnt == 0)))
+					{
+						s_bMstIn = bMstIn;
+
+						/*
+						if(bMstIn)
+						{
+							sVccOff_TimeCnt++;
+							if(sVccOff_TimeCnt > 5)
+							{
+								s_bMstIn = bMstIn;
+							}
+						}
+						else
+						{
+							sVccOff_TimeCnt = 0;
+							s_bMstIn = bMstIn;
+						}*/
+
+
+						if ( s_bMstIn )
+						{
+							printf("getVccIn():%d,%d,%d\n", getVccIn(),sVccOff_TimeCnt,sVccInFlag);
+
+							//RFMOccPaStop();
+							RFMOccPaStart();
+						}
+						else
+						{
+							printf("getVccIn():%d,%d,%d\n", getVccIn(),sVccOff_TimeCnt,sVccInFlag);
+
+							//RFMOccPaStart();
+							RFMOccPaStop();
+						}
+					}
         		}
         	}
-    		s_bMstIn = bMstIn;
+        	else
+        	{
+        		s_bMstIn = 1;
+        		//printf("getVccIn():%d\n", getVccIn());
+        		sVccInFlag = 0;
+
+        	}
+
+
 
 #else
             s_nOccCnt = nTick;
@@ -679,7 +753,8 @@ static void MX_IWDG_Init(void)
 {
 
   /* USER CODE BEGIN IWDG_Init 0 */
-
+#if defined(USE_BOOTLOADER)
+#else
   /* USER CODE END IWDG_Init 0 */
 
   /* USER CODE BEGIN IWDG_Init 1 */
@@ -693,11 +768,10 @@ static void MX_IWDG_Init(void)
     Error_Handler();
   }
   /* USER CODE BEGIN IWDG_Init 2 */
-
+#endif
   /* USER CODE END IWDG_Init 2 */
 
 }
-
 /**
   * @brief TIM2 Initialization Function
   * @param None
