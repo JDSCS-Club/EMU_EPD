@@ -1,0 +1,29 @@
+Adafruit_GFX.cpp:44:1:Adafruit_GFX::Adafruit_GFX(int16_t, int16_t)	1
+Adafruit_GFX.cpp:57:6:void Adafruit_GFX::drawCircle(int16_t, int16_t, int16_t, uint16_t)	3
+Adafruit_GFX.cpp:91:6:void Adafruit_GFX::drawCircleHelper(int16_t, int16_t, int16_t, uint8_t, uint16_t)	7
+Adafruit_GFX.cpp:127:6:void Adafruit_GFX::fillCircle(int16_t, int16_t, int16_t, uint16_t)	1
+Adafruit_GFX.cpp:134:6:void Adafruit_GFX::fillCircleHelper(int16_t, int16_t, int16_t, uint8_t, int16_t, uint16_t)	5
+Adafruit_GFX.cpp:165:6:virtual void Adafruit_GFX::drawLine(int16_t, int16_t, int16_t, int16_t, uint16_t)	7
+Adafruit_GFX.cpp:211:6:virtual void Adafruit_GFX::drawRect(int16_t, int16_t, int16_t, int16_t, uint16_t)	1
+Adafruit_GFX.cpp:220:6:virtual void Adafruit_GFX::drawFastVLine(int16_t, int16_t, int16_t, uint16_t)	1
+Adafruit_GFX.cpp:226:6:virtual void Adafruit_GFX::drawFastHLine(int16_t, int16_t, int16_t, uint16_t)	1
+Adafruit_GFX.cpp:232:6:virtual void Adafruit_GFX::fillRect(int16_t, int16_t, int16_t, int16_t, uint16_t)	2
+Adafruit_GFX.cpp:240:6:virtual void Adafruit_GFX::fillScreen(uint16_t)	1
+Adafruit_GFX.cpp:245:6:void Adafruit_GFX::drawRoundRect(int16_t, int16_t, int16_t, int16_t, int16_t, uint16_t)	1
+Adafruit_GFX.cpp:260:6:void Adafruit_GFX::fillRoundRect(int16_t, int16_t, int16_t, int16_t, int16_t, uint16_t)	1
+Adafruit_GFX.cpp:271:6:void Adafruit_GFX::drawTriangle(int16_t, int16_t, int16_t, int16_t, int16_t, int16_t, uint16_t)	1
+Adafruit_GFX.cpp:280:6:void Adafruit_GFX::fillTriangle(int16_t, int16_t, int16_t, int16_t, int16_t, int16_t, uint16_t)	14
+Adafruit_GFX.cpp:358:6:void Adafruit_GFX::drawBitmap(int16_t, int16_t, const uint8_t*, int16_t, int16_t, uint16_t)	6
+Adafruit_GFX.cpp:376:6:void Adafruit_GFX::drawBitmap(int16_t, int16_t, const uint8_t*, int16_t, int16_t, uint16_t, uint16_t)	6
+Adafruit_GFX.cpp:402:6:void Adafruit_GFX::drawBitBuf(int16_t, int16_t, const uint8_t*, int16_t, int16_t, uint16_t, uint16_t)	6
+Adafruit_GFX.cpp:430:6:void Adafruit_GFX::drawXBitmap(int16_t, int16_t, const uint8_t*, int16_t, int16_t, uint16_t)	6
+Adafruit_GFX.cpp:503:6:void Adafruit_GFX::setCursor(int16_t, int16_t)	1
+Adafruit_GFX.cpp:508:6:void Adafruit_GFX::getCursor(int16_t*, int16_t*)	3
+Adafruit_GFX.cpp:513:6:void Adafruit_GFX::setTextSize(uint8_t)	2
+Adafruit_GFX.cpp:517:6:void Adafruit_GFX::setTextColor(uint16_t)	1
+Adafruit_GFX.cpp:523:6:void Adafruit_GFX::setTextColor(uint16_t, uint16_t)	1
+Adafruit_GFX.cpp:528:6:void Adafruit_GFX::setTextWrap(bool)	1
+Adafruit_GFX.cpp:532:9:uint8_t Adafruit_GFX::getRotation() const	1
+Adafruit_GFX.cpp:536:6:void Adafruit_GFX::setRotation(uint8_t)	3
+Adafruit_GFX.cpp:553:9:int16_t Adafruit_GFX::width() const	1
+Adafruit_GFX.cpp:557:9:int16_t Adafruit_GFX::height() const	1

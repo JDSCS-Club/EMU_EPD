@@ -1,0 +1,6 @@
+upgrade.c:36:6:SetUpgrReTry	1
+upgrade.c:43:5:GetUpgrReTry	1
+upgrade.c:51:5:UpgrSendImage	7
+upgrade.c:132:5:UpgrSendImageBoot	1
+upgrade.c:140:5:UpgrSendImageApp	1
+upgrade.c:148:5:cmd_upgrade	4

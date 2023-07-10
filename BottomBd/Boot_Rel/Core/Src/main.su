@@ -1,0 +1,5 @@
+../Core/Src/main.c:110:1:__io_putchar	16	static
+../Core/Src/main.c:132:6:LoopProcMain	0	static
+../Core/Src/main.c:541:6:SystemClock_Config	104	static
+../Core/Src/main.c:152:5:main	80	static
+../Core/Src/main.c:1048:6:Error_Handler	0	static

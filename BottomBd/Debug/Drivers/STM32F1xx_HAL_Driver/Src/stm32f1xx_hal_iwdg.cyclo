@@ -1,0 +1,5 @@
+stm32f1xx_hal_iwdg.c:157:19:HAL_IWDG_Init	5
+stm32f1xx_hal_iwdg.c:209:13:HAL_IWDG_MspInit	1
+stm32f1xx_hal_iwdg.c:243:19:HAL_IWDG_Start	2
+stm32f1xx_hal_iwdg.c:273:19:HAL_IWDG_Refresh	4
+stm32f1xx_hal_iwdg.c:338:23:HAL_IWDG_GetState	1

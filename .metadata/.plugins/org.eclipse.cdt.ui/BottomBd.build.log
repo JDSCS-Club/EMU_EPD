@@ -1,0 +1,299 @@
+18:53:30 **** Incremental Build of configuration Release for project BottomBd ****
+make -j8 all 
+"C:/D/SW2_Team/EMU_EPD/BottomBd\Version.bat" "C:/D/SW2_Team/EMU_EPD/BottomBd" "C:/D/SW2_Team/EMU_EPD/BottomBd\Library\version.h.template" "C:/D/SW2_Team/EMU_EPD/BottomBd\Library\version.h"
+C:/D/SW2_Team/EMU_EPD/BottomBd C:/D/SW2_Team/EMU_EPD/BottomBd\Library\version.h.template C:/D/SW2_Team/EMU_EPD/BottomBd\Library\version.h
+START Process
+43
+END Process
+ 
+arm-none-eabi-gcc "../Library/cli.c" -mcpu=cortex-m3 -std=gnu11 -DSTM32F103xE -DUSE_HAL_DRIVER -c -I../Drivers/CMSIS/Device/ST/STM32F1xx/Include -I../Drivers/CMSIS/Include -I../Core/Inc -I../Drivers/STM32F1xx_HAL_Driver/Inc/Legacy -I../Drivers/STM32F1xx_HAL_Driver/Inc -I../Library -O3 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Library/cli.d" -MT"Library/cli.o" --specs=nano.specs -mfloat-abi=soft -mthumb -o "Library/cli.o"
+arm-none-eabi-gcc "../Library/iap_menu.c" -mcpu=cortex-m3 -std=gnu11 -DSTM32F103xE -DUSE_HAL_DRIVER -c -I../Drivers/CMSIS/Device/ST/STM32F1xx/Include -I../Drivers/CMSIS/Include -I../Core/Inc -I../Drivers/STM32F1xx_HAL_Driver/Inc/Legacy -I../Drivers/STM32F1xx_HAL_Driver/Inc -I../Library -O3 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Library/iap_menu.d" -MT"Library/iap_menu.o" --specs=nano.specs -mfloat-abi=soft -mthumb -o "Library/iap_menu.o"
+arm-none-eabi-gcc "../Library/rs485.c" -mcpu=cortex-m3 -std=gnu11 -DSTM32F103xE -DUSE_HAL_DRIVER -c -I../Drivers/CMSIS/Device/ST/STM32F1xx/Include -I../Drivers/CMSIS/Include -I../Core/Inc -I../Drivers/STM32F1xx_HAL_Driver/Inc/Legacy -I../Drivers/STM32F1xx_HAL_Driver/Inc -I../Library -O3 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Library/rs485.d" -MT"Library/rs485.o" --specs=nano.specs -mfloat-abi=soft -mthumb -o "Library/rs485.o"
+arm-none-eabi-gcc "../Library/version.c" -mcpu=cortex-m3 -std=gnu11 -DSTM32F103xE -DUSE_HAL_DRIVER -c -I../Drivers/CMSIS/Device/ST/STM32F1xx/Include -I../Drivers/CMSIS/Include -I../Core/Inc -I../Drivers/STM32F1xx_HAL_Driver/Inc/Legacy -I../Drivers/STM32F1xx_HAL_Driver/Inc -I../Library -O3 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Library/version.d" -MT"Library/version.o" --specs=nano.specs -mfloat-abi=soft -mthumb -o "Library/version.o"
+arm-none-eabi-gcc "../Library/ymodem.c" -mcpu=cortex-m3 -std=gnu11 -DSTM32F103xE -DUSE_HAL_DRIVER -c -I../Drivers/CMSIS/Device/ST/STM32F1xx/Include -I../Drivers/CMSIS/Include -I../Core/Inc -I../Drivers/STM32F1xx_HAL_Driver/Inc/Legacy -I../Drivers/STM32F1xx_HAL_Driver/Inc -I../Library -O3 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Library/ymodem.d" -MT"Library/ymodem.o" --specs=nano.specs -mfloat-abi=soft -mthumb -o "Library/ymodem.o"
+../Library/version.c: In function 'Version_History':
+../Library/version.c:41:2: warning: implicit declaration of function 'printf' [-Wimplicit-function-declaration]
+   41 |  printf( "-----------------------------\r\n" );
+      |  ^~~~~~
+../Library/version.c:41:2: warning: incompatible implicit declaration of built-in function 'printf'
+../Library/version.c:19:1: note: include '<stdio.h>' or provide a declaration of 'printf'
+   18 | #include "VerInfo.h"  // VER_INFO structure
+  +++ |+#include <stdio.h>
+   19 | 
+../Library/cli.c:138:3: warning: initialization of 'int (*)(int,  char **)' from incompatible pointer type 'int (*)(int)' [-Wincompatible-pointer-types]
+  138 |   cmd_occ},
+      |   ^~~~~~~
+../Library/cli.c:138:3: note: (near initialization for 'user_command_table[9].func')
+../Library/cli.c: In function 'dump':
+../Library/rs485.c: In function 'SendRS485':
+../Library/cli.c:205:15: warning: '0' flag used with '%p' gnu_printf format [-Wformat=]
+  205 |   printf( "%08p  ", a );
+      |               ^
+../Library/rs485.c:157:6: warning: variable 'ret' set but not used [-Wunused-but-set-variable]
+  157 |  int ret;
+      |      ^~~
+../Library/rs485.c:156:6: warning: unused variable 'idx' [-Wunused-variable]
+  156 |  int idx;
+      |      ^~~
+../Library/cli.c:213:40: warning: format '%x' expects argument of type 'unsigned int', but argument 2 has type 'uint32_t' {aka 'long unsigned int'} [-Wformat=]
+  213 |    else if ( width == 4 )  printf( "%08x ", *(uint32_t *)a );
+      |                                     ~~~^    ~~~~~~~~~~~~~~
+      |                                        |    |
+      |                                        |    uint32_t {aka long unsigned int}
+      |                                        unsigned int
+      |                                     %08lx
+../Library/cli.c: In function 'ProcessCommand':
+../Library/cli.c:347:8: warning: cast from pointer to integer of different size [-Wpointer-to-int-cast]
+  347 |   *p = (char)NULL;
+      |        ^
+../Library/cli.c:374:9: warning: cast from pointer to integer of different size [-Wpointer-to-int-cast]
+  374 |    *p = (char)NULL;
+      |         ^
+../Library/rs485.c: In function 'SendSD_3':
+../Library/rs485.c:206:19: warning: implicit declaration of function 'getChargeRate' [-Wimplicit-function-declaration]
+  206 |  pSd->nBatVal   = getChargeRate();  // 踰좏꽣由? ?옍?웾 0 ~ 100 %
+      |                   ^~~~~~~~~~~~~
+../Library/rs485.c:215:32: warning: pointer targets in passing argument 1 of 'onBCCCheck' differ in signedness [-Wpointer-sign]
+  215 |  uint16_t u16BCC = onBCCCheck( (char *)&sdfrm, sizeof(FRAME_SD) - 2 );
+      |                                ^~~~~~~~~~~~~~
+      |                                |
+      |                                char *
+../Library/rs485.c:64:36: note: expected 'unsigned char *' but argument is of type 'char *'
+   64 | uint16_t onBCCCheck(unsigned char *payload, int crc_length)
+      |                     ~~~~~~~~~~~~~~~^~~~~~~
+../Library/rs485.c:220:21: warning: variable 'nTxEnd' set but not used [-Wunused-but-set-variable]
+  220 |  uint32_t nTxStart, nTxEnd;
+      |                     ^~~~~~
+../Library/rs485.c:220:11: warning: variable 'nTxStart' set but not used [-Wunused-but-set-variable]
+  220 |  uint32_t nTxStart, nTxEnd;
+      |           ^~~~~~~~
+../Library/rs485.c:192:16: warning: unused variable 'sRssCnt' [-Wunused-variable]
+  192 |     static int sRssCnt = 0;
+      |                ^~~~~~~
+../Library/rs485.c: In function 'SendSD_5':
+../Library/rs485.c:252:32: warning: pointer targets in passing argument 1 of 'onBCCCheck' differ in signedness [-Wpointer-sign]
+  252 |  uint16_t u16BCC = onBCCCheck( (char *)&sdfrm, sizeof(FRAME_TRSD) - 2 );
+      |                                ^~~~~~~~~~~~~~
+      |                                |
+      |                                char *
+../Library/rs485.c:64:36: note: expected 'unsigned char *' but argument is of type 'char *'
+   64 | uint16_t onBCCCheck(unsigned char *payload, int crc_length)
+      |                     ~~~~~~~~~~~~~~~^~~~~~~
+../Library/cli.c: In function 'cmd_battery':
+../Library/rs485.c:257:21: warning: variable 'nTxEnd' set but not used [-Wunused-but-set-variable]
+  257 |  uint32_t nTxStart, nTxEnd;
+      |                     ^~~~~~
+../Library/cli.c:727:44: warning: implicit declaration of function 'getChargeRate' [-Wimplicit-function-declaration]
+  727 |  printf("[Battery] Charge Rate : %d %%\n", getChargeRate() );
+      |                                            ^~~~~~~~~~~~~
+../Library/rs485.c:257:11: warning: variable 'nTxStart' set but not used [-Wunused-but-set-variable]
+  257 |  uint32_t nTxStart, nTxEnd;
+      |           ^~~~~~~~
+../Library/rs485.c: In function 'ProcessFrameSD':
+../Library/rs485.c:280:15: warning: unused variable 'pSd' [-Wunused-variable]
+  280 |  const SD_t  *pSd = &pFrameSd->sd;
+      |               ^~~
+../Library/rs485.c: In function 'ProcessFrameSDR':
+../Library/rs485.c:287:9: warning: type defaults to 'int' in declaration of 'sOccFlag' [-Wimplicit-int]
+  287 |  static sOccFlag = 0;
+      |         ^~~~~~~~
+../Library/rs485.c: In function 'ProcessFrame':
+../Library/rs485.c:436:14: warning: format '%d' expects argument of type 'int', but argument 2 has type 'uint32_t' {aka 'long unsigned int'} [-Wformat=]
+  436 |   printf( "[%d] %s(%d) - TCMS SDR Recv ( %d )\n", HAL_GetTick(),  __func__, __LINE__, nLen );
+      |             ~^                                    ~~~~~~~~~~~~~
+      |              |                                    |
+      |              int                                  uint32_t {aka long unsigned int}
+      |             %ld
+../Library/rs485.c:441:14: warning: format '%d' expects argument of type 'int', but argument 2 has type 'uint32_t' {aka 'long unsigned int'} [-Wformat=]
+  441 |   printf( "[%d] %s(%d) - TRS SDR Recv ( %d )\n", HAL_GetTick(),  __func__, __LINE__, nLen );
+      |             ~^                                   ~~~~~~~~~~~~~
+      |              |                                   |
+      |              int                                 uint32_t {aka long unsigned int}
+      |             %ld
+../Library/cli.c: In function 'cmd_WDGStOff':
+../Library/rs485.c:431:12: warning: unused variable 'pSd' [-Wunused-variable]
+  431 |  FRAME_SD *pSd = (FRAME_SD *)pBuf;
+      |            ^~~
+../Library/cli.c:719:1: warning: control reaches end of non-void function [-Wreturn-type]
+  719 | }
+      | ^
+../Library/cli.c: In function 'cmd_battery':
+../Library/rs485.c: In function 'Dump':
+../Library/cli.c:728:1: warning: control reaches end of non-void function [-Wreturn-type]
+  728 | }
+      | ^
+../Library/rs485.c:495:15: warning: format '%d' expects argument of type 'int', but argument 2 has type 'uint32_t' {aka 'long unsigned int'} [-Wformat=]
+  495 |  printf( "[%08d]%s ", HAL_GetTick(), sTitle );
+      |            ~~~^       ~~~~~~~~~~~~~
+      |               |       |
+      |               int     uint32_t {aka long unsigned int}
+      |            %08ld
+../Library/rs485.c: In function 'LoopProcRS485_3ch':
+../Library/rs485.c:569:21: warning: pointer targets in passing argument 2 of 'Dump' differ in signedness [-Wpointer-sign]
+  569 |      Dump( "Rx : ", rxbuffer, length );
+      |                     ^~~~~~~~
+      |                     |
+      |                     uint8_t * {aka unsigned char *}
+../Library/rs485.c:492:32: note: expected 'char *' but argument is of type 'uint8_t *' {aka 'unsigned char *'}
+  492 | void Dump( char *sTitle, char *sBuf, int nSize )
+      |                          ~~~~~~^~~~
+../Library/rs485.c:575:17: warning: format '%d' expects argument of type 'int', but argument 2 has type 'uint32_t' {aka 'long unsigned int'} [-Wformat=]
+  575 |      printf( "[%d] %s(%d) - Invalid packet(%d) / framesize(%d)\n", HAL_GetTick(), __func__, __LINE__, length, sizeof(FRAME_SDR) );
+      |                ~^                                                  ~~~~~~~~~~~~~
+      |                 |                                                  |
+      |                 int                                                uint32_t {aka long unsigned int}
+      |                %ld
+../Library/rs485.c:575:45: warning: format '%d' expects argument of type 'int', but argument 5 has type 'uint32_t' {aka 'long unsigned int'} [-Wformat=]
+  575 |      printf( "[%d] %s(%d) - Invalid packet(%d) / framesize(%d)\n", HAL_GetTick(), __func__, __LINE__, length, sizeof(FRAME_SDR) );
+      |                                            ~^                                                         ~~~~~~
+      |                                             |                                                         |
+      |                                             int                                                       uint32_t {aka long unsigned int}
+      |                                            %ld
+../Library/rs485.c:527:11: warning: unused variable 'd' [-Wunused-variable]
+  527 |      char d;
+      |           ^
+../Library/rs485.c:526:14: warning: unused variable 's_2_nTick_R' [-Wunused-variable]
+  526 |   static int s_2_nTick_R = 0;
+      |              ^~~~~~~~~~~
+../Library/rs485.c:525:14: warning: unused variable 's_2_nTick_F' [-Wunused-variable]
+  525 |   static int s_2_nTick_F = 0;
+      |              ^~~~~~~~~~~
+../Library/rs485.c:524:10: warning: unused variable 'nTick_2' [-Wunused-variable]
+  524 |      int nTick_2;
+      |          ^~~~~~~
+../Library/rs485.c:521:6: warning: unused variable 'idx' [-Wunused-variable]
+  521 |  int idx;
+      |      ^~~
+../Library/rs485.c: In function 'LoopProcRS485_5ch':
+../Library/rs485.c:664:21: warning: pointer targets in passing argument 2 of 'Dump' differ in signedness [-Wpointer-sign]
+  664 |      Dump( "Rx : ", rxbuffer_5, length_5 );
+      |                     ^~~~~~~~~~
+      |                     |
+      |                     uint8_t * {aka unsigned char *}
+../Library/rs485.c:492:32: note: expected 'char *' but argument is of type 'uint8_t *' {aka 'unsigned char *'}
+  492 | void Dump( char *sTitle, char *sBuf, int nSize )
+      |                          ~~~~~~^~~~
+../Library/rs485.c:670:17: warning: format '%d' expects argument of type 'int', but argument 2 has type 'uint32_t' {aka 'long unsigned int'} [-Wformat=]
+  670 |      printf( "[%d] %s(%d) - Invalid packet(%d) FrameSize(%d)\n", HAL_GetTick(), __func__, __LINE__, length_5, sizeof(FRAME_TRSDR) );
+      |                ~^                                                ~~~~~~~~~~~~~
+      |                 |                                                |
+      |                 int                                              uint32_t {aka long unsigned int}
+      |                %ld
+../Library/rs485.c:670:45: warning: format '%d' expects argument of type 'int', but argument 5 has type 'uint32_t' {aka 'long unsigned int'} [-Wformat=]
+  670 |      printf( "[%d] %s(%d) - Invalid packet(%d) FrameSize(%d)\n", HAL_GetTick(), __func__, __LINE__, length_5, sizeof(FRAME_TRSDR) );
+      |                                            ~^                                                       ~~~~~~~~
+      |                                             |                                                       |
+      |                                             int                                                     uint32_t {aka long unsigned int}
+      |                                            %ld
+../Library/rs485.c:623:11: warning: unused variable 'd' [-Wunused-variable]
+  623 |      char d;
+      |           ^
+../Library/rs485.c:622:14: warning: unused variable 's_2_nTick_R' [-Wunused-variable]
+  622 |   static int s_2_nTick_R = 0;
+      |              ^~~~~~~~~~~
+../Library/ymodem.c: In function 'cmd_ymodem':
+../Library/rs485.c:621:14: warning: unused variable 's_2_nTick_F' [-Wunused-variable]
+  621 |   static int s_2_nTick_F = 0;
+      |              ^~~~~~~~~~~
+../Library/ymodem.c:707:3: warning: implicit declaration of function 'SerialInit' [-Wimplicit-function-declaration]
+  707 |   SerialInit( NULL, NULL, NULL, NULL );
+      |   ^~~~~~~~~~
+../Library/rs485.c:620:10: warning: unused variable 'nTick_2' [-Wunused-variable]
+  620 |      int nTick_2;
+      |          ^~~~~~~
+../Library/rs485.c:617:6: warning: unused variable 'idx' [-Wunused-variable]
+  617 |  int idx;
+      |      ^~~
+../Library/rs485.c: In function 'LoopProcRFM_2ch':
+../Library/rs485.c:752:22: warning: pointer targets in passing argument 2 of 'Dump' differ in signedness [-Wpointer-sign]
+  752 |       Dump( "Rx : ", rxbuffer_2, length_2 );
+      |                      ^~~~~~~~~~
+      |                      |
+      |                      uint8_t * {aka unsigned char *}
+../Library/rs485.c:492:32: note: expected 'char *' but argument is of type 'uint8_t *' {aka 'unsigned char *'}
+  492 | void Dump( char *sTitle, char *sBuf, int nSize )
+      |                          ~~~~~~^~~~
+../Library/rs485.c:714:11: warning: unused variable 'd' [-Wunused-variable]
+  714 |      char d;
+      |           ^
+../Library/rs485.c:713:14: warning: unused variable 's_2_nTick_R' [-Wunused-variable]
+  713 |   static int s_2_nTick_R = 0;
+      |              ^~~~~~~~~~~
+../Library/rs485.c:712:14: warning: unused variable 's_2_nTick_F' [-Wunused-variable]
+  712 |   static int s_2_nTick_F = 0;
+      |              ^~~~~~~~~~~
+../Library/rs485.c:711:10: warning: unused variable 'nTick_2' [-Wunused-variable]
+  711 |      int nTick_2;
+      |          ^~~~~~~
+../Library/rs485.c:708:6: warning: unused variable 'idx' [-Wunused-variable]
+  708 |  int idx;
+      |      ^~~
+../Library/rs485.c:706:8: warning: variable 's_EtxLen' set but not used [-Wunused-but-set-variable]
+  706 |    int s_EtxLen = 0;
+      |        ^~~~~~~~
+../Library/rs485.c:704:15: warning: unused variable 's_RxOkLen' [-Wunused-variable]
+  704 |    static int s_RxOkLen =0;
+      |               ^~~~~~~~~
+At top level:
+../Library/rs485.c:704:15: warning: 's_RxOkLen' defined but not used [-Wunused-variable]
+../Library/rs485.c:712:14: warning: 's_2_nTick_F' defined but not used [-Wunused-variable]
+  712 |   static int s_2_nTick_F = 0;
+      |              ^~~~~~~~~~~
+../Library/rs485.c:713:14: warning: 's_2_nTick_R' defined but not used [-Wunused-variable]
+  713 |   static int s_2_nTick_R = 0;
+      |              ^~~~~~~~~~~
+../Library/rs485.c:621:14: warning: 's_2_nTick_F' defined but not used [-Wunused-variable]
+  621 |   static int s_2_nTick_F = 0;
+      |              ^~~~~~~~~~~
+../Library/rs485.c:622:14: warning: 's_2_nTick_R' defined but not used [-Wunused-variable]
+  622 |   static int s_2_nTick_R = 0;
+      |              ^~~~~~~~~~~
+../Library/rs485.c:525:14: warning: 's_2_nTick_F' defined but not used [-Wunused-variable]
+  525 |   static int s_2_nTick_F = 0;
+      |              ^~~~~~~~~~~
+../Library/rs485.c:526:14: warning: 's_2_nTick_R' defined but not used [-Wunused-variable]
+  526 |   static int s_2_nTick_R = 0;
+      |              ^~~~~~~~~~~
+../Library/rs485.c:192:16: warning: 'sRssCnt' defined but not used [-Wunused-variable]
+  192 |     static int sRssCnt = 0;
+      |                ^~~~~~~
+../Library/rs485.c:473:12: warning: 'nFlagRxState' defined but not used [-Wunused-variable]
+  473 | static int nFlagRxState = FlagNone;
+      |            ^~~~~~~~~~~~
+../Library/ymodem.c:732:9: warning: implicit declaration of function 'SerialDownload' [-Wimplicit-function-declaration]
+  732 |   ret = SerialDownload();
+      |         ^~~~~~~~~~~~~~
+../Library/ymodem.c:738:9: warning: implicit declaration of function 'SerialUpload' [-Wimplicit-function-declaration]
+  738 |   ret = SerialUpload();
+      |         ^~~~~~~~~~~~
+../Library/ymodem.c:759:1: warning: control reaches end of non-void function [-Wreturn-type]
+  759 | }
+      | ^
+arm-none-eabi-gcc -o "BottomBd.elf" @"objects.list"   -mcpu=cortex-m3 -T"C:\D\SW2_Team\EMU_EPD\BottomBd\STM32F103RCTX_App_FLASH.ld" --specs=nosys.specs -Wl,-Map="BottomBd.map" -Wl,--gc-sections -static --specs=nano.specs -mfloat-abi=soft -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
+Finished building target: BottomBd.elf
+ 
+arm-none-eabi-size   BottomBd.elf 
+arm-none-eabi-objdump -h -S  BottomBd.elf  > "BottomBd.list"
+arm-none-eabi-objcopy  -O ihex  BottomBd.elf  "BottomBd.hex"
+arm-none-eabi-objcopy  -O binary  BottomBd.elf  "BottomBd.bin"
+   text	   data	    bss	    dec	    hex	filename
+  41788	    428	   5032	  47248	   b890	BottomBd.elf
+Finished building: default.size.stdout
+ 
+Finished building: BottomBd.bin
+Finished building: BottomBd.hex
+Finished building: BottomBd.list
+ 
+ 
+ 
+"C:/D/SW2_Team/EMU_EPD/BottomBd\_Make.bat" "C:/D/SW2_Team/EMU_EPD/BottomBd/" "Release"
+43
+gen "bin\BootRFMBase_230710_v1.43.hex"
+copy "Release\BottomBd.bin" "bin\RFMBase_230710_v1.43.bin"
+        1개 파일이 복사되었습니다.
+copy "Release\BottomBd.hex" "bin\RFMBase_230710_v1.43.hex"
+        1개 파일이 복사되었습니다.
+ 
+
+18:53:32 Build Finished. 0 errors, 63 warnings. (took 1s.940ms)
+
