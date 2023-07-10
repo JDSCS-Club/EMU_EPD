@@ -58,12 +58,12 @@ ADC_HandleTypeDef hadc1;
 ADC_HandleTypeDef hadc2;
 
 TIM_HandleTypeDef htim2;
-#endif	//	Application
-
-I2C_HandleTypeDef hi2c2;
 
 IWDG_HandleTypeDef hiwdg;
 
+#endif	//	Application
+
+I2C_HandleTypeDef hi2c2;
 
 UART_HandleTypeDef huart5;
 UART_HandleTypeDef huart1;
@@ -131,8 +131,11 @@ void LoopProcMain( int nTick )
 {
 	if ( g_bEnIWDGStat )
 	{
+#if defined(USE_BOOTLOADER)
+#else	//	Application
 		//	Watchdog Reload
 		__HAL_IWDG_RELOAD_COUNTER(&hiwdg);
+#endif
 	}
 }
 
@@ -679,7 +682,8 @@ static void MX_IWDG_Init(void)
 {
 
   /* USER CODE BEGIN IWDG_Init 0 */
-
+#if defined(USE_BOOTLOADER)
+#else
   /* USER CODE END IWDG_Init 0 */
 
   /* USER CODE BEGIN IWDG_Init 1 */
@@ -693,7 +697,7 @@ static void MX_IWDG_Init(void)
     Error_Handler();
   }
   /* USER CODE BEGIN IWDG_Init 2 */
-
+#endif
   /* USER CODE END IWDG_Init 2 */
 
 }
