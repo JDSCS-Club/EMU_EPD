@@ -1,5 +1,0 @@
-../Library/iap_common.c:43:6:Int2Str	32	static
-../Library/iap_common.c:71:10:Str2Int	32	static
-../Library/iap_common.c:145:6:Serial_PutString	24	static
-../Library/iap_common.c:167:19:Serial_PutByte	16	static
-../Library/iap_common.c:176:6:SetYmodemUart	16	static

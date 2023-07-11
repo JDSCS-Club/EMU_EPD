@@ -1,9 +1,0 @@
-flash_if.c:40:6:FLASH_If_Init	1
-flash_if.c:57:10:FLASH_If_Erase	1
-flash_if.c:89:10:FLASH_If_EraseSectors	1
-flash_if.c:133:10:FLASH_If_Write	7
-flash_if.c:176:10:FLASH_If_GetWriteProtectionStatus	1
-flash_if.c:212:10:FLASH_If_WriteProtectionConfig	3
-flash_if.c:258:5:cmd_flRead	3
-flash_if.c:284:5:cmd_flWrite	3
-flash_if.c:313:5:cmd_flErase	4

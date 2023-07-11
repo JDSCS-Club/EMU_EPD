@@ -1,5 +1,0 @@
-../Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_iwdg.c:157:19:HAL_IWDG_Init	16	static
-../Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_iwdg.c:209:13:HAL_IWDG_MspInit	16	static
-../Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_iwdg.c:243:19:HAL_IWDG_Start	16	static
-../Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_iwdg.c:273:19:HAL_IWDG_Refresh	24	static
-../Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_iwdg.c:338:23:HAL_IWDG_GetState	16	static

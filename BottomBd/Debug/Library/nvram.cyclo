@@ -1,7 +1,0 @@
-nvram.c:49:6:I2C_BusScan	4
-nvram.c:91:5:MB85_HAL_WriteBytes	4
-nvram.c:113:5:MB85_HAL_ReadBytes	4
-nvram.c:135:6:TestNVRAM	1
-nvram.c:155:5:cmd_nvramRead	2
-nvram.c:176:5:cmd_nvramWrite	3
-nvram.c:204:5:cmd_nvramDump	5

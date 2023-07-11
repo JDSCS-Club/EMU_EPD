@@ -1,3 +1,0 @@
-../Drivers/display/fonts/PHan_Lib.c:107:6:PHan_HanFontLoad	24	static
-../Drivers/display/fonts/PHan_Lib.c:131:6:PHan_EngFontLoad	24	static
-../Drivers/display/fonts/PHan_Lib.c:159:10:PHan_FontLoad	16	static

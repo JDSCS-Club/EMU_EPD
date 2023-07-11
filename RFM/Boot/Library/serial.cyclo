@@ -1,6 +1,0 @@
-serial.c:80:1:__io_putchar	6
-serial.c:129:1:__io_getchar	2
-serial.c:157:6:HAL_UART_RxCpltCallback	3
-serial.c:199:6:SerialInitQueue	1
-serial.c:212:6:SerialInit	3
-serial.c:243:5:input_check	1

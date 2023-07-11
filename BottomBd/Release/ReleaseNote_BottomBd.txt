@@ -1,3 +1,0 @@
-* Mon Jul 10 20:31:09 2023 +0900 CS_Club  (HEAD -> master, origin/master, origin/HEAD)  다시 시작.
-* Mon Jul 10 20:13:01 2023 +0900 CS_Club  (origin/JDS, JDS)  컴파일.
-* Mon Jul 10 20:05:46 2023 +0900 CS_Club   형식시험용으로 최종 디거빙한 버전.
