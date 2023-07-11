@@ -1,0 +1,6 @@
+../Library/serial.c:80:1:__io_putchar	16	static
+../Library/serial.c:129:1:__io_getchar	16	static
+../Library/serial.c:157:6:HAL_UART_RxCpltCallback	16	static
+../Library/serial.c:199:6:SerialInitQueue	8	static
+../Library/serial.c:212:6:SerialInit	16	static
+../Library/serial.c:243:5:input_check	8	static

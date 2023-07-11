@@ -1,0 +1,14 @@
+../Library/unicode.c:31:12:_UTF8ToUnicode	24	static
+../Library/unicode.c:110:5:UTF8ToUnicode	40	static
+../Library/unicode.c:136:12:_UnicodeToUTF8	24	static
+../Library/unicode.c:172:5:UnicodeToUTF8	32	static
+../Library/ksc5601.h:1196:1:ksc5601_mbtowc	24	static
+../Library/ksc5601.h:2989:1:ksc5601_wctomb	32	static
+../Library/unicode.c:227:12:cp949_mbtowc	32	static
+../Library/unicode.c:280:5:CP949ToUnicode	40	static
+../Library/unicode.c:306:12:cp949_wctomb	24	static
+../Library/unicode.c:375:5:UnicodeToCP949	32	static
+../Library/unicode.c:393:5:CP949ToUTF8	144	static
+../Library/unicode.c:405:5:UTF8ToCP949	144	static
+../Library/unicode.c:417:5:printUTF8	24	static
+../Library/unicode.c:439:5:printUTF16	24	static

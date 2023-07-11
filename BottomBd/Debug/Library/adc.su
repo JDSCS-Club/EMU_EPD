@@ -1,0 +1,4 @@
+../Library/adc.c:18:10:Get_Adc1_Value	16	static
+../Library/adc.c:33:10:getAdc1Vol	8	static
+../Library/adc.c:43:10:Get_Adc2_Value	16	static
+../Library/adc.c:58:10:getAdc2Vol	8	static

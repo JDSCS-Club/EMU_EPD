@@ -1,0 +1,3 @@
+../Library/iap_menu.c:58:5:SerialDownload	48	static
+../Library/iap_menu.c:113:5:SerialUpload	16	static
+../Library/iap_menu.c:147:6:Main_Menu	24	static,ignoring_inline_asm

@@ -1,0 +1,4 @@
+adpcm.c:56:6:ADPCM_ClearEncodeBuf	1
+adpcm.c:62:6:ADPCM_ClearDecodeBuf	1
+adpcm.c:74:9:ADPCM_Encode	10
+adpcm.c:164:9:ADPCM_Decode	9

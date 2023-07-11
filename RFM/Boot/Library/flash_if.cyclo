@@ -1,0 +1,10 @@
+flash_if.c:41:6:FLASH_If_Init	1
+flash_if.c:56:10:FLASH_If_Erase	2
+flash_if.c:83:10:FLASH_If_EraseSectors	2
+flash_if.c:120:10:FLASH_If_Write	5
+flash_if.c:155:10:FLASH_If_GetWriteProtectionStatus	2
+flash_if.c:191:17:GetSector	23
+flash_if.c:251:19:FLASH_If_WriteProtectionConfig	1
+flash_if.c:285:10:FLASH_If_FindLastData	4
+flash_if.c:311:10:FLASH_If_GetBootSize	1
+flash_if.c:320:10:FLASH_If_GetAppSize	1

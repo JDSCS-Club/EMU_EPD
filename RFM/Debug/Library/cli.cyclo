@@ -1,0 +1,16 @@
+core_cm4.h:1939:34:__NVIC_SystemReset	1
+cli.c:324:6:dump	17
+cli.c:381:6:a2hex	1
+cli.c:437:5:getarg	3
+cli.c:459:5:ProcessCommand	18
+cli.c:571:5:readline	18
+cli.c:666:6:CLIPrompt	1
+cli.c:676:6:SetCLIPrompt	1
+cli.c:683:6:SetCLIProc	1
+cli.c:691:6:LoopProcCLI	3
+cli.c:717:6:vCLITask	1
+cli.c:745:5:cmd_help	8
+cli.c:787:5:cmd_uptime	2
+cli.c:834:5:cmd_ver	1
+cli.c:844:5:cmd_reset	0
+cli.c:853:5:cmd_WDGStOff	1

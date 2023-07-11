@@ -284,6 +284,7 @@ void ProcessFrameSD( const uint8_t *pBuf, int nLen )
 void ProcessFrameSDR( const uint8_t *pBuf, int nLen,int nCh )
 //========================================================================
 {
+	static sOccFlag = 0;
 	//========================================================================
 	//	SD 상태정보 응답.
     
@@ -317,6 +318,23 @@ void ProcessFrameSDR( const uint8_t *pBuf, int nLen,int nCh )
     	    	//	RFMBase -> RFM 명령 전송 : UART2
     	    	HAL_UART_Transmit( &huart2, (uint8_t *)sBuf, strlen(sBuf), 100 );
 			}
+    	}
+
+    	if(pSdr->nOCC_StartFlag == 0x01)
+    	{
+    		sOccFlag = 1;
+
+    		RFMOccPaStart();
+    		printf("485_RFMOccPaStart \n");
+
+
+    	}
+    	else if((sOccFlag == 0x01) && (pSdr->nOCC_StartFlag == 0x00))
+    	{
+    		sOccFlag = 0;
+
+    		RFMOccPaStop();
+    		printf("485_RFMOccPaStop \n");
     	}
 
     }

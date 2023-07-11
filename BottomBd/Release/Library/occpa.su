@@ -1,0 +1,3 @@
+../Library/occpa.c:35:6:RFMOccPaStart	8	static
+../Library/occpa.c:45:6:RFMOccPaStop	8	static
+../Library/occpa.c:56:5:cmd_occ	16	static
