@@ -86,6 +86,7 @@ static void MX_TIM3_Init(void);
 static void MX_ADC1_Init(void);
 static void MX_I2C3_Init(void);
 static void MX_IWDG_Init(void);
+
 /* USER CODE BEGIN PFP */
 
 /* USER CODE END PFP */

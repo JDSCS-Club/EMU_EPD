@@ -109,6 +109,7 @@ int		GetRFMMode	( void )
 void	SetRFMMode	( int nRFMMode )
 //========================================================================
 {
+
 	if ( g_nRFMMode != nRFMMode && nRFMMode == RFMModeNormal )
 	{
 		//	타 모드에서 Normal 모드로 변경시 상태정보 ID Flag값 유지.
@@ -121,7 +122,19 @@ void	SetRFMMode	( int nRFMMode )
 		printf( "%s", StrRFMMode( nRFMMode ) );
 	}
 
-	g_nRFMMode = nRFMMode;
+	if(GetRFMMode() == RFMModeOcc )
+	{
+		if(nRFMMode == RFMModeOccStop)
+		{
+			g_nRFMMode = nRFMMode;
+		}
+	}
+	else
+	{
+		g_nRFMMode = nRFMMode;
+	}
+
+	//g_nRFMMode = nRFMMode;
 }
 
 //========================================================================
@@ -1140,6 +1153,9 @@ int cmd_OccPa     ( int argc, char * argv[] )
     	printf("[Stop][OCC]\n");
 
     	//	Normal Mode
+
+    	SetRFMMode( RFMModeOccStop);
+
     	SetRFMMode( RFMModeNormal );
 
 #if USE_RFM_OCC_PA
