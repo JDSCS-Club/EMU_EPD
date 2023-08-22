@@ -1666,6 +1666,9 @@ int RFM_main( void )
 
 	InitProcPkt();
 
+
+	ProcMenuSetTxPwr(3);
+
 	int nTick;
 
 	/* Infinite main loop */
