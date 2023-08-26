@@ -1,0 +1,7 @@
+../Library/eeprom.c:40:6:I2C_BusScan	3
+../Library/eeprom.c:108:5:M24_HAL_WriteBytes	2
+../Library/eeprom.c:120:5:M24_HAL_ReadBytes	3
+../Library/eeprom.c:79:6:TestEEPROM	1
+../Library/eeprom.c:132:5:cmd_eepromRead	2
+../Library/eeprom.c:152:5:cmd_eepromWrite	3
+../Library/eeprom.c:178:5:cmd_eepromDump	5

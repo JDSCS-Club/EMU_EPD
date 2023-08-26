@@ -1,0 +1,13 @@
+../Library/keypad.c:40:5:GetKey	0	static
+../Library/keypad.c:48:6:GetKeyStat	16	static
+../Library/keypad.c:155:6:KeyMenu	8	static
+../Library/keypad.c:170:6:KeyOK	8	static
+../Library/keypad.c:185:6:KeyLight	8	static
+../Library/keypad.c:220:6:KeyUp	8	static
+../Library/keypad.c:234:6:KeyDown	8	static
+../Library/keypad.c:248:6:KeyVol	16	static
+../Library/keypad.c:291:6:KeyPtt	40	static
+../Library/keypad.c:369:6:KeySos	40	static
+../Library/keypad.c:435:6:KeyPwrOnOff	8	static
+../Library/keypad.c:68:6:LoopProcKey	64	static
+../Library/keypad.c:468:6:KeyTestLoopback	8	static

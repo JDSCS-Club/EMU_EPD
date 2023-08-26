@@ -1,0 +1,4 @@
+../Library/adpcm.c:56:6:ADPCM_ClearEncodeBuf	4	static
+../Library/adpcm.c:62:6:ADPCM_ClearDecodeBuf	4	static
+../Library/adpcm.c:74:9:ADPCM_Encode	32	static
+../Library/adpcm.c:164:9:ADPCM_Decode	24	static

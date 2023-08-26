@@ -1,0 +1,13 @@
+../Library/keypad.c:40:5:GetKey	1
+../Library/keypad.c:48:6:GetKeyStat	1
+../Library/keypad.c:68:6:LoopProcKey	17
+../Library/keypad.c:155:6:KeyMenu	2
+../Library/keypad.c:170:6:KeyOK	2
+../Library/keypad.c:185:6:KeyLight	3
+../Library/keypad.c:220:6:KeyUp	2
+../Library/keypad.c:234:6:KeyDown	2
+../Library/keypad.c:248:6:KeyVol	3
+../Library/keypad.c:291:6:KeyPtt	3
+../Library/keypad.c:369:6:KeySos	3
+../Library/keypad.c:435:6:KeyPwrOnOff	3
+../Library/keypad.c:468:6:KeyTestLoopback	2

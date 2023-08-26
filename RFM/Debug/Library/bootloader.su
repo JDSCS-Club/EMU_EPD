@@ -1,0 +1,9 @@
+../Library/bootloader.c:68:6:SetBootMode	16	static
+../Library/bootloader.c:75:5:GetBootMode	4	static
+../Library/bootloader.c:86:5:_GetDevID	4	static
+../Library/bootloader.c:93:6:_SetDevID	16	static
+../Library/bootloader.c:103:6:JumpToSTBootloader	24	static,ignoring_inline_asm
+../Library/bootloader.c:139:6:DispDFUMode	8	static
+../Library/bootloader.c:154:5:InitBoot	8	static
+../Library/bootloader.c:188:6:BootLoaderTask	600	static,ignoring_inline_asm
+../Library/bootloader.c:548:5:cmd_stboot	16	static

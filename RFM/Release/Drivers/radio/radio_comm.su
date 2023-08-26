@@ -1,0 +1,7 @@
+../Drivers/radio/radio_comm.c:52:4:radio_comm_GetResp	16	static
+../Drivers/radio/radio_comm.c:166:4:radio_comm_PollCTS	0	static
+../Drivers/radio/radio_comm.c:100:6:radio_comm_SendCmd	16	static
+../Drivers/radio/radio_comm.c:120:6:radio_comm_ReadData	24	static
+../Drivers/radio/radio_comm.c:145:6:radio_comm_WriteData	24	static
+../Drivers/radio/radio_comm.c:183:6:radio_comm_ClearCTS	0	static
+../Drivers/radio/radio_comm.c:242:4:radio_comm_SendCmdGetResp	16	static

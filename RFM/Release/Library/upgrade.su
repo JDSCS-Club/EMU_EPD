@@ -1,0 +1,6 @@
+../Library/upgrade.c:36:6:SetUpgrReTry	0	static
+../Library/upgrade.c:43:5:GetUpgrReTry	0	static
+../Library/upgrade.c:51:5:UpgrSendImage	248	static
+../Library/upgrade.c:132:5:UpgrSendImageBoot	8	static
+../Library/upgrade.c:140:5:UpgrSendImageApp	8	static
+../Library/upgrade.c:148:5:cmd_upgrade	24	static

@@ -1,0 +1,10 @@
+../Library/flash_if.c:41:6:FLASH_If_Init	8	static
+../Library/flash_if.c:56:10:FLASH_If_Erase	48	static
+../Library/flash_if.c:83:10:FLASH_If_EraseSectors	48	static
+../Library/flash_if.c:120:10:FLASH_If_Write	40	static
+../Library/flash_if.c:155:10:FLASH_If_GetWriteProtectionStatus	40	static
+../Library/flash_if.c:191:17:GetSector	24	static
+../Library/flash_if.c:251:19:FLASH_If_WriteProtectionConfig	80	static
+../Library/flash_if.c:285:10:FLASH_If_FindLastData	24	static
+../Library/flash_if.c:311:10:FLASH_If_GetBootSize	8	static
+../Library/flash_if.c:320:10:FLASH_If_GetAppSize	8	static

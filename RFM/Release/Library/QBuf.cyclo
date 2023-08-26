@@ -1,0 +1,11 @@
+../Library/QBuf.c:35:6:init_queue	1
+../Library/QBuf.c:42:6:clear_queue	1
+../Library/QBuf.c:49:5:qcount	1
+../Library/QBuf.c:56:5:qput	2
+../Library/QBuf.c:71:15:qget	1
+../Library/QBuf.c:90:6:qBufInit	1
+../Library/QBuf.c:103:6:qBufClear	1
+../Library/QBuf.c:110:5:qBufCnt	1
+../Library/QBuf.c:117:5:qBufPut	2
+../Library/QBuf.c:137:5:qBufGet	2
+../Library/QBuf.c:160:6:QBufTest	4
