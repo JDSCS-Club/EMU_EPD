@@ -1,0 +1,9 @@
+../Drivers/radio/radio.c:63:6:vRadio_PowerUp	1
+../Drivers/radio/radio.c:83:6:vRadio_Init	2
+../Drivers/radio/radio.c:118:4:bRadio_Check_Tx_RX	7
+../Drivers/radio/radio.c:213:6:vRadio_StartRX	1
+../Drivers/radio/radio.c:229:4:get_CCA	1
+../Drivers/radio/radio.c:282:6:vRadio_Set_TxPower	1
+../Drivers/radio/radio.c:300:6:vRadio_StartTx_Variable_Packet	2
+../Drivers/radio/radio.c:339:6:vRadio_StartTx_Variable_Packet_MultiField	2
+../Drivers/radio/radio.c:393:4:bRadio_FindProperty	11

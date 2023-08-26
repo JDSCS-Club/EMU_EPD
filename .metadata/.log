@@ -1,0 +1,24 @@
+!SESSION 2023-08-22 16:27:55.512 -----------------------------------------------
+eclipse.buildId=Version 1.13.1
+java.version=17.0.6
+java.vendor=Eclipse Adoptium
+BootLoader constants: OS=win32, ARCH=x86_64, WS=win32, NL=ko_KR
+Command-line arguments:  -os win32 -ws win32 -arch x86_64
+
+!ENTRY com.st.stm32cube.ide.mcu.informationcenter 4 4 2023-08-22 16:28:06.202
+!MESSAGE CubeMX plugin appears to be active, Log4j initialization might be too late.
+
+!ENTRY com.st.stm32cube.ide.mcu.informationcenter 1 1 2023-08-22 16:28:06.217
+!MESSAGE Log4j2 initialized with config file C:\D\SW2_Team\EMU_EPD\.metadata\.log4j2.xml
+
+!ENTRY com.st.stm32cube.ide.mcu.ide 1 1 2023-08-22 16:28:10.648
+!MESSAGE Started RMI Server, listening on port 41337
+
+!ENTRY org.eclipse.cdt.core 1 0 2023-08-22 16:28:41.134
+!MESSAGE Indexed 'BottomBd' (39 sources, 128 headers) in 4.8 sec: 10,660 declarations; 62,143 references; 5 unresolved inclusions; 36 syntax errors; 191 unresolved names (0.26%)
+
+!ENTRY org.eclipse.cdt.core 1 0 2023-08-22 16:28:52.612
+!MESSAGE Indexed 'RFM' (74 sources, 267 headers) in 11.5 sec: 23,951 declarations; 96,304 references; 3 unresolved inclusions; 43 syntax errors; 660 unresolved names (0.55%)
+
+!ENTRY org.eclipse.cdt.core 1 0 2023-08-22 16:49:58.091
+!MESSAGE Indexed 'RFM' (75 sources, 268 headers) in 7.58 sec: 23,203 declarations; 96,522 references; 3 unresolved inclusions; 30 syntax errors; 406 unresolved names (0.34%)

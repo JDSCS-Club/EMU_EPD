@@ -1,0 +1,2 @@
+../Library/adc.c:36:6:Adc_Power	24	static
+../Library/adc.c:117:6:LoopProcAdc	16	static

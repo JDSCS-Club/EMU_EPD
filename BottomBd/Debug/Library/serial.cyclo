@@ -1,0 +1,10 @@
+../Library/serial.c:66:6:rts_high	3
+../Library/serial.c:83:6:rts_low	3
+../Library/serial.c:127:1:__io_putchar	3
+../Library/serial.c:162:1:__io_getchar	2
+../Library/serial.c:190:6:HAL_UART_RxCpltCallback	9
+../Library/serial.c:258:6:resetSerial	2
+../Library/serial.c:274:6:checkSerial	3
+../Library/serial.c:301:6:SerialInitQueue	1
+../Library/serial.c:318:6:SerialInit	5
+../Library/serial.c:348:5:input_check	1

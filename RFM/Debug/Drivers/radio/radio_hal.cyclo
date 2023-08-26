@@ -1,0 +1,17 @@
+../Drivers/radio/radio_hal.c:38:6:radio_hal_AssertShutdown	1
+../Drivers/radio/radio_hal.c:52:6:radio_hal_DeassertShutdown	1
+../Drivers/radio/radio_hal.c:64:6:radio_hal_ClearNsel	1
+../Drivers/radio/radio_hal.c:70:6:radio_hal_SetNsel	1
+../Drivers/radio/radio_hal.c:76:5:radio_hal_NirqLevel	1
+../Drivers/radio/radio_hal.c:86:6:radio_SPI_ReadWrite	1
+../Drivers/radio/radio_hal.c:107:4:SpiReadWrite	1
+../Drivers/radio/radio_hal.c:139:5:SpiWriteData	1
+../Drivers/radio/radio_hal.c:168:5:SpiReadData	1
+../Drivers/radio/radio_hal.c:195:6:radio_hal_SpiWriteByte	1
+../Drivers/radio/radio_hal.c:204:4:radio_hal_SpiReadByte	1
+../Drivers/radio/radio_hal.c:213:6:radio_hal_SpiWriteData	1
+../Drivers/radio/radio_hal.c:222:6:radio_hal_SpiReadData	1
+../Drivers/radio/radio_hal.c:232:5:radio_hal_Gpio0Level	1
+../Drivers/radio/radio_hal.c:258:5:radio_hal_Gpio1Level	1
+../Drivers/radio/radio_hal.c:283:5:radio_hal_Gpio2Level	1
+../Drivers/radio/radio_hal.c:306:5:radio_hal_Gpio3Level	1

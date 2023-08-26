@@ -1,0 +1,981 @@
+17:03:07 **** Incremental Build of configuration Release for project RFM ****
+make -j8 all 
+"C:/D/SW2_Team/EMU_EPD/RFM\Version.bat" "C:/D/SW2_Team/EMU_EPD/RFM\Library\version.h.template" "C:/D/SW2_Team/EMU_EPD/RFM\Library\version.h"
+C:/D/SW2_Team/EMU_EPD/RFM\Library\version.h.template C:/D/SW2_Team/EMU_EPD/RFM\Library\version.h
+START Process
+331
+END Process
+ 
+arm-none-eabi-gcc "../Library/RFMProtocol.c" -mcpu=cortex-m4 -std=gnu11 -DUSE_HAL_DRIVER -DSTM32F407xx -DHAVE_CONFIG_H -DRELEASE -c -I../Drivers/CMSIS/Include -I../Drivers/STM32F4xx_HAL_Driver/Inc -I../Core/Inc -I../Drivers/CMSIS/Device/ST/STM32F4xx/Include -I../Drivers/STM32F4xx_HAL_Driver/Inc/Legacy -I../Drivers/radio -I../Drivers/radio/Si446x -I../Drivers/si4463 -I../Library -I../Library/speex -I../Library/speex/include -I../Library/speex/STM32 -I../Library/speex/STM32/include -I../Library/speex/STM32/libspeex/gcc -I../Library/speex/libspeex -I../Library/speex/include/speex -I../Drivers/display -I../USB_DEVICE/App -I../USB_DEVICE/Target -I../Middlewares/ST/STM32_USB_Device_Library/Core/Inc -I../Middlewares/ST/STM32_USB_Device_Library/Class/CDC/Inc -Os -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Library/RFMProtocol.d" -MT"Library/RFMProtocol.o" --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -o "Library/RFMProtocol.o"
+arm-none-eabi-gcc "../Library/cli.c" -mcpu=cortex-m4 -std=gnu11 -DUSE_HAL_DRIVER -DSTM32F407xx -DHAVE_CONFIG_H -DRELEASE -c -I../Drivers/CMSIS/Include -I../Drivers/STM32F4xx_HAL_Driver/Inc -I../Core/Inc -I../Drivers/CMSIS/Device/ST/STM32F4xx/Include -I../Drivers/STM32F4xx_HAL_Driver/Inc/Legacy -I../Drivers/radio -I../Drivers/radio/Si446x -I../Drivers/si4463 -I../Library -I../Library/speex -I../Library/speex/include -I../Library/speex/STM32 -I../Library/speex/STM32/include -I../Library/speex/STM32/libspeex/gcc -I../Library/speex/libspeex -I../Library/speex/include/speex -I../Drivers/display -I../USB_DEVICE/App -I../USB_DEVICE/Target -I../Middlewares/ST/STM32_USB_Device_Library/Core/Inc -I../Middlewares/ST/STM32_USB_Device_Library/Class/CDC/Inc -Os -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Library/cli.d" -MT"Library/cli.o" --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -o "Library/cli.o"
+arm-none-eabi-gcc "../Library/menu.c" -mcpu=cortex-m4 -std=gnu11 -DUSE_HAL_DRIVER -DSTM32F407xx -DHAVE_CONFIG_H -DRELEASE -c -I../Drivers/CMSIS/Include -I../Drivers/STM32F4xx_HAL_Driver/Inc -I../Core/Inc -I../Drivers/CMSIS/Device/ST/STM32F4xx/Include -I../Drivers/STM32F4xx_HAL_Driver/Inc/Legacy -I../Drivers/radio -I../Drivers/radio/Si446x -I../Drivers/si4463 -I../Library -I../Library/speex -I../Library/speex/include -I../Library/speex/STM32 -I../Library/speex/STM32/include -I../Library/speex/STM32/libspeex/gcc -I../Library/speex/libspeex -I../Library/speex/include/speex -I../Drivers/display -I../USB_DEVICE/App -I../USB_DEVICE/Target -I../Middlewares/ST/STM32_USB_Device_Library/Core/Inc -I../Middlewares/ST/STM32_USB_Device_Library/Class/CDC/Inc -Os -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Library/menu.d" -MT"Library/menu.o" --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -o "Library/menu.o"
+arm-none-eabi-gcc "../Library/rfm.c" -mcpu=cortex-m4 -std=gnu11 -DUSE_HAL_DRIVER -DSTM32F407xx -DHAVE_CONFIG_H -DRELEASE -c -I../Drivers/CMSIS/Include -I../Drivers/STM32F4xx_HAL_Driver/Inc -I../Core/Inc -I../Drivers/CMSIS/Device/ST/STM32F4xx/Include -I../Drivers/STM32F4xx_HAL_Driver/Inc/Legacy -I../Drivers/radio -I../Drivers/radio/Si446x -I../Drivers/si4463 -I../Library -I../Library/speex -I../Library/speex/include -I../Library/speex/STM32 -I../Library/speex/STM32/include -I../Library/speex/STM32/libspeex/gcc -I../Library/speex/libspeex -I../Library/speex/include/speex -I../Drivers/display -I../USB_DEVICE/App -I../USB_DEVICE/Target -I../Middlewares/ST/STM32_USB_Device_Library/Core/Inc -I../Middlewares/ST/STM32_USB_Device_Library/Class/CDC/Inc -Os -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Library/rfm.d" -MT"Library/rfm.o" --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -o "Library/rfm.o"
+arm-none-eabi-gcc "../Library/version.c" -mcpu=cortex-m4 -std=gnu11 -DUSE_HAL_DRIVER -DSTM32F407xx -DHAVE_CONFIG_H -DRELEASE -c -I../Drivers/CMSIS/Include -I../Drivers/STM32F4xx_HAL_Driver/Inc -I../Core/Inc -I../Drivers/CMSIS/Device/ST/STM32F4xx/Include -I../Drivers/STM32F4xx_HAL_Driver/Inc/Legacy -I../Drivers/radio -I../Drivers/radio/Si446x -I../Drivers/si4463 -I../Library -I../Library/speex -I../Library/speex/include -I../Library/speex/STM32 -I../Library/speex/STM32/include -I../Library/speex/STM32/libspeex/gcc -I../Library/speex/libspeex -I../Library/speex/include/speex -I../Drivers/display -I../USB_DEVICE/App -I../USB_DEVICE/Target -I../Middlewares/ST/STM32_USB_Device_Library/Core/Inc -I../Middlewares/ST/STM32_USB_Device_Library/Class/CDC/Inc -Os -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Library/version.d" -MT"Library/version.o" --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -o "Library/version.o"
+In file included from ../Library/rfm.h:25,
+                 from ../Library/rfm.c:16:
+../Library/RFMProtocol.h:304:10: warning: declaration does not declare anything
+  304 |         };
+      |          ^
+../Library/RFMProtocol.h:322:10: warning: declaration does not declare anything
+  322 |         };
+      |          ^
+../Library/RFMProtocol.h:468:10: warning: declaration does not declare anything
+  468 |         };
+      |          ^
+../Library/RFMProtocol.h:506:10: warning: declaration does not declare anything
+  506 |         };
+      |          ^
+../Library/RFMProtocol.h:511:10: warning: declaration does not declare anything
+  511 |         };
+      |          ^
+../Library/RFMProtocol.h:533:10: warning: declaration does not declare anything
+  533 |         };
+      |          ^
+../Library/RFMProtocol.h:559:10: warning: declaration does not declare anything
+  559 |         };
+      |          ^
+../Library/RFMProtocol.h:567:10: warning: declaration does not declare anything
+  567 |         };
+      |          ^
+In file included from ../Library/RFMProtocol.c:21:
+../Library/RFMProtocol.h:304:10: warning: declaration does not declare anything
+  304 |         };
+      |          ^
+../Library/RFMProtocol.h:322:10: warning: declaration does not declare anything
+  322 |         };
+      |          ^
+../Library/version.c: In function 'Version_History':
+../Library/RFMProtocol.h:468:10: warning: declaration does not declare anything
+  468 |         };
+      |          ^
+../Library/version.c:41:9: warning: implicit declaration of function 'printf' [-Wimplicit-function-declaration]
+   41 |         printf( "-----------------------------\r\n" );
+      |         ^~~~~~
+../Library/version.c:19:1: note: include '<stdio.h>' or provide a declaration of 'printf'
+   18 | #include "VerInfo.h"            //      VER_INFO structure
+  +++ |+#include <stdio.h>
+   19 | 
+../Library/RFMProtocol.h:506:10: warning: declaration does not declare anything
+  506 |         };
+      |          ^
+../Library/version.c:41:9: warning: incompatible implicit declaration of built-in function 'printf' [-Wbuiltin-declaration-mismatch]
+   41 |         printf( "-----------------------------\r\n" );
+      |         ^~~~~~
+../Library/version.c:41:9: note: include '<stdio.h>' or provide a declaration of 'printf'
+../Library/RFMProtocol.h:511:10: warning: declaration does not declare anything
+  511 |         };
+      |          ^
+../Library/RFMProtocol.h:533:10: warning: declaration does not declare anything
+  533 |         };
+      |          ^
+../Library/RFMProtocol.h:559:10: warning: declaration does not declare anything
+  559 |         };
+      |          ^
+../Library/RFMProtocol.h:567:10: warning: declaration does not declare anything
+  567 |         };
+      |          ^
+In file included from ../Drivers/radio/Si446x/si446x_defs.h:10,
+                 from ../Drivers/radio/radio.h:13,
+                 from ../Library/RFMProtocol.c:23:
+../Drivers/radio/compiler_defs.h:744:3: warning: #warning unrecognized compiler [-Wcpp]
+  744 | # warning unrecognized compiler
+      |   ^~~~~~~
+In file included from ../Core/Inc/main.h:42,
+                 from ../Library/menu.c:2:
+../Drivers/radio/compiler_defs.h:744:3: warning: #warning unrecognized compiler [-Wcpp]
+  744 | # warning unrecognized compiler
+      |   ^~~~~~~
+In file included from ../Core/Inc/main.h:42,
+                 from ../Library/rfm.c:24:
+../Drivers/radio/compiler_defs.h:744:3: warning: #warning unrecognized compiler [-Wcpp]
+  744 | # warning unrecognized compiler
+      |   ^~~~~~~
+../Library/rfm.c: In function 'SetDevID':
+../Library/rfm.c:95:9: warning: implicit declaration of function 'printf' [-Wimplicit-function-declaration]
+   95 |         printf( "%s : %s(%d)\n", __func__,
+      |         ^~~~~~
+../Library/rfm.c:41:1: note: include '<stdio.h>' or provide a declaration of 'printf'
+   40 | #include "adpcm.h"                                      //      ADPCM Codec
+  +++ |+#include <stdio.h>
+   41 | 
+../Library/rfm.c:95:9: warning: incompatible implicit declaration of built-in function 'printf' [-Wbuiltin-declaration-mismatch]
+   95 |         printf( "%s : %s(%d)\n", __func__,
+      |         ^~~~~~
+../Library/rfm.c:95:9: note: include '<stdio.h>' or provide a declaration of 'printf'
+../Library/rfm.c: In function 'SetRFMMode':
+../Library/rfm.c:122:17: warning: incompatible implicit declaration of built-in function 'printf' [-Wbuiltin-declaration-mismatch]
+  122 |                 printf( "%s", StrRFMMode( nRFMMode ) );
+      |                 ^~~~~~
+../Library/rfm.c:122:17: note: include '<stdio.h>' or provide a declaration of 'printf'
+../Library/rfm.c: In function 'LoadTrainSetIdx':
+../Library/rfm.c:416:9: warning: incompatible implicit declaration of built-in function 'printf' [-Wbuiltin-declaration-mismatch]
+  416 |         printf( "%s(%d) - EEPROM Error\n", __func__, __LINE__ );
+      |         ^~~~~~
+../Library/rfm.c:416:9: note: include '<stdio.h>' or provide a declaration of 'printf'
+../Library/rfm.c:424:10: warning: implicit declaration of function 'GetDbg' [-Wimplicit-function-declaration]
+  424 |     if ( GetDbg() > 0 )
+      |          ^~~~~~
+../Library/rfm.c:425:9: warning: incompatible implicit declaration of built-in function 'printf' [-Wbuiltin-declaration-mismatch]
+  425 |         printf( "%s(%d) - %d\n", __func__, __LINE__, idxTrainSet );
+      |         ^~~~~~
+../Library/rfm.c:425:9: note: include '<stdio.h>' or provide a declaration of 'printf'
+../Library/rfm.c: In function 'SetTrainSetIdx':
+../Library/rfm.c:469:9: warning: incompatible implicit declaration of built-in function 'printf' [-Wbuiltin-declaration-mismatch]
+  469 |         printf( "%s(%d) - EEPROM Error\n", __func__, __LINE__ );
+      |         ^~~~~~
+../Library/rfm.c:469:9: note: include '<stdio.h>' or provide a declaration of 'printf'
+../Library/rfm.c:475:9: warning: incompatible implicit declaration of built-in function 'printf' [-Wbuiltin-declaration-mismatch]
+  475 |         printf( "%s(%d) - %d\n", __func__, __LINE__, idxTrainSet );
+      |         ^~~~~~
+../Library/rfm.c:475:9: note: include '<stdio.h>' or provide a declaration of 'printf'
+../Library/rfm.c: In function 'GetRFMode':
+../Library/rfm.c:490:9: warning: incompatible implicit declaration of built-in function 'printf' [-Wbuiltin-declaration-mismatch]
+  490 |         printf( "%s(%d) - EEPROM Error\n", __func__, __LINE__ );
+      |         ^~~~~~
+../Library/rfm.c:490:9: note: include '<stdio.h>' or provide a declaration of 'printf'
+../Library/rfm.c:500:9: warning: incompatible implicit declaration of built-in function 'printf' [-Wbuiltin-declaration-mismatch]
+  500 |         printf( "%s(%d) - %d\n", __func__, __LINE__, nRFMode );
+      |         ^~~~~~
+../Library/rfm.c:500:9: note: include '<stdio.h>' or provide a declaration of 'printf'
+../Library/rfm.c: In function 'SetRFMode':
+../Library/rfm.c:511:9: warning: incompatible implicit declaration of built-in function 'printf' [-Wbuiltin-declaration-mismatch]
+  511 |         printf( "%s(%d) - EEPROM Error\n", __func__, __LINE__ );
+      |         ^~~~~~
+../Library/rfm.c:511:9: note: include '<stdio.h>' or provide a declaration of 'printf'
+../Library/rfm.c:517:9: warning: incompatible implicit declaration of built-in function 'printf' [-Wbuiltin-declaration-mismatch]
+  517 |         printf( "%s(%d) - %d\n", __func__, __LINE__, nRFMode );
+      |         ^~~~~~
+../Library/rfm.c:517:9: note: include '<stdio.h>' or provide a declaration of 'printf'
+../Library/rfm.c: In function 'GetManHop':
+../Library/rfm.c:534:9: warning: incompatible implicit declaration of built-in function 'printf' [-Wbuiltin-declaration-mismatch]
+  534 |         printf( "%s(%d) - EEPROM Error\n", __func__, __LINE__ );
+      |         ^~~~~~
+../Library/rfm.c:534:9: note: include '<stdio.h>' or provide a declaration of 'printf'
+../Library/rfm.c:546:9: warning: incompatible implicit declaration of built-in function 'printf' [-Wbuiltin-declaration-mismatch]
+  546 |         printf( "%s(%d) - %d\n", __func__, __LINE__, nManHop );
+      |         ^~~~~~
+../Library/rfm.c:546:9: note: include '<stdio.h>' or provide a declaration of 'printf'
+../Library/rfm.c: In function 'SetManHop':
+../Library/rfm.c:557:9: warning: incompatible implicit declaration of built-in function 'printf' [-Wbuiltin-declaration-mismatch]
+  557 |         printf( "%s(%d) - EEPROM Error\n", __func__, __LINE__ );
+      |         ^~~~~~
+../Library/rfm.c:557:9: note: include '<stdio.h>' or provide a declaration of 'printf'
+../Library/rfm.c:563:9: warning: incompatible implicit declaration of built-in function 'printf' [-Wbuiltin-declaration-mismatch]
+  563 |         printf( "%s(%d) - %d\n", __func__, __LINE__, nManHop );
+      |         ^~~~~~
+../Library/rfm.c:563:9: note: include '<stdio.h>' or provide a declaration of 'printf'
+../Library/rfm.c: In function 'LoadCarNo':
+../Library/rfm.c:579:9: warning: incompatible implicit declaration of built-in function 'printf' [-Wbuiltin-declaration-mismatch]
+  579 |         printf( "%s(%d) - EEPROM Error\n", __func__, __LINE__ );
+      |         ^~~~~~
+../Library/rfm.c:579:9: note: include '<stdio.h>' or provide a declaration of 'printf'
+../Library/rfm.c:588:9: warning: incompatible implicit declaration of built-in function 'printf' [-Wbuiltin-declaration-mismatch]
+  588 |         printf( "%s(%d) - %d\n", __func__, __LINE__, nCarNo );
+      |         ^~~~~~
+../Library/rfm.c:588:9: note: include '<stdio.h>' or provide a declaration of 'printf'
+../Library/rfm.c: In function 'SetCarNo':
+../Library/rfm.c:617:9: warning: incompatible implicit declaration of built-in function 'printf' [-Wbuiltin-declaration-mismatch]
+  617 |         printf( "%s(%d) - EEPROM Error\n", __func__, __LINE__ );
+      |         ^~~~~~
+../Library/rfm.c:617:9: note: include '<stdio.h>' or provide a declaration of 'printf'
+../Library/rfm.c:623:9: warning: incompatible implicit declaration of built-in function 'printf' [-Wbuiltin-declaration-mismatch]
+  623 |         printf( "%s(%d) - %d\n", __func__, __LINE__, nCarNo );
+      |         ^~~~~~
+../Library/rfm.c:623:9: note: include '<stdio.h>' or provide a declaration of 'printf'
+../Library/RFMProtocol.c:46:12: warning: 'ChTx_1' initialized and declared 'extern'
+   46 | extern int ChTx_1       =       _ChTx_1;        //      * CH8 : ?Ü°?ã†Í∏?#1 - (Car No : 11) - 915 + 0.25 * 8
+      |            ^~~~~~
+../Library/rfm.c: In function 'GetSpkVol':
+../Library/RFMProtocol.c:47:12: warning: 'ChTx_2' initialized and declared 'extern'
+   47 | extern int ChTx_2       =       _ChTx_2;        //      * CH9 : ?Ü°?ã†Í∏?#2 - (Car No : 12)
+      |            ^~~~~~
+../Library/RFMProtocol.c:48:12: warning: 'ChTS1_1' initialized and declared 'extern'
+   48 | extern int ChTS1_1      =       _ChTS1_1;       //      1?ò∏Ï∞? ?àò?ã†Í∏? Ï±ÑÎÑê
+      |            ^~~~~~~
+../Library/rfm.c:639:9: warning: incompatible implicit declaration of built-in function 'printf' [-Wbuiltin-declaration-mismatch]
+  639 |         printf( "%s(%d) - EEPROM Error\n", __func__, __LINE__ );
+      |         ^~~~~~
+In file included from ../Library/rfm.h:25,
+                 from ../Library/cli.c:57:
+../Library/RFMProtocol.h:304:10: warning: declaration does not declare anything
+  304 |         };
+      |          ^
+../Library/rfm.c:639:9: note: include '<stdio.h>' or provide a declaration of 'printf'
+../Library/RFMProtocol.h:322:10: warning: declaration does not declare anything
+  322 |         };
+      |          ^
+../Library/rfm.c:647:5: warning: incompatible implicit declaration of built-in function 'printf' [-Wbuiltin-declaration-mismatch]
+  647 |     printf( "%s(%d) - %d\n", __func__, __LINE__, nSpkVol );
+      |     ^~~~~~
+../Library/rfm.c:647:5: note: include '<stdio.h>' or provide a declaration of 'printf'
+../Library/rfm.c: In function 'SetSpkVol':
+../Library/RFMProtocol.h:468:10: warning: declaration does not declare anything
+  468 |         };
+      |          ^
+../Library/rfm.c:658:9: warning: incompatible implicit declaration of built-in function 'printf' [-Wbuiltin-declaration-mismatch]
+  658 |         printf( "%s(%d) - EEPROM Error\n", __func__, __LINE__ );
+      |         ^~~~~~
+../Library/rfm.c:658:9: note: include '<stdio.h>' or provide a declaration of 'printf'
+../Library/RFMProtocol.h:506:10: warning: declaration does not declare anything
+  506 |         };
+      |          ^
+../Library/rfm.c:663:5: warning: incompatible implicit declaration of built-in function 'printf' [-Wbuiltin-declaration-mismatch]
+  663 |     printf( "%s(%d) - %d\n", __func__, __LINE__, nSpkVol );
+      |     ^~~~~~
+../Library/RFMProtocol.h:511:10: warning: declaration does not declare anything
+  511 |         };
+      |          ^
+../Library/rfm.c:663:5: note: include '<stdio.h>' or provide a declaration of 'printf'
+../Library/RFMProtocol.h:533:10: warning: declaration does not declare anything
+  533 |         };
+      |          ^
+../Library/rfm.c: In function 'GetMicVol':
+../Library/rfm.c:685:9: warning: incompatible implicit declaration of built-in function 'printf' [-Wbuiltin-declaration-mismatch]
+  685 |         printf( "%s(%d) - EEPROM Error\n", __func__, __LINE__ );
+      |         ^~~~~~
+../Library/rfm.c:685:9: note: include '<stdio.h>' or provide a declaration of 'printf'
+../Library/RFMProtocol.h:559:10: warning: declaration does not declare anything
+  559 |         };
+      |          ^
+../Library/RFMProtocol.h:567:10: warning: declaration does not declare anything
+  567 |         };
+      |          ^
+../Library/rfm.c:693:5: warning: incompatible implicit declaration of built-in function 'printf' [-Wbuiltin-declaration-mismatch]
+  693 |     printf( "%s(%d) - %d\n", __func__, __LINE__, nMicVol );
+      |     ^~~~~~
+../Library/rfm.c:693:5: note: include '<stdio.h>' or provide a declaration of 'printf'
+../Library/rfm.c: In function 'SetMicVol':
+../Library/rfm.c:704:9: warning: incompatible implicit declaration of built-in function 'printf' [-Wbuiltin-declaration-mismatch]
+  704 |         printf( "%s(%d) - EEPROM Error\n", __func__, __LINE__ );
+      |         ^~~~~~
+../Library/rfm.c:704:9: note: include '<stdio.h>' or provide a declaration of 'printf'
+../Library/rfm.c:709:5: warning: incompatible implicit declaration of built-in function 'printf' [-Wbuiltin-declaration-mismatch]
+  709 |     printf( "%s(%d) - %d\n", __func__, __LINE__, nMicVol );
+      |     ^~~~~~
+../Library/rfm.c:709:5: note: include '<stdio.h>' or provide a declaration of 'printf'
+../Library/rfm.c: In function 'RF_RSSI':
+../Library/rfm.c:737:9: warning: incompatible implicit declaration of built-in function 'printf' [-Wbuiltin-declaration-mismatch]
+  737 |         printf( "%s(%d) - ant1:%d / ant2:%d / curr:%d / latch:%d\n", __func__, __LINE__,
+      |         ^~~~~~
+../Library/rfm.c:737:9: note: include '<stdio.h>' or provide a declaration of 'printf'
+../Library/rfm.c: In function 'RFM_Spk':
+../Library/rfm.c:762:17: warning: incompatible implicit declaration of built-in function 'printf' [-Wbuiltin-declaration-mismatch]
+  762 |                 printf("%s(%d) - %d\n", __func__, __LINE__, bOnOff);
+      |                 ^~~~~~
+../Library/rfm.c:762:17: note: include '<stdio.h>' or provide a declaration of 'printf'
+../Library/rfm.c: In function 'PrintVerInfo':
+../Library/rfm.c:784:5: warning: incompatible implicit declaration of built-in function 'printf' [-Wbuiltin-declaration-mismatch]
+  784 |     printf( "\n\n" );
+      |     ^~~~~~
+../Library/rfm.c:784:5: note: include '<stdio.h>' or provide a declaration of 'printf'
+../Library/RFMProtocol.c: In function '_MakePktHdr2':
+../Library/RFMProtocol.c:134:13: warning: implicit declaration of function 'GetRFTID' [-Wimplicit-function-declaration]
+  134 |         if( GetRFTID() == 1 )
+      |             ^~~~~~~~
+../Library/cli.c: In function 'dump':
+../Library/cli.c:344:29: warning: '0' flag used with '%p' gnu_printf format [-Wformat=]
+  344 |                 printf( "%08p  ", a );
+      |                             ^
+../Library/rfm.c:793:9: warning: implicit declaration of function 'sprintf' [-Wimplicit-function-declaration]
+  793 |         sprintf( sBuf[0], "RFM v%s", APP_VER );
+      |         ^~~~~~~
+../Library/rfm.c:793:9: note: include '<stdio.h>' or provide a declaration of 'sprintf'
+../Library/rfm.c:793:9: warning: incompatible implicit declaration of built-in function 'sprintf' [-Wbuiltin-declaration-mismatch]
+../Library/rfm.c:793:9: note: include '<stdio.h>' or provide a declaration of 'sprintf'
+../Library/cli.c:352:69: warning: format '%x' expects argument of type 'unsigned int', but argument 2 has type 'uint32_t' {aka 'long unsigned int'} [-Wformat=]
+  352 |                         else if ( width == 4 )          printf( "%08x ", *(uint32_t *)a );
+      |                                                                  ~~~^    ~~~~~~~~~~~~~~
+      |                                                                     |    |
+      |                                                                     |    uint32_t {aka long unsigned int}
+      |                                                                     unsigned int
+      |                                                                  %08lx
+../Library/rfm.c: In function 'cmd_ts':
+../Library/rfm.c:822:9: warning: incompatible implicit declaration of built-in function 'printf' [-Wbuiltin-declaration-mismatch]
+  822 |         printf( "Train Set : %d\n", 100 + GetTrainSetIdx() );
+      |         ^~~~~~
+../Library/rfm.c:822:9: note: include '<stdio.h>' or provide a declaration of 'printf'
+../Library/rfm.c:829:25: warning: implicit declaration of function 'sscanf' [-Wimplicit-function-declaration]
+  829 |     case 2:             sscanf( argv[1], "%d", &nTrainSet );            //      cmd [channel]
+      |                         ^~~~~~
+../Library/cli.c: In function 'ProcessCommand':
+../Library/cli.c:486:22: warning: cast from pointer to integer of different size [-Wpointer-to-int-cast]
+  486 |                 *p = (char)NULL;
+      |                      ^
+../Library/rfm.c:829:25: note: include '<stdio.h>' or provide a declaration of 'sscanf'
+../Library/rfm.c:829:25: warning: incompatible implicit declaration of built-in function 'sscanf' [-Wbuiltin-declaration-mismatch]
+../Library/rfm.c:829:25: note: include '<stdio.h>' or provide a declaration of 'sscanf'
+../Library/cli.c:513:30: warning: cast from pointer to integer of different size [-Wpointer-to-int-cast]
+  513 |                         *p = (char)NULL;
+      |                              ^
+In file included from ../Library/menu.c:13:
+../Library/RFMProtocol.h:304:10: warning: declaration does not declare anything
+  304 |         };
+      |          ^
+../Library/RFMProtocol.h:322:10: warning: declaration does not declare anything
+  322 |         };
+      |          ^
+../Library/RFMProtocol.h:468:10: warning: declaration does not declare anything
+  468 |         };
+      |          ^
+../Library/rfm.c:835:9: warning: incompatible implicit declaration of built-in function 'printf' [-Wbuiltin-declaration-mismatch]
+  835 |         printf( "%s(%d) - Train Set : %d\n", __func__, __LINE__, nTrainSet + 100 );
+      |         ^~~~~~
+../Library/rfm.c:835:9: note: include '<stdio.h>' or provide a declaration of 'printf'
+../Library/RFMProtocol.h:506:10: warning: declaration does not declare anything
+  506 |         };
+      |          ^
+../Library/rfm.c: In function 'cmd_ch':
+../Library/RFMProtocol.h:511:10: warning: declaration does not declare anything
+  511 |         };
+      |          ^
+../Library/rfm.c:851:9: warning: incompatible implicit declaration of built-in function 'printf' [-Wbuiltin-declaration-mismatch]
+  851 |         printf( "RF Channel: %d\n", GetChRx() );
+      |         ^~~~~~
+../Library/rfm.c:851:9: note: include '<stdio.h>' or provide a declaration of 'printf'
+../Library/RFMProtocol.h:533:10: warning: declaration does not declare anything
+  533 |         };
+      |          ^
+../Library/RFMProtocol.h:559:10: warning: declaration does not declare anything
+  559 |         };
+      |          ^
+../Library/RFMProtocol.c:137:21: warning: implicit declaration of function 'GetChPARFT'; did you mean 'GetChPA'? [-Wimplicit-function-declaration]
+  137 |                 if( GetChPARFT() != 0 ) pPkt->hdr2.bRFT2        =       1;      //      ?Ü°?ã†Í∏∞Ïóê ÏßÅÏ†ë ?†Ñ?Ü°?ïò?äîÍ≤ΩÏö∞.
+      |                     ^~~~~~~~~~
+      |                     GetChPA
+../Library/rfm.c:858:25: warning: incompatible implicit declaration of built-in function 'sscanf' [-Wbuiltin-declaration-mismatch]
+  858 |     case 2:             sscanf( argv[1], "%d", &nCh );          //      cmd [channel]
+      |                         ^~~~~~
+../Library/cli.c: In function 'cmd_WDGStOff':
+../Library/RFMProtocol.h:567:10: warning: declaration does not declare anything
+  567 |         };
+      |          ^
+../Library/rfm.c:858:25: note: include '<stdio.h>' or provide a declaration of 'sscanf'
+../Library/rfm.c:866:9: warning: incompatible implicit declaration of built-in function 'printf' [-Wbuiltin-declaration-mismatch]
+  866 |         printf( "%s(%d) - Channel : %d\n", __func__, __LINE__, nCh );
+      |         ^~~~~~
+../Library/rfm.c:866:9: note: include '<stdio.h>' or provide a declaration of 'printf'
+../Library/cli.c:856:1: warning: control reaches end of non-void function [-Wreturn-type]
+  856 | }
+      | ^
+../Library/rfm.c: In function 'cmd_car':
+../Library/rfm.c:883:9: warning: incompatible implicit declaration of built-in function 'printf' [-Wbuiltin-declaration-mismatch]
+  883 |         printf( "Car No : %d\n", GetCarNo() );
+      |         ^~~~~~
+../Library/rfm.c:883:9: note: include '<stdio.h>' or provide a declaration of 'printf'
+../Library/rfm.c:890:25: warning: incompatible implicit declaration of built-in function 'sscanf' [-Wbuiltin-declaration-mismatch]
+  890 |     case 2:             sscanf( argv[1], "%d", &nCar );         //      cmd [Car No]
+      |                         ^~~~~~
+../Library/rfm.c:890:25: note: include '<stdio.h>' or provide a declaration of 'sscanf'
+../Library/rfm.c:897:5: warning: incompatible implicit declaration of built-in function 'printf' [-Wbuiltin-declaration-mismatch]
+  897 |     printf( "%s(%d) - Car No : %d\n", __func__, __LINE__, nCar );
+      |     ^~~~~~
+../Library/rfm.c:897:5: note: include '<stdio.h>' or provide a declaration of 'printf'
+../Library/rfm.c: In function 'cmd_hop':
+../Library/rfm.c:914:25: warning: incompatible implicit declaration of built-in function 'sscanf' [-Wbuiltin-declaration-mismatch]
+  914 |     case 2:             sscanf( argv[1], "%d", &nManHop );              //      cmd [Car No]
+      |                         ^~~~~~
+../Library/rfm.c:914:25: note: include '<stdio.h>' or provide a declaration of 'sscanf'
+../Library/rfm.c:922:5: warning: incompatible implicit declaration of built-in function 'printf' [-Wbuiltin-declaration-mismatch]
+  922 |     printf( "%s(%d) - Manual Hop : %d\n", __func__, __LINE__, nManHop );
+      |     ^~~~~~
+../Library/rfm.c:922:5: note: include '<stdio.h>' or provide a declaration of 'printf'
+../Library/rfm.c: In function 'cmd_rfmod':
+../Library/rfm.c:937:25: warning: incompatible implicit declaration of built-in function 'sscanf' [-Wbuiltin-declaration-mismatch]
+  937 |     case 2:             sscanf( argv[1], "%d", &nRFMode );              //      cmd [Car No]
+      |                         ^~~~~~
+../Library/rfm.c:937:25: note: include '<stdio.h>' or provide a declaration of 'sscanf'
+../Library/menu.c: In function 'UpdateLCDMenu':
+../Library/menu.c:502:37: warning: variable 'pCntMenu' set but not used [-Wunused-but-set-variable]
+  502 |         int             *pIdxMenu, *pCntMenu;
+      |                                     ^~~~~~~~
+../Library/rfm.c:945:5: warning: incompatible implicit declaration of built-in function 'printf' [-Wbuiltin-declaration-mismatch]
+  945 |     printf( "%s(%d) - RFMode : %d\n", __func__, __LINE__, nRFMode );
+      |     ^~~~~~
+../Library/rfm.c:945:5: note: include '<stdio.h>' or provide a declaration of 'printf'
+../Library/rfm.c: In function 'cmd_swinfo':
+../Library/rfm.c:955:5: warning: incompatible implicit declaration of built-in function 'printf' [-Wbuiltin-declaration-mismatch]
+  955 |     printf( "[S/W Info]\n" );
+      |     ^~~~~~
+../Library/rfm.c:955:5: note: include '<stdio.h>' or provide a declaration of 'printf'
+../Library/RFMProtocol.c: In function 'SendStatReq':
+../Library/RFMProtocol.c:175:14: warning: implicit declaration of function 'GetDbg' [-Wimplicit-function-declaration]
+  175 |         if ( GetDbg() ) printf( "%s(%d)\n", __func__, __LINE__ );
+      |              ^~~~~~
+../Library/RFMProtocol.c:202:29: warning: pointer targets in passing argument 2 of 'SendPktCh' differ in signedness [-Wpointer-sign]
+  202 |         SendPktCh( nDestCh, (U8 *)&stPkt, (U8)sizeof( RFMPktHdr ) + sizeof( RFMPktStatReq ) );
+      |                             ^~~~~~~~~~~~
+      |                             |
+      |                             U8 * {aka unsigned char *}
+In file included from ../Library/RFMProtocol.c:29:
+../Library/ProcPkt.h:54:72: note: expected 'const char *' but argument is of type 'U8 *' {aka 'unsigned char *'}
+   54 | int             SendPktCh                       ( int nCh, const char *sBuf, int nSize );
+      |                                                            ~~~~~~~~~~~~^~~~
+../Library/RFMProtocol.c: In function 'SendStat':
+../Library/RFMProtocol.c:267:24: warning: pointer targets in passing argument 2 of 'SendPktCh' differ in signedness [-Wpointer-sign]
+  267 |         SendPktCh(nCh, (U8 *)&stPkt, (U8)sizeof( RFMPktHdr ) + sizeof( RFMPktStat ) );
+      |                        ^~~~~~~~~~~~
+      |                        |
+      |                        U8 * {aka unsigned char *}
+In file included from ../Library/RFMProtocol.c:29:
+../Library/ProcPkt.h:54:72: note: expected 'const char *' but argument is of type 'U8 *' {aka 'unsigned char *'}
+   54 | int             SendPktCh                       ( int nCh, const char *sBuf, int nSize );
+      |                                                            ~~~~~~~~~~~~^~~~
+../Library/menu.c: In function 'ProcMenuSetting':
+../Library/RFMProtocol.c: In function 'SendRouteReq':
+../Library/menu.c:1122:44: warning: implicit declaration of function 'GetMicVol'; did you mean 'GetSpkVol'? [-Wimplicit-function-declaration]
+ 1122 |                 GetActiveMenu()->currIdx = GetMicVol(); //      Î©îÎâ¥ IndexÏ¥àÍ∏∞?ôî.
+      |                                            ^~~~~~~~~
+      |                                            GetSpkVol
+../Library/RFMProtocol.c:301:29: warning: pointer targets in passing argument 2 of 'SendPktCh' differ in signedness [-Wpointer-sign]
+  301 |         SendPktCh( nDestCh, (U8 *)&stPkt, (U8)sizeof( RFMPktHdr ) + sizeof( RFMPktRoute ) );
+      |                             ^~~~~~~~~~~~
+      |                             |
+      |                             U8 * {aka unsigned char *}
+In file included from ../Library/RFMProtocol.c:29:
+../Library/ProcPkt.h:54:72: note: expected 'const char *' but argument is of type 'U8 *' {aka 'unsigned char *'}
+   54 | int             SendPktCh                       ( int nCh, const char *sBuf, int nSize );
+      |                                                            ~~~~~~~~~~~~^~~~
+../Library/RFMProtocol.c: In function 'SendRouteRsp':
+../Library/RFMProtocol.c:330:29: warning: pointer targets in passing argument 2 of 'SendPktCh' differ in signedness [-Wpointer-sign]
+  330 |         SendPktCh( nDestCh, (U8 *)&stPkt, (U8)sizeof( RFMPktHdr ) + sizeof( RFMPktRoute ) );
+      |                             ^~~~~~~~~~~~
+      |                             |
+      |                             U8 * {aka unsigned char *}
+In file included from ../Library/RFMProtocol.c:29:
+../Library/ProcPkt.h:54:72: note: expected 'const char *' but argument is of type 'U8 *' {aka 'unsigned char *'}
+   54 | int             SendPktCh                       ( int nCh, const char *sBuf, int nSize );
+      |                                                            ~~~~~~~~~~~~^~~~
+../Library/RFMProtocol.c: In function 'SendPA':
+../Library/RFMProtocol.c:368:42: warning: pointer targets in passing argument 2 of 'SendPktCh' differ in signedness [-Wpointer-sign]
+  368 |                 SendPktCh( GetChPARFT(), (uint8_t *)&stPkt,
+      |                                          ^~~~~~~~~~~~~~~~~
+      |                                          |
+      |                                          uint8_t * {aka unsigned char *}
+../Library/menu.c: In function 'ProcMenuSetMic':
+In file included from ../Library/RFMProtocol.c:29:
+../Library/ProcPkt.h:54:72: note: expected 'const char *' but argument is of type 'uint8_t *' {aka 'unsigned char *'}
+   54 | int             SendPktCh                       ( int nCh, const char *sBuf, int nSize );
+      |                                                            ~~~~~~~~~~~~^~~~
+../Library/RFMProtocol.c:373:31: warning: pointer targets in passing argument 2 of 'SendPktCh' differ in signedness [-Wpointer-sign]
+  373 |         SendPktCh( GetChPA(), (uint8_t *)&stPkt,
+      |                               ^~~~~~~~~~~~~~~~~
+      |                               |
+      |                               uint8_t * {aka unsigned char *}
+../Library/menu.c:1175:17: warning: implicit declaration of function 'SetMicVol'; did you mean 'SetSpkVol'? [-Wimplicit-function-declaration]
+ 1175 |                 SetMicVol(idxItem);
+      |                 ^~~~~~~~~
+      |                 SetSpkVol
+In file included from ../Library/RFMProtocol.c:29:
+../Library/ProcPkt.h:54:72: note: expected 'const char *' but argument is of type 'uint8_t *' {aka 'unsigned char *'}
+   54 | int             SendPktCh                       ( int nCh, const char *sBuf, int nSize );
+      |                                                            ~~~~~~~~~~~~^~~~
+../Library/RFMProtocol.c: In function 'SendCall':
+../Library/RFMProtocol.c:418:42: warning: pointer targets in passing argument 2 of 'SendPktCh' differ in signedness [-Wpointer-sign]
+  418 |                 SendPktCh( GetChPARFT(), (uint8_t *)&stPkt,
+      |                                          ^~~~~~~~~~~~~~~~~
+      |                                          |
+      |                                          uint8_t * {aka unsigned char *}
+In file included from ../Library/RFMProtocol.c:29:
+../Library/ProcPkt.h:54:72: note: expected 'const char *' but argument is of type 'uint8_t *' {aka 'unsigned char *'}
+   54 | int             SendPktCh                       ( int nCh, const char *sBuf, int nSize );
+      |                                                            ~~~~~~~~~~~~^~~~
+../Library/RFMProtocol.c:425:33: warning: pointer targets in passing argument 2 of 'SendPktCh' differ in signedness [-Wpointer-sign]
+  425 |                                 (uint8_t *)&stPkt,
+      |                                 ^~~~~~~~~~~~~~~~~
+      |                                 |
+      |                                 uint8_t * {aka unsigned char *}
+In file included from ../Library/RFMProtocol.c:29:
+../Library/ProcPkt.h:54:72: note: expected 'const char *' but argument is of type 'uint8_t *' {aka 'unsigned char *'}
+   54 | int             SendPktCh                       ( int nCh, const char *sBuf, int nSize );
+      |                                                            ~~~~~~~~~~~~^~~~
+../Library/RFMProtocol.c: In function 'SendOCCPA':
+../Library/RFMProtocol.c:472:42: warning: pointer targets in passing argument 2 of 'SendPktCh' differ in signedness [-Wpointer-sign]
+  472 |                 SendPktCh( GetChPARFT(), (uint8_t *)&stPkt,
+      |                                          ^~~~~~~~~~~~~~~~~
+      |                                          |
+      |                                          uint8_t * {aka unsigned char *}
+In file included from ../Library/RFMProtocol.c:29:
+../Library/ProcPkt.h:54:72: note: expected 'const char *' but argument is of type 'uint8_t *' {aka 'unsigned char *'}
+   54 | int             SendPktCh                       ( int nCh, const char *sBuf, int nSize );
+      |                                                            ~~~~~~~~~~~~^~~~
+../Library/RFMProtocol.c:477:31: warning: pointer targets in passing argument 2 of 'SendPktCh' differ in signedness [-Wpointer-sign]
+  477 |         SendPktCh( GetChPA(), (uint8_t *)&stPkt,
+      |                               ^~~~~~~~~~~~~~~~~
+      |                               |
+      |                               uint8_t * {aka unsigned char *}
+In file included from ../Library/RFMProtocol.c:29:
+../Library/ProcPkt.h:54:72: note: expected 'const char *' but argument is of type 'uint8_t *' {aka 'unsigned char *'}
+   54 | int             SendPktCh                       ( int nCh, const char *sBuf, int nSize );
+      |                                                            ~~~~~~~~~~~~^~~~
+../Library/RFMProtocol.c: In function 'SendLight':
+../Library/RFMProtocol.c:520:31: warning: pointer targets in passing argument 2 of 'SendPktCh' differ in signedness [-Wpointer-sign]
+  520 |         SendPktCh( GetChPA(), (uint8_t *)&stPkt,
+      |                               ^~~~~~~~~~~~~~~~~
+      |                               |
+      |                               uint8_t * {aka unsigned char *}
+In file included from ../Library/RFMProtocol.c:29:
+../Library/ProcPkt.h:54:72: note: expected 'const char *' but argument is of type 'uint8_t *' {aka 'unsigned char *'}
+   54 | int             SendPktCh                       ( int nCh, const char *sBuf, int nSize );
+      |                                                            ~~~~~~~~~~~~^~~~
+../Library/RFMProtocol.c: In function 'SendRFCmdCh':
+../Library/RFMProtocol.c:557:25: warning: pointer targets in passing argument 2 of 'SendPktCh' differ in signedness [-Wpointer-sign]
+  557 |         SendPktCh( nCh, (U8 *)&stPkt, (U8)sizeof( RFMPktHdr ) + RFPktDataLen );
+      |                         ^~~~~~~~~~~~
+      |                         |
+      |                         U8 * {aka unsigned char *}
+In file included from ../Library/RFMProtocol.c:29:
+../Library/ProcPkt.h:54:72: note: expected 'const char *' but argument is of type 'U8 *' {aka 'unsigned char *'}
+   54 | int             SendPktCh                       ( int nCh, const char *sBuf, int nSize );
+      |                                                            ~~~~~~~~~~~~^~~~
+../Library/RFMProtocol.c: In function 'SendRFCmd':
+../Library/RFMProtocol.c:579:33: warning: pointer targets in passing argument 2 of 'SendPktCh' differ in signedness [-Wpointer-sign]
+  579 |                 SendPktCh( nCh, (U8 *)&stPkt, (U8)sizeof( RFMPktHdr ) + RFPktDataLen );
+      |                                 ^~~~~~~~~~~~
+      |                                 |
+      |                                 U8 * {aka unsigned char *}
+In file included from ../Library/RFMProtocol.c:29:
+../Library/ProcPkt.h:54:72: note: expected 'const char *' but argument is of type 'U8 *' {aka 'unsigned char *'}
+   54 | int             SendPktCh                       ( int nCh, const char *sBuf, int nSize );
+      |                                                            ~~~~~~~~~~~~^~~~
+../Library/RFMProtocol.c: In function 'SendRFCmdReset':
+../Library/RFMProtocol.c:598:31: warning: pointer targets in passing argument 2 of 'SendPktCh' differ in signedness [-Wpointer-sign]
+  598 |         SendPktCh( ChUpgrDst, (U8 *)&stPkt, (U8)sizeof( RFMPktHdr ) + RFPktDataLen );
+      |                               ^~~~~~~~~~~~
+      |                               |
+      |                               U8 * {aka unsigned char *}
+In file included from ../Library/RFMProtocol.c:29:
+../Library/ProcPkt.h:54:72: note: expected 'const char *' but argument is of type 'U8 *' {aka 'unsigned char *'}
+   54 | int             SendPktCh                       ( int nCh, const char *sBuf, int nSize );
+      |                                                            ~~~~~~~~~~~~^~~~
+../Library/rfm.c:956:36: warning: implicit declaration of function 'FLASH_If_GetBootSize' [-Wimplicit-function-declaration]
+  956 |     printf( " - Boot : %d Byte\n", FLASH_If_GetBootSize() );
+      |                                    ^~~~~~~~~~~~~~~~~~~~
+../Library/RFMProtocol.c: In function 'SendRFCmdUpgrade':
+../Library/RFMProtocol.c:673:9: warning: implicit declaration of function 'SetUpgrReTry' [-Wimplicit-function-declaration]
+  673 |         SetUpgrReTry( bRetry );                 //      Retry ?Ñ§?†ï.
+      |         ^~~~~~~~~~~~
+../Library/rfm.c:957:35: warning: implicit declaration of function 'FLASH_If_GetAppSize' [-Wimplicit-function-declaration]
+  957 |     printf( " - App : %d Byte\n", FLASH_If_GetAppSize() );
+      |                                   ^~~~~~~~~~~~~~~~~~~
+../Library/rfm.c: In function 'cmd_info':
+../Library/rfm.c:969:5: warning: incompatible implicit declaration of built-in function 'printf' [-Wbuiltin-declaration-mismatch]
+  969 |     printf( "[Setting]\n" );
+      |     ^~~~~~
+../Library/rfm.c:969:5: note: include '<stdio.h>' or provide a declaration of 'printf'
+../Library/rfm.c:967:17: warning: unused variable 'nData' [-Wunused-variable]
+  967 |     uint16_t    nData;
+      |                 ^~~~~
+../Library/rfm.c:966:25: warning: unused variable 'nCh' [-Wunused-variable]
+  966 |     int                 nCh = 0;
+      |                         ^~~
+../Library/rfm.c:965:25: warning: unused variable 'nBuf' [-Wunused-variable]
+  965 |     uint8_t             nBuf[10];
+      |                         ^~~~
+../Library/rfm.c: In function 'cmd_rfstat':
+../Library/rfm.c:988:5: warning: incompatible implicit declaration of built-in function 'printf' [-Wbuiltin-declaration-mismatch]
+  988 |     printf( "[RF Info] Tx : %d / Rx : %d\n", nTxPkt, nRxPkt );
+      |     ^~~~~~
+../Library/rfm.c:988:5: note: include '<stdio.h>' or provide a declaration of 'printf'
+../Library/rfm.c: In function 'cmd_txpwr':
+../Library/rfm.c:1054:25: warning: incompatible implicit declaration of built-in function 'sscanf' [-Wbuiltin-declaration-mismatch]
+ 1054 |     case 2:             sscanf( argv[1], "%d", &nPwr );         //      ID
+      |                         ^~~~~~
+../Library/rfm.c:1054:25: note: include '<stdio.h>' or provide a declaration of 'sscanf'
+../Library/rfm.c:1054:44: warning: format '%d' expects argument of type 'int *', but argument 3 has type 'uint8_t *' {aka 'unsigned char *'} [-Wformat=]
+ 1054 |     case 2:             sscanf( argv[1], "%d", &nPwr );         //      ID
+      |                                           ~^   ~~~~~
+      |                                            |   |
+      |                                            |   uint8_t * {aka unsigned char *}
+      |                                            int *
+      |                                           %hhd
+../Library/rfm.c:1059:5: warning: incompatible implicit declaration of built-in function 'printf' [-Wbuiltin-declaration-mismatch]
+ 1059 |     printf( "%s(%d) - Tx Pwr(%d)\n", __func__, __LINE__, nPwr );
+      |     ^~~~~~
+../Library/rfm.c:1059:5: note: include '<stdio.h>' or provide a declaration of 'printf'
+../Library/rfm.c: In function 'cmd_rspid':
+../Library/rfm.c:1074:25: warning: incompatible implicit declaration of built-in function 'sscanf' [-Wbuiltin-declaration-mismatch]
+ 1074 |     case 3:             sscanf( argv[2], "%d", &nSet );         //      Set
+      |                         ^~~~~~
+../Library/rfm.c:1074:25: note: include '<stdio.h>' or provide a declaration of 'sscanf'
+../Library/rfm.c:1082:9: warning: incompatible implicit declaration of built-in function 'printf' [-Wbuiltin-declaration-mismatch]
+ 1082 |         printf("%s(%d) - return\n", __func__, __LINE__);
+      |         ^~~~~~
+../Library/RFMProtocol.c:679:9: warning: implicit declaration of function 'UpgrSendImageApp' [-Wimplicit-function-declaration]
+  679 |         UpgrSendImageApp();
+      |         ^~~~~~~~~~~~~~~~
+../Library/rfm.c:1082:9: note: include '<stdio.h>' or provide a declaration of 'printf'
+../Library/rfm.c:1102:5: warning: incompatible implicit declaration of built-in function 'printf' [-Wbuiltin-declaration-mismatch]
+ 1102 |     printf( "%s(%d) - ID Flag : 0x%04X\n", __func__, __LINE__, g_flagRspID );
+      |     ^~~~~~
+../Library/rfm.c:1102:5: note: include '<stdio.h>' or provide a declaration of 'printf'
+../Library/rfm.c: In function 'cmd_OccPa':
+../Library/rfm.c:1122:25: warning: incompatible implicit declaration of built-in function 'sscanf' [-Wbuiltin-declaration-mismatch]
+ 1122 |     case 2:             sscanf( argv[1], "%d", &nOnOff );           //  On/Off
+      |                         ^~~~~~
+../Library/rfm.c:1122:25: note: include '<stdio.h>' or provide a declaration of 'sscanf'
+../Library/rfm.c:1129:9: warning: incompatible implicit declaration of built-in function 'printf' [-Wbuiltin-declaration-mismatch]
+ 1129 |         printf("[Start][OCC]\n");
+      |         ^~~~~~
+../Library/rfm.c:1129:9: note: include '<stdio.h>' or provide a declaration of 'printf'
+../Library/rfm.c:1153:9: warning: incompatible implicit declaration of built-in function 'printf' [-Wbuiltin-declaration-mismatch]
+ 1153 |         printf("[Stop][OCC]\n");
+      |         ^~~~~~
+../Library/rfm.c:1153:9: note: include '<stdio.h>' or provide a declaration of 'printf'
+../Library/rfm.c: In function 'RFM_I2SEx_TxRxCpltCallback':
+../Library/rfm.c:1226:81: warning: pointer targets in passing argument 2 of 'HAL_I2SEx_TransmitReceive_DMA' differ in signedness [-Wpointer-sign]
+ 1226 |                                                                                 pAudioTx,       //      Tx
+      |                                                                                 ^~~~~~~~
+      |                                                                                 |
+      |                                                                                 int16_t * {aka short int *}
+In file included from ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_i2s.h:439,
+                 from ../Core/Inc/stm32f4xx_hal_conf.h:368,
+                 from ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal.h:30,
+                 from ../Core/Inc/main.h:31,
+                 from ../Library/rfm.c:24:
+../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_i2s_ex.h:145:84: note: expected 'uint16_t *' {aka 'short unsigned int *'} but argument is of type 'int16_t *' {aka 'short int *'}
+  145 | HAL_StatusTypeDef HAL_I2SEx_TransmitReceive_DMA(I2S_HandleTypeDef *hi2s, uint16_t *pTxData, uint16_t *pRxData,
+      |                                                                          ~~~~~~~~~~^~~~~~~
+../Library/rfm.c:1227:81: warning: pointer targets in passing argument 3 of 'HAL_I2SEx_TransmitReceive_DMA' differ in signedness [-Wpointer-sign]
+ 1227 |                                                                                 pAudioRx,       //      Rx
+      |                                                                                 ^~~~~~~~
+      |                                                                                 |
+      |                                                                                 int16_t * {aka short int *}
+In file included from ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_i2s.h:439,
+                 from ../Core/Inc/stm32f4xx_hal_conf.h:368,
+                 from ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal.h:30,
+                 from ../Core/Inc/main.h:31,
+                 from ../Library/rfm.c:24:
+../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_i2s_ex.h:145:103: note: expected 'uint16_t *' {aka 'short unsigned int *'} but argument is of type 'int16_t *' {aka 'short int *'}
+  145 | HAL_StatusTypeDef HAL_I2SEx_TransmitReceive_DMA(I2S_HandleTypeDef *hi2s, uint16_t *pTxData, uint16_t *pRxData,
+      |                                                                                             ~~~~~~~~~~^~~~~~~
+../Library/rfm.c:1308:17: warning: implicit declaration of function 'memset' [-Wimplicit-function-declaration]
+ 1308 |                 memset( pAudioTx, 0, FRAME_ENC_SIZE * 2 );      //      Tx
+      |                 ^~~~~~
+../Library/rfm.c:811:1: note: include '<string.h>' or provide a declaration of 'memset'
+  810 | #include "menu.h"      //  g_cntTrainSet
+  +++ |+#include <string.h>
+  811 | 
+../Library/rfm.c:1308:17: warning: incompatible implicit declaration of built-in function 'memset' [-Wbuiltin-declaration-mismatch]
+ 1308 |                 memset( pAudioTx, 0, FRAME_ENC_SIZE * 2 );      //      Tx
+      |                 ^~~~~~
+../Library/rfm.c:1308:17: note: include '<string.h>' or provide a declaration of 'memset'
+../Library/rfm.c:1324:33: warning: incompatible implicit declaration of built-in function 'printf' [-Wbuiltin-declaration-mismatch]
+ 1324 |                                 printf ( "F" );  //  Î≤ÑÌçºÎßÅÏ¢ÖÎ£? ( Buffering End - Buffer Full )
+      |                                 ^~~~~~
+../Library/rfm.c:1324:33: note: include '<stdio.h>' or provide a declaration of 'printf'
+../Library/rfm.c:1390:33: warning: incompatible implicit declaration of built-in function 'printf' [-Wbuiltin-declaration-mismatch]
+ 1390 |                                 printf ( "B" );  //  Î≤ÑÌçºÎßÅÏãú?ûë ( Buffering )
+      |                                 ^~~~~~
+../Library/rfm.c:1390:33: note: include '<stdio.h>' or provide a declaration of 'printf'
+../Library/rfm.c: In function 'InitRFM':
+../Library/rfm.c:1413:9: warning: incompatible implicit declaration of built-in function 'printf' [-Wbuiltin-declaration-mismatch]
+ 1413 |         printf( "%s(%d)\n", __func__, __LINE__ );
+      |         ^~~~~~
+../Library/rfm.c:1413:9: note: include '<stdio.h>' or provide a declaration of 'printf'
+../Library/rfm.c:1433:17: warning: incompatible implicit declaration of built-in function 'memset' [-Wbuiltin-declaration-mismatch]
+ 1433 |                 memset( buf, 0, sizeof( buf ) );
+      |                 ^~~~~~
+../Library/rfm.c:1433:17: note: include '<string.h>' or provide a declaration of 'memset'
+../Library/rfm.c:1434:114: warning: pointer targets in passing argument 5 of 'HAL_I2C_Mem_Read' differ in signedness [-Wpointer-sign]
+ 1434 |                 while ( HAL_I2C_Mem_Read( &hi2c1, (uint16_t)( 0x10 << 1 ), (uint16_t)0xFF, I2C_MEMADD_SIZE_8BIT, buf, (uint16_t)1, 1000 ) != HAL_OK && cntRetry < 10 ) cntRetry++;
+      |                                                                                                                  ^~~
+      |                                                                                                                  |
+      |                                                                                                                  char *
+In file included from ../Core/Inc/stm32f4xx_hal_conf.h:360,
+                 from ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal.h:30,
+                 from ../Core/Inc/main.h:31,
+                 from ../Library/rfm.c:24:
+../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_i2c.h:572:133: note: expected 'uint8_t *' {aka 'unsigned char *'} but argument is of type 'char *'
+  572 | HAL_StatusTypeDef HAL_I2C_Mem_Read(I2C_HandleTypeDef *hi2c, uint16_t DevAddress, uint16_t MemAddress, uint16_t MemAddSize, uint8_t *pData, uint16_t Size, uint32_t Timeout);
+      |                                                                                                                            ~~~~~~~~~^~~~~
+../Library/rfm.c:1629:9: warning: implicit declaration of function 'srand' [-Wimplicit-function-declaration]
+ 1629 |         srand( HAL_GetTick() * 100 + GetTrainSetIdx() * 10 + GetCarNo() );
+      |         ^~~~~
+../Library/rfm.c:1632:22: warning: implicit declaration of function 'rand' [-Wimplicit-function-declaration]
+ 1632 |         g_offsetCA = rand() % 1000;
+      |                      ^~~~
+../Library/rfm.c: In function 'RFM_main':
+../Library/rfm.c:1645:9: warning: incompatible implicit declaration of built-in function 'printf' [-Wbuiltin-declaration-mismatch]
+ 1645 |         printf( "%s(%d)\n", __func__, __LINE__ );
+      |         ^~~~~~
+../Library/rfm.c:1645:9: note: include '<stdio.h>' or provide a declaration of 'printf'
+../Library/RFMProtocol.c: In function 'SendUpgrData':
+../Library/RFMProtocol.c:710:13: warning: implicit declaration of function 'GetUpgrReTry' [-Wimplicit-function-declaration]
+  710 |         if( GetUpgrReTry() ) pUpgr->bFlag       |=      PktUpgrFlagRetry;       //      Retry Flag
+      |             ^~~~~~~~~~~~
+../Library/RFMProtocol.c:716:31: warning: pointer targets in passing argument 2 of 'SendPktCh' differ in signedness [-Wpointer-sign]
+  716 |         SendPktCh( ChUpgrDst, (U8 *)&stPkt, (U8)sizeof( RFMPktHdr ) + RFPktDataLen );
+      |                               ^~~~~~~~~~~~
+      |                               |
+      |                               U8 * {aka unsigned char *}
+In file included from ../Library/RFMProtocol.c:29:
+../Library/ProcPkt.h:54:72: note: expected 'const char *' but argument is of type 'U8 *' {aka 'unsigned char *'}
+   54 | int             SendPktCh                       ( int nCh, const char *sBuf, int nSize );
+      |                                                            ~~~~~~~~~~~~^~~~
+../Library/RFMProtocol.c: In function 'SendUpgrStat':
+../Library/RFMProtocol.c:747:28: warning: pointer targets in passing argument 2 of 'SendPktCh' differ in signedness [-Wpointer-sign]
+  747 |         SendPktCh( ChTx_1, (U8 *)&stPkt, (U8)sizeof( RFMPktHdr ) + RFPktDataLen );
+      |                            ^~~~~~~~~~~~
+      |                            |
+      |                            U8 * {aka unsigned char *}
+In file included from ../Library/RFMProtocol.c:29:
+../Library/ProcPkt.h:54:72: note: expected 'const char *' but argument is of type 'U8 *' {aka 'unsigned char *'}
+   54 | int             SendPktCh                       ( int nCh, const char *sBuf, int nSize );
+      |                                                            ~~~~~~~~~~~~^~~~
+../Library/RFMProtocol.c:752:28: warning: pointer targets in passing argument 2 of 'SendPktCh' differ in signedness [-Wpointer-sign]
+  752 |         SendPktCh( ChTx_2, (U8 *)&stPkt, (U8)sizeof( RFMPktHdr ) + RFPktDataLen );
+      |                            ^~~~~~~~~~~~
+      |                            |
+      |                            U8 * {aka unsigned char *}
+In file included from ../Library/RFMProtocol.c:29:
+../Library/ProcPkt.h:54:72: note: expected 'const char *' but argument is of type 'U8 *' {aka 'unsigned char *'}
+   54 | int             SendPktCh                       ( int nCh, const char *sBuf, int nSize );
+      |                                                            ~~~~~~~~~~~~^~~~
+../Library/rfm.c:1685:25: warning: implicit declaration of function 'LoopProcAdc'; did you mean 'LoopProcPkt'? [-Wimplicit-function-declaration]
+ 1685 |                         LoopProcAdc( nTick );
+      |                         ^~~~~~~~~~~
+      |                         LoopProcPkt
+../Library/RFMProtocol.c: In function 'ProcPktStatReq':
+../Library/RFMProtocol.c:789:17: warning: implicit declaration of function 'SetStat'; did you mean 'SendStat'? [-Wimplicit-function-declaration]
+  789 |                 SetStat( idx );         //      ?ÉÅ?Éú?†ïÎ≥? ?Ñ§?†ï.
+      |                 ^~~~~~~
+      |                 SendStat
+../Library/rfm.c:1692:17: warning: implicit declaration of function 'LoopProcCLI'; did you mean 'LoopProcPkt'? [-Wimplicit-function-declaration]
+ 1692 |                 LoopProcCLI();
+      |                 ^~~~~~~~~~~
+      |                 LoopProcPkt
+../Library/rfm.c: In function 'LoopProcRFM':
+../Library/rfm.c:1776:82: warning: pointer targets in passing argument 2 of 'SendPktCh' differ in signedness [-Wpointer-sign]
+ 1776 |                                                         SendPktCh( GetChPARFT(), (uint8_t *)&bufRFTx,
+      |                                                                                  ^~~~~~~~~~~~~~~~~~~
+      |                                                                                  |
+      |                                                                                  uint8_t * {aka unsigned char *}
+In file included from ../Library/rfm.c:38:
+../Library/ProcPkt.h:54:72: note: expected 'const char *' but argument is of type 'uint8_t *' {aka 'unsigned char *'}
+   54 | int             SendPktCh                       ( int nCh, const char *sBuf, int nSize );
+      |                                                            ~~~~~~~~~~~~^~~~
+../Library/rfm.c:1780:71: warning: pointer targets in passing argument 2 of 'SendPktCh' differ in signedness [-Wpointer-sign]
+ 1780 |                                                 SendPktCh( GetChPA(), (uint8_t *)&bufRFTx,
+      |                                                                       ^~~~~~~~~~~~~~~~~~~
+      |                                                                       |
+      |                                                                       uint8_t * {aka unsigned char *}
+In file included from ../Library/rfm.c:38:
+../Library/ProcPkt.h:54:72: note: expected 'const char *' but argument is of type 'uint8_t *' {aka 'unsigned char *'}
+   54 | int             SendPktCh                       ( int nCh, const char *sBuf, int nSize );
+      |                                                            ~~~~~~~~~~~~^~~~
+../Library/rfm.c:1790:82: warning: pointer targets in passing argument 2 of 'SendPktCh' differ in signedness [-Wpointer-sign]
+ 1790 |                                                         SendPktCh( GetChPARFT(), (uint8_t *)&bufRFTx,
+      |                                                                                  ^~~~~~~~~~~~~~~~~~~
+      |                                                                                  |
+      |                                                                                  uint8_t * {aka unsigned char *}
+In file included from ../Library/rfm.c:38:
+../Library/ProcPkt.h:54:72: note: expected 'const char *' but argument is of type 'uint8_t *' {aka 'unsigned char *'}
+   54 | int             SendPktCh                       ( int nCh, const char *sBuf, int nSize );
+      |                                                            ~~~~~~~~~~~~^~~~
+../Library/rfm.c:1796:79: warning: pointer targets in passing argument 2 of 'SendPktCh' differ in signedness [-Wpointer-sign]
+ 1796 |                                                         SendPktCh( GetChPA(), (uint8_t *)&bufRFTx,
+      |                                                                               ^~~~~~~~~~~~~~~~~~~
+      |                                                                               |
+      |                                                                               uint8_t * {aka unsigned char *}
+In file included from ../Library/rfm.c:38:
+../Library/ProcPkt.h:54:72: note: expected 'const char *' but argument is of type 'uint8_t *' {aka 'unsigned char *'}
+   54 | int             SendPktCh                       ( int nCh, const char *sBuf, int nSize );
+      |                                                            ~~~~~~~~~~~~^~~~
+../Library/rfm.c:1823:41: warning: incompatible implicit declaration of built-in function 'sprintf' [-Wbuiltin-declaration-mismatch]
+ 1823 |                                         sprintf( sBuf, "?àò?ã†Ï§?(%d/%d)", GetCh2Car(GetChNearRFM()), GetChNearRFM() );    //      Channel -> Car
+      |                                         ^~~~~~~
+../Library/rfm.c:1823:41: note: include '<stdio.h>' or provide a declaration of 'sprintf'
+../Library/rfm.c:1885:67: warning: pointer targets in passing argument 2 of 'SendPktCh' differ in signedness [-Wpointer-sign]
+ 1885 |                                         SendPktCh( GetChPA() + 1, (uint8_t *)&bufRFTx,
+      |                                                                   ^~~~~~~~~~~~~~~~~~~
+      |                                                                   |
+      |                                                                   uint8_t * {aka unsigned char *}
+In file included from ../Library/rfm.c:38:
+../Library/ProcPkt.h:54:72: note: expected 'const char *' but argument is of type 'uint8_t *' {aka 'unsigned char *'}
+   54 | int             SendPktCh                       ( int nCh, const char *sBuf, int nSize );
+      |                                                            ~~~~~~~~~~~~^~~~
+../Library/rfm.c:1891:67: warning: pointer targets in passing argument 2 of 'SendPktCh' differ in signedness [-Wpointer-sign]
+ 1891 |                                         SendPktCh( GetChPA() - 1, (uint8_t *)&bufRFTx,
+      |                                                                   ^~~~~~~~~~~~~~~~~~~
+      |                                                                   |
+      |                                                                   uint8_t * {aka unsigned char *}
+In file included from ../Library/rfm.c:38:
+../Library/ProcPkt.h:54:72: note: expected 'const char *' but argument is of type 'uint8_t *' {aka 'unsigned char *'}
+   54 | int             SendPktCh                       ( int nCh, const char *sBuf, int nSize );
+      |                                                            ~~~~~~~~~~~~^~~~
+../Library/rfm.c: In function 'UpdateStat':
+../Library/rfm.c:2124:17: warning: implicit declaration of function 'memcpy' [-Wimplicit-function-declaration]
+ 2124 |                 memcpy( &g_devStat[idx].stat, pStat, sizeof(RFMPktStat) );
+      |                 ^~~~~~
+../Library/rfm.c:2124:17: note: include '<string.h>' or provide a declaration of 'memcpy'
+../Library/RFMProtocol.c: In function 'ProcPktStat':
+../Library/rfm.c:2124:17: warning: incompatible implicit declaration of built-in function 'memcpy' [-Wbuiltin-declaration-mismatch]
+../Library/rfm.c:2124:17: note: include '<string.h>' or provide a declaration of 'memcpy'
+../Library/RFMProtocol.c:826:17: warning: implicit declaration of function 'UpdateStat' [-Wimplicit-function-declaration]
+  826 |                 UpdateStat( pStat );    //      ?ÉÅ?Éú?†ïÎ≥? Update. ( Î≤ÑÏ†Ñ?†ïÎ≥? Í∞±Ïã† ?ì± )
+      |                 ^~~~~~~~~~
+../Library/rfm.c:2134:17: warning: incompatible implicit declaration of built-in function 'sprintf' [-Wbuiltin-declaration-mismatch]
+ 2134 |                 sprintf(_sVerList[idx], "%02d:%d/R%d,%03d", idx,
+      |                 ^~~~~~~
+../Library/rfm.c:2134:17: note: include '<stdio.h>' or provide a declaration of 'sprintf'
+../Library/RFMProtocol.c: In function 'ProcPktRouteReq':
+../Library/RFMProtocol.c:865:21: warning: unused variable 'idx' [-Wunused-variable]
+  865 |                 int idx = pRouteReq->nCarNo;
+      |                     ^~~
+../Library/RFMProtocol.c: In function 'ProcPktRouteRsp':
+../Library/rfm.c: In function 'GetChRx':
+../Library/rfm.c:217:1: warning: control reaches end of non-void function [-Wreturn-type]
+  217 | }
+      | ^
+../Library/RFMProtocol.c:939:21: warning: unused variable 'idx' [-Wunused-variable]
+  939 |                 int idx = pRouteRsp->nCarNo;
+      |                     ^~~
+../Library/rfm.c: In function 'cmd_hop':
+../Library/rfm.c:926:1: warning: control reaches end of non-void function [-Wreturn-type]
+  926 | }
+      | ^
+../Library/rfm.c: In function 'cmd_rfmod':
+../Library/rfm.c:949:1: warning: control reaches end of non-void function [-Wreturn-type]
+  949 | }
+      | ^
+../Library/rfm.c: In function 'cmd_swinfo':
+../Library/rfm.c:958:1: warning: control reaches end of non-void function [-Wreturn-type]
+  958 | }
+      | ^
+../Library/rfm.c: In function 'cmd_info':
+../Library/rfm.c:980:1: warning: control reaches end of non-void function [-Wreturn-type]
+  980 | }
+      | ^
+../Library/rfm.c: In function 'cmd_rfstat':
+../Library/rfm.c:989:1: warning: control reaches end of non-void function [-Wreturn-type]
+  989 | }
+      | ^
+../Library/rfm.c: In function 'cmd_txpwr':
+../Library/rfm.c:1062:1: warning: control reaches end of non-void function [-Wreturn-type]
+ 1062 | }
+      | ^
+../Library/rfm.c: In function 'cmd_OccPa':
+../Library/rfm.c:1174:1: warning: control reaches end of non-void function [-Wreturn-type]
+ 1174 | }
+      | ^
+../Library/rfm.c: In function 'InitRFM':
+../Library/rfm.c:1639:1: warning: control reaches end of non-void function [-Wreturn-type]
+ 1639 | }
+      | ^
+../Library/RFMProtocol.c: In function 'ProcPktCtrlPaCall':
+../Library/RFMProtocol.c:1016:17: warning: implicit declaration of function 'SetChPARFT'; did you mean 'SetChPA'? [-Wimplicit-function-declaration]
+ 1016 |                 SetChPARFT( GetChNearRFT( 190 ) );      //      RSSI 190 ?ù¥?ÉÅ?ù∏Í≤ΩÏö∞ : ?àò?ã†Í∏? -> ?Ü°?ã†Í∏? Ï§ëÍ≥Ñ
+      |                 ^~~~~~~~~~
+      |                 SetChPA
+../Library/RFMProtocol.c: In function 'ProcPktDevConn':
+../Library/RFMProtocol.c:1125:17: warning: implicit declaration of function 'SetDevConn'; did you mean 'SetDevID'? [-Wimplicit-function-declaration]
+ 1125 |                 SetDevConn( pConn->nSrcCh, pConn->nDevType, pConn->nConnect );
+      |                 ^~~~~~~~~~
+      |                 SetDevID
+../Library/RFMProtocol.c: In function 'ProcPktCmd':
+../Library/RFMProtocol.c:1177:17: warning: implicit declaration of function 'ProcessCommand' [-Wimplicit-function-declaration]
+ 1177 |                 ProcessCommand( pRFPkt->dat.cmd.sCmd );
+      |                 ^~~~~~~~~~~~~~
+../Library/RFMProtocol.c: In function 'ProcPktUpgr':
+../Library/RFMProtocol.c:1213:63: warning: format '%X' expects argument of type 'unsigned int', but argument 4 has type 'uint32_t' {aka 'long unsigned int'} [-Wformat=]
+ 1213 |                 printf("%s(%d) - Out Of Range - baseAddr(0x%08X)\n", __func__, __LINE__, pUpgr->baseAddr );
+      |                                                            ~~~^                          ~~~~~~~~~~~~~~~
+      |                                                               |                               |
+      |                                                               unsigned int                    uint32_t {aka long unsigned int}
+      |                                                            %08lX
+../Library/RFMProtocol.c:1237:38: warning: format '%d' expects argument of type 'int', but argument 2 has type 'uint32_t' {aka 'long unsigned int'} [-Wformat=]
+ 1237 |                         printf( "[%08d] Flash Erase - Skip ( Retry - Upgrade )\n", HAL_GetTick() );
+      |                                   ~~~^                                             ~~~~~~~~~~~~~
+      |                                      |                                             |
+      |                                      int                                           uint32_t {aka long unsigned int}
+      |                                   %08ld
+../Library/RFMProtocol.c:1246:38: warning: format '%d' expects argument of type 'int', but argument 2 has type 'uint32_t' {aka 'long unsigned int'} [-Wformat=]
+ 1246 |                         printf( "[%08d] Flash Erase - Start\n", HAL_GetTick() );
+      |                                   ~~~^                          ~~~~~~~~~~~~~
+      |                                      |                          |
+      |                                      int                        uint32_t {aka long unsigned int}
+      |                                   %08ld
+../Library/RFMProtocol.c:1249:38: warning: format '%d' expects argument of type 'int', but argument 2 has type 'uint32_t' {aka 'long unsigned int'} [-Wformat=]
+ 1249 |                         printf( "[%08d] Flash Erase - End\n", HAL_GetTick() );
+      |                                   ~~~^                        ~~~~~~~~~~~~~
+      |                                      |                        |
+      |                                      int                      uint32_t {aka long unsigned int}
+      |                                   %08ld
+../Library/RFMProtocol.c:1339:25: warning: implicit declaration of function 'cmd_reset'; did you mean 'cmd_rfstat'? [-Wimplicit-function-declaration]
+ 1339 |                         cmd_reset(0, 0);
+      |                         ^~~~~~~~~
+      |                         cmd_rfstat
+../Library/RFMProtocol.c: In function 'ProcPktStatReq':
+../Library/RFMProtocol.c:803:1: warning: control reaches end of non-void function [-Wreturn-type]
+  803 | }
+      | ^
+../Library/RFMProtocol.c: In function 'ProcPktStat':
+../Library/RFMProtocol.c:850:1: warning: control reaches end of non-void function [-Wreturn-type]
+  850 | }
+      | ^
+../Library/RFMProtocol.c: In function 'ProcPktRouteReq':
+../Library/RFMProtocol.c:922:1: warning: control reaches end of non-void function [-Wreturn-type]
+  922 | }
+      | ^
+../Library/RFMProtocol.c: In function 'ProcPktRouteRsp':
+../Library/RFMProtocol.c:974:1: warning: control reaches end of non-void function [-Wreturn-type]
+  974 | }
+      | ^
+../Library/RFMProtocol.c: In function 'ProcPktCtrlPaCall':
+../Library/RFMProtocol.c:1020:1: warning: control reaches end of non-void function [-Wreturn-type]
+ 1020 | }
+      | ^
+../Library/RFMProtocol.c: In function 'ProcPktPA':
+../Library/RFMProtocol.c:1070:1: warning: control reaches end of non-void function [-Wreturn-type]
+ 1070 | }
+      | ^
+../Library/RFMProtocol.c: In function 'ProcPktCall':
+../Library/RFMProtocol.c:1109:1: warning: control reaches end of non-void function [-Wreturn-type]
+ 1109 | }
+      | ^
+../Library/RFMProtocol.c: In function 'ProcPktDevConn':
+../Library/RFMProtocol.c:1133:1: warning: control reaches end of non-void function [-Wreturn-type]
+ 1133 | }
+      | ^
+../Library/RFMProtocol.c: In function 'ProcPktLight':
+../Library/RFMProtocol.c:1155:1: warning: control reaches end of non-void function [-Wreturn-type]
+ 1155 | }
+      | ^
+../Library/RFMProtocol.c: In function 'ProcPktCmd':
+../Library/RFMProtocol.c:1179:1: warning: control reaches end of non-void function [-Wreturn-type]
+ 1179 | }
+      | ^
+../Library/RFMProtocol.c: In function 'ProcPktCmdRsp':
+../Library/RFMProtocol.c:1191:1: warning: control reaches end of non-void function [-Wreturn-type]
+ 1191 | }
+      | ^
+../Library/RFMProtocol.c: In function 'ProcPktUpgr':
+../Library/RFMProtocol.c:1363:1: warning: control reaches end of non-void function [-Wreturn-type]
+ 1363 | }
+      | ^
+arm-none-eabi-g++ -o "RFM.elf" @"objects.list"   -mcpu=cortex-m4 -T"C:\D\SW2_Team\EMU_EPD\RFM\STM32F407VGTx_App_FLASH.ld" --specs=nosys.specs -Wl,-Map="RFM.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -lstdc++ -lsupc++ -Wl,--end-group
+Finished building target: RFM.elf
+ 
+arm-none-eabi-size   RFM.elf 
+arm-none-eabi-objdump -h -S  RFM.elf  > "RFM.list"
+arm-none-eabi-objcopy  -O ihex  RFM.elf  "RFM.hex"
+   text	   data	    bss	    dec	    hex	filename
+ 120384	   3024	  15788	 139196	  21fbc	RFM.elf
+Finished building: default.size.stdout
+ 
+Finished building: RFM.hex
+ 
+Finished building: RFM.list
+ 
+"C:/D/SW2_Team/EMU_EPD/RFM\_Make.bat" "C:/D/SW2_Team/EMU_EPD/RFM/" "Release"
+VER : 2.0.0.331
+copy "Release\RFM.bin" "bin\RFM_230822_v2.0.0.331.bin"
+¡ˆ¡§µ» ∆ƒ¿œ¿ª √£¿ª ºˆ æ¯Ω¿¥œ¥Ÿ.
+copy "Release\RFM.hex" "bin\RFM_230822_v2.0.0.331.hex"
+        1∞≥ ∆ƒ¿œ¿Ã ∫πªÁµ«æ˙Ω¿¥œ¥Ÿ.
+gen "bin\BootRFM_230822_v2.0.0.331.hex"
+FINDSTR: C:/D/SW2_Team/EMU_EPD/RFM/\Boot\Bootloader.hex¿ª(∏¶) ø≠ ºˆ æ¯Ω¿¥œ¥Ÿ.
+ 
+
+17:03:12 Build Finished. 0 errors, 192 warnings. (took 4s.687ms)
+

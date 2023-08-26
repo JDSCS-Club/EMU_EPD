@@ -1,0 +1,4 @@
+../Drivers/display/fonts/PHan_Lib.c:31:10:PHan_CnvCodeWan2Johab	1
+../Drivers/display/fonts/PHan_Lib.c:51:6:PHan_HanFontLoad	9
+../Drivers/display/fonts/PHan_Lib.c:131:6:PHan_EngFontLoad	2
+../Drivers/display/fonts/PHan_Lib.c:159:10:PHan_FontLoad	4

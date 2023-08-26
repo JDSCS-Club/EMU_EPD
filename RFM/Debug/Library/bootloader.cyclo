@@ -1,0 +1,9 @@
+../Library/bootloader.c:68:6:SetBootMode	1
+../Library/bootloader.c:75:5:GetBootMode	1
+../Library/bootloader.c:86:5:_GetDevID	1
+../Library/bootloader.c:93:6:_SetDevID	2
+../Library/bootloader.c:103:6:JumpToSTBootloader	1
+../Library/bootloader.c:139:6:DispDFUMode	2
+../Library/bootloader.c:154:5:InitBoot	2
+../Library/bootloader.c:188:6:BootLoaderTask	21
+../Library/bootloader.c:548:5:cmd_stboot	1
