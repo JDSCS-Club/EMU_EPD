@@ -21,6 +21,7 @@
 #include "stm32f4xx_hal.h"
 #include "stm32f4xx.h"
 
+
 #include "bootloader.h"
 
 #include "iap_common.h"		//	IAP Common
@@ -117,6 +118,7 @@ void JumpToSTBootloader(void)
 
   /* Disable all interrupts, clocks and PLLs */
   HAL_RCC_DeInit();
+  //HAL_DeInit();
 
 #ifdef STM32L476xx
 
@@ -127,7 +129,24 @@ void JumpToSTBootloader(void)
 
 #endif
 
+
+ //__disable_irq();
+
+
+  for(int i = 0; i < 8; i++)
+  {
+	  NVIC->ICER[i] = 0xFFFFFFFF;
+	  __DSB();
+	  __ISB();
+
+  }
+
+
+  SysTick->CTRL = 0;
+
+
   /* Jump to system memory */
+  SYSCFG->MEMRMP = 0x01;
   JumpAddress = *(__IO uint32_t*) (SYS_MEM_ADDRESS + 4);
   JumpToApplication = (pFunction) JumpAddress;
   /* Initialize user application's Stack Pointer */
